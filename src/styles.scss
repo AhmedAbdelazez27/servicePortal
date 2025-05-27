@@ -1,0 +1,50 @@
+/* styles.scss */
+body.rtl {
+  direction: rtl;
+  text-align: right;
+  color:purple
+}
+
+body.ltr {
+  direction: ltr;
+  text-align: left;
+  color: red;
+}
+// كل التنبيهات
+.toast {
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  direction: rtl; // لو بتستخدم RTL
+}
+
+// تنبيه النجاح
+.toast-success {
+  background-color: #198754; // Bootstrap success green
+  color: white;
+}
+
+// تنبيه الخطأ
+.toast-error {
+  background-color: #dc3545; // Bootstrap danger red
+  color: white;
+}
+
+// تنبيه المعلومات
+.toast-info {
+  background-color: #0dcaf0; // Bootstrap info blue
+  color: black;
+}
+
+// تنبيه التحذير
+.toast-warning {
+  background-color: #ffc107; // Bootstrap warning yellow
+  color: black;
+}
+
+// زر الإغلاق
+.toast-close-button {
+  color: white;
+  font-weight: bold;
+}
