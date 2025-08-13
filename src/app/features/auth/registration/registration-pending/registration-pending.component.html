@@ -1,0 +1,101 @@
+<div class="registration-pending-container">
+  <section>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10">
+          <div class="pending-card">
+            <!-- Header -->
+            <div class="text-center mb-5">
+              <div class="logo-section mb-4">
+                <img src="assets/images/login-logo.png" alt="Logo" class="logo" />
+              </div>
+              <h2 class="title gold mb-3">{{ 'REGISTRATION.PENDING.TITLE' | translate }}</h2>
+              <p class="subtitle">{{ 'REGISTRATION.PENDING.SUBTITLE' | translate }}</p>
+            </div>
+
+            <!-- Status Icon -->
+            <div class="status-section text-center mb-5">
+              <div class="status-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="#8D734D" stroke-width="2" fill="none"/>
+                  <path d="M12 6v6l4 2" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Message Content -->
+            <div class="message-content mb-5">
+              <div class="alert alert-info">
+                <div class="d-flex align-items-start">
+                  <div class="alert-icon me-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#0D6EFD" stroke-width="2"/>
+                      <path d="M12 16v-4" stroke="#0D6EFD" stroke-width="2" stroke-linecap="round"/>
+                      <path d="M12 8h.01" stroke="#0D6EFD" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="alert-content">
+                    <h5 class="alert-heading">{{ 'REGISTRATION.PENDING.INFO_TITLE' | translate }}</h5>
+                    <p class="mb-0">{{ 'REGISTRATION.PENDING.INFO_MESSAGE' | translate }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Process Steps -->
+            <div class="process-steps mb-5">
+              <h4 class="steps-title mb-4">{{ 'REGISTRATION.PENDING.PROCESS_TITLE' | translate }}</h4>
+              <div class="steps-container">
+                <div class="step-item">
+                  <div class="step-number">1</div>
+                  <div class="step-content">
+                    <h6>{{ 'REGISTRATION.PENDING.STEP_1_TITLE' | translate }}</h6>
+                    <p>{{ 'REGISTRATION.PENDING.STEP_1_DESC' | translate }}</p>
+                  </div>
+                </div>
+                <div class="step-item">
+                  <div class="step-number">2</div>
+                  <div class="step-content">
+                    <h6>{{ 'REGISTRATION.PENDING.STEP_2_TITLE' | translate }}</h6>
+                    <p>{{ 'REGISTRATION.PENDING.STEP_2_DESC' | translate }}</p>
+                  </div>
+                </div>
+                <div class="step-item">
+                  <div class="step-number">3</div>
+                  <div class="step-content">
+                    <h6>{{ 'REGISTRATION.PENDING.STEP_3_TITLE' | translate }}</h6>
+                    <p>{{ 'REGISTRATION.PENDING.STEP_3_DESC' | translate }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <button 
+                    type="button" 
+                    class="btn btn-gold w-100" 
+                    (click)="goToLogin()">
+                    {{ 'REGISTRATION.PENDING.GO_TO_LOGIN' | translate }}
+                  </button>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-secondary w-100" 
+                    (click)="goToHome()">
+                    {{ 'REGISTRATION.PENDING.GO_TO_HOME' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

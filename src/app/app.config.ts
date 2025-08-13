@@ -1,6 +1,6 @@
 // src/app/app.config.ts
 import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations'; // ✅ هذا هو المهم لتفعيل animation
@@ -9,7 +9,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { routes } from './app.routes';
+import { apiKeyInterceptor } from './core/interceptors/api-key.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 // 👇️ Factory لتحميل ملفات الترجمة
 export function HttpLoaderFactory(http: HttpClient) {
@@ -20,10 +23,13 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([apiKeyInterceptor, authInterceptor])
+    ),
     provideAnimations(), // ✅ مضاف لتفعيل animation بشكل صحيح
     importProvidersFrom(
       BrowserAnimationsModule, // ⛔️ ممكن يكون غير ضروري، لكن تركناه بناءً على طلبك
+      NgSelectModule,
       TranslateModule.forRoot({
         defaultLanguage: 'en',
         loader: {

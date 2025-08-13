@@ -10,3 +10,106 @@
   min-height: 400px;
   width: 100%;
 }
+
+// Service icon styles for dynamic icons
+.service-icon {
+  display: flex;
+  padding: 16px;
+  align-items: center;
+  gap: 10px;
+  border-radius: 15px;
+  background: var(--Color-25, #8D734D);
+  transition: all 0.3s ease;
+  
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  // Icon color variations for better visual distinction
+  &:nth-child(5n+1) {
+    background: var(--Color-25, #8D734D); // Original brown
+  }
+  
+  &:nth-child(5n+2) {
+    background: #4A90E2; // Blue
+  }
+  
+  &:nth-child(5n+3) {
+    background: #7ED321; // Green
+  }
+  
+  &:nth-child(5n+4) {
+    background: #F5A623; // Orange
+  }
+  
+  &:nth-child(5n+5) {
+    background: #BD10E0; // Purple
+  }
+}
+
+// Service box hover effects
+.service-box {
+  &:hover {
+    .service-icon {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(141, 115, 77, 0.2);
+    }
+  }
+}
+
+// Contact form styles
+.form-container, .textarea-container {
+  position: relative;
+  
+  .form-control {
+    padding-left: 50px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    
+    &:focus {
+      border-color: #8D734D;
+      box-shadow: 0 0 0 0.2rem rgba(141, 115, 77, 0.25);
+    }
+    
+    &.is-invalid {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+  }
+  
+  svg {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+}
+
+.textarea-container {
+  svg {
+    top: 20px;
+    transform: none;
+  }
+}
+
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #dc3545;
+}
+
+.btn-gold {
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .spinner-border {
+    width: 1rem;
+    height: 1rem;
+  }
+}

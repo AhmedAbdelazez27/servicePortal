@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-xl-3"></div>
+    <div class="col-xl-6">
+      <div class="main-container mt-5 login-box" style="padding:64px 50px;">
+        <div class="d-flex justify-content-center align-items-center gap-2 mb-5">
+          <img src="./../../../../assets/images/logo.png" />
+          <img src="./../../../../assets/images/logo.png" />
+        </div>
+        <h4 class="bold gold title-32">{{ 'AUTH.VERIFY_OTP.TITLE' | translate }}</h4>
+        <p class="mb-4">{{ 'AUTH.VERIFY_OTP.DESCRIPTION' | translate }}</p>
+        <form [formGroup]="otpForm" (ngSubmit)="submitOtp()">
+          <div class="mb-4">
+            <div class="row d-flex justify-content-center">
+              
+              <div class="col-2" *ngFor="let key of objectKeys; let i = index">
+                <input
+                  type="text"
+                  class="form-control text-center"
+                  [formControlName]="key"
+                  maxlength="1"
+                  [attr.id]="'otp' + i"
+                />
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-4 text-center">{{ 'AUTH.VERIFY_OTP.EXPIRES_IN' | translate }} <span class="bold gold">{{ timer | number: '2.0' }}s</span></p>
+
+          <button type="submit" class="btn btn-gold w-100">
+            {{ 'AUTH.VERIFY_OTP.VERIFY_BUTTON' | translate }}
+          </button>
+
+          <p class="mt-4 text-center" >
+            {{ 'AUTH.VERIFY_OTP.DIDNT_RECEIVE' | translate }} . . . . <a (click)="resendOtp()" class="bold gold" style="cursor: pointer;">{{ 'AUTH.VERIFY_OTP.RESEND_OTP' | translate }}</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

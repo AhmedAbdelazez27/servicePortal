@@ -1,0 +1,203 @@
+// CSS Custom Properties for Portal colors
+:root {
+  --Color-15: #FFF;
+  --Color-16: #000;
+  --Color-19: #A6A6A6;
+  --Color-24: #F1F6FA;
+  --Color-25: #8D734D;
+}
+
+// Navbar right section container
+.navbar-right-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.dropdown {
+  .btn-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--Color-16, #000);
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .profile-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50px;
+      object-fit: cover;
+    }
+
+    span {
+      font-weight: 500;
+      color: var(--Color-16, #000);
+    }
+  }
+
+  .dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+    min-width: 200px;
+    margin-top: 8px;
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      color: #333;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      font-size: 14px;
+
+      &:hover {
+        background-color: #f8f9fa;
+        color: #333;
+      }
+
+      svg {
+        color: #6c757d;
+        flex-shrink: 0;
+      }
+    }
+
+    .dropdown-divider {
+      margin: 8px 0;
+      border-color: #e9ecef;
+    }
+  }
+}
+
+.btn-notification {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  border-radius: 50px;
+  background: var(--Color-25, #8D734D);
+  border: none;
+  position: relative;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #7a6342;
+  }
+
+  .badge-round {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #CA4832;
+    border-radius: 50%;
+    top: 0;
+    left: 30px;
+  }
+}
+
+.btn-language {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--Color-16, #000);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .language-icon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 50px;
+    background: var(--Color-24, #F1F6FA);
+  }
+
+  span {
+    font-weight: 500;
+    color: var(--Color-16, #000);
+    font-size: 14px;
+  }
+}
+
+// Ensure proper alignment for all navbar elements
+.navbar {
+  .navbar-nav {
+    align-items: center;
+  }
+  
+  .nav-link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+}
+
+// Navbar login button - compact version of Portal login button
+.btn-login-navbar {
+  display: flex;
+  height: 40px;
+  padding: 8px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: var(--Color-25, #8D734D);
+  color: var(--Color-15, #FFF);
+  font-family: "Expo Arabic";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-transform: capitalize;
+  border: none;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #6f593a;
+    color: var(--Color-15, #FFF);
+    text-decoration: none;
+  }
+
+  &:focus {
+    background: var(--Color-25, #8D734D);
+    color: var(--Color-15, #FFF);
+    box-shadow: none;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 991.98px) {
+  .navbar-right-section {
+    margin-top: 1rem;
+    justify-content: center;
+    width: 100%;
+  }
+}

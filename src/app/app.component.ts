@@ -1,7 +1,7 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { TranslationService } from './core/services/translation.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 
@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 export class AppComponent {
     @ViewChild('customSpinner', { static: true }) customSpinnerTemplate!: TemplateRef<any>;
 
-   constructor(public translation: TranslationService,private spinner: NgxSpinnerService, private toastr: ToastrService) {
+   constructor(public translation: TranslationService, private spinner: NgxSpinnerService, private toastr: ToastrService, private translate: TranslateService) {
     this.showLoader()
    }
 
@@ -27,10 +27,16 @@ showLoader() {
     this.translation.toggleLanguage();
   }
   showSuccess() {
-  this.toastr.success('تمت العملية بنجاح', 'نجاح');
-}
+    this.toastr.success(
+      this.translate.instant('APP.MESSAGES.OPERATION_SUCCESS'), 
+      this.translate.instant('TOAST.TITLE.SUCCESS')
+    );
+  }
 
-showError() {
-  this.toastr.error('حدث خطأ أثناء العملية', 'خطأ');
-}
+  showError() {
+    this.toastr.error(
+      this.translate.instant('APP.MESSAGES.OPERATION_ERROR'), 
+      this.translate.instant('TOAST.TITLE.ERROR')
+    );
+  }
 }

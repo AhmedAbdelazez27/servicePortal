@@ -1,0 +1,123 @@
+<div class="data-table-search">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div class="form-group mb-0 gap-2 d-flex align-items-center">
+      <select id="pageSizeSelect" class="form-select d-inline-block w-auto" [(ngModel)]="pageSize" (change)="onPageSizeChanged(pageSize.toString())">
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+        <option [value]="100">100</option>
+        <option [value]="500">500</option>
+      </select>
+       <label for="pageSizeSelect" class="">Records Per Page</label>
+    </div>
+    <div class="form-group mb-0">
+      <input type="text" class="form-control" style="min-width: 220px;" placeholder="Search..." [(ngModel)]="searchText" (input)="onSearchInput()">
+    </div>
+  </div>
+</div>
+
+<div class="table-responsive rounded shadow-sm">
+  <div class="ag-theme-alpine" style="position: relative;">
+    <ag-grid-angular
+      class="ag-theme-alpine w-100 modern-table"
+      style="min-width: 100%;"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [gridOptions]="gridOptions"
+      [context]="{ componentParent: this }"
+      [pagination]="false"
+      domLayout="autoHeight"
+      (gridReady)="onGridReady($event)"
+    >
+    </ag-grid-angular>
+
+    <!-- Custom context menu for row actions -->
+    <div *ngIf="openMenuRowId !== null"
+         [ngStyle]="{ position: 'absolute', left: menuX + 'px', top: menuY + 'px', zIndex: 20000, minWidth: '10px', borderRadius: '1rem', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', background: '#fff', padding: '0.5rem 0', border: 'none' }">
+      <button *ngFor="let a of rowActions"
+              class="dropdown-item d-flex align-items-center gap-2"
+              style="border-radius:0.5rem; color:#495057; font-size:1rem; padding:0.5rem 1.2rem; background:none; border:none; width:100%; text-align:left;"
+              (click)="onMenuAction(a.action)">
+        <i *ngIf="a.icon" [class]="a.icon + ' fs-5'" style="color:#adb5bd; min-width:1.5em; text-align:center;"></i>
+        <span>{{ a.label }}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Info Modal -->
+<div class="modal fade show" tabindex="-1" [ngStyle]="{ display: showInfoModal ? 'block' : 'none', background: 'rgba(0,0,0,0.3)' }" *ngIf="showInfoModal">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg" style="background: linear-gradient(135deg, #f8fafc 80%, #e0e7ef 100%);">
+      <div class="modal-header bg-primary text-white rounded-top-4 border-0" style="padding: 1.2rem 2rem;">
+        <h5 class="modal-title fs-4 fw-bold">Row Information</h5>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeInfoModal()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="row g-3">
+          <div class="col-12 col-md-6" *ngFor="let key of selectedRowKeysArr">
+            <div class="d-flex flex-column p-3 rounded-3 bg-white shadow-sm h-100">
+              <span class="fw-semibold text-secondary small mb-1" style="letter-spacing:0.5px;">{{ columnHeaderMap[key] || key }}</span>
+              <span class="text-dark fs-6">{{ selectedRowData[key] }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-0 rounded-bottom-4 justify-content-center" style="padding: 1.2rem 2rem;">
+        <button type="button" class="btn btn-lg btn-primary px-5 rounded-pill shadow-sm" (click)="closeInfoModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mt-3 w-100">
+  <span class=" d-flex align-items-center gap-2 ">
+      Page <input type="number"
+                  min="1"
+                  [max]="totalPages"
+                  [(ngModel)]="inputPage"
+                  (keyup.enter)="goToPage(inputPage - 1)"
+                  class="page-input"
+                 
+                  /> of {{ totalPages }}
+    </span>
+
+
+ <div class="d-flex flex-wrap gap-2 align-items-center ">
+    <button class="btn btn-pager"
+            [disabled]="currentPage === 0"
+            (click)="goToPage(0)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M7.26679 12.6669C7.39864 12.6663 7.52736 12.6267 7.63669 12.553C7.74601 12.4793 7.83102 12.3748 7.88097 12.2528C7.93092 12.1307 7.94357 11.9967 7.91731 11.8674C7.89105 11.7382 7.82707 11.6197 7.73346 11.5269L4.66679 8.47354C4.6043 8.41156 4.5547 8.33783 4.52086 8.25659C4.48701 8.17535 4.46959 8.08821 4.46959 8.0002C4.46959 7.9122 4.48701 7.82506 4.52086 7.74382C4.5547 7.66258 4.6043 7.58884 4.66679 7.52687L7.73346 4.47354C7.79594 4.41156 7.84554 4.33783 7.87939 4.25659C7.91323 4.17535 7.93066 4.08821 7.93066 4.0002C7.93066 3.91219 7.91323 3.82506 7.87939 3.74382C7.84554 3.66258 7.79594 3.58884 7.73346 3.52687C7.60855 3.4027 7.43958 3.33301 7.26346 3.33301C7.08733 3.33301 6.91836 3.4027 6.79346 3.52687L3.73345 6.58687C3.35891 6.96187 3.14854 7.4702 3.14854 8.0002C3.14854 8.5302 3.35891 9.03854 3.73345 9.41354L6.79346 12.4735C6.85575 12.5353 6.92963 12.5842 7.01085 12.6174C7.09208 12.6506 7.17905 12.6674 7.26679 12.6669Z" fill="black"/>
+      <path d="M11.9338 12.6669C12.0656 12.6663 12.1944 12.6267 12.3037 12.553C12.413 12.4793 12.498 12.3748 12.548 12.2528C12.5979 12.1307 12.6106 11.9967 12.5843 11.8674C12.558 11.7382 12.4941 11.6197 12.4005 11.5269L8.87378 8.0002L12.4005 4.47354C12.4629 4.41156 12.5125 4.33783 12.5464 4.25659C12.5802 4.17535 12.5977 4.08821 12.5977 4.0002C12.5977 3.91219 12.5802 3.82506 12.5464 3.74382C12.5125 3.66258 12.4629 3.58884 12.4005 3.52687C12.2755 3.4027 12.1066 3.33301 11.9305 3.33301C11.7543 3.33301 11.5854 3.4027 11.4605 3.52687L7.46045 7.52687C7.39796 7.58884 7.34837 7.66258 7.31452 7.74382C7.28068 7.82506 7.26325 7.9122 7.26325 8.0002C7.26325 8.08821 7.28068 8.17535 7.31452 8.25659C7.34837 8.33783 7.39796 8.41156 7.46045 8.47354L11.4605 12.4735C11.5227 12.5353 11.5966 12.5842 11.6778 12.6174C11.7591 12.6506 11.846 12.6674 11.9338 12.6669Z" fill="black"/>
+    </svg>
+    </button>
+    <button class="btn btn-pager"
+            [disabled]="currentPage === 0"
+            (click)="prevPage()">
+     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M5.73346 6.58687L8.79346 3.52687C8.91837 3.4027 9.08734 3.33301 9.26347 3.33301C9.43959 3.33301 9.60856 3.4027 9.73347 3.52687C9.79595 3.58884 9.84555 3.66258 9.87939 3.74382C9.91324 3.82506 9.93066 3.9122 9.93066 4.0002C9.93066 4.08821 9.91324 4.17535 9.87939 4.25659C9.84555 4.33783 9.79595 4.41156 9.73347 4.47354L6.6668 7.52687C6.60431 7.58885 6.55472 7.66258 6.52087 7.74382C6.48702 7.82506 6.4696 7.9122 6.4696 8.0002C6.4696 8.08821 6.48702 8.17535 6.52087 8.25659C6.55472 8.33783 6.60431 8.41156 6.6668 8.47354L9.73347 11.5269C9.859 11.6515 9.92988 11.8209 9.9305 11.9978C9.93113 12.1748 9.86145 12.3447 9.7368 12.4702C9.61215 12.5957 9.44273 12.6666 9.26582 12.6672C9.08891 12.6679 8.919 12.5982 8.79346 12.4735L5.73346 9.41354C5.35893 9.03854 5.14856 8.53021 5.14856 8.0002C5.14856 7.4702 5.35893 6.96187 5.73346 6.58687Z" fill="black"/>
+    </svg>
+    </button>
+
+    <button class="btn btn-pager"
+            [disabled]="currentPage + 1 >= totalPages"
+            (click)="nextPage()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M10.2665 6.58687L7.20654 3.52687C7.08163 3.4027 6.91266 3.33301 6.73653 3.33301C6.56041 3.33301 6.39144 3.4027 6.26653 3.52687C6.20405 3.58884 6.15445 3.66258 6.12061 3.74382C6.08676 3.82506 6.06934 3.9122 6.06934 4.0002C6.06934 4.08821 6.08676 4.17535 6.12061 4.25659C6.15445 4.33783 6.20405 4.41156 6.26653 4.47354L9.3332 7.52687C9.39569 7.58885 9.44528 7.66258 9.47913 7.74382C9.51298 7.82506 9.5304 7.9122 9.5304 8.0002C9.5304 8.08821 9.51298 8.17535 9.47913 8.25659C9.44528 8.33783 9.39569 8.41156 9.3332 8.47354L6.26653 11.5269C6.141 11.6515 6.07012 11.8209 6.0695 11.9978C6.06887 12.1748 6.13855 12.3447 6.2632 12.4702C6.38785 12.5957 6.55727 12.6666 6.73418 12.6672C6.91109 12.6679 7.081 12.5982 7.20654 12.4735L10.2665 9.41354C10.6411 9.03854 10.8514 8.53021 10.8514 8.0002C10.8514 7.4702 10.6411 6.96187 10.2665 6.58687Z" fill="black"/>
+    </svg>
+    </button>
+    <button class="btn btn-pager "
+            [disabled]="currentPage + 1 >= totalPages"
+            (click)="goToPage(totalPages - 1)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8.73321 12.6669C8.60136 12.6663 8.47264 12.6267 8.36331 12.553C8.25399 12.4793 8.16898 12.3748 8.11903 12.2528C8.06908 12.1307 8.05643 11.9967 8.08269 11.8674C8.10895 11.7382 8.17293 11.6197 8.26654 11.5269L11.3332 8.47354C11.3957 8.41156 11.4453 8.33783 11.4791 8.25659C11.513 8.17535 11.5304 8.08821 11.5304 8.0002C11.5304 7.9122 11.513 7.82506 11.4791 7.74382C11.4453 7.66258 11.3957 7.58884 11.3332 7.52687L8.26654 4.47354C8.20406 4.41156 8.15446 4.33783 8.12061 4.25659C8.08677 4.17535 8.06934 4.08821 8.06934 4.0002C8.06934 3.91219 8.08677 3.82506 8.12061 3.74382C8.15446 3.66258 8.20406 3.58884 8.26654 3.52687C8.39145 3.4027 8.56042 3.33301 8.73654 3.33301C8.91267 3.33301 9.08164 3.4027 9.20654 3.52687L12.2665 6.58687C12.6411 6.96187 12.8515 7.4702 12.8515 8.0002C12.8515 8.5302 12.6411 9.03854 12.2665 9.41354L9.20654 12.4735C9.14425 12.5353 9.07037 12.5842 8.98915 12.6174C8.90792 12.6506 8.82095 12.6674 8.73321 12.6669Z" fill="black"/>
+      <path d="M4.06622 12.6669C3.93437 12.6663 3.80564 12.6267 3.69632 12.553C3.587 12.4793 3.50199 12.3748 3.45204 12.2528C3.40209 12.1307 3.38944 11.9967 3.4157 11.8674C3.44195 11.7382 3.50593 11.6197 3.59955 11.5269L7.12622 8.0002L3.59955 4.47354C3.53706 4.41156 3.48747 4.33783 3.45362 4.25659C3.41978 4.17535 3.40235 4.08821 3.40235 4.0002C3.40235 3.91219 3.41978 3.82506 3.45362 3.74382C3.48747 3.66258 3.53706 3.58884 3.59955 3.52687C3.72446 3.4027 3.89342 3.33301 4.06955 3.33301C4.24567 3.33301 4.41464 3.4027 4.53955 3.52687L8.53955 7.52687C8.60204 7.58884 8.65163 7.66258 8.68548 7.74382C8.71932 7.82506 8.73675 7.9122 8.73675 8.0002C8.73675 8.08821 8.71932 8.17535 8.68548 8.25659C8.65163 8.33783 8.60204 8.41156 8.53955 8.47354L4.53955 12.4735C4.47726 12.5353 4.40338 12.5842 4.32215 12.6174C4.24093 12.6506 4.15395 12.6674 4.06622 12.6669Z" fill="black"/>
+    </svg>
+    </button>
+  </div>
+
+
+   
+</div>
