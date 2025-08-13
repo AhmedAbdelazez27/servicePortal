@@ -193,19 +193,7 @@
                                             (change)="onReasonSelectionChange($event)">
                                         </ng-select>
                                         
-                                        <!-- Debug information -->
-                                        <div class="mt-2 text-muted small">
-                                            <strong>Debug:</strong> Selected Reason ID: {{ requestPlaintForm.get('selectedReason')?.value }}, 
-                                            Available Options: {{ plaintReasonsOptions.length }}
-                                        </div>
-                                        
-                                        <!-- Test button to manually set a reason -->
-                                        <div class="mt-2">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary" 
-                                                    (click)="testSetReason()">
-                                                Test: Set Reason ID 1
-                                            </button>
-                                        </div>
+
 
                                         <!-- Show message when no reasons are available -->
                                         <div *ngIf="plaintReasonsOptions.length === 0 && !isLoading" class="text-muted small mt-1">
@@ -416,19 +404,7 @@
                                         {{ 'COMMON.SUBMIT' | translate }}
                                     </button>
                                     
-                                    <!-- Debug buttons for testing -->
-                                    <button *ngIf="currentStep === totalSteps" 
-                                            type="button" 
-                                            class="btn btn-warning ms-2" 
-                                            (click)="testSubmit()">
-                                        Test Submit
-                                    </button>
-                                    <button *ngIf="currentStep === totalSteps" 
-                                            type="button" 
-                                            class="btn btn-info ms-2" 
-                                            (click)="debugCanSubmit()">
-                                        Debug canSubmit()
-                                    </button>
+
                                 </div>
                             </div>
                         </form>

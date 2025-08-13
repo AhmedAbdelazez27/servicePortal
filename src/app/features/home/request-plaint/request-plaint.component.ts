@@ -149,12 +149,12 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     
     // Add form value change subscription for debugging
     this.requestPlaintForm.valueChanges.subscribe(value => {
-      console.log('Form value changed:', value);
+      
       // Don't trigger validation during form initialization
       // Validation will only happen when user actively interacts with the form
     });
     
-    console.log('Form initialized with:', this.requestPlaintForm.value);
+    
   }
 
   loadInitialData(): void {
@@ -174,7 +174,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
 
       forkJoin(essentialOperations).subscribe({
         next: () => {
-          console.log('Essential data loaded successfully');
+    
           this.isLoading = false;
           this.isFormInitialized = true; // Mark form as fully initialized
           
@@ -234,10 +234,8 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
 
   // Observable version for forkJoin
   loadUserEntityObservable(userId: string): Observable<any> {
-    console.log('Loading user entities for userId:', userId);
     return this.requestPlaintService.getUserEntities(userId).pipe(
       map(entities => {
-        console.log('User entities loaded:', entities);
         
         if (entities && entities.length > 0) {
           this.userEntities = entities;
@@ -261,36 +259,22 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   }
 
   loadUserEntity(userId: string): void {
-    console.log('Loading user entities for userId:', userId);
     const sub = this.requestPlaintService.getUserEntities(userId).subscribe({
       next: (entities) => {
-        console.log('User entities loaded:', entities);
-        console.log('Current language:', this.translationService.currentLang);
-        console.log('Entity display field:', this.entityDisplayField);
         
         if (entities && entities.length > 0) {
           this.userEntities = entities;
           this.userEntity = entities[0]; // Take the first entity for the user
           
-          // Log the first entity details
-          console.log('First entity details:', {
-            id: entities[0].id,
-            entityName: entities[0].entityName,
-            entityNameEn: entities[0].entityNameEn,
-            displayField: this.entityDisplayField,
-            displayValue: entities[0][this.entityDisplayField as keyof UserEntityDto]
-          });
+
           
           // Set the default selected entity in the form
           this.requestPlaintForm.patchValue({
             requestingEntityId: entities[0].id
           });
-          console.log('Default entity selected:', entities[0].id);
-          console.log('Form value after patch:', this.requestPlaintForm.get('requestingEntityId')?.value);
           
           // Also try setting the value directly to ensure it's updated
           this.requestPlaintForm.get('requestingEntityId')?.setValue(entities[0].id);
-          console.log('Form value after setValue:', this.requestPlaintForm.get('requestingEntityId')?.value);
           
           // Trigger change detection to ensure UI updates
           this.cdr.detectChanges();
@@ -318,18 +302,16 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   }
 
   loadPlaintReasons(): void {
-    console.log('Loading plaint reasons...');
     
     // First test the direct API endpoint
     this.requestPlaintService.testPlaintReasonsEndpoint().subscribe({
       next: (response) => {
-        console.log('Direct API test response:', response);
+
       },
       error: (error) => {
         console.error('Direct API test error:', error);
         
         // If API fails, add sample data for testing
-        console.log('Adding sample data for testing...');
         this.plaintReasonsOptions = [
           {
             id: 1,
@@ -350,15 +332,13 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
             isActive: true
           }
         ];
-        console.log('Sample data loaded:', this.plaintReasonsOptions);
+
       }
     });
     
     const sub = this.requestPlaintService.getPlaintReasons().subscribe({
       next: (reasons) => {
-        console.log('Plaint reasons loaded successfully:', reasons);
         this.plaintReasonsOptions = reasons || [];
-        console.log('plaintReasonsOptions updated:', this.plaintReasonsOptions);
         
         if (this.plaintReasonsOptions.length === 0) {
           console.warn('No plaint reasons returned from API');
@@ -485,22 +465,13 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   }
 
   onReasonSelectionChange(event: any): void {
-    console.log('Reason selection changed:', event);
-    console.log('Selected reason value:', this.requestPlaintForm.get('selectedReason')?.value);
-    console.log('Event details:', event);
-    console.log('Available options:', this.plaintReasonsOptions);
-    
     // Check if the selected reason exists in the options
     if (this.requestPlaintForm.get('selectedReason')?.value) {
       const selectedOption = this.plaintReasonsOptions.find(r => r.id === this.requestPlaintForm.get('selectedReason')?.value);
-      console.log('Selected option found:', selectedOption);
     }
   }
 
-  testSetReason(): void {
-    this.requestPlaintForm.get('selectedReason')?.setValue(1);
-    console.log('Manually set reason to 1:', this.requestPlaintForm.get('selectedReason')?.value);
-  }
+
 
   removeEvidence(index: number): void {
     this.evidences.splice(index, 1);
@@ -659,23 +630,17 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   }
 
   selectEntity(entityId: string): void {
-    console.log('Entity tag clicked:', entityId);
     this.requestPlaintForm.patchValue({ requestingEntityId: entityId });
     
     const selectedEntity = this.userEntities.find(entity => entity.id === entityId);
     if (selectedEntity) {
       this.userEntity = selectedEntity;
-      console.log('Updated userEntity to:', selectedEntity);
-      console.log('Selected entity display value:', selectedEntity[this.entityDisplayField as keyof UserEntityDto]);
+
     }
   }
 
   // Method to refresh entity display (useful when language changes)
   refreshEntityDisplay(): void {
-    console.log('Refreshing entity display');
-    console.log('Current entities:', this.userEntities);
-    console.log('Current display field:', this.entityDisplayField);
-    console.log('Form value:', this.requestPlaintForm.get('requestingEntityId')?.value);
     
     // Force form update to refresh the display
     const currentValue = this.requestPlaintForm.get('requestingEntityId')?.value;
@@ -686,11 +651,9 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
 
   // Submit form
   onSubmit(): void {
-    console.log('onSubmit() called');
     
     // Prevent multiple submissions
     if (this.isSaving) {
-      console.log('Already saving, ignoring submit request');
       return;
     }
     
@@ -698,7 +661,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     
     // Basic validation first
     if (!this.canSubmit()) {
-      console.log('Cannot submit - validation failed');
       this.toastr.error(this.translate.instant('VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS'));
       return;
     }
@@ -733,11 +695,11 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
         // Note: requestingEntityId is not included as it's only for display purposes
       };
 
-      console.log('Submitting request plaint with data:', createDto);
+
 
       const sub = this.requestPlaintService.create(createDto).subscribe({
         next: (response) => {
-          console.log('Request plaint created successfully:', response);
+
           this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
           this.router.navigate(['/services']);
           this.isSaving = false;
@@ -764,28 +726,23 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
         const step1Valid = !!(this.requestPlaintForm.get('requestMainApplyServiceId')?.valid && 
                this.requestPlaintForm.get('requestingEntityId')?.valid &&
                this.requestPlaintForm.get('details')?.valid);
-        console.log(`Step 1 completion check:`, {
-          mainService: this.requestPlaintForm.get('requestMainApplyServiceId')?.valid,
-          entity: this.requestPlaintForm.get('requestingEntityId')?.valid,
-          details: this.requestPlaintForm.get('details')?.valid,
-          overall: step1Valid
-        });
+
         return step1Valid;
       case 2:
         const step2Valid = this.reasons.length > 0;
-        console.log(`Step 2 completion check: reasons count = ${this.reasons.length}, valid = ${step2Valid}`);
+
         return step2Valid;
       case 3:
         const step3Valid = this.evidences.length > 0;
-        console.log(`Step 3 completion check: evidences count = ${this.evidences.length}, valid = ${step3Valid}`);
+
         return step3Valid;
       case 4:
         const step4Valid = this.justifications.length > 0;
-        console.log(`Step 4 completion check: justifications count = ${this.justifications.length}, valid = ${step4Valid}`);
+
         return step4Valid;
       case 5:
         const step5Valid = this.attachments.some(a => a.fileBase64 && a.fileName);
-        console.log(`Step 5 completion check: attachments count = ${this.attachments.length}, valid = ${step5Valid}`);
+
         return step5Valid;
       default:
         return false;
@@ -805,32 +762,22 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   }
 
   canSubmit(): boolean {
-    console.log('=== canSubmit() Debug ===');
-    console.log('Current step:', this.currentStep);
-    console.log('Total steps:', this.totalSteps);
-    console.log('Is saving:', this.isSaving);
-    console.log('Form exists:', !!this.requestPlaintForm);
-    console.log('Form initialized:', this.isFormInitialized);
     
     // Basic checks first
     if (this.currentStep !== this.totalSteps) {
-      console.log('❌ Not on last step');
       return false;
     }
     
     if (this.isSaving) {
-      console.log('❌ Currently saving');
       return false;
     }
     
     if (!this.requestPlaintForm) {
-      console.log('❌ Form does not exist');
       return false;
     }
     
     // Wait for form to be properly initialized
     if (!this.isFormInitialized) {
-      console.log('❌ Form not initialized');
       return false;
     }
     
@@ -839,69 +786,13 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     const fieldResults = requiredFields.map(field => {
       const control = this.requestPlaintForm.get(field);
       const hasValue = control && control.value && control.value.toString().trim();
-      console.log(`Field ${field}:`, {
-        exists: !!control,
-        value: control?.value,
-        hasValue: !!hasValue
-      });
       return hasValue;
     });
     
     const allFieldsValid = fieldResults.every(result => result);
-    console.log('All fields valid:', allFieldsValid);
-    console.log('=== End canSubmit() Debug ===');
     
     return allFieldsValid;
   }
 
-  // Debug method to check canSubmit() status
-  debugCanSubmit(): void {
-    console.log('=== Manual canSubmit() Check ===');
-    const result = this.canSubmit();
-    console.log('Final canSubmit() result:', result);
-    console.log('=== End Manual Check ===');
-  }
-
-  // Temporary simplified canSubmit for testing
-  canSubmitSimple(): boolean {
-    return this.currentStep === this.totalSteps && 
-           !this.isSaving && 
-           this.isFormInitialized && 
-           !!this.requestPlaintForm;
-  }
-
-  // Test method for debugging submit functionality
-  testSubmit(): void {
-    console.log('=== TEST SUBMIT DEBUG ===');
-    console.log('Current step:', this.currentStep);
-    console.log('Total steps:', this.totalSteps);
-    console.log('Form initialized:', this.isFormInitialized);
-    console.log('Form valid:', this.requestPlaintForm.valid);
-    console.log('Form value:', this.requestPlaintForm.value);
-    console.log('Form raw value:', this.requestPlaintForm.getRawValue());
-    console.log('Can submit result:', this.canSubmit());
-    console.log('Is saving:', this.isSaving);
-    console.log('Submitted flag:', this.submitted);
-    
-    // Check each required field individually
-    const requiredFields = ['requestMainApplyServiceId', 'requestingEntityId', 'details'];
-    requiredFields.forEach(field => {
-      const control = this.requestPlaintForm.get(field);
-      console.log(`Field ${field}:`, {
-        value: control?.value,
-        valid: control?.valid,
-        hasValue: !!(control && control.value && control.value.toString().trim())
-      });
-    });
-    
-    console.log('Step completions:');
-    for (let i = 1; i <= this.totalSteps; i++) {
-      console.log(`Step ${i}: ${this.isStepCompleted(i)}`);
-    }
-    console.log('=== END TEST SUBMIT DEBUG ===');
-    
-    // Try to force submit for testing
-    console.log('Attempting to call onSubmit() directly...');
-    this.onSubmit();
-  }
+  
 }

@@ -300,7 +300,17 @@
     "OPTIONAL": "اختياري",
     "DELETE_ATTACHMENT": "حذف المرفق",
     "MANDATORY_CANNOT_DELETE": "لا يمكن حذف المرفقات الإلزامية",
-    "UPDATE_ATTACHMENT": "تحديث المرفق"
+    "UPDATE_ATTACHMENT": "تحديث المرفق",
+    "ATTACHMENT_STATUS": {
+      "UPDATED": "محدث",
+      "NEW": "جديد",
+      "EXISTING": "موجود",
+      "NONE": "لا يوجد"
+    },
+    "FILE": "ملف",
+    "KILOBYTES": "ك.ب",
+    "FILE_PREVIEW": "معاينة الملف",
+    "LOGO": "الشعار"
   },
   "VALIDATION": {
     "REQUIRED": "هذا الحقل مطلوب",
@@ -395,13 +405,74 @@
       "DESCRIPTION_3": "مثال آخر مع صورة ومحتوى."
     }
   },
+  "REQUEST_PLAINT": {
+    "TITLE": "طلب تظلم",
+    "DESCRIPTION": "قدم طلب التظلم الخاص بك من خلال ملء النموذج أدناه بجميع المعلومات والمستندات المطلوبة.",
+    "STEP1_TITLE": "المعلومات الأساسية",
+    "STEP2_TITLE": "أسباب التظلم",
+    "STEP3_TITLE": "الأدلة",
+    "STEP4_TITLE": "المبررات",
+    "STEP5_TITLE": "المرفقات",
+    "MAIN_INFO": "المعلومات الأساسية",
+    "REQUEST_NO": "رقم الطلب",
+    "REQUEST_DATE": "تاريخ الطلب",
+    "MAIN_APPLY_SERVICE": "الخدمة الأساسية المرتبطة",
+    "REQUESTING_ENTITY": "الجهة الطالبة",
+    "DETAILS": "التفاصيل",
+    "DETAILS_PLACEHOLDER": "اوصف تظلمك بالتفصيل...",
+    "NOTES": "ملاحظات",
+    "NOTES_PLACEHOLDER": "أي ملاحظات أو تعليقات إضافية...",
+    "PLAINT_REASONS": "أسباب التظلم",
+    "SELECT_REASON": "اختر السبب",
+    "REASON": "السبب",
+    "EVIDENCE": "الأدلة",
+    "ENTER_EVIDENCE": "أدخل الدليل",
+    "EVIDENCE_PLACEHOLDER": "قدم الأدلة التي تدعم تظلمك...",
+    "JUSTIFICATIONS": "المبررات",
+    "JUSTIFICATIONS_OPTIONAL": "المبررات اختيارية ولكن يُنصح بها لتقوية حالتك.",
+    "ENTER_JUSTIFICATION": "أدخل المبرر",
+    "JUSTIFICATION": "المبرر",
+    "JUSTIFICATION_PLACEHOLDER": "قدم مبررات لتظلمك...",
+    "ATTACHMENTS": "المستندات المطلوبة",
+    "NO_ENTITIES_AVAILABLE": "لا توجد جهات متاحة لهذا المستخدم"
+  },
+  "ATTACHMENTS": {
+    "DOCUMENT_TYPE": "نوع المستند",
+    "FILE": "الملف",
+    "DRAG_DROP_OR_CLICK": "اسحب وأفلت الملفات هنا أو انقر للاختيار"
+  },
+  "SUCCESS": {
+    "REQUEST_PLAINT_CREATED": "تم تقديم طلب التظلم بنجاح!"
+  },
   "ERRORS": {
     "SERVICE_ID_NOT_FOUND": "معرف الخدمة غير موجود",
     "FAILED_LOAD_SERVICE_DETAILS": "فشل في تحميل تفاصيل الخدمة. يرجى المحاولة مرة أخرى.",
     "FAILED_LOAD_SERVICES": "فشل في تحميل الخدمات. يرجى المحاولة مرة أخرى.",
-    "UNKNOWN_DEPARTMENT": "قسم غير معروف"
+    "UNKNOWN_DEPARTMENT": "قسم غير معروف",
+    "USER_NOT_FOUND": "المستخدم غير موجود. يرجى تسجيل الدخول مرة أخرى.",
+    "FAILED_LOAD_DATA": "فشل في تحميل البيانات. يرجى المحاولة مرة أخرى.",
+    "FAILED_CREATE_REQUEST_PLAINT": "فشل في إنشاء طلب التظلم. يرجى المحاولة مرة أخرى."
+  },
+  "WARNINGS": {
+    "REASON_ALREADY_ADDED": "تم إضافة هذا السبب مسبقاً."
+  },
+  "VALIDATION": {
+    "REQUIRED_FIELD": "هذا الحقل مطلوب",
+    "FORM_INVALID": "يرجى ملء جميع الحقول المطلوبة بشكل صحيح",
+    "FILE_TOO_LARGE": "يجب ألا يتجاوز حجم الملف 5 ميجابايت",
+    "INVALID_FILE_TYPE": "نوع ملف غير صالح. مسموح فقط بملفات JPEG، PNG، PDF، DOC، DOCX"
   },
   "COMMON": {
-    "REQUEST_SERVICE": "طلب الخدمة"
+    "REQUEST_SERVICE": "طلب الخدمة",
+    "LOADING": "جاري التحميل...",
+    "LOADING_DATA": "جاري تحميل البيانات...",
+    "AUTO_GENERATED": "يتم إنشاؤه تلقائياً",
+    "SELECT_OPTION": "اختر خياراً",
+    "ADD": "إضافة",
+    "REMOVE": "إزالة",
+    "ACTIONS": "الإجراءات",
+    "PREVIOUS": "السابق",
+    "NEXT": "التالي",
+    "SUBMIT": "إرسال"
   }
 }

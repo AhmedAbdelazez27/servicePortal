@@ -62,9 +62,6 @@ export class RequestPlaintService {
       orderByValue: null
     };
     
-    console.log('Testing direct API call to:', url);
-    console.log('Test body:', testBody);
-    
     return this.http.post(url, testBody);
   }
 
@@ -76,12 +73,8 @@ export class RequestPlaintService {
     params.take = 1000;
     params.orderByValue = null;
     
-    console.log('Requesting plaint reasons using Select2Service');
-    console.log('Request params:', params);
-    
     return this.select2Service.getPlaintReasonsSelect2(params).pipe(
       map(response => {
-        console.log('Raw response from Select2Service:', response);
         if (response && response.results) {
           // Convert Select2Result to PlaintReasonsDto format
           return response.results.map(item => ({
@@ -91,7 +84,6 @@ export class RequestPlaintService {
             isActive: true
           }));
         } else {
-          console.error('Unexpected response format from Select2Service:', response);
           return [];
         }
       })

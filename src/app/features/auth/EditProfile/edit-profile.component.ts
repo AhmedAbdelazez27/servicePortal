@@ -600,7 +600,6 @@ export class EditProfileComponent implements OnInit {
           this.translate.instant('TOAST.TITLE.SUCCESS')
         );
       } catch (error) {
-        console.error('Error deleting attachments:', error);
         this.toastr.error(
           this.translate.instant('EDIT_PROFILE.ATTACHMENT_DELETE_ERROR'), 
           this.translate.instant('TOAST.TITLE.ERROR')
@@ -822,9 +821,9 @@ export class EditProfileComponent implements OnInit {
   getExistingFileName(configId: number): string {
     const attachment = this.existingAttachments[configId];
     if (attachment && attachment.imgPath) {
-      return attachment.imgPath.split('/').pop() || 'file';
+      return attachment.imgPath.split('/').pop() || this.translate.instant('EDIT_PROFILE.FILE');
     }
-    return 'file';
+    return this.translate.instant('EDIT_PROFILE.FILE');
   }
 
   // Date validation
@@ -874,12 +873,7 @@ export class EditProfileComponent implements OnInit {
     event.target.src = 'assets/images/file.png';
   }
 
-  /**
-   * Expose Object.keys to template for debugging
-   */
-  get Object() {
-    return Object;
-  }
+
 
   /**
    * Check if an attachment has been modified (new file selected or existing file removed)
@@ -902,12 +896,12 @@ export class EditProfileComponent implements OnInit {
    */
   getAttachmentStatus(configId: number): string {
     if (this.hasNewFile(configId)) {
-      return this.hasExistingFile(configId) ? 'UPDATED' : 'NEW';
+      return this.hasExistingFile(configId) ? this.translate.instant('EDIT_PROFILE.ATTACHMENT_STATUS.UPDATED') : this.translate.instant('EDIT_PROFILE.ATTACHMENT_STATUS.NEW');
     }
     if (this.hasExistingFile(configId)) {
-      return 'EXISTING';
+      return this.translate.instant('EDIT_PROFILE.ATTACHMENT_STATUS.EXISTING');
     }
-    return 'NONE';
+    return this.translate.instant('EDIT_PROFILE.ATTACHMENT_STATUS.NONE');
   }
 
   /**

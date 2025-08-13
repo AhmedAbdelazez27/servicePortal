@@ -300,7 +300,17 @@
     "OPTIONAL": "Optional",
     "DELETE_ATTACHMENT": "Delete attachment",
     "MANDATORY_CANNOT_DELETE": "Mandatory attachments cannot be deleted",
-    "UPDATE_ATTACHMENT": "Update attachment"
+    "UPDATE_ATTACHMENT": "Update attachment",
+    "ATTACHMENT_STATUS": {
+      "UPDATED": "Updated",
+      "NEW": "New",
+      "EXISTING": "Existing",
+      "NONE": "None"
+    },
+    "FILE": "File",
+    "KILOBYTES": "KB",
+    "FILE_PREVIEW": "File preview",
+    "LOGO": "Logo"
   },
   "VALIDATION": {
     "REQUIRED": "This field is required",
@@ -401,7 +411,74 @@
     "FAILED_LOAD_SERVICES": "Failed to load services. Please try again.",
     "UNKNOWN_DEPARTMENT": "Unknown Department"
   },
+  "REQUEST_PLAINT": {
+    "TITLE": "Request a Grievance",
+    "DESCRIPTION": "Submit your grievance request by filling out the form below with all required information and supporting documents.",
+    "STEP1_TITLE": "Main Information",
+    "STEP2_TITLE": "Plaint Reasons",
+    "STEP3_TITLE": "Evidence",
+    "STEP4_TITLE": "Justifications",
+    "STEP5_TITLE": "Attachments",
+    "MAIN_INFO": "Main Information",
+    "REQUEST_NO": "Request Number",
+    "REQUEST_DATE": "Request Date",
+    "MAIN_APPLY_SERVICE": "Related Main Service",
+    "REQUESTING_ENTITY": "Requesting Entity",
+    "DETAILS": "Details",
+    "DETAILS_PLACEHOLDER": "Describe your grievance in detail...",
+    "NOTES": "Notes",
+    "NOTES_PLACEHOLDER": "Any additional notes or comments...",
+    "PLAINT_REASONS": "Plaint Reasons",
+    "SELECT_REASON": "Select Reason",
+    "REASON": "Reason",
+    "EVIDENCE": "Evidence",
+    "ENTER_EVIDENCE": "Enter Evidence",
+    "EVIDENCE_PLACEHOLDER": "Provide evidence supporting your grievance...",
+    "JUSTIFICATIONS": "Justifications",
+    "JUSTIFICATIONS_OPTIONAL": "Justifications are optional but recommended to strengthen your case.",
+    "ENTER_JUSTIFICATION": "Enter Justification",
+    "JUSTIFICATION": "Justification",
+    "JUSTIFICATION_PLACEHOLDER": "Provide justification for your grievance...",
+    "ATTACHMENTS": "Required Documents",
+    "NO_ENTITIES_AVAILABLE": "No entities available for this user"
+  },
+  "ATTACHMENTS": {
+    "DOCUMENT_TYPE": "Document Type",
+    "FILE": "File",
+    "DRAG_DROP_OR_CLICK": "Drag & drop files here or click to select"
+  },
+  "SUCCESS": {
+    "REQUEST_PLAINT_CREATED": "Your grievance request has been submitted successfully!"
+  },
+  "ERRORS": {
+    "SERVICE_ID_NOT_FOUND": "Service ID not found",
+    "FAILED_LOAD_SERVICE_DETAILS": "Failed to load service details. Please try again.",
+    "FAILED_LOAD_SERVICES": "Failed to load services. Please try again.",
+    "UNKNOWN_DEPARTMENT": "Unknown Department",
+    "USER_NOT_FOUND": "User not found. Please log in again.",
+    "FAILED_LOAD_DATA": "Failed to load data. Please try again.",
+    "FAILED_CREATE_REQUEST_PLAINT": "Failed to create grievance request. Please try again."
+  },
+  "WARNINGS": {
+    "REASON_ALREADY_ADDED": "This reason has already been added."
+  },
+  "VALIDATION": {
+    "REQUIRED_FIELD": "This field is required",
+    "FORM_INVALID": "Please fill in all required fields correctly",
+    "FILE_TOO_LARGE": "File size must not exceed 5MB",
+    "INVALID_FILE_TYPE": "Invalid file type. Only JPEG, PNG, PDF, DOC, DOCX files are allowed"
+  },
   "COMMON": {
-    "REQUEST_SERVICE": "Request Service"
+    "REQUEST_SERVICE": "Request Service",
+    "LOADING": "Loading...",
+    "LOADING_DATA": "Loading data...",
+    "AUTO_GENERATED": "Auto Generated",
+    "SELECT_OPTION": "Select an option",
+    "ADD": "Add",
+    "REMOVE": "Remove",
+    "ACTIONS": "Actions",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "SUBMIT": "Submit"
   }
 }

@@ -2,8 +2,8 @@
   <section>
     <div class="container">
       <div class="d-flex gap-4 justify-content-center mb-6">
-        <img src="assets/images/login-logo.png" alt="Logo" />
-        <img src="assets/images/login-logo.png" alt="Logo" />
+        <img src="assets/images/login-logo.png" [alt]="'EDIT_PROFILE.LOGO' | translate" />
+        <img src="assets/images/login-logo.png" [alt]="'EDIT_PROFILE.LOGO' | translate" />
       </div>
 
       <div class="row">
@@ -366,7 +366,7 @@
                         <div class="existing-file-preview">
                           <img 
                             [src]="filePreviews[config.id]" 
-                            alt="File preview" 
+                            [alt]="'EDIT_PROFILE.FILE_PREVIEW' | translate" 
                             class="file-preview"
                             (error)="onImageError($event)" />
                         </div>
@@ -438,7 +438,7 @@
                         <div class="d-flex gap-2">
                           <img 
                             [src]="filePreviews[config.id]" 
-                            alt="File preview" 
+                            [alt]="'EDIT_PROFILE.FILE_PREVIEW' | translate" 
                             class="file-preview"
                             (error)="onImageError($event)" />
                           <div>
@@ -447,7 +447,7 @@
                               <span class="fw-semibold text-primary">{{ 'EDIT_PROFILE.NEW_FILE' | translate }}</span>
                             </div>
                             <p class="black mb-0">{{ selectedFiles[config.id].name }}</p>
-                            <p class="gray mb-0">{{ (selectedFiles[config.id].size / 1024).toFixed(1) }} KB</p>
+                            <p class="gray mb-0">{{ (selectedFiles[config.id].size / 1024).toFixed(1) }} {{ 'EDIT_PROFILE.KILOBYTES' | translate }}</p>
                           </div>
                         </div>
                         <button type="button" class="btn-remove-uploaded-file" (click)="removeFile(config.id)">

@@ -36,8 +36,7 @@ export class LoginComponent {
         this.auth.saveToken(res?.token);
         const decodedData = this.auth.decodeToken();
         
-        // Debug: Log the decoded token to see what claims are available
-        console.log('Decoded JWT token:', decodedData);
+
         
         if (decodedData) {
           // Store permissions if they exist (optional)
