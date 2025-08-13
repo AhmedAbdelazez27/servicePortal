@@ -20,7 +20,7 @@ export class AppComponent {
 
 showLoader() {
   this.spinner.show();
-  setTimeout(() => this.spinner.hide(), 4000); // مؤقت فقط للتجربة
+  setTimeout(() => this.spinner.hide(), 4000);
 }
 
   toggleLang() {

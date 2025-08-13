@@ -6,45 +6,549 @@ body.rtl {
 }
 
 body.ltr {
-  direction: ltr;
-  text-align: left;
-  color: red;
+ 
+@font-face {
+    font-family: 'Expo Arabic Book';
+    src: url('./assets/fonts/ExpoArabic-Book.eot');
+    src: url('./assets/fonts/ExpoArabic-Book.eot?#iefix') format('embedded-opentype'), url('./assets/fonts/ExpoArabic-Book.woff2') format('woff2'), url('./assets/fonts/ExpoArabic-Book.woff') format('woff'), url('./assets/fonts/ExpoArabic-Book.ttf') format('truetype'), url('./assets/fonts/ExpoArabic-Book.svg#Expo Arabic Book') format('svg');
 }
-// كل التنبيهات
+
+body {
+    font-family: 'Expo Arabic Book';
+}
+
+h1, h2, h3, h4, h5, h6, p, a, span, label, th, td, input, select {
+    font-family: 'Expo Arabic Book';
+}
+
+a{
+    text-decoration:none;
+}
+
+.dropdown-hover:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-hover > .dropdown-toggle:active {
+    /*Without this, clicking will make it sticky*/
+    pointer-events: none;
+}
+
+.bg-body-tertiary {
+    background-color: #fff !important;
+}
+
+.navbar .nav-link {
+    color: var(--Color-19, #A6A6A6);
+    font-family: "Expo Arabic";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 125% */
+    letter-spacing: 0.08px;
+}
+
+    .navbar .nav-link.active, .navbar .nav-link:hover {
+        color: var(--Color-16, #000);
+        font-family: "Expo Arabic";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px; /* 125% */
+        letter-spacing: 0.08px;
+    }
+
+.dropdown-item {
+    color: var(--Color-17, #252525);
+    font-family: "Expo Arabic";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 142.857% */
+    letter-spacing: 0.07px;
+}
+
+    .dropdown-item:focus, .dropdown-item:hover {
+        color: #fff;
+        font-family: "Expo Arabic";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px; /* 142.857% */
+        letter-spacing: 0.07px;
+        background-color: var(--Color-25, #8D734D);
+    }
+
+.btn-notification {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 50px;
+    background: var(--Color-25, #8D734D);
+    border:none;
+}
+
+.btn-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--Color-16, #000);
+    text-decoration:none;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+}
+
+.btn-language {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--Color-16, #000);
+    text-decoration: none;
+}
+
+.language-icon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 50px;
+    background: var(--Color-24, #F1F6FA);
+}
+
+.badge-round {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #CA4832;
+    border-radius: 50%;
+    top: 0;
+    left: 30px;
+}
+
+.carousel-indicators {
+    position: unset;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin-right: 15%;
+    margin-bottom: 1rem;
+    margin-left: 15%;
+    margin-top:24px;
+}
+
+    .carousel-indicators [data-bs-target] {
+        box-sizing: content-box;
+        flex: 0 1 auto;
+        width: 12px;
+        height: 12px;
+        border-radius: 20px;
+        padding: 0;
+        margin-right: 6px;
+        margin-left: 6px;
+        text-indent: -999px;
+        cursor: pointer;
+        background-color: #D9D9D9;
+        background-clip: padding-box;
+        border: 0;
+        border-top: none;
+        border-bottom: none;
+        opacity: 1;
+        transition: ease 0.6s;
+    }
+
+        .carousel-indicators [data-bs-target].active {
+            box-sizing: content-box;
+            flex: 0 1 auto;
+            width: 48px;
+            height: 12px;
+            border-radius: 20px;
+            padding: 0;
+            margin-right: 6px;
+            margin-left: 6px;
+            text-indent: -999px;
+            cursor: pointer;
+            background-color: #8D734D;
+            background-clip: padding-box;
+            border: 0;
+            border-top: none;
+            border-bottom: none;
+            opacity: 1;
+            transition: ease 0.6s;
+        }
+
+        .carousel-indicators [data-bs-target]:hover {
+            background-color: #8D734D;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            right: 0;
+            bottom: 24px;
+            left: 24px;
+            padding-top: unset;
+            padding-bottom: unset;
+            color: #000;
+            text-align: start;
+            max-width: 700px;
+            background-color: #fff;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+.btn-gold {
+    display: flex;
+    padding: 12px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: 10px;
+    border: 3px solid rgba(255, 255, 255, 0.50);
+    background-color: var(--Color-25, #8D734D);
+    color:#fff;
+}
+
+    .btn-gold:hover {
+        background-color: #a7895d;
+        color: #fff;
+    }
+
+
+.service-box {
+    border-radius: 12px;
+    border: 2px solid var(--Color-20, #EDEDED);
+    background: #FFF;
+    padding: 30px 40px;
+    transition: ease 0.5s;
+    color: var(--Color-16, #000);
+    font-family: "Expo Arabic";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    cursor: grab;
+
+}
+
+    .service-box span {
+        text-transform: capitalize;
+    }
+
+    .service-box:hover {
+        border: 2px solid var(--Color-25, #8D734D);
+    }
+
+.service-icon {
+    display: flex;
+    padding: 16px;
+    align-items: center;
+    gap: 10px;
+    border-radius: 15px;
+    background: var(--Color-25, #8D734D);
+
+}
+
+p {
+    color: var(--Gray-6, #625F68);
+    font-family: "Expo Arabic";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 171.429% */
+}
+
+section{
+    margin-top:64px;
+}
+
+.title {
+    color: var(--Color-16, #000);
+    font-family: "Expo Arabic";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-transform:capitalize;
+}
+
+.btn-link {
+    color: var(--Color-16, #000);
+    font-family: "Expo Arabic";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: none;
+    display: flex;
+    gap: 8px;
+    align-items:center;
+}
+
+    .btn-link:hover {
+        color: var(--Color-16, #000);
+
+    }
+
+.service-box .btn-link{
+    padding:0;
+}
+
+.owl-theme .owl-dots .owl-dot span {
+    width: 12px;
+    height: 12px;
+    margin: 5px 7px;
+    background: #D9D9D9;
+    display: block;
+    -webkit-backface-visibility: visible;
+    transition: ease 0.6s;
+    border-radius: 50px;
+    opacity: 1;
+}
+
+.owl-theme .owl-dots .owl-dot.active span {
+    background: #8D734D;
+    width: 48px;
+}
+.owl-theme .owl-dots .owl-dot:hover span {
+    background: #8D734D;
+}
+
+.owl-dots {
+    margin-top: 24px !important;
+    width: max-content;
+}
+
+.show-all {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: transparent;
+    padding: 0;
+    border: none;
+    cursor: pointer !important;
+    width: max-content;
+    height: 24px;
+    z-index: 99999;
+    top: -30px;
+    right: 0;
+    position: absolute;
+    transition: ease 0.6s;
+    left:unset;
+}
+
+    .show-all:hover {
+        color: #8D734D;
+    }
+
+.title-20 {
+    color: var(--Color-16, #000);
+    font-family: "Expo Arabic";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.footer-links a {
+    color: var(--Color-17, #252525);
+    font-family: "Expo Arabic";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 142.857% */
+    letter-spacing: 0.07px;
+    margin-bottom:24px;
+    text-decoration:none;
+    display:block;
+}
+
+@media(max-width:991px){
+    .btn-notification, .btn-profile, .btn-language {
+        margin-bottom:24px;
+    }
+
+}
+
+.copyrights-footer {
+    padding: 24px 64px;
+    align-items: center;
+    gap: 64px;
+    align-self: stretch;
+    border-radius: 10px;
+    background: var(--Color-20, #EDEDED);
+    margin: 32px 0 24px 0;
+    color: var(--Color-17, #252525);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+}
+
+.copyrights-footer img{
+    opacity:0.4;
+    transition:ease 0.5s;
+}
+
+    .copyrights-footer a:hover img {
+        opacity: 0.8;
+    }
+
+@media(max-width:991px) {
+
+    .copyrights-footer p {
+        margin-bottom: 16px;
+        text-align:center;
+    }
+
+    .copyrights-footer .social {
+        justify-content: center;
+    }
+}
+
+
+.services .service-box {
+    cursor:unset;
+    box-shadow: 0px 67.114px 109.061px 0px rgba(0, 0, 0, 0.05);
+}
+
+.mb-6{
+    margin-bottom:64px;
+}
+
+.login-box {
+    border-radius: 12px;
+    background: var(--Color-15, #FFF);
+    box-shadow: 0px -4px 20px 0px rgba(0, 0, 0, 0.05), 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
+    padding:24px;
+}
+
+
+.form-control {
+    height: 64px;
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid #CBCBCB;
+    background: var(--basic-colors-white, #FFF);
+}
+
+
+.form-check-input:checked {
+    background-color: #8D734D;
+    border-color: #8D734D;
+}
+
+.btn-login {
+    display: flex;
+    width: 100%;
+    height: 64px;
+    padding: 18px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 12px;
+    background: var(--Color-25, #8D734D);
+    color: var(--Color-15, #FFF);
+    font-family: "Expo Arabic";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-transform: capitalize;
+}
+
+    .btn-login:hover {
+        background: #6f593a;
+        color: var(--Color-15, #FFF);
+    }
+
+.underline{
+    text-decoration:underline;
+}
+
+.btn-uae-pass {
+    display: flex;
+    height: 64px;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    border-radius: 10px;
+    border: 1px solid var(--Color-16, #000);
+    background: var(--ffffff, #FFF);
+    color: var(--Color-16, #000);
+    font-family: "Expo Arabic";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 133.333% */
+    width:100%;
+}
+
+    .btn-uae-pass:hover {
+        border: 1px solid #8D734D;
+        color: #8D734D;
+    }
+
+    .black {
+        color: var(--Color-16, #000);
+    }
+
+.gold {
+    color: #8D734D;
+}
+
+}
+
 .toast {
   font-family: 'Cairo', sans-serif;
   font-size: 16px;
   border-radius: 10px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-  direction: rtl; // لو بتستخدم RTL
+  direction: rtl;
 }
 
-// تنبيه النجاح
+
 .toast-success {
-  background-color: #198754; // Bootstrap success green
+  background-color: #198754; 
   color: white;
 }
 
-// تنبيه الخطأ
+
 .toast-error {
-  background-color: #dc3545; // Bootstrap danger red
+  background-color: #dc3545; 
   color: white;
 }
 
-// تنبيه المعلومات
+
 .toast-info {
-  background-color: #0dcaf0; // Bootstrap info blue
+  background-color: #0dcaf0; 
   color: black;
 }
 
-// تنبيه التحذير
 .toast-warning {
-  background-color: #ffc107; // Bootstrap warning yellow
+  background-color: #ffc107; 
   color: black;
 }
 
-// زر الإغلاق
+
 .toast-close-button {
   color: white;
   font-weight: bold;
+}
+.owl-theme .owl-nav {
+    display: none !important;
 }
