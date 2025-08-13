@@ -109,8 +109,13 @@ export class ServiceDetailsComponent implements OnInit {
 
   onRequestService(): void {
     if (this.service) {
-      // Navigate to service request page or show request form
-      this.router.navigate(['/service-request', this.service.serviceId]);
+      // Check if this is RequestPlaint service (ID = 7)
+      if (this.service.serviceId === 7) {
+        this.router.navigate(['/request-plaint']);
+      } else {
+        // Navigate to generic service request page
+        this.router.navigate(['/service-request', this.service.serviceId]);
+      }
     }
   }
 }

@@ -1,0 +1,116 @@
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="title">{{ 'CONTACT_INFORMATION.TITLE' | translate }}</h1>
+    </div>
+
+    <!-- Generic Data Table -->
+    <app-generic-data-table [columnDefs]="columnDefs" [rowData]="contactInformations" [totalCount]="totalCount"
+        [pageSize]="itemsPerPage" [currentPage]="currentPage - 1" [showActionColumn]="true" [rowActions]="rowActions"
+        [columnHeaderMap]="columnHeaderMap" (actionClick)="onTableAction($event)" (pageChange)="onPageChange($event)"
+        (search)="onTableSearch($event)">
+    </app-generic-data-table>
+
+    <!-- Contact Information Modal -->
+    <div class="modal fade" id="ContactInformation" tabindex="-1" aria-labelledby="ContactInformationLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ContactInformationLabel">
+                        {{ mode === 'edit' ? ('CONTACT_INFORMATION.EDIT' | translate) : ('CONTACT_INFORMATION.VIEW' | translate) }}
+                    </h5>
+                    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+                </div>
+                <form [formGroup]="contactInformationForm" (ngSubmit)="submit()">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">
+                                    {{ 'CONTACT_INFORMATION.NAME' | translate }} <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="name" formControlName="name"
+                                    [class.is-invalid]="isFieldInvalid('name')" 
+                                    [class.is-valid]="isFieldValid('name')"
+                                    (blur)="onFieldBlur('name')"
+                                    [readonly]="mode === 'view'">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
+                                    {{ getFieldError('name') }}
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">
+                                    {{ 'CONTACT_INFORMATION.EMAIL' | translate }} <span class="text-danger">*</span>
+                                </label>
+                                <input type="email" class="form-control" id="email" formControlName="email"
+                                    [class.is-invalid]="isFieldInvalid('email')" 
+                                    [class.is-valid]="isFieldValid('email')"
+                                    (blur)="onFieldBlur('email')"
+                                    [readonly]="mode === 'view'">
+                                <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                                    {{ getFieldError('email') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="title" class="form-label">
+                                    {{ 'CONTACT_INFORMATION.FIELD_TITLE' | translate }}
+                                </label>
+                                <input type="text" class="form-control" id="title" formControlName="title"
+                                    [readonly]="mode === 'view'">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="message" class="form-label">
+                                    {{ 'CONTACT_INFORMATION.MESSAGE' | translate }}
+                                </label>
+                                <textarea class="form-control" id="message" formControlName="message" rows="3"
+                                    [readonly]="mode === 'view'"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" (click)="closeModal()">
+                            {{ mode === 'view' ? ('COMMON.CLOSE' | translate) : ('COMMON.CANCEL' | translate) }}
+                        </button>
+                        <button type="submit" class="btn btn-gold" *ngIf="mode === 'edit'">
+                            {{ 'COMMON.UPDATE' | translate }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="DeleteContactInformation" tabindex="-1" aria-labelledby="DeleteContactInformationLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DeleteContactInformationLabel">
+                        {{ 'COMMON.DELETE_CONFIRMATION' | translate }}
+                    </h5>
+                    <button type="button" class="btn-close" (click)="cancelDelete()" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>{{ 'CONTACT_INFORMATION.DELETE_WARNING' | translate }}</p>
+                    <div *ngIf="selectedContactInformationToDelete" class="delete-confirmation-details">
+                        <strong>{{ 'CONTACT_INFORMATION.NAME' | translate }}:</strong> {{ selectedContactInformationToDelete.name }}<br>
+                        <strong>{{ 'CONTACT_INFORMATION.EMAIL' | translate }}:</strong> {{ selectedContactInformationToDelete.email }}<br>
+                        <strong>{{ 'CONTACT_INFORMATION.FIELD_TITLE' | translate }}:</strong> {{ selectedContactInformationToDelete.title || ('COMMON.NOT_AVAILABLE' | translate) }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" (click)="cancelDelete()">
+                        {{ 'COMMON.CANCEL' | translate }}
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="deleteContactInformation()" [disabled]="isLoading">
+                        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"
+                            aria-hidden="true"></span>
+                        {{ 'COMMON.DELETE' | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

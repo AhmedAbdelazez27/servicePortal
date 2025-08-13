@@ -1,0 +1,36 @@
+
+
+.nav-tabs {
+  border-bottom: 2px solid #dee2e6;
+
+  .nav-link {
+    border: none;
+    color: #2e2e2e;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    margin-right: 0.5rem;
+
+    &:hover {
+      border: none;
+      color: #495057;
+      background-color: #f8f9fa;
+    }
+
+    &.active {
+      border: none;
+      color: #8d734d;
+      background-color: #fff;
+      border-bottom: 2px solid #8d734d;
+    }
+  }
+}
+
+.tab-content {
+  padding-top: 1rem;
+}
+
+.tab-pane {
+  &.active {
+    display: block;
+  }
+}

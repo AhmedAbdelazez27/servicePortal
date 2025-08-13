@@ -1,0 +1,229 @@
+// Contact Information Component Styles
+
+.title {
+  color: #8D734D;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.btn-gold {
+  background-color: #ffd700;
+  border-color: #ffd700;
+  color: #333;
+  font-weight: 500;
+  
+  &:hover {
+    background-color: #ffed4e;
+    border-color: #ffed4e;
+    color: #333;
+  }
+  
+  &:disabled {
+    background-color: #ffd700;
+    border-color: #ffd700;
+    opacity: 0.6;
+  }
+}
+
+.filter {
+  .filter-title {
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .btn-filter {
+    background: none;
+    border: none;
+    color: #666;
+    
+    &:hover {
+      color: #333;
+    }
+  }
+  
+  .card {
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .form-control {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    
+    &:focus {
+      border-color: #ffd700;
+      box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+    }
+  }
+  
+  .btn-outline {
+    border-color: #ddd;
+    color: #666;
+    
+    &:hover {
+      background-color: #f8f9fa;
+      border-color: #ccc;
+      color: #333;
+    }
+  }
+}
+
+// Modal Styles
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  
+  .modal-title {
+    color: #333;
+    font-weight: 600;
+  }
+}
+
+.modal-body {
+  .form-label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .form-control {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    
+    &:focus {
+      border-color: #ffd700;
+      box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+    }
+    
+    &.is-invalid {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+  }
+  
+  textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+  }
+}
+
+.modal-footer {
+  border-top: 1px solid #e0e0e0;
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    
+    &:hover {
+      background-color: #5a6268;
+      border-color: #545b62;
+    }
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    
+    &:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+    }
+    
+    &:disabled {
+      background-color: #dc3545;
+      border-color: #dc3545;
+      opacity: 0.6;
+    }
+  }
+}
+
+// Table Styles
+app-generic-data-table {
+  margin-top: 1rem;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 0.5rem;
+  }
+  
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch !important;
+  }
+  
+  .btn-gold {
+    width: 100%;
+  }
+  
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+  
+  .col-md-6 {
+    margin-bottom: 1rem;
+  }
+}
+
+// Loading States
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+// Error States
+.invalid-feedback {
+  display: block;
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+// Success States
+.is-valid {
+  border-color: #28a745 !important;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+}
+
+// Accessibility
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+.form-control:focus {
+  outline: none;
+}
+
+// Print Styles
+@media print {
+  .btn,
+  .filter,
+  .modal {
+    display: none !important;
+  }
+}
+
+// Delete confirmation modal styling
+.delete-confirmation-details {
+  background-color: rgba(141, 115, 77, 0.1);
+  border: 1px solid rgba(141, 115, 77, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+
+  strong {
+    color: #8d734d;
+    font-weight: 600;
+  }
+
+  br + strong {
+    margin-top: 0.5rem;
+    display: inline-block;
+  }
+}

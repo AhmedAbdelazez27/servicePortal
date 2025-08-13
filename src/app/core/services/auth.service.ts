@@ -66,6 +66,40 @@ export class AuthService {
     return null;
   }
 
+  getCurrentUser(): { id: string; name?: string } | null {
+    const userId = this.getUserId();
+    if (!userId) {
+      return null;
+    }
+
+    const decodedData = this.decodeToken();
+    let name = '';
+    
+    if (decodedData) {
+      // Try to extract name from token
+      const possibleNameClaims = [
+        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+        'name',
+        'username',
+        'user_name',
+        'given_name',
+        'family_name'
+      ];
+
+      for (const claim of possibleNameClaims) {
+        if (decodedData[claim]) {
+          name = decodedData[claim].toString();
+          break;
+        }
+      }
+    }
+
+    return {
+      id: userId,
+      name: name || 'User'
+    };
+  }
+
   private extractUserIdFromToken(decodedData: any): string | null {
     // Try multiple possible claim names for user ID
     const possibleUserIdClaims = [

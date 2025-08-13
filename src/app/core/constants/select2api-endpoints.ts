@@ -45,6 +45,7 @@ export class Select2APIEndpoint {
     GetSpCaseSelect2List: '/SpCases/GetSpCaseSelect2List',
     GetScProjectStatusSelect2List: '/ScProject/GetScProjectStatusSelect2List',
     GetScProjectTypeSelect2List: '/ScProject/GetScProjectTypeSelect2List',
+    GetPlaintReasonsSelect2List: '/Lookup/PlaintReasons',
   };
 }
 

@@ -1,0 +1,18 @@
+// Delete confirmation modal styling
+.delete-confirmation-details {
+  background-color: rgba(141, 115, 77, 0.1);
+  border: 1px solid rgba(141, 115, 77, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+
+  strong {
+    color: #8d734d;
+    font-weight: 600;
+  }
+
+  br + strong {
+    margin-top: 0.5rem;
+    display: inline-block;
+  }
+}

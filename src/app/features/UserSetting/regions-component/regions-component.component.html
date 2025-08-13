@@ -1,0 +1,213 @@
+<div class="">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="title">{{ 'REGIONS.TITLE' | translate }}</h1>
+    <button class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#regionModal" (click)="openAddModal()">
+      <i class="fas fa-plus"></i> {{ 'REGIONS.ADD_NEW' | translate }}
+    </button>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter mb-3">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="filter-title mb-0">{{ 'Common.SearchTitle' | translate }}</h4>
+      <button class="btn btn-filter" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilterTab"
+        aria-expanded="false" aria-controls="collapseFilterTab">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path
+            d="M17.7499 6.31657H13.0999C12.7749 6.31657 12.5166 6.05824 12.5166 5.73324C12.5166 5.40824 12.7749 5.1499 13.0999 5.1499H17.7499C18.0749 5.1499 18.3333 5.40824 18.3333 5.73324C18.3333 6.05824 18.0749 6.31657 17.7499 6.31657Z"
+            fill="" />
+          <path
+            d="M5.35033 6.31657H2.25033C1.92533 6.31657 1.66699 6.05824 1.66699 5.73324C1.66699 5.40824 1.92533 5.1499 2.25033 5.1499H5.35033C5.67533 5.1499 5.93366 5.40824 5.93366 5.73324C5.93366 6.05824 5.66699 6.31657 5.35033 6.31657Z"
+            fill="" />
+          <path
+            d="M8.44987 9.02523C10.2678 9.02523 11.7415 7.5515 11.7415 5.73356C11.7415 3.91562 10.2678 2.44189 8.44987 2.44189C6.63193 2.44189 5.1582 3.91562 5.1582 5.73356C5.1582 7.5515 6.63193 9.02523 8.44987 9.02523Z"
+            fill="" />
+          <path
+            d="M17.7497 14.8415H14.6497C14.3247 14.8415 14.0664 14.5831 14.0664 14.2581C14.0664 13.9331 14.3247 13.6748 14.6497 13.6748H17.7497C18.0747 13.6748 18.3331 13.9331 18.3331 14.2581C18.3331 14.5831 18.0747 14.8415 17.7497 14.8415Z"
+            fill="" />
+          <path
+            d="M6.90033 14.8415H2.25033C1.92533 14.8415 1.66699 14.5831 1.66699 14.2581C1.66699 13.9331 1.92533 13.6748 2.25033 13.6748H6.90033C7.22533 13.6748 7.48366 13.9331 7.48366 14.2581C7.48366 14.5831 7.21699 14.8415 6.90033 14.8415Z"
+            fill="" />
+          <path
+            d="M11.5505 17.5584C13.3684 17.5584 14.8421 16.0847 14.8421 14.2668C14.8421 12.4488 13.3684 10.9751 11.5505 10.9751C9.73252 10.9751 8.25879 12.4488 8.25879 14.2668C8.25879 16.0847 9.73252 17.5584 11.5505 17.5584Z"
+            fill="" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="collapse" id="collapseFilterTab">
+      <div class="card card-body">
+        <form #filterForm="ngForm">
+          <div class="row mb-3">
+            <div class="col-xxl-4 col-xl-6 mb-3">
+              <label for="searchName" class="form-label">{{ 'REGIONS.SEARCH_NAME' | translate }}</label>
+              <input type="text" class="form-control" id="searchName"
+                placeholder="{{ 'REGIONS.SEARCH_PLACEHOLDER' | translate }}" [(ngModel)]="searchValue"
+                name="searchName">
+            </div>
+            <div class="col-xxl-4 col-xl-6 mb-3">
+              <label for="statusFilter" class="form-label">{{ 'REGIONS.STATUS' | translate }}</label>
+              <ng-select id="statusFilter" [(ngModel)]="selectedStatusFilter" [items]="statusOptions"
+                [clearable]="false" [searchable]="false" placeholder="Select Status" name="statusFilter"
+                bindLabel="label" bindValue="value" class="ng-select-custom">
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="d-flex align-items-center">
+                    <i [class]="item.icon + ' text-primary me-2'"></i>
+                    <span>{{ item.label }}</span>
+                  </div>
+                </ng-template>
+                <ng-template ng-label-tmp let-item="item">
+                  <div class="d-flex align-items-center">
+                    <i [class]="item.icon + ' text-primary me-2'"></i>
+                    <span>{{ item.label }}</span>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+        </form>
+
+        <div class="d-flex gap-2 justify-content-center">
+          <button class="btn btn-outline" (click)="clear()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM16 12.75H8C7.59 12.75 7.25 12.41 7.25 12C7.25 11.59 7.59 11.25 8 11.25H16C16.41 11.25 16.75 11.59 16.75 12C16.75 12.41 16.41 12.75 16 12.75Z"
+                fill="#5B5B5B" />
+            </svg>
+            {{ 'Common.Clear' | translate }}
+          </button>
+          <button class="btn btn-gold" (click)="onSearch()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM16.78 9.7L11.11 15.37C10.97 15.51 10.78 15.59 10.58 15.59C10.38 15.59 10.19 15.51 10.05 15.37L7.22 12.54C6.93 12.25 6.93 11.77 7.22 11.48C7.51 11.19 7.99 11.19 8.28 11.48L10.58 13.78L15.72 8.64C16.01 8.35 16.49 8.35 16.78 8.64C17.07 8.93 17.07 9.4 16.78 9.7Z"
+                fill="white" />
+            </svg>
+            {{ 'Common.Search' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generic Data Table -->
+  <app-generic-data-table [columnDefs]="columnDefs" [rowData]="regions" [totalCount]="totalCount" [pageSize]="pageSize"
+    [currentPage]="currentPage" [showActionColumn]="true" [rowActions]="rowActions"
+    (actionClick)="onActionClick($event)" (pageChange)="onPageChange($event)" (search)="onSearch($event)">
+  </app-generic-data-table>
+
+  <!-- Region Modal -->
+  <div class="modal fade" id="regionModal" tabindex="-1" aria-labelledby="regionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="regionModalLabel">
+            {{ mode === 'add' ? ('REGIONS.ADD_NEW' | translate) : mode === 'edit' ? ('REGIONS.EDIT' | translate) :
+            ('REGIONS.VIEW' | translate) }}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form [formGroup]="regionForm" (ngSubmit)="submit()">
+          <div class="modal-body">
+            <div class="row">
+              <!-- Arabic Name -->
+              <div class="col-xl-6 mb-3">
+                <label for="regionArabicName" class="form-label">{{ 'REGIONS.REGION_NAME' | translate }}</label>
+                <input type="text" id="regionArabicName" class="form-control"
+                  [ngClass]="{'is-invalid': regionForm.get('regionArabicName')?.invalid && (regionForm.get('regionArabicName')?.touched || submitted)}"
+                  formControlName="regionArabicName" placeholder="{{ 'REGIONS.ENTER_REGION_NAME' | translate }}"
+                  [readonly]="mode === 'view'" />
+                <div
+                  *ngIf="regionForm.get('regionArabicName')?.invalid && (regionForm.get('regionArabicName')?.touched || submitted)"
+                  class="invalid-feedback">
+                  {{ getFieldError('regionArabicName') }}
+                </div>
+              </div>
+
+              <!-- English Name -->
+              <div class="col-xl-6 mb-3">
+                <label for="regionEnglishName" class="form-label">{{ 'REGIONS.REGION_NAME_EN' | translate }}</label>
+                <input type="text" id="regionEnglishName" class="form-control"
+                  [ngClass]="{'is-invalid': regionForm.get('regionEnglishName')?.invalid && (regionForm.get('regionEnglishName')?.touched || submitted)}"
+                  formControlName="regionEnglishName" placeholder="{{ 'REGIONS.ENTER_REGION_NAME_EN' | translate }}"
+                  [readonly]="mode === 'view'" />
+                <div
+                  *ngIf="regionForm.get('regionEnglishName')?.invalid && (regionForm.get('regionEnglishName')?.touched || submitted)"
+                  class="invalid-feedback">
+                  {{ getFieldError('regionEnglishName') }}
+                </div>
+              </div>
+
+              <!-- Max Count of Locations -->
+              <div class="col-xl-6 mb-3">
+                <label for="maxCountOfLocations" class="form-label">Max Count of Locations</label>
+                <input type="number" id="maxCountOfLocations" class="form-control"
+                  [ngClass]="{'is-invalid': regionForm.get('maxCountOfLocations')?.invalid && (regionForm.get('maxCountOfLocations')?.touched || submitted)}"
+                  formControlName="maxCountOfLocations" placeholder="Enter max count" [readonly]="mode === 'view'"
+                  min="1" />
+                <div
+                  *ngIf="regionForm.get('maxCountOfLocations')?.invalid && (regionForm.get('maxCountOfLocations')?.touched || submitted)"
+                  class="invalid-feedback">
+                  {{ getFieldError('maxCountOfLocations') }}
+                </div>
+              </div>
+
+              <!-- Status -->
+              <div class="col-xl-6 mb-3">
+                <label for="isActive" class="form-label">{{ 'REGIONS.STATUS' | translate }}</label>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="isActive" formControlName="isActive"
+                    [disabled]="mode === 'view'">
+                  <label class="form-check-label" for="isActive">
+                    {{ 'REGIONS.ACTIVE' | translate }}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" *ngIf="mode !== 'view'">
+            <button type="button" class="btn btn-outline" data-bs-dismiss="modal">{{ 'REGIONS.CANCEL' | translate
+              }}</button>
+            <button type="submit" class="btn btn-gold" [disabled]="regionForm.invalid || submitted">
+              {{ mode === 'add' ? ('REGIONS.CREATE' | translate) : ('REGIONS.UPDATE' | translate) }}
+            </button>
+          </div>
+          <div class="modal-footer" *ngIf="mode === 'view'">
+            <button type="button" class="btn btn-outline" data-bs-dismiss="modal">{{ 'REGIONS.CLOSE' | translate
+              }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteRegionModal" tabindex="-1" aria-labelledby="deleteRegionModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteRegionModalLabel">Confirm Delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ 'REGIONS.DELETE_CONFIRMATION' | translate }}</p>
+          <div *ngIf="selectedRegionToDelete" class="delete-confirmation-details">
+            <strong>{{ 'REGIONS.REGION_NAME' | translate }}:</strong> {{ selectedRegionToDelete.regionArabicName }}<br>
+            <strong>{{ 'REGIONS.REGION_NAME_EN' | translate }}:</strong> {{ selectedRegionToDelete.regionEnglishName ||
+            'N/A' }}<br>
+            <strong>Max Count of Locations:</strong> {{ selectedRegionToDelete.maxCountOfLocations || 'N/A' }}<br>
+            <strong>{{ 'REGIONS.STATUS' | translate }}:</strong> {{ selectedRegionToDelete.isActive ? 'Active' :
+            'Inactive' }}<br>
+            <strong>Current Location Count:</strong> {{ selectedRegionToDelete.currenLocationCount || 0 }}
+          </div>
+          <p class="text-danger">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-bs-dismiss="modal">{{ 'REGIONS.CANCEL' | translate
+            }}</button>
+          <button type="button" class="btn btn-danger" (click)="deleteRegion()" data-bs-dismiss="modal">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

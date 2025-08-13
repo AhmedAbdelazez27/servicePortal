@@ -1,0 +1,440 @@
+<div class="request-plaint-container">
+    <section>
+        <div class="container services">
+            <h4 class="title">{{ 'REQUEST_PLAINT.TITLE' | translate }}</h4>
+            <p class="mb-5">{{ 'REQUEST_PLAINT.DESCRIPTION' | translate }}</p>
+
+            <!-- Loading state -->
+            <div *ngIf="isLoading" class="text-center py-5">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+                </div>
+                <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+            </div>
+
+            <!-- Main Content -->
+            <div *ngIf="!isLoading" class="row">
+                <!-- Steps Navigation -->
+                <div class="col-lg-3 mb-4">
+                    <div class="main-container h-100">
+                        <!-- Step 1: Main Information -->
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="step-container" [class.active]="isStepActive(1)" [class.completed]="isStepCompleted(1)">
+                                <div class="step-bg"></div>
+                                <div class="step">1</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
+                                    <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <span class="step-title" (click)="goToStep(1)">{{ 'REQUEST_PLAINT.STEP1_TITLE' | translate }}</span>
+                        </div>
+
+                        <!-- Step 2: Plaint Reasons -->
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="step-container" [class.active]="isStepActive(2)" [class.completed]="isStepCompleted(2)">
+                                <div class="step-bg"></div>
+                                <div class="step">2</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
+                                    <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <span class="step-title" (click)="goToStep(2)">{{ 'REQUEST_PLAINT.STEP2_TITLE' | translate }}</span>
+                        </div>
+
+                        <!-- Step 3: Evidence -->
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="step-container" [class.active]="isStepActive(3)" [class.completed]="isStepCompleted(3)">
+                                <div class="step-bg"></div>
+                                <div class="step">3</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
+                                    <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <span class="step-title" (click)="goToStep(3)">{{ 'REQUEST_PLAINT.STEP3_TITLE' | translate }}</span>
+                        </div>
+
+                        <!-- Step 4: Justifications -->
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="step-container" [class.active]="isStepActive(4)" [class.completed]="isStepCompleted(4)">
+                                <div class="step-bg"></div>
+                                <div class="step">4</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
+                                    <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <span class="step-title" (click)="goToStep(4)">{{ 'REQUEST_PLAINT.STEP4_TITLE' | translate }}</span>
+                        </div>
+
+                        <!-- Step 5: Attachments -->
+                        <div class="d-flex gap-3">
+                            <div class="step-container" [class.active]="isStepActive(5)" [class.completed]="isStepCompleted(5)">
+                                <div class="step-bg"></div>
+                                <div class="step">5</div>
+                            </div>
+                            <span class="step-title" (click)="goToStep(5)">{{ 'REQUEST_PLAINT.STEP5_TITLE' | translate }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="col-lg-9 mb-4">
+                    <div class="main-container h-100">
+                        <form [formGroup]="requestPlaintForm" (ngSubmit)="onSubmit()">
+                            
+                            <!-- Step 1: Main Information -->
+                            <div *ngIf="currentStep === 1" class="step-content">
+                                <h5 class="mb-4">{{ 'REQUEST_PLAINT.MAIN_INFO' | translate }}</h5>
+                                
+                                <div class="row">
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'REQUEST_PLAINT.REQUEST_NO' | translate }}</label>
+                                        <input type="text" class="form-control" value="0" readonly>
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'REQUEST_PLAINT.REQUEST_DATE' | translate }}</label>
+                                        <input type="date" class="form-control" formControlName="requestDate" readonly>
+                                    </div>
+
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">{{ 'REQUEST_PLAINT.MAIN_APPLY_SERVICE' | translate }} <span class="text-danger">*</span></label>
+                                        <ng-select 
+                                            formControlName="requestMainApplyServiceId"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                            bindLabel="text"
+                                            bindValue="id"
+                                            [items]="mainApplyServiceOptions"
+                                            [clearable]="true"
+                                            [class.is-invalid]="submitted && requestPlaintForm.get('requestMainApplyServiceId')?.errors">
+                                        </ng-select>
+                                        <div *ngIf="submitted && requestPlaintForm.get('requestMainApplyServiceId')?.errors" class="invalid-feedback d-block">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">{{ 'REQUEST_PLAINT.REQUESTING_ENTITY' | translate }}</label>
+                                        <div class="entity-tags-container">
+                                            <div class="entity-tags">
+                                                <div 
+                                                    *ngFor="let entity of userEntities" 
+                                                    class="entity-tag"
+                                                    [class.selected]="requestPlaintForm.get('requestingEntityId')?.value === entity.id"
+                                                    (click)="selectEntity(entity.id)"
+                                                    (keydown.enter)="selectEntity(entity.id)"
+                                                    (keydown.space)="selectEntity(entity.id)"
+                                                    tabindex="0"
+                                                    role="button"
+                                                    [attr.aria-label]="'Select ' + (translationService.currentLang === 'ar' ? entity.entityName : entity.entityNameEn)"
+                                                    [class.is-invalid]="submitted && requestPlaintForm.get('requestingEntityId')?.errors">
+                                                    <span class="entity-tag-text">
+                                                        {{ translationService.currentLang === 'ar' ? entity.entityName : entity.entityNameEn }}
+                                                    </span>
+                                                    <div class="entity-tag-check" *ngIf="requestPlaintForm.get('requestingEntityId')?.value === entity.id">
+                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Hidden input to properly bind the form control -->
+                                        <input type="hidden" formControlName="requestingEntityId">
+                                        <div *ngIf="submitted && requestPlaintForm.get('requestingEntityId')?.errors" class="invalid-feedback d-block">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                        <!-- Show message when no entities are available -->
+                                        <div *ngIf="userEntities.length === 0 && !isLoading" class="text-muted small mt-1">
+                                            {{ 'REQUEST_PLAINT.NO_ENTITIES_AVAILABLE' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">{{ 'REQUEST_PLAINT.DETAILS' | translate }} <span class="text-danger">*</span></label>
+                                        <textarea 
+                                            class="form-control" 
+                                            formControlName="details" 
+                                            rows="4"
+                                            [placeholder]="'REQUEST_PLAINT.DETAILS_PLACEHOLDER' | translate"
+                                            [class.is-invalid]="submitted && requestPlaintForm.get('details')?.errors">
+                                        </textarea>
+                                        <div *ngIf="submitted && requestPlaintForm.get('details')?.errors" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">{{ 'REQUEST_PLAINT.NOTES' | translate }}</label>
+                                        <textarea 
+                                            class="form-control" 
+                                            formControlName="notes" 
+                                            rows="3"
+                                            [placeholder]="'REQUEST_PLAINT.NOTES_PLACEHOLDER' | translate">
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Plaint Reasons -->
+                            <div *ngIf="currentStep === 2" class="step-content">
+                                <h5 class="mb-4">{{ 'REQUEST_PLAINT.PLAINT_REASONS' | translate }}</h5>
+                                
+                                <div class="row">
+                                    <div class="col-xl-8 mb-4">
+                                        <label class="form-label">{{ 'REQUEST_PLAINT.SELECT_REASON' | translate }}</label>
+                                        <ng-select 
+                                            formControlName="selectedReason"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                            [items]="plaintReasonsOptions"
+                                            [clearable]="true"
+                                            bindLabel="reasonText"
+                                            bindValue="id"
+                                            [class.is-invalid]="submitted && requestPlaintForm.get('selectedReason')?.errors"
+                                            (change)="onReasonSelectionChange($event)">
+                                        </ng-select>
+                                        
+                                        <!-- Debug information -->
+                                        <div class="mt-2 text-muted small">
+                                            <strong>Debug:</strong> Selected Reason ID: {{ requestPlaintForm.get('selectedReason')?.value }}, 
+                                            Available Options: {{ plaintReasonsOptions.length }}
+                                        </div>
+                                        
+                                        <!-- Test button to manually set a reason -->
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                                    (click)="testSetReason()">
+                                                Test: Set Reason ID 1
+                                            </button>
+                                        </div>
+
+                                        <!-- Show message when no reasons are available -->
+                                        <div *ngIf="plaintReasonsOptions.length === 0 && !isLoading" class="text-muted small mt-1">
+                                            {{ 'REQUEST_PLAINT.NO_REASONS_AVAILABLE' | translate }}
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 mb-4 d-flex align-items-end">
+                                        <button type="button" class="btn btn-primary" (click)="addReason()" [disabled]="!requestPlaintForm.get('selectedReason')?.value">
+                                            {{ 'COMMON.ADD' | translate }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Reasons Table -->
+                                <div *ngIf="reasons.length > 0" class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>{{ 'REQUEST_PLAINT.REASON' | translate }}</th>
+                                                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let reason of reasons; let i = index">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>{{ getReasonText(reason.lkpPlaintReasonsId) }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-danger" (click)="removeReason(i)">
+                                                        {{ 'COMMON.REMOVE' | translate }}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Evidence -->
+                            <div *ngIf="currentStep === 3" class="step-content">
+                                <h5 class="mb-4">{{ 'REQUEST_PLAINT.EVIDENCE' | translate }}</h5>
+                                
+                                <div class="row">
+                                    <div class="col-xl-8 mb-4">
+                                        <label class="form-label">{{ 'REQUEST_PLAINT.ENTER_EVIDENCE' | translate }}</label>
+                                        <textarea 
+                                            class="form-control" 
+                                            formControlName="newEvidence" 
+                                            rows="3"
+                                            [placeholder]="'REQUEST_PLAINT.EVIDENCE_PLACEHOLDER' | translate">
+                                        </textarea>
+                                    </div>
+                                    <div class="col-xl-4 mb-4 d-flex align-items-end">
+                                        <button type="button" class="btn btn-primary" (click)="addEvidence()" [disabled]="!requestPlaintForm.get('newEvidence')?.value?.trim()">
+                                            {{ 'COMMON.ADD' | translate }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Evidence Table -->
+                                <div *ngIf="evidences.length > 0" class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>{{ 'REQUEST_PLAINT.EVIDENCE' | translate }}</th>
+                                                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let evidence of evidences; let i = index">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>{{ evidence.evidence }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-danger" (click)="removeEvidence(i)">
+                                                        {{ 'COMMON.REMOVE' | translate }}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Justifications -->
+                            <div *ngIf="currentStep === 4" class="step-content">
+                                <h5 class="mb-4">{{ 'REQUEST_PLAINT.JUSTIFICATIONS' | translate }}</h5>
+                                <p class="text-muted mb-4">{{ 'REQUEST_PLAINT.JUSTIFICATIONS_OPTIONAL' | translate }}</p>
+                                
+                                <div class="row">
+                                    <div class="col-xl-8 mb-4">
+                                        <label class="form-label">{{ 'REQUEST_PLAINT.ENTER_JUSTIFICATION' | translate }}</label>
+                                        <textarea 
+                                            class="form-control" 
+                                            formControlName="newJustification" 
+                                            rows="3"
+                                            [placeholder]="'REQUEST_PLAINT.JUSTIFICATION_PLACEHOLDER' | translate">
+                                        </textarea>
+                                    </div>
+                                    <div class="col-xl-4 mb-4 d-flex align-items-end">
+                                        <button type="button" class="btn btn-primary" (click)="addJustification()" [disabled]="!requestPlaintForm.get('newJustification')?.value?.trim()">
+                                            {{ 'COMMON.ADD' | translate }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Justifications Table -->
+                                <div *ngIf="justifications.length > 0" class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>{{ 'REQUEST_PLAINT.JUSTIFICATION' | translate }}</th>
+                                                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let justification of justifications; let i = index">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>{{ justification.justification }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-danger" (click)="removeJustification(i)">
+                                                        {{ 'COMMON.REMOVE' | translate }}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Step 5: Attachments -->
+                            <div *ngIf="currentStep === 5" class="step-content">
+                                <h5 class="mb-4">{{ 'REQUEST_PLAINT.ATTACHMENTS' | translate }}</h5>
+                                
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                                <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let config of attachmentConfigs; let i = index">
+                                                <td>{{ getAttachmentName(config) }}</td>
+                                                <td>
+                                                    <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
+                                                         (dragover)="onDragOver($event)"
+                                                         (dragleave)="onDragLeave($event)"
+                                                         (drop)="onDrop($event, config.id!)"
+                                                         [class.drag-over]="isDragOver">
+                                                        <input type="file" 
+                                                               class="d-none" 
+                                                               [id]="'file-' + config.id"
+                                                               (change)="onFileSelected($event, config.id!)"
+                                                               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                        <label [for]="'file-' + config.id" class="upload-label">
+                                                            <i class="fas fa-cloud-upload-alt"></i>
+                                                            <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
+                                                        </label>
+                                                    </div>
+                                                    <div *ngIf="selectedFiles[config.id!]" class="file-preview">
+                                                        <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
+                                                        <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')" 
+                                                             [src]="filePreviews[config.id!]" 
+                                                             class="preview-image">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button *ngIf="selectedFiles[config.id!]" 
+                                                            type="button" 
+                                                            class="btn btn-sm btn-danger" 
+                                                            (click)="removeFile(config.id!)">
+                                                        {{ 'COMMON.REMOVE' | translate }}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" 
+                                        class="btn btn-secondary" 
+                                        (click)="previousStep()" 
+                                        [disabled]="currentStep === 1">
+                                    {{ 'COMMON.PREVIOUS' | translate }}
+                                </button>
+                                
+                                <div>
+                                    <button *ngIf="currentStep < totalSteps" 
+                                            type="button" 
+                                            class="btn btn-primary" 
+                                            (click)="nextStep()"
+                                            [disabled]="!canProceedToNext()">
+                                        {{ 'COMMON.NEXT' | translate }}
+                                    </button>
+                                    
+                                    <button *ngIf="currentStep === totalSteps" 
+                                            type="submit" 
+                                            class="btn btn-success" 
+                                            [disabled]="!canSubmit() || isSaving">
+                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                        {{ 'COMMON.SUBMIT' | translate }}
+                                    </button>
+                                    
+                                    <!-- Debug buttons for testing -->
+                                    <button *ngIf="currentStep === totalSteps" 
+                                            type="button" 
+                                            class="btn btn-warning ms-2" 
+                                            (click)="testSubmit()">
+                                        Test Submit
+                                    </button>
+                                    <button *ngIf="currentStep === totalSteps" 
+                                            type="button" 
+                                            class="btn btn-info ms-2" 
+                                            (click)="debugCanSubmit()">
+                                        Debug canSubmit()
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

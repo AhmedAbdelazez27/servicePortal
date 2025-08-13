@@ -295,4 +295,19 @@ export class ApiEndpoints {
     Delete: (id: number) => `/Delete/${id}`,
   };
 
+  static readonly RequestPlaint = {
+    Base: '/RequestPlaint',
+    Create: '/Create',
+    GetByMainApplyServiceId: (mainApplyServiceId: number) => `/GetByMainApplyServiceId/${mainApplyServiceId}`,
+  };
+
+  static readonly MainApplyRequestService = {
+    Base: '/MainApplyRequestService',
+    GetSelect2: '/GetSelect2',
+  };
+
+  static readonly Lookup = {
+    PlaintReasons: '/Lookup/PlaintReasons',
+  };
+
 }
