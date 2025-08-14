@@ -14,3 +14,13 @@ export interface Step1Value {
   notes: string | null;
   donationCollectionChannelIds: number[];
 }
+
+export interface PartnerRow {
+  name: string;
+  type: number;              
+  licenseIssuer: string | null;
+  licenseExpiryDate: string | null;  
+  licenseNumber: string | null;
+  contactDetails: string | null;
+  mainApplyServiceId: number | null;
+}

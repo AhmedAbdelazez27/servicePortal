@@ -4,7 +4,6 @@
   "TOGGLE_LANG": "التبديل إلى الإنجليزية",
   "PAGE_NOT_FOUND": "عذرًا! الصفحة غير موجودة.",
   "BACK_HOME": "العودة إلى الصفحة الرئيسية",
-  
   "TOAST": {
     "TITLE": {
       "SUCCESS": "نجح",
@@ -205,9 +204,9 @@
     "ENTER_FOUNDATION_NAME": "أدخل اسم المؤسسة",
     "LICENSE_NUMBER": "رقم الترخيص",
     "ENTER_LICENSE_NUMBER": "أدخل رقم الترخيص",
-      "LICENSE_END_DATE": "تاريخ انتهاء الترخيص",
-      "SELECT_LICENSE_END_DATE": "اختر تاريخ انتهاء الترخيص",
-      "LICENSE_DATE_FUTURE": "يجب أن يكون تاريخ انتهاء الترخيص في المستقبل",
+    "LICENSE_END_DATE": "تاريخ انتهاء الترخيص",
+    "SELECT_LICENSE_END_DATE": "اختر تاريخ انتهاء الترخيص",
+    "LICENSE_DATE_FUTURE": "يجب أن يكون تاريخ انتهاء الترخيص في المستقبل",
     "CONTACT_INFO": "معلومات الاتصال",
     "EMAIL": "البريد الإلكتروني",
     "ENTER_EMAIL": "أدخل البريد الإلكتروني",
@@ -460,7 +459,8 @@
     "REQUIRED_FIELD": "هذا الحقل مطلوب",
     "FORM_INVALID": "يرجى ملء جميع الحقول المطلوبة بشكل صحيح",
     "FILE_TOO_LARGE": "يجب ألا يتجاوز حجم الملف 5 ميجابايت",
-    "INVALID_FILE_TYPE": "نوع ملف غير صالح. مسموح فقط بملفات JPEG، PNG، PDF، DOC، DOCX"
+    "INVALID_FILE_TYPE": "نوع ملف غير صالح. مسموح فقط بملفات JPEG، PNG، PDF، DOC، DOCX",
+     "DATE_RANGE": "تاريخ الانتهاء يجب أن يكون بعد أو يساوي تاريخ البدء."
   },
   "COMMON": {
     "REQUEST_SERVICE": "طلب الخدمة",
@@ -483,7 +483,9 @@
     "REQUIRED_FIELD": "هذا الحقل مطلوب",
     "INVALID_EMAIL": "من فضلك أدخل بريدًا صحيحًا",
     "DATE_RANGE": "يجب أن يكون تاريخ الانتهاء بعد أو يساوي تاريخ البدء",
-    "MIN_ONE_CHANNEL": "اختر قناة واحدة على الأقل"
+    "MIN_ONE_CHANNEL": "اختر قناة واحدة على الأقل",
+    "MIN_ONE_PARTNER": "يجب إضافة شريك واحد على الأقل.",
+    "PLEASE_COMPLETE_REQUIRED_FIELDS": "من فضلك أكمل الحقول المطلوبة."
   },
   "CHARITY_EVENT": {
     "STEP1_TITLE": "البيانات الأساسية",
@@ -503,6 +505,16 @@
     "AD_TYPE_2": "النوع 2",
     "DONATION_CHANNELS": "قنوات جمع التبرعات",
     "NOTES": "ملاحظات",
-    "NOTES_PLACEHOLDER": "أي ملاحظات إضافية..."
+    "NOTES_PLACEHOLDER": "أي ملاحظات إضافية...",
+    "PARTNERS_TITLE": "الشركاء"
+  },
+  "PARTNERS": {
+    "NAME": "اسم الشريك",
+    "TYPE": "نوع الشريك",
+    "LICENSE_ISSUER": "جهة إصدار الترخيص",
+    "LICENSE_NUMBER": "رقم الترخيص",
+    "LICENSE_EXPIRY": "تاريخ انتهاء الترخيص",
+    "CONTACT_DETAILS": "بيانات التواصل",
+    "MAIN_APPLY_SERVICE": "الخدمة الرئيسية (اختياري)"
   }
 }

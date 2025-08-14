@@ -17,7 +17,7 @@
                 <!-- Steps Navigation -->
                 <div class="col-lg-3 mb-4">
                     <div class="main-container h-100">
-                        <!-- Step 1: Main Information -->
+                        <!-- Step 1 -->
                         <div class="d-flex gap-3 mb-3">
                             <div class="step-container" [class.active]="isStepActive(1)"
                                 [class.completed]="isStepCompleted(1)">
@@ -33,7 +33,7 @@
                                 }}</span>
                         </div>
 
-                        <!-- Step 2: Plaint Reasons -->
+                        <!-- Step 2 -->
                         <div class="d-flex gap-3 mb-3">
                             <div class="step-container" [class.active]="isStepActive(2)"
                                 [class.completed]="isStepCompleted(2)">
@@ -45,11 +45,10 @@
                                         stroke-linecap="round" />
                                 </svg>
                             </div>
-                            <span class="step-title" (click)="goToStep(2)">{{ 'REQUEST_PLAINT.STEP2_TITLE' | translate
-                                }}</span>
+                            <span class="step-title" (click)="goToStep(2)">{{ 'CHARITY_EVENT.PARTNERS_TITLE' | translate }}</span>
                         </div>
 
-                        <!-- Step 3: Evidence -->
+                        <!-- Step 3 -->
                         <div class="d-flex gap-3 mb-3">
                             <div class="step-container" [class.active]="isStepActive(3)"
                                 [class.completed]="isStepCompleted(3)">
@@ -65,7 +64,7 @@
                                 }}</span>
                         </div>
 
-                        <!-- Step 4: Justifications -->
+                        <!-- Step 4 -->
                         <div class="d-flex gap-3 mb-3">
                             <div class="step-container" [class.active]="isStepActive(4)"
                                 [class.completed]="isStepCompleted(4)">
@@ -81,7 +80,7 @@
                                 }}</span>
                         </div>
 
-                        <!-- Step 5: Attachments -->
+                        <!-- Step 5 -->
                         <div class="d-flex gap-3">
                             <div class="step-container" [class.active]="isStepActive(5)"
                                 [class.completed]="isStepCompleted(5)">
@@ -97,202 +96,328 @@
                 <!-- Content Area -->
                 <div class="col-lg-9 mb-4">
                     <div class="main-container h-100">
-                        <!-- Step 1: Main Information -->
-                        <div *ngIf="currentStep === 1" class="step-content" [formGroup]="firstStepForm">
-                            <h5 class="mb-4">{{ 'CHARITY_EVENT.STEP1_TITLE' | translate }}</h5>
-
-                            <div class="row">
-                                <!-- Request No (عرض فقط) -->
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_NO' | translate }}</label>
-                                    <input type="text" class="form-control" value="0" readonly>
-                                </div>
-
-                                <!-- Request Date (عرض فقط) -->
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_DATE' | translate }}</label>
-                                    <div class="form-control" readonly>
-                                        {{ firstStepForm.value.requestDate | date:'medium' }}
-                                    </div>
-                                </div>
-
-                                <!-- Event Name -->
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.EVENT_NAME' | translate }} <span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control" formControlName="eventName"
-                                        [class.is-invalid]="firstStepForm.controls['eventName']?.touched && firstStepForm.controls['eventName'].invalid">
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['eventName']?.touched && firstStepForm.controls['eventName'].errors">
-                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                    </div>
-                                </div>
-
-                                <!-- Event Location -->
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.EVENT_LOCATION' | translate }} <span
-                                            class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control" formControlName="eventLocation"
-                                        [class.is-invalid]="firstStepForm.controls['eventLocation']?.touched && firstStepForm.controls['eventLocation'].invalid">
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['eventLocation']?.touched && firstStepForm.controls['eventLocation'].errors">
-                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                    </div>
-                                </div>
-
-                                <!-- Start / End -->
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.START_DATE' | translate }} <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="datetime-local" class="form-control" formControlName="startDate"
-                                        [class.is-invalid]="(firstStepForm.controls['startDate']?.touched && firstStepForm.controls['startDate'].invalid) || firstStepForm.errors?.['dateRange']">
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['startDate']?.touched && firstStepForm.controls['startDate'].errors">
-                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-6 mb-1">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.END_DATE' | translate }} <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="datetime-local" class="form-control" formControlName="endDate"
-                                        [class.is-invalid]="(firstStepForm.controls['endDate']?.touched && firstStepForm.controls['endDate'].invalid) || firstStepForm.errors?.['dateRange']">
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['endDate']?.touched && firstStepForm.controls['endDate'].errors">
-                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                    </div>
-                                </div>
-
-                                <!-- خطأ نطاق التواريخ -->
-                                <div class="col-12 mb-4" *ngIf="firstStepForm.errors?.['dateRange']">
-                                    <div class="text-danger small">
-                                        {{ 'VALIDATION.DATE_RANGE' | translate }}
-                                    </div>
-                                </div>
-
-                                <!-- Supervisor / Job Title -->
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.SUPERVISOR_NAME' | translate }} <span
-                                            class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control" formControlName="supervisorName"
-                                        [class.is-invalid]="firstStepForm.controls['supervisorName']?.touched && firstStepForm.controls['supervisorName'].invalid">
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['supervisorName']?.touched && firstStepForm.controls['supervisorName'].errors">
-                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.JOB_TITLE' | translate }} <span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control" formControlName="jopTitle"
-                                        [class.is-invalid]="firstStepForm.controls['jopTitle']?.touched && firstStepForm.controls['jopTitle'].invalid">
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['jopTitle']?.touched && firstStepForm.controls['jopTitle'].errors">
-                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                    </div>
-                                </div>
-
-                                <!-- Telephones -->
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.TELEPHONE1' | translate }} <span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control" formControlName="telephone1"
-                                        [class.is-invalid]="firstStepForm.controls['telephone1']?.touched && firstStepForm.controls['telephone1'].invalid">
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['telephone1']?.touched && firstStepForm.controls['telephone1'].errors">
-                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.TELEPHONE2' | translate }} <span class="text-danger">*</span>
-                                    </label>
-                                    <input class="form-control" formControlName="telephone2"
-                                        [class.is-invalid]="firstStepForm.controls['telephone2']?.touched && firstStepForm.controls['telephone2'].invalid">
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['telephone2']?.touched && firstStepForm.controls['telephone2'].errors">
-                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                    </div>
-                                </div>
-
-                                <!-- Email (اختياري) -->
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">{{ 'CHARITY_EVENT.EMAIL' | translate }}</label>
-                                    <input type="email" class="form-control" formControlName="email"
-                                        [class.is-invalid]="firstStepForm.controls['email']?.touched && firstStepForm.controls['email'].invalid">
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['email']?.touched && firstStepForm.controls['email'].errors">
-                                        {{ 'VALIDATION.INVALID_EMAIL' | translate }}
-                                    </div>
-                                </div>
-
-                                <!-- Advertisement Type -->
-                                <div class="col-xl-6 mb-4">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.ADVERTISEMENT_TYPE' | translate }} <span
-                                            class="text-danger">*</span>
-                                    </label>
-                                    <ng-select formControlName="advertisementType"
-                                        [items]="advertisementType" bindLabel="text" bindValue="id"
-                                        [multiple]="false" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
-                                        [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
-                                        [ngClass]="{'is-invalid': firstStepForm.controls['advertisementType']?.touched && firstStepForm.controls['advertisementType'].invalid}">
-                                    </ng-select>
-                                    <div class="invalid-feedback"
-                                        *ngIf="firstStepForm.controls['advertisementType']?.touched && firstStepForm.controls['advertisementType'].errors">
-                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                    </div>
-                                </div>
-
-                                <!-- Donation Channels (ng-select multi) -->
-                                <div class="col-xl-12 mb-4">
-                                    <label class="form-label">
-                                        {{ 'CHARITY_EVENT.DONATION_CHANNELS' | translate }} <span
-                                            class="text-danger">*</span>
-                                    </label>
-                                    <ng-select formControlName="donationChannelsLookupIds"
-                                        [items]="donationChannelsLookup" bindLabel="text" bindValue="id"
-                                        [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
-                                        [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
-                                        [ngClass]="{'is-invalid': firstStepForm.controls['donationChannelsLookupIds']?.touched && firstStepForm.controls['donationChannelsLookupIds'].invalid}">
-                                    </ng-select>
-                                    <div class="invalid-feedback d-block"
-                                        *ngIf="firstStepForm.controls['donationChannelsLookupIds']?.touched && firstStepForm.controls['donationChannelsLookupIds'].errors?.['minArrayLength']">
-                                        {{ 'VALIDATION.MIN_ONE_CHANNEL' | translate }}
-                                    </div>
-                                </div>
-
-                                <!-- Notes (اختياري) -->
-                                <div class="col-xl-12 mb-2">
-                                    <label class="form-label">{{ 'CHARITY_EVENT.NOTES' | translate }}</label>
-                                    <textarea class="form-control" rows="3" formControlName="notes"
-                                        [placeholder]="'CHARITY_EVENT.NOTES_PLACEHOLDER' | translate"></textarea>
-                                </div>
-                            </div>
-
-                            <!-- Actions -->
-                            <div class="d-flex justify-content-end mt-3">
-                                <button type="button" class="btn btn-primary" (click)="nextStep()"
-                                    [disabled]="firstStepForm.invalid">
-                                    {{ 'COMMON.NEXT' | translate }}
-                                </button>
-                            </div>
-                        </div>
-
-
+                        <!-- Single form wraps all steps -->
                         <form [formGroup]="firstStepForm" (ngSubmit)="onSubmit()">
 
+                            <!-- Step 1: Main Information -->
+                            <div *ngIf="currentStep === 1" class="step-content">
+                                <h5 class="mb-4">{{ 'CHARITY_EVENT.STEP1_TITLE' | translate }}</h5>
+
+                                <div class="row">
+                                    <!-- Request No (عرض فقط) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_NO' | translate }}</label>
+                                        <input type="text" class="form-control" value="0" readonly>
+                                    </div>
+
+                                    <!-- Request Date (عرض فقط) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_DATE' | translate }}</label>
+                                        <div class="form-control" readonly>
+                                            {{ firstStepForm.value.requestDate | date:'medium' }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Event Name -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.EVENT_NAME' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="eventName"
+                                            [class.is-invalid]="firstStepForm.get('eventName')?.touched && firstStepForm.get('eventName')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('eventName')?.touched && firstStepForm.get('eventName')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Event Location -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.EVENT_LOCATION' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="eventLocation"
+                                            [class.is-invalid]="firstStepForm.get('eventLocation')?.touched && firstStepForm.get('eventLocation')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('eventLocation')?.touched && firstStepForm.get('eventLocation')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Start / End -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.START_DATE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input type="datetime-local" class="form-control" formControlName="startDate"
+                                            [class.is-invalid]="(firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.invalid) || firstStepForm.hasError('dateRange')">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-6 mb-1">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.END_DATE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input type="datetime-local" class="form-control" formControlName="endDate"
+                                            [class.is-invalid]="(firstStepForm.get('endDate')?.touched && firstStepForm.get('endDate')?.invalid) || firstStepForm.hasError('dateRange')">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('endDate')?.touched && firstStepForm.get('endDate')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- خطأ نطاق التواريخ -->
+                                    <div class="col-12 mb-4" *ngIf="firstStepForm.hasError('dateRange')">
+                                        <div class="text-danger small">
+                                            {{ 'VALIDATION.DATE_RANGE' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Supervisor / Job Title -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.SUPERVISOR_NAME' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="supervisorName"
+                                            [class.is-invalid]="firstStepForm.get('supervisorName')?.touched && firstStepForm.get('supervisorName')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('supervisorName')?.touched && firstStepForm.get('supervisorName')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.JOB_TITLE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="jopTitle"
+                                            [class.is-invalid]="firstStepForm.get('jopTitle')?.touched && firstStepForm.get('jopTitle')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('jopTitle')?.touched && firstStepForm.get('jopTitle')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Telephones -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.TELEPHONE1' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="telephone1"
+                                            [class.is-invalid]="firstStepForm.get('telephone1')?.touched && firstStepForm.get('telephone1')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('telephone1')?.touched && firstStepForm.get('telephone1')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.TELEPHONE2' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="telephone2"
+                                            [class.is-invalid]="firstStepForm.get('telephone2')?.touched && firstStepForm.get('telephone2')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('telephone2')?.touched && firstStepForm.get('telephone2')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Email (اختياري) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.EMAIL' | translate }}</label>
+                                        <input type="email" class="form-control" formControlName="email"
+                                            [class.is-invalid]="firstStepForm.get('email')?.touched && firstStepForm.get('email')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('email')?.touched && firstStepForm.get('email')?.errors">
+                                            {{ 'VALIDATION.INVALID_EMAIL' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Advertisement Type -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.ADVERTISEMENT_TYPE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <ng-select formControlName="advertisementType" [items]="advertisementType"
+                                            bindLabel="text" bindValue="id" [multiple]="false" [closeOnSelect]="true"
+                                            [clearable]="true" [searchable]="true"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
+                                            [ngClass]="{'is-invalid': firstStepForm.get('advertisementType')?.touched && firstStepForm.get('advertisementType')?.invalid}">
+                                        </ng-select>
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('advertisementType')?.touched && firstStepForm.get('advertisementType')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Donation Channels (multi) -->
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.DONATION_CHANNELS' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <ng-select formControlName="donationChannelsLookupIds"
+                                            [items]="donationChannelsLookup" bindLabel="text" bindValue="id"
+                                            [multiple]="true" [closeOnSelect]="false" [clearable]="true"
+                                            [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                            class="ng-select-custom"
+                                            [ngClass]="{'is-invalid': firstStepForm.get('donationChannelsLookupIds')?.touched && firstStepForm.get('donationChannelsLookupIds')?.invalid}">
+                                        </ng-select>
+                                        <div class="invalid-feedback d-block"
+                                            *ngIf="firstStepForm.get('donationChannelsLookupIds')?.touched && firstStepForm.get('donationChannelsLookupIds')?.hasError('minArrayLength')">
+                                            {{ 'VALIDATION.MIN_ONE_CHANNEL' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Notes (اختياري) -->
+                                    <div class="col-xl-12 mb-2">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.NOTES' | translate }}</label>
+                                        <textarea class="form-control" rows="3" formControlName="notes"
+                                            [placeholder]="'CHARITY_EVENT.NOTES_PLACEHOLDER' | translate"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Partners -->
+                            <div *ngIf="currentStep === 2" class="step-content" [formGroup]="partnerForm">
+                                <h5 class="mb-4">{{ 'CHARITY_EVENT.PARTNERS_TITLE' | translate }}</h5>
+
+                                <div class="row">
+                                    <!-- Name (required) -->
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">
+                                            {{ 'PARTNERS.NAME' | translate }} <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="name"
+                                            [class.is-invalid]="partnerForm.get('name')?.touched && partnerForm.get('name')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="partnerForm.get('name')?.touched && partnerForm.get('name')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Type (required) -->
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">
+                                            {{ 'PARTNERS.TYPE' | translate }} <span class="text-danger">*</span>
+                                        </label>
+                                        <ng-select formControlName="type" [items]="partnerTypes" bindLabel="name"
+                                            bindValue="id" [multiple]="false" [closeOnSelect]="true" [clearable]="true"
+                                            [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                            class="ng-select-custom"
+                                            [ngClass]="{'is-invalid': partnerForm.get('type')?.touched && partnerForm.get('type')?.invalid}">
+                                        </ng-select>
+                                        <div class="invalid-feedback"
+                                            *ngIf="partnerForm.get('type')?.touched && partnerForm.get('type')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- License Issuer (required) -->
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">
+                                            {{ 'PARTNERS.LICENSE_ISSUER' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="licenseIssuer"
+                                            [class.is-invalid]="partnerForm.get('licenseIssuer')?.touched && partnerForm.get('licenseIssuer')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="partnerForm.get('licenseIssuer')?.touched && partnerForm.get('licenseIssuer')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- License Number (required) -->
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">
+                                            {{ 'PARTNERS.LICENSE_NUMBER' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="licenseNumber"
+                                            [class.is-invalid]="partnerForm.get('licenseNumber')?.touched && partnerForm.get('licenseNumber')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="partnerForm.get('licenseNumber')?.touched && partnerForm.get('licenseNumber')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- License Expiry Date (required) -->
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">
+                                            {{ 'PARTNERS.LICENSE_EXPIRY' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" formControlName="licenseExpiryDate"
+                                            [class.is-invalid]="partnerForm.get('licenseExpiryDate')?.touched && partnerForm.get('licenseExpiryDate')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="partnerForm.get('licenseExpiryDate')?.touched && partnerForm.get('licenseExpiryDate')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Contact Details (optional) -->
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'PARTNERS.CONTACT_DETAILS' | translate }}</label>
+                                        <textarea rows="1" class="form-control"
+                                            formControlName="contactDetails"></textarea>
+                                    </div>
+
+                                    <!-- Add Button -->
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="button" class="btn btn-primary" (click)="addPartner()">
+                                            {{ 'COMMON.ADD' | translate }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Table -->
+                                <div class="table-responsive mt-4" *ngIf="partners.length > 0">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>{{ 'PARTNERS.NAME' | translate }}</th>
+                                                <th>{{ 'PARTNERS.TYPE' | translate }}</th>
+                                                <th>{{ 'PARTNERS.LICENSE_ISSUER' | translate }}</th>
+                                                <th>{{ 'PARTNERS.LICENSE_NUMBER' | translate }}</th>
+                                                <th>{{ 'PARTNERS.LICENSE_EXPIRY' | translate }}</th>
+                                                <th>{{ 'PARTNERS.CONTACT_DETAILS' | translate }}</th>
+                                                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let p of partners; let i = index">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>{{ p.name }}</td>
+                                                <td>{{ getPartnerTypeLabel(p.type) }}</td>
+                                                <td>{{ p.licenseIssuer }}</td>
+                                                <td>{{ p.licenseNumber }}</td>
+                                                <td>{{ p.licenseExpiryDate | date:'mediumDate' }}</td>
+                                                <td>{{ p.contactDetails }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                        (click)="removePartner(i)">
+                                                        {{ 'COMMON.REMOVE' | translate }}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
                             <!-- Navigation Buttons -->
                             <div class="d-flex justify-content-between mt-4">
@@ -302,20 +427,28 @@
                                 </button>
 
                                 <div>
+                                    <!-- <button *ngIf="currentStep < totalSteps"
+                          type="button"
+                          class="btn btn-primary"
+                          (click)="nextStep()"
+                          [disabled]="isLoading || !isFormInitialized">
+                    {{ 'COMMON.NEXT' | translate }}
+                  </button> -->
                                     <button *ngIf="currentStep < totalSteps" type="button" class="btn btn-primary"
-                                        (click)="nextStep()" [disabled]="firstStepForm.invalid">
+                                        (click)="handleNextClick()"
+                                        [disabled]="isLoading || !isFormInitialized || isSaving">
                                         {{ 'COMMON.NEXT' | translate }}
                                     </button>
+
 
                                     <button *ngIf="currentStep === totalSteps" type="submit" class="btn btn-success"
                                         [disabled]="!canSubmit() || isSaving">
                                         <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
                                         {{ 'COMMON.SUBMIT' | translate }}
                                     </button>
-
-
                                 </div>
                             </div>
+
                         </form>
                     </div>
                 </div>

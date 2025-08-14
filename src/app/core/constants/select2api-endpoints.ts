@@ -50,6 +50,7 @@ export class Select2APIEndpoint {
     GetAdvertisementTargetTypeSelect2List: '/Lookup/AdvertisementTargetType',
     GetAdvertisementMethodTypeSelect2List: '/Lookup/AdvertisementMethod',
     GetDonationCollectionChannel: '/DonationCollectionChannel/Select2',
+    GetPartner: '/Partner',
   };
 }
 

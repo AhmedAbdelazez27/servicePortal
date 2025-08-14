@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { Select2APIEndpoint } from '../constants/select2api-endpoints';
+import { FndLookUpValuesSelect2RequestDto } from '../dtos/FndLookUpValues.dto';
 
 @Injectable({
     providedIn: 'root',
@@ -51,5 +52,14 @@ export class CharityEventPermitRequestService {
             orderByValue: body.orderByValue || null,
         };
         return this.http.post<any>(url, requestBody);
+    }
+
+    getPartners(skip:any=0,take:any=600): Observable<any> {
+        const params = new HttpParams()
+            .set('skip', skip.toString())
+            .set('take', take.toString());
+        return this.http.get(`${this.BASE_URL}${Select2APIEndpoint.Select2.GetPartner}`, {
+            params,
+        });
     }
 }

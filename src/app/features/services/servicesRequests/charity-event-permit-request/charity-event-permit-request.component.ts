@@ -37,7 +37,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   submitted = false;
   isLoading = false;
   isSaving = false;
-  isFormInitialized = false; // Flag to track if form is fully initialized
+  isFormInitialized = false;
 
   // Data
   mainApplyServiceOptions: Select2Item[] = [];
@@ -57,11 +57,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   reasons: RequestPlaintReasonDto[] = [];
   attachments: RequestPlaintAttachmentDto[] = [];
 
-  // Form inputs for adding items
-  // Remove these separate variables as they're now part of the form
-  // newEvidence = '';
-  // newJustification = '';
-  // selectedReason: number | null = null;
 
   // File upload
   selectedFiles: { [key: number]: File } = {};
@@ -75,6 +70,9 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   advertisementTargetType: any;
   advertisementMethodType: any;
   donationChannelsLookup: any;
+  partnerTypes: any[] = [];
+  partners: any[] = [];
+  partnerForm!: FormGroup;
 
 
   constructor(
@@ -90,23 +88,20 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     private _CharityEventPermitRequestService: CharityEventPermitRequestService
   ) {
     this.initializeForm();
+    this.initPartnerForm();
   }
 
   ngOnInit(): void {
-    // Clear any existing toasts to ensure clean start
     this.clearAllToasts();
     this.loadInitialData();
   }
 
-  // Method to clear all existing toasts
+
   private clearAllToasts(): void {
-    // Clear all toasts when component initializes
     this.toastr.clear();
   }
 
-  // Method to show validation toast only when appropriate
   private showValidationToast(message: string): void {
-    // Only show validation toasts if form is initialized and user is actively interacting
     if (this.isFormInitialized && (this.submitted || this.currentStep > 1)) {
       this.toastr.error(message);
     }
@@ -143,14 +138,12 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     );
 
 
-    // Keep request date enabled for validation but set as readonly in template
+
 
     // Add form value change subscription for debugging
-    this.firstStepForm.valueChanges.subscribe((value: any) => {
+    // this.firstStepForm.valueChanges.subscribe((value: any) => {
 
-      // Don't trigger validation during form initialization
-      // Validation will only happen when user actively interacts with the form
-    });
+    // });
 
 
   }
@@ -174,13 +167,15 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         advertisementTargetType: this._CharityEventPermitRequestService.getAdvertisementTargetType({}),
         advertisementType: this._CharityEventPermitRequestService.getAdvertisementType(),
         donationChannelsLookup: this._CharityEventPermitRequestService.getDonationCollectionChannel({}),
+        partnerTypes: this._CharityEventPermitRequestService.getPartners(),
       }).subscribe({
         next: (res: any) => {
           this.advertisementType = res.advertisementType;
           this.advertisementMethodType = res.advertisementMethodType;
           this.advertisementTargetType = res.advertisementTargetType;
-          console.log(res.donationChannelsLookup,"ddddddd");
-          
+          this.partnerTypes = res.partnerTypes?.data;
+          console.log(res.donationChannelsLookup, "ddddddd");
+
           this.donationChannelsLookup = res.donationChannelsLookup.results?.length ? res.donationChannelsLookup.results : [
 
             { id: 1, text: 'SMS' },
@@ -191,15 +186,12 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.isFormInitialized = true; // Mark form as fully initialized
 
-          // Load optional data (these can fail without blocking form initialization)
-
           this.loadAttachmentConfigs();
         },
         error: (error: any) => {
           console.error('Error loading essential data:', error);
           this.toastr.error(this.translate.instant('ERRORS.FAILED_LOAD_DATA'));
           this.isLoading = false;
-          // Still initialize form even if some data fails to load
           this.isFormInitialized = true;
         }
       });
@@ -207,6 +199,49 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
       this.router.navigate(['/login']);
     }
+  }
+  // start partners
+initPartnerForm(): void {
+  this.partnerForm = this.fb.group({
+    name: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+    type: this.fb.control<number | null>(null, { validators: [Validators.required] }),
+
+    // required
+    licenseIssuer: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+    licenseExpiryDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+    licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+
+    // optional
+    contactDetails: this.fb.control<string | null>(null),
+    mainApplyServiceId: this.fb.control<number | null>(null),
+  });
+}
+
+
+addPartner(): void {
+  this.partnerForm.markAllAsTouched();
+  if (this.partnerForm.invalid) return;
+
+  const v = this.partnerForm.getRawValue();
+  this.partners.push({
+    name: v.name!,
+    type: v.type!,
+    licenseIssuer: v.licenseIssuer!,
+    licenseExpiryDate: v.licenseExpiryDate!,
+    licenseNumber: v.licenseNumber!,
+    contactDetails: v.contactDetails ?? null,      
+    mainApplyServiceId: v.mainApplyServiceId ?? null, 
+  });
+
+  this.partnerForm.reset();
+}
+
+removePartner(i: number): void {
+  this.partners.splice(i, 1);
+}
+
+  getPartnerTypeLabel(id: number): string {
+    return this.partnerTypes.find((t: any) => t.id === id)?.text ?? '';
   }
 
 
@@ -234,7 +269,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   // Navigation methods
   nextStep(): void {
     console.log(this.firstStepForm.value);
-    
+
     if (this.currentStep < this.totalSteps) {
       // Only validate if we're not in loading state and form is ready
       if (!this.isLoading && this.firstStepForm && this.isFormInitialized) {
@@ -242,7 +277,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           this.currentStep++;
         }
       } else {
-        // If still loading, just proceed without validation
         this.currentStep++;
       }
     }
@@ -256,13 +290,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
   goToStep(step: number): void {
     if (step >= 1 && step <= this.totalSteps) {
-      // Allow navigation without validation - user can navigate freely between steps
       this.currentStep = step;
     }
   }
 
   validateCurrentStep(): boolean {
-    // Only validate if user is actively trying to proceed, not during initial load
     if (this.isLoading || !this.firstStepForm || !this.isFormInitialized) {
       return true;
     }
@@ -271,13 +303,13 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       case 1:
         return this.validateStep1();
       case 2:
-        return true; // Reasons are optional initially
+        return true;
       case 3:
-        return true; // Evidence is optional
+        return true;
       case 4:
-        return true; // Justifications are optional
+        return true;
       case 5:
-        return true; // Attachments validation in upload
+        return true;
       default:
         return true;
     }
@@ -289,7 +321,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
     for (const field of requiredFields) {
       if (!form.get(field)?.value) {
-        // Use helper method to show validation toast only when appropriate
         this.showValidationToast(this.translate.instant(`VALIDATION.REQUIRED_FIELD`));
         return false;
       }
@@ -594,7 +625,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     // Only validate if user is actively trying to proceed, not during initial load
     console.log();
     if (this.isLoading || !this.firstStepForm || !this.isFormInitialized) {
-      
+
       return this.currentStep < this.totalSteps;
     }
     return this.currentStep < this.totalSteps && this.validateCurrentStep();
@@ -633,5 +664,24 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     return allFieldsValid;
   }
 
+  public handleNextClick(): void {
+    // مبدئيًا هنطبّق على ستيب 1 (ونقدر نوسّعها بعدين لباقي الستيبس)
+    this.submitted = true;
+    this.firstStepForm.markAllAsTouched();
+
+    const isValidStep1 = this.firstStepForm.valid && !this.firstStepForm.hasError('dateRange');
+
+    if (this.currentStep === 1) {
+      if (isValidStep1) {
+        this.currentStep++;
+      } else {
+        // من غير pipe في التيمبلت
+        this.toastr.error(this.translate.instant('VALIDATION.FORM_INVALID'));
+      }
+    } else {
+      // لاحقًا: تحقّق لكل ستيب حسب احتياجاتك
+      this.currentStep++;
+    }
+  }
 
 }

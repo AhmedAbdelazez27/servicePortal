@@ -466,7 +466,9 @@
     "REQUIRED_FIELD": "This field is required",
     "FORM_INVALID": "Please fill in all required fields correctly",
     "FILE_TOO_LARGE": "File size must not exceed 5MB",
-    "INVALID_FILE_TYPE": "Invalid file type. Only JPEG, PNG, PDF, DOC, DOCX files are allowed"
+    "INVALID_FILE_TYPE": "Invalid file type. Only JPEG, PNG, PDF, DOC, DOCX files are allowed",
+    "MIN_ONE_PARTNER": "Please add at least one partner.",
+    "DATE_RANGE": "End date must be after or equal to the start date."
   },
   "COMMON": {
     "REQUEST_SERVICE": "Request Service",
@@ -509,6 +511,16 @@
     "AD_TYPE_2": "Type 2",
     "DONATION_CHANNELS": "Donation Channels",
     "NOTES": "Notes",
-    "NOTES_PLACEHOLDER": "Any additional notes..."
+    "NOTES_PLACEHOLDER": "Any additional notes...",
+    "PARTNERS_TITLE": "Partners"
+  },
+  "PARTNERS": {
+    "NAME": "Partner Name",
+    "TYPE": "Partner Type",
+    "LICENSE_ISSUER": "License Issuer",
+    "LICENSE_NUMBER": "License Number",
+    "LICENSE_EXPIRY": "License Expiry Date",
+    "CONTACT_DETAILS": "Contact Details",
+    "MAIN_APPLY_SERVICE": "Main Apply Service (Optional)"
   }
 }
