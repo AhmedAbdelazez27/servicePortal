@@ -14,6 +14,8 @@ import { forkJoin, map, Observable, Subscription } from 'rxjs';
 import { CreateRequestPlaintDto, PlaintReasonsDto, RequestPlaintAttachmentDto, RequestPlaintEvidenceDto, RequestPlaintJustificationDto, RequestPlaintReasonDto, Select2Item, UserEntityDto } from '../../../../core/dtos/RequestPlaint/request-plaint.dto';
 import { CharityEventPermitRequestService } from '../../../../core/services/charity-event-permit-request.service';
 import { arrayMinLength, dateRangeValidator } from '../../../../shared/customValidators';
+import { RequestAdvertisement } from '../../../../core/dtos/charity-event-permit/charity-event-permit.dto';
+import { ServiceSettingService } from '../../../../core/services/serviceSetting.service';
 
 @Component({
   selector: 'app-charity-event-permit-request',
@@ -66,14 +68,23 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   // new probs
-  advertisementType: any;
-  advertisementTargetType: any;
-  advertisementMethodType: any;
-  donationChannelsLookup: any;
+  advertisementType: any[] = [];
+  advertisementTargetType: any[] = [];
+  advertisementMethodType: any[] = [];
+  donationChannelsLookup: any[] = [];
   partnerTypes: any[] = [];
   partners: any[] = [];
   partnerForm!: FormGroup;
-
+  adsStepIndex = 3;
+  advertForm!: FormGroup;
+  requestAdvertisements: RequestAdvertisement[] = [];
+  adLocations: string[] = [];
+  newLocationInput = '';
+  languages = [
+    { id: 'ar', text: 'العربية' },
+    { id: 'en', text: 'English' },
+  ];
+  service: any;
 
   constructor(
     private fb: FormBuilder,
@@ -85,10 +96,12 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private _CharityEventPermitRequestService: CharityEventPermitRequestService
+    private _CharityEventPermitRequestService: CharityEventPermitRequestService,
+    private serviceSettingService: ServiceSettingService
   ) {
     this.initializeForm();
     this.initPartnerForm();
+    this.initAdvertisementForm();
   }
 
   ngOnInit(): void {
@@ -137,15 +150,53 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       { validators: [dateRangeValidator] }
     );
 
+  }
+
+  initAdvertisementForm(): void {
+    const currentUser = this.authService.getCurrentUser();
+    this.advertForm = this.fb.group(
+      {
+
+        parentId: this.fb.control<number | null>(0),
+        mainApplyServiceId: this.fb.control<number | null>(0),
+        requestNo: this.fb.control<number | null>(0),
+
+        serviceType: this.fb.control<number | null>(1, { validators: [Validators.required] }),
+        workFlowServiceType: this.fb.control<number | null>(1, { validators: [Validators.required] }),
+
+        requestDate: this.fb.control(new Date().toISOString(), { validators: [Validators.required], nonNullable: true }),
+        userId: this.fb.control(currentUser?.id ?? '', { validators: [Validators.required], nonNullable: true }),
+
+        provider: this.fb.control<string | null>(null),
+
+        adTitle: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+        adLang: this.fb.control<'ar' | 'en'>('ar', { validators: [Validators.required], nonNullable: true }),
+
+        startDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+        endDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+
+        mobile: this.fb.control<string | null>(null),
+        supervisorName: this.fb.control<string | null>(null),
+        fax: this.fb.control<string | null>(null),
+        eMail: this.fb.control<string | null>(null, [Validators.email]),
+
+        targetedAmount: this.fb.control<number | null>(null),
 
 
+        newAd: this.fb.control<boolean | null>(true),
+        reNewAd: this.fb.control<boolean | null>(false),
+        oldPermNumber: this.fb.control<string | null>(null),
 
-    // Add form value change subscription for debugging
-    // this.firstStepForm.valueChanges.subscribe((value: any) => {
-
-    // });
+        requestEventPermitId: this.fb.control<number | null>(null),
 
 
+        targetTypeIds: this.fb.control<number[]>([], { validators: [arrayMinLength(1)], nonNullable: true }),
+        adMethodIds: this.fb.control<number[]>([], { validators: [arrayMinLength(1)], nonNullable: true }),
+      },
+      {
+        validators: [dateRangeValidator, this.renewRequiresOldPermValidator]
+      }
+    );
   }
 
   loadInitialData(): void {
@@ -171,8 +222,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       }).subscribe({
         next: (res: any) => {
           this.advertisementType = res.advertisementType;
-          this.advertisementMethodType = res.advertisementMethodType;
-          this.advertisementTargetType = res.advertisementTargetType;
+          this.advertisementMethodType = res.advertisementMethodType?.results;  
+          this.advertisementTargetType = res.advertisementTargetType?.results;
           this.partnerTypes = res.partnerTypes?.data;
           console.log(res.donationChannelsLookup, "ddddddd");
 
@@ -201,44 +252,44 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     }
   }
   // start partners
-initPartnerForm(): void {
-  this.partnerForm = this.fb.group({
-    name: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-    type: this.fb.control<number | null>(null, { validators: [Validators.required] }),
+  initPartnerForm(): void {
+    this.partnerForm = this.fb.group({
+      name: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+      type: this.fb.control<number | null>(null, { validators: [Validators.required] }),
 
-    // required
-    licenseIssuer: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-    licenseExpiryDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-    licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+      // required
+      licenseIssuer: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+      licenseExpiryDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+      licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
-    // optional
-    contactDetails: this.fb.control<string | null>(null),
-    mainApplyServiceId: this.fb.control<number | null>(null),
-  });
-}
+      // optional
+      contactDetails: this.fb.control<string | null>(null),
+      mainApplyServiceId: this.fb.control<number | null>(null),
+    });
+  }
 
 
-addPartner(): void {
-  this.partnerForm.markAllAsTouched();
-  if (this.partnerForm.invalid) return;
+  addPartner(): void {
+    this.partnerForm.markAllAsTouched();
+    if (this.partnerForm.invalid) return;
 
-  const v = this.partnerForm.getRawValue();
-  this.partners.push({
-    name: v.name!,
-    type: v.type!,
-    licenseIssuer: v.licenseIssuer!,
-    licenseExpiryDate: v.licenseExpiryDate!,
-    licenseNumber: v.licenseNumber!,
-    contactDetails: v.contactDetails ?? null,      
-    mainApplyServiceId: v.mainApplyServiceId ?? null, 
-  });
+    const v = this.partnerForm.getRawValue();
+    this.partners.push({
+      name: v.name!,
+      type: v.type!,
+      licenseIssuer: v.licenseIssuer!,
+      licenseExpiryDate: v.licenseExpiryDate!,
+      licenseNumber: v.licenseNumber!,
+      contactDetails: v.contactDetails ?? null,
+      mainApplyServiceId: v.mainApplyServiceId ?? null,
+    });
 
-  this.partnerForm.reset();
-}
+    this.partnerForm.reset();
+  }
 
-removePartner(i: number): void {
-  this.partners.splice(i, 1);
-}
+  removePartner(i: number): void {
+    this.partners.splice(i, 1);
+  }
 
   getPartnerTypeLabel(id: number): string {
     return this.partnerTypes.find((t: any) => t.id === id)?.text ?? '';
@@ -247,7 +298,7 @@ removePartner(i: number): void {
 
   loadAttachmentConfigs(): void {
     const sub = this.attachmentService.getAttachmentsConfigByType(
-      AttachmentsConfigType.RequestAGrievance
+      AttachmentsConfigType.DeclarationOfCharityEffectiveness
     ).subscribe({
       next: (configs) => {
         this.attachmentConfigs = configs || [];
@@ -446,6 +497,8 @@ removePartner(i: number): void {
         };
       }
     };
+    console.log(this.attachments);
+    
     reader.readAsDataURL(file);
   }
 
@@ -529,7 +582,7 @@ removePartner(i: number): void {
 
     // Basic validation first
     if (!this.canSubmit()) {
-      this.toastr.error(this.translate.instant('VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS'));
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
       return;
     }
 
@@ -665,7 +718,6 @@ removePartner(i: number): void {
   }
 
   public handleNextClick(): void {
-    // مبدئيًا هنطبّق على ستيب 1 (ونقدر نوسّعها بعدين لباقي الستيبس)
     this.submitted = true;
     this.firstStepForm.markAllAsTouched();
 
@@ -675,13 +727,134 @@ removePartner(i: number): void {
       if (isValidStep1) {
         this.currentStep++;
       } else {
-        // من غير pipe في التيمبلت
         this.toastr.error(this.translate.instant('VALIDATION.FORM_INVALID'));
       }
     } else {
-      // لاحقًا: تحقّق لكل ستيب حسب احتياجاتك
       this.currentStep++;
     }
+  };
+
+
+  private renewRequiresOldPermValidator = (group: FormGroup) => {
+    const reNewAd = group.get('reNewAd')?.value as boolean;
+    const oldPermNumber = (group.get('oldPermNumber')?.value ?? '').toString().trim();
+    if (reNewAd && !oldPermNumber) {
+      return { oldPermRequired: true };
+    }
+    return null;
+  };
+
+  onAdModeChange(mode: 'new' | 'renew') {
+    this.advertForm.patchValue({
+      newAd: mode === 'new',
+      reNewAd: mode === 'renew',
+    });
+    this.advertForm.updateValueAndValidity({ onlySelf: false, emitEvent: false });
+  };
+
+
+  addLocation(): void {
+    const v = (this.newLocationInput || '').trim();
+    if (!v) return;
+    this.adLocations.push(v);
+    this.newLocationInput = '';
+  }
+
+  removeLocation(i: number): void {
+    this.adLocations.splice(i, 1);
+  }
+
+  addAdvertisement(): void {
+    this.submitted = true;
+    this.advertForm.markAllAsTouched();
+    console.log("this.advertForm ",this.advertForm.value);
+    
+
+    const hasLocations = this.adLocations.length > 0;
+    if (!this.advertForm.valid || this.advertForm.hasError('dateRange') || this.advertForm.hasError('oldPermRequired') || !hasLocations) {
+      this.toastr.error(this.translate.instant('VALIDATION.FORM_INVALID'));
+      return;
+    }
+
+    const v = this.advertForm.getRawValue();
+
+
+    const toRFC3339 = (x: string) => (x ? new Date(x).toISOString() : x);
+
+    const ad: RequestAdvertisement = {
+      parentId: v.parentId,
+      mainApplyServiceId: v.mainApplyServiceId,
+      requestNo: v.requestNo,
+      serviceType: v.serviceType!,
+      workFlowServiceType: v.workFlowServiceType!,
+      requestDate: toRFC3339(v.requestDate)!,
+      userId: v.userId,
+      provider: v.provider ?? null,
+      adTitle: v.adTitle,
+      adLang: v.adLang,
+      startDate: toRFC3339(v.startDate)!,
+      endDate: toRFC3339(v.endDate)!,
+      mobile: v.mobile ?? null,
+      supervisorName: v.supervisorName ?? null,
+      fax: v.fax ?? null,
+      eMail: v.eMail ?? null,
+      targetedAmount: v.targetedAmount ?? null,
+      newAd: v.newAd === true ? true : (v.reNewAd ? false : null),
+      reNewAd: v.reNewAd === true ? true : (v.newAd ? false : null),
+      oldPermNumber: v.oldPermNumber ?? null,
+      requestEventPermitId: v.requestEventPermitId ?? null,
+
+      attachments: [],
+
+      requestAdvertisementTargets: (v.targetTypeIds || []).map((id: number) => ({
+        mainApplyServiceId: v.mainApplyServiceId ?? null,
+        lkpTargetTypeId: id,
+        othertxt: null
+      })),
+
+      requestAdvertisementAdMethods: (v.adMethodIds || []).map((id: number) => ({
+        mainApplyServiceId: v.mainApplyServiceId ?? null,
+        lkpAdMethodId: id,
+        othertxt: null
+      })),
+
+      requestAdvertisementAdLocations: this.adLocations.map(loc => ({
+        mainApplyServiceId: v.mainApplyServiceId ?? null,
+        location: loc
+      })),
+    };
+
+    this.requestAdvertisements.push(ad);
+
+
+    this.advertForm.reset({
+      serviceType: 1,
+      workFlowServiceType: 1,
+      requestDate: new Date().toISOString(),
+      userId: v.userId,
+      adLang: 'ar',
+      newAd: true,
+      reNewAd: false,
+      targetTypeIds: [],
+      adMethodIds: []
+    });
+    this.adLocations = [];
+    this.submitted = false;
+    this.toastr.success(this.translate.instant('SUCCESS.AD_ADDED'));
+  }
+
+  removeAdvertisement(i: number): void {
+    this.requestAdvertisements.splice(i, 1);
+  }
+  getServiceDetails() {
+    this.serviceSettingService.getById(6).subscribe({
+      next: (response: any) => {
+        this.service = response || null;
+      },
+      error: (error: any) => {
+
+      }
+    });
   }
 
 }

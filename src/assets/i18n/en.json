@@ -4,7 +4,6 @@
   "TOGGLE_LANG": "Switch to Arabic",
   "PAGE_NOT_FOUND": "Oops! Page not found.",
   "BACK_HOME": "Back to Home",
-  
   "TOAST": {
     "TITLE": {
       "SUCCESS": "Success",
@@ -65,15 +64,6 @@
       "CONFIRM_PASSWORD_REQUIRED": "Confirm password is required",
       "PASSWORDS_MATCH": "Passwords match",
       "CONFIRM_BUTTON": "Confirm"
-    },
-    "VALIDATION": {
-      "EMAIL_REQUIRED": "Email is required",
-      "EMAIL_INVALID": "Please enter a valid email address",
-      "PASSWORD_REQUIRED": "Password is required",
-      "PASSWORD_MIN_LENGTH": "Password must be at least 8 characters",
-      "PASSWORD_PATTERN": "Password must contain uppercase, lowercase, number and special character",
-      "CONFIRM_PASSWORD_REQUIRED": "Confirm password is required",
-      "PASSWORDS_DONT_MATCH": "Passwords do not match"
     },
     "MESSAGES": {
       "LOGIN_SUCCESS": "Login successful",
@@ -205,9 +195,9 @@
     "ENTER_FOUNDATION_NAME": "Enter Foundation Name",
     "LICENSE_NUMBER": "License Number",
     "ENTER_LICENSE_NUMBER": "Enter License Number",
-      "LICENSE_END_DATE": "License End Date",
-      "SELECT_LICENSE_END_DATE": "Select License End Date",
-      "LICENSE_DATE_FUTURE": "License end date must be in the future",
+    "LICENSE_END_DATE": "License End Date",
+    "SELECT_LICENSE_END_DATE": "Select License End Date",
+    "LICENSE_DATE_FUTURE": "License end date must be in the future",
     "CONTACT_INFO": "Contact Information",
     "EMAIL": "Email",
     "ENTER_EMAIL": "Enter Email",
@@ -311,13 +301,6 @@
     "KILOBYTES": "KB",
     "FILE_PREVIEW": "File preview",
     "LOGO": "Logo"
-  },
-  "VALIDATION": {
-    "REQUIRED": "This field is required",
-    "EMAIL": "Please enter a valid email address",
-    "MINLENGTH": "Minimum length is {{length}} characters",
-    "PATTERN": "Please enter a valid format",
-    "PASSWORD_MISMATCH": "Passwords do not match"
   },
   "SERVICES": {
     "TITLE": "Services",
@@ -468,7 +451,22 @@
     "FILE_TOO_LARGE": "File size must not exceed 5MB",
     "INVALID_FILE_TYPE": "Invalid file type. Only JPEG, PNG, PDF, DOC, DOCX files are allowed",
     "MIN_ONE_PARTNER": "Please add at least one partner.",
-    "DATE_RANGE": "End date must be after or equal to the start date."
+    "DATE_RANGE": "End date must be after or equal to the start date.",
+    "MIN_ONE_TARGET": "Select at least one target type.",
+    "MIN_ONE_METHOD": "Select at least one advertising method.",
+    "MIN_ONE_LOCATION": "Add at least one location.",
+    "REQUIRED": "This field is required",
+    "EMAIL": "Please enter a valid email address",
+    "MINLENGTH": "Minimum length is {{length}} characters",
+    "PATTERN": "Please enter a valid format",
+    "PASSWORD_MISMATCH": "Passwords do not match",
+    "EMAIL_REQUIRED": "Email is required",
+    "EMAIL_INVALID": "Please enter a valid email address",
+    "PASSWORD_REQUIRED": "Password is required",
+    "PASSWORD_MIN_LENGTH": "Password must be at least 8 characters",
+    "PASSWORD_PATTERN": "Password must contain uppercase, lowercase, number and special character",
+    "CONFIRM_PASSWORD_REQUIRED": "Confirm password is required",
+    "PASSWORDS_DONT_MATCH": "Passwords do not match"
   },
   "COMMON": {
     "REQUEST_SERVICE": "Request Service",
@@ -483,7 +481,7 @@
     "NEXT": "Next",
     "SUBMIT": "Submit"
   },
-   "COMMONCHARITY_EVENT": {
+  "COMMONCHARITY_EVENT": {
     "NEXT": "Next",
     "SELECT_OPTION": "Select..."
   },
@@ -512,7 +510,32 @@
     "DONATION_CHANNELS": "Donation Channels",
     "NOTES": "Notes",
     "NOTES_PLACEHOLDER": "Any additional notes...",
-    "PARTNERS_TITLE": "Partners"
+    "PARTNERS_TITLE": "Partners",
+    "ADS_STEP_TITLE": "Advertisements",
+    "AD_TITLE": "Advertisement title",
+    "AD_LANG": "Language",
+    "SERVICE_TYPE": "Service type",
+    "SERVICE_TYPE_1": "Initial permit",
+    "SERVICE_TYPE_2": "Modification",
+    "WORKFLOW_SERVICE_TYPE": "Workflow service type",
+    "WORKFLOW_TYPE_1": "New request",
+    "WORKFLOW_TYPE_2": "Follow-up",
+    "TARGETED_AMOUNT": "Targeted amount",
+    "AD_STATUS": "Advertisement status",
+    "AD_NEW": "New",
+    "AD_RENEW": "Renew",
+    "OLD_PERM_NUMBER": "Previous permit number",
+    "TARGET_TYPES": "Target audiences",
+    "AD_METHODS": "Advertising channels",
+    "AD_LOCATIONS": "Ad locations",
+    "ADD_LOCATION_PLACEHOLDER": "Add a location and click Add",
+    "DATE_RANGE_COL": "Date range",
+    "TARGETS_COUNT": "Targets",
+    "METHODS_COUNT": "Methods",
+    "LOCATIONS_COUNT": "Locations",
+    "PROVIDER": "Provider",
+    "MOBILE": "Mobile number",
+    "FAX": "Fax"
   },
   "PARTNERS": {
     "NAME": "Partner Name",

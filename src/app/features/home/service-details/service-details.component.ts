@@ -112,7 +112,10 @@ export class ServiceDetailsComponent implements OnInit {
       // Check if this is RequestPlaint service (ID = 7)
       if (this.service.serviceId === 7) {
         this.router.navigate(['/request-plaint']);
-      } else {
+      }else if (this.service.serviceId === 6) {
+        this.router.navigate(['/services-requests/charity-event-permit-request']);
+      }
+       else {
         // Navigate to generic service request page
         this.router.navigate(['/service-request', this.service.serviceId]);
       }

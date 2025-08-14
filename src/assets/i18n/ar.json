@@ -65,15 +65,6 @@
       "PASSWORDS_MATCH": "كلمات المرور متطابقة",
       "CONFIRM_BUTTON": "تأكيد"
     },
-    "VALIDATION": {
-      "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
-      "EMAIL_INVALID": "يرجى إدخال عنوان بريد إلكتروني صحيح",
-      "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
-      "PASSWORD_MIN_LENGTH": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
-      "PASSWORD_PATTERN": "يجب أن تحتوي كلمة المرور على أحرف كبيرة وصغيرة ورقم ورمز خاص",
-      "CONFIRM_PASSWORD_REQUIRED": "تأكيد كلمة المرور مطلوب",
-      "PASSWORDS_DONT_MATCH": "كلمات المرور غير متطابقة"
-    },
     "MESSAGES": {
       "LOGIN_SUCCESS": "تم تسجيل الدخول بنجاح",
       "LOGIN_FAILED": "فشل تسجيل الدخول. يرجى التحقق من بيانات الاعتماد الخاصة بك.",
@@ -311,13 +302,6 @@
     "FILE_PREVIEW": "معاينة الملف",
     "LOGO": "الشعار"
   },
-  "VALIDATION": {
-    "REQUIRED": "هذا الحقل مطلوب",
-    "EMAIL": "يرجى إدخال عنوان بريد إلكتروني صحيح",
-    "MINLENGTH": "الحد الأدنى للطول هو {{length}} أحرف",
-    "PATTERN": "يرجى إدخال تنسيق صحيح",
-    "PASSWORD_MISMATCH": "كلمات المرور غير متطابقة"
-  },
   "SERVICES": {
     "TITLE": "الخدمات",
     "DETAILS": "تفاصيل الخدمة",
@@ -460,7 +444,22 @@
     "FORM_INVALID": "يرجى ملء جميع الحقول المطلوبة بشكل صحيح",
     "FILE_TOO_LARGE": "يجب ألا يتجاوز حجم الملف 5 ميجابايت",
     "INVALID_FILE_TYPE": "نوع ملف غير صالح. مسموح فقط بملفات JPEG، PNG، PDF، DOC، DOCX",
-     "DATE_RANGE": "تاريخ الانتهاء يجب أن يكون بعد أو يساوي تاريخ البدء."
+    "DATE_RANGE": "تاريخ الانتهاء يجب أن يكون بعد أو يساوي تاريخ البدء.",
+    "MIN_ONE_TARGET": "اختر نوع استهداف واحد على الأقل.",
+    "MIN_ONE_METHOD": "اختر وسيلة إعلان واحدة على الأقل.",
+    "MIN_ONE_LOCATION": "أضف موقعًا واحدًا على الأقل.",
+    "REQUIRED": "هذا الحقل مطلوب",
+    "EMAIL": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+    "MINLENGTH": "الحد الأدنى للطول هو {{length}} أحرف",
+    "PATTERN": "يرجى إدخال تنسيق صحيح",
+    "PASSWORD_MISMATCH": "كلمات المرور غير متطابقة",
+    "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+    "EMAIL_INVALID": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+    "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
+    "PASSWORD_MIN_LENGTH": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+    "PASSWORD_PATTERN": "يجب أن تحتوي كلمة المرور على أحرف كبيرة وصغيرة ورقم ورمز خاص",
+    "CONFIRM_PASSWORD_REQUIRED": "تأكيد كلمة المرور مطلوب",
+    "PASSWORDS_DONT_MATCH": "كلمات المرور غير متطابقة"
   },
   "COMMON": {
     "REQUEST_SERVICE": "طلب الخدمة",
@@ -506,7 +505,32 @@
     "DONATION_CHANNELS": "قنوات جمع التبرعات",
     "NOTES": "ملاحظات",
     "NOTES_PLACEHOLDER": "أي ملاحظات إضافية...",
-    "PARTNERS_TITLE": "الشركاء"
+    "PARTNERS_TITLE": "الشركاء",
+    "ADS_STEP_TITLE": "الإعلانات",
+    "AD_TITLE": "عنوان الإعلان",
+    "AD_LANG": "اللغة",
+    "SERVICE_TYPE": "نوع الخدمة",
+    "SERVICE_TYPE_1": "تصريح جديد",
+    "SERVICE_TYPE_2": "تعديل",
+    "WORKFLOW_SERVICE_TYPE": "نوع خدمة سير العمل",
+    "WORKFLOW_TYPE_1": "طلب جديد",
+    "WORKFLOW_TYPE_2": "متابعة",
+    "TARGETED_AMOUNT": "المبلغ المستهدف",
+    "AD_STATUS": "حالة الإعلان",
+    "AD_NEW": "جديد",
+    "AD_RENEW": "تجديد",
+    "OLD_PERM_NUMBER": "رقم التصريح السابق",
+    "TARGET_TYPES": "الفئات المستهدفة",
+    "AD_METHODS": "قنوات الإعلان",
+    "AD_LOCATIONS": "أماكن الإعلان",
+    "ADD_LOCATION_PLACEHOLDER": "أضف موقعًا ثم اضغط إضافة",
+    "DATE_RANGE_COL": "الفترة الزمنية",
+    "TARGETS_COUNT": "عدد الفئات",
+    "METHODS_COUNT": "عدد القنوات",
+    "LOCATIONS_COUNT": "عدد المواقع",
+    "PROVIDER": "مزود الخدمة",
+    "MOBILE": "رقم الجوال",
+    "FAX": "رقم الفاكس"
   },
   "PARTNERS": {
     "NAME": "اسم الشريك",

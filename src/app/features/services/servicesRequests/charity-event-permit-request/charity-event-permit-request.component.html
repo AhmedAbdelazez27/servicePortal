@@ -45,7 +45,8 @@
                                         stroke-linecap="round" />
                                 </svg>
                             </div>
-                            <span class="step-title" (click)="goToStep(2)">{{ 'CHARITY_EVENT.PARTNERS_TITLE' | translate }}</span>
+                            <span class="step-title" (click)="goToStep(2)">{{ 'CHARITY_EVENT.PARTNERS_TITLE' | translate
+                                }}</span>
                         </div>
 
                         <!-- Step 3 -->
@@ -60,34 +61,19 @@
                                         stroke-linecap="round" />
                                 </svg>
                             </div>
-                            <span class="step-title" (click)="goToStep(3)">{{ 'REQUEST_PLAINT.STEP3_TITLE' | translate
+                            <span class="step-title" (click)="goToStep(3)">{{ 'CHARITY_EVENT.ADVERTISEMENT_TYPE' |
+                                translate
                                 }}</span>
                         </div>
 
                         <!-- Step 4 -->
-                        <div class="d-flex gap-3 mb-3">
+                        <div class="d-flex gap-3">
                             <div class="step-container" [class.active]="isStepActive(4)"
                                 [class.completed]="isStepCompleted(4)">
                                 <div class="step-bg"></div>
                                 <div class="step">4</div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48"
-                                    fill="none">
-                                    <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5"
-                                        stroke-linecap="round" />
-                                </svg>
                             </div>
-                            <span class="step-title" (click)="goToStep(4)">{{ 'REQUEST_PLAINT.STEP4_TITLE' | translate
-                                }}</span>
-                        </div>
-
-                        <!-- Step 5 -->
-                        <div class="d-flex gap-3">
-                            <div class="step-container" [class.active]="isStepActive(5)"
-                                [class.completed]="isStepCompleted(5)">
-                                <div class="step-bg"></div>
-                                <div class="step">5</div>
-                            </div>
-                            <span class="step-title" (click)="goToStep(5)">{{ 'REQUEST_PLAINT.STEP5_TITLE' | translate
+                            <span class="step-title" (click)="goToStep(4)">{{ 'REQUEST_PLAINT.STEP5_TITLE' | translate
                                 }}</span>
                         </div>
                     </div>
@@ -234,7 +220,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Email (اختياري) -->
+
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'CHARITY_EVENT.EMAIL' | translate }}</label>
                                         <input type="email" class="form-control" formControlName="email"
@@ -418,6 +404,372 @@
                                     </table>
                                 </div>
                             </div>
+
+                            <!-- Step 3: Advertisements Ads -->
+                            <div *ngIf="currentStep === adsStepIndex && advertForm" class="step-content"
+                                [formGroup]="advertForm">
+                                <h5 class="mb-4">{{ 'CHARITY_EVENT.ADS_STEP_TITLE' | translate }}</h5>
+
+                                <!-- hidden / readonly system fields to exist in form -->
+                                <input type="hidden" formControlName="parentId">
+                                <input type="hidden" formControlName="mainApplyServiceId">
+                                <input type="hidden" formControlName="requestNo">
+                                <input type="hidden" formControlName="userId">
+                                <input type="hidden" formControlName="requestEventPermitId">
+
+                                <div class="row">
+                                    <!-- Request Date (readonly visual) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_DATE' | translate }}</label>
+                                        <div class="form-control" readonly>
+                                            {{ advertForm.value.requestDate | date:'medium' }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Provider (optional) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.PROVIDER' | translate }}</label>
+                                        <input class="form-control" formControlName="provider">
+                                    </div>
+
+                                    <!-- Title (required) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.AD_TITLE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="adTitle"
+                                            [class.is-invalid]="advertForm.get('adTitle')?.touched && advertForm.get('adTitle')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="advertForm.get('adTitle')?.touched && advertForm.get('adTitle')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Language (required) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.AD_LANG' | translate }} <span class="text-danger">*</span>
+                                        </label>
+                                        <ng-select formControlName="adLang" [items]="languages" bindLabel="text"
+                                            bindValue="id" [multiple]="false" [closeOnSelect]="true" [clearable]="false"
+                                            [searchable]="false" class="ng-select-custom"
+                                            [ngClass]="{'is-invalid': advertForm.get('adLang')?.touched && advertForm.get('adLang')?.invalid}">
+                                        </ng-select>
+                                        <div class="invalid-feedback"
+                                            *ngIf="advertForm.get('adLang')?.touched && advertForm.get('adLang')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Service Type (required) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.SERVICE_TYPE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-select" formControlName="serviceType"
+                                            [class.is-invalid]="advertForm.get('serviceType')?.touched && advertForm.get('serviceType')?.invalid">
+                                            <option [ngValue]="1">{{ 'CHARITY_EVENT.SERVICE_TYPE_1' | translate }}
+                                            </option>
+                                            <option [ngValue]="2">{{ 'CHARITY_EVENT.SERVICE_TYPE_2' | translate }}
+                                            </option>
+                                        </select>
+                                        <div class="invalid-feedback"
+                                            *ngIf="advertForm.get('serviceType')?.touched && advertForm.get('serviceType')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Workflow Type (required) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.WORKFLOW_SERVICE_TYPE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-select" formControlName="workFlowServiceType"
+                                            [class.is-invalid]="advertForm.get('workFlowServiceType')?.touched && advertForm.get('workFlowServiceType')?.invalid">
+                                            <option [ngValue]="1">{{ 'CHARITY_EVENT.WORKFLOW_TYPE_1' | translate }}
+                                            </option>
+                                            <option [ngValue]="2">{{ 'CHARITY_EVENT.WORKFLOW_TYPE_2' | translate }}
+                                            </option>
+                                        </select>
+                                        <div class="invalid-feedback"
+                                            *ngIf="advertForm.get('workFlowServiceType')?.touched && advertForm.get('workFlowServiceType')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Date range (required) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.START_DATE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input type="datetime-local" class="form-control" formControlName="startDate"
+                                            [class.is-invalid]="(advertForm.get('startDate')?.touched && advertForm.get('startDate')?.invalid) || advertForm.hasError('dateRange')">
+                                        <div class="invalid-feedback"
+                                            *ngIf="advertForm.get('startDate')?.touched && advertForm.get('startDate')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-6 mb-1">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.END_DATE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input type="datetime-local" class="form-control" formControlName="endDate"
+                                            [class.is-invalid]="(advertForm.get('endDate')?.touched && advertForm.get('endDate')?.invalid) || advertForm.hasError('dateRange')">
+                                        <div class="invalid-feedback"
+                                            *ngIf="advertForm.get('endDate')?.touched && advertForm.get('endDate')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mb-4" *ngIf="advertForm.hasError('dateRange')">
+                                        <div class="text-danger small">{{ 'VALIDATION.DATE_RANGE' | translate }}</div>
+                                    </div>
+
+                                    <!-- Contact info (all optional) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.MOBILE' | translate }}</label>
+                                        <input type="tel" class="form-control" formControlName="mobile">
+                                    </div>
+
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.SUPERVISOR_NAME' | translate
+                                            }}</label>
+                                        <input class="form-control" formControlName="supervisorName">
+                                    </div>
+
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.FAX' | translate }}</label>
+                                        <input class="form-control" formControlName="fax">
+                                    </div>
+
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.EMAIL' | translate }}</label>
+                                        <input type="email" class="form-control" formControlName="eMail"
+                                            [class.is-invalid]="advertForm.get('eMail')?.touched && advertForm.get('eMail')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="advertForm.get('eMail')?.touched && advertForm.get('eMail')?.errors">
+                                            {{ 'VALIDATION.INVALID_EMAIL' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Targeted Amount (optional) -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.TARGETED_AMOUNT' | translate
+                                            }}</label>
+                                        <input type="number" class="form-control" formControlName="targetedAmount">
+                                    </div>
+
+                                    <!-- New / Renew + oldPermNumber -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label d-block">{{ 'CHARITY_EVENT.AD_STATUS' | translate
+                                            }}</label>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" id="adNew" name="adMode"
+                                                (change)="onAdModeChange('new')"
+                                                [checked]="advertForm.value.newAd === true">
+                                            <label class="form-check-label" for="adNew">{{ 'CHARITY_EVENT.AD_NEW' |
+                                                translate }}</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" id="adRenew" name="adMode"
+                                                (change)="onAdModeChange('renew')"
+                                                [checked]="advertForm.value.reNewAd === true">
+                                            <label class="form-check-label" for="adRenew">{{ 'CHARITY_EVENT.AD_RENEW' |
+                                                translate }}</label>
+                                        </div>
+
+                                        <div class="mt-3" *ngIf="advertForm.value.reNewAd === true">
+                                            <label class="form-label">
+                                                {{ 'CHARITY_EVENT.OLD_PERM_NUMBER' | translate }} <span
+                                                    class="text-danger">*</span>
+                                            </label>
+                                            <input class="form-control" formControlName="oldPermNumber"
+                                                [class.is-invalid]="advertForm.hasError('oldPermRequired') && (advertForm.get('oldPermNumber')?.touched || submitted)">
+                                            <div class="invalid-feedback"
+                                                *ngIf="advertForm.hasError('oldPermRequired')">
+                                                {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Targets (multi) -> requestAdvertisementTargets -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.TARGET_TYPES' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <ng-select formControlName="targetTypeIds" [items]="advertisementTargetType"
+                                            bindLabel="text" bindValue="id" [multiple]="true" [closeOnSelect]="false"
+                                            [clearable]="true" [searchable]="true"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
+                                            [ngClass]="{'is-invalid': advertForm.get('targetTypeIds')?.touched && advertForm.get('targetTypeIds')?.invalid}">
+                                        </ng-select>
+                                        <div class="invalid-feedback d-block"
+                                            *ngIf="advertForm.get('targetTypeIds')?.hasError('minArrayLength')">
+                                            {{ 'VALIDATION.MIN_ONE_TARGET' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Methods (multi) -> requestAdvertisementAdMethods -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.AD_METHODS' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <ng-select formControlName="adMethodIds" [items]="advertisementMethodType"
+                                            bindLabel="text" bindValue="id" [multiple]="true" [closeOnSelect]="false"
+                                            [clearable]="true" [searchable]="true"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
+                                            [ngClass]="{'is-invalid': advertForm.get('adMethodIds')?.touched && advertForm.get('adMethodIds')?.invalid}">
+                                        </ng-select>
+                                        <div class="invalid-feedback d-block"
+                                            *ngIf="advertForm.get('adMethodIds')?.hasError('minArrayLength')">
+                                            {{ 'VALIDATION.MIN_ONE_METHOD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Locations (chips) -> requestAdvertisementAdLocations -->
+                                    <div class="col-xl-12 mb-2">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.AD_LOCATIONS' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+
+                                        <div class="d-flex gap-2 mb-2">
+                                            <input class="form-control" [(ngModel)]="newLocationInput"
+                                                [ngModelOptions]="{ standalone: true }" name="newLocationInput"
+                                                placeholder="{{ 'CHARITY_EVENT.ADD_LOCATION_PLACEHOLDER' | translate }}">
+                                            <button type="button" class="btn btn-outline-primary"
+                                                (click)="addLocation()">
+                                                {{ 'COMMON.ADD' | translate }}
+                                            </button>
+                                        </div>
+
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <span class="badge bg-secondary"
+                                                *ngFor="let loc of adLocations; let i = index">
+                                                {{ loc }}
+                                                <button type="button" class="btn-close btn-close-white btn-sm ms-1"
+                                                    aria-label="Close" (click)="removeLocation(i)"></button>
+                                            </span>
+                                        </div>
+
+                                        <div class="text-danger small mt-1"
+                                            *ngIf="submitted && adLocations.length === 0">
+                                            {{ 'VALIDATION.MIN_ONE_LOCATION' | translate }}
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <!-- Add button -->
+                                <div class="d-flex justify-content-end mt-3">
+                                    <button type="button" class="btn btn-primary" (click)="addAdvertisement()">
+                                        {{ 'COMMON.ADD' | translate }}
+                                    </button>
+                                </div>
+
+                                <!-- Table -->
+                                <div class="table-responsive mt-4" *ngIf="requestAdvertisements.length > 0">
+                                    <table class="table table-striped align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>{{ 'CHARITY_EVENT.AD_TITLE' | translate }}</th>
+                                                <th>{{ 'CHARITY_EVENT.AD_LANG' | translate }}</th>
+                                                <th>{{ 'CHARITY_EVENT.DATE_RANGE_COL' | translate }}</th>
+                                                <th>{{ 'CHARITY_EVENT.TARGETED_AMOUNT' | translate }}</th>
+                                                <th>{{ 'CHARITY_EVENT.TARGETS_COUNT' | translate }}</th>
+                                                <th>{{ 'CHARITY_EVENT.METHODS_COUNT' | translate }}</th>
+                                                <th>{{ 'CHARITY_EVENT.LOCATIONS_COUNT' | translate }}</th>
+                                                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let ad of requestAdvertisements; let i = index">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>{{ ad.adTitle }}</td>
+                                                <td>{{ ad.adLang | uppercase }}</td>
+                                                <td>
+                                                    <div class="small">
+                                                        <div>{{ ad.startDate | date:'short' }}</div>
+                                                        <div>{{ ad.endDate | date:'short' }}</div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ ad.targetedAmount || '-' }}</td>
+                                                <td>{{ ad.requestAdvertisementTargets?.length || 0 }}</td>
+                                                <td>{{ ad.requestAdvertisementAdMethods?.length || 0 }}</td>
+                                                <td>{{ ad.requestAdvertisementAdLocations?.length || 0 }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                        (click)="removeAdvertisement(i)">
+                                                        {{ 'COMMON.REMOVE' | translate }}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Step 4: Attachment -->
+                            <div *ngIf="currentStep === 4" class="step-content">
+                                <h5 class="mb-4">{{ 'REQUEST_PLAINT.ATTACHMENTS' | translate }}</h5>
+
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                                <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let config of attachmentConfigs; let i = index">
+                                                <td>{{ getAttachmentName(config) }}</td>
+                                                <td>
+                                                    <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
+                                                        (dragover)="onDragOver($event)"
+                                                        (dragleave)="onDragLeave($event)"
+                                                        (drop)="onDrop($event, config.id!)"
+                                                        [class.drag-over]="isDragOver">
+                                                        <input type="file" class="d-none" [id]="'file-' + config.id"
+                                                            (change)="onFileSelected($event, config.id!)"
+                                                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                        <label [for]="'file-' + config.id" class="upload-label">
+                                                            <i class="fas fa-cloud-upload-alt"></i>
+                                                            <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate
+                                                                }}</span>
+                                                        </label>
+                                                    </div>
+                                                    <div *ngIf="selectedFiles[config.id!]" class="file-preview">
+                                                        <span class="file-name">{{ selectedFiles[config.id!].name
+                                                            }}</span>
+                                                        <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')"
+                                                            [src]="filePreviews[config.id!]" class="preview-image">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button *ngIf="selectedFiles[config.id!]" type="button"
+                                                        class="btn btn-sm btn-danger" (click)="removeFile(config.id!)">
+                                                        {{ 'COMMON.REMOVE' | translate }}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody> 
+                                    </table>
+                                </div>
+                            </div>
+
 
                             <!-- Navigation Buttons -->
                             <div class="d-flex justify-content-between mt-4">
