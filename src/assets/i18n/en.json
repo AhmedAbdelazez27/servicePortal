@@ -480,5 +480,35 @@
     "PREVIOUS": "Previous",
     "NEXT": "Next",
     "SUBMIT": "Submit"
+  },
+   "COMMONCHARITY_EVENT": {
+    "NEXT": "Next",
+    "SELECT_OPTION": "Select..."
+  },
+  "VALIDATIONCHARITY_EVENT": {
+    "REQUIRED_FIELD": "This field is required",
+    "INVALID_EMAIL": "Please enter a valid email",
+    "DATE_RANGE": "End date must be after or equal to start date",
+    "MIN_ONE_CHANNEL": "Select at least one channel"
+  },
+  "CHARITY_EVENT": {
+    "STEP1_TITLE": "Main Information",
+    "REQUEST_NO": "Request No",
+    "REQUEST_DATE": "Request Date",
+    "EVENT_NAME": "Event Name",
+    "EVENT_LOCATION": "Event Location",
+    "START_DATE": "Start Date",
+    "END_DATE": "End Date",
+    "SUPERVISOR_NAME": "Supervisor Name",
+    "JOB_TITLE": "Job Title",
+    "TELEPHONE1": "Telephone 1",
+    "TELEPHONE2": "Telephone 2",
+    "EMAIL": "Email",
+    "ADVERTISEMENT_TYPE": "Advertisement Type",
+    "AD_TYPE_1": "Type 1",
+    "AD_TYPE_2": "Type 2",
+    "DONATION_CHANNELS": "Donation Channels",
+    "NOTES": "Notes",
+    "NOTES_PLACEHOLDER": "Any additional notes..."
   }
 }

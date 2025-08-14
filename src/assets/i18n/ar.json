@@ -474,5 +474,35 @@
     "PREVIOUS": "السابق",
     "NEXT": "التالي",
     "SUBMIT": "إرسال"
+  },
+  "COMMONCHARITY_EVENT": {
+    "NEXT": "التالي",
+    "SELECT_OPTION": "اختر..."
+  },
+  "VALIDATIONCHARITY_EVENT": {
+    "REQUIRED_FIELD": "هذا الحقل مطلوب",
+    "INVALID_EMAIL": "من فضلك أدخل بريدًا صحيحًا",
+    "DATE_RANGE": "يجب أن يكون تاريخ الانتهاء بعد أو يساوي تاريخ البدء",
+    "MIN_ONE_CHANNEL": "اختر قناة واحدة على الأقل"
+  },
+  "CHARITY_EVENT": {
+    "STEP1_TITLE": "البيانات الأساسية",
+    "REQUEST_NO": "رقم الطلب",
+    "REQUEST_DATE": "تاريخ الطلب",
+    "EVENT_NAME": "اسم الفعالية",
+    "EVENT_LOCATION": "موقع الفعالية",
+    "START_DATE": "تاريخ البدء",
+    "END_DATE": "تاريخ الانتهاء",
+    "SUPERVISOR_NAME": "اسم المشرف",
+    "JOB_TITLE": "المسمى الوظيفي",
+    "TELEPHONE1": "هاتف 1",
+    "TELEPHONE2": "هاتف 2",
+    "EMAIL": "البريد الإلكتروني",
+    "ADVERTISEMENT_TYPE": "نوع الإعلان",
+    "AD_TYPE_1": "النوع 1",
+    "AD_TYPE_2": "النوع 2",
+    "DONATION_CHANNELS": "قنوات جمع التبرعات",
+    "NOTES": "ملاحظات",
+    "NOTES_PLACEHOLDER": "أي ملاحظات إضافية..."
   }
 }

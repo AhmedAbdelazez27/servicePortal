@@ -46,6 +46,10 @@ export class Select2APIEndpoint {
     GetScProjectStatusSelect2List: '/ScProject/GetScProjectStatusSelect2List',
     GetScProjectTypeSelect2List: '/ScProject/GetScProjectTypeSelect2List',
     GetPlaintReasonsSelect2List: '/Lookup/PlaintReasons',
+    GetAdvertisementTypeSelect2List: '/Lookup/AdvertisementType',
+    GetAdvertisementTargetTypeSelect2List: '/Lookup/AdvertisementTargetType',
+    GetAdvertisementMethodTypeSelect2List: '/Lookup/AdvertisementMethod',
+    GetDonationCollectionChannel: '/DonationCollectionChannel/Select2',
   };
 }
 
