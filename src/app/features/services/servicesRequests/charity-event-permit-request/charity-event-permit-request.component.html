@@ -19,8 +19,7 @@
                     <div class="main-container h-100">
                         <!-- Step 1 -->
                         <div class="d-flex gap-3 mb-3">
-                            <div class="step-container" [class.active]="isStepActive(1)"
-                                [class.completed]="isStepCompleted(1)">
+                            <div class="step-container" [class.active]="isStepActive(1)">
                                 <div class="step-bg"></div>
                                 <div class="step">1</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48"
@@ -35,8 +34,7 @@
 
                         <!-- Step 2 -->
                         <div class="d-flex gap-3 mb-3">
-                            <div class="step-container" [class.active]="isStepActive(2)"
-                                [class.completed]="isStepCompleted(2)">
+                            <div class="step-container" [class.active]="isStepActive(2)">
                                 <div class="step-bg"></div>
                                 <div class="step">2</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48"
@@ -51,8 +49,7 @@
 
                         <!-- Step 3 -->
                         <div class="d-flex gap-3 mb-3">
-                            <div class="step-container" [class.active]="isStepActive(3)"
-                                [class.completed]="isStepCompleted(3)">
+                            <div class="step-container" [class.active]="isStepActive(3)">
                                 <div class="step-bg"></div>
                                 <div class="step">3</div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48"
@@ -68,8 +65,7 @@
 
                         <!-- Step 4 -->
                         <div class="d-flex gap-3">
-                            <div class="step-container" [class.active]="isStepActive(4)"
-                                [class.completed]="isStepCompleted(4)">
+                            <div class="step-container" [class.active]="isStepActive(4)">
                                 <div class="step-bg"></div>
                                 <div class="step">4</div>
                             </div>
@@ -90,13 +86,13 @@
                                 <h5 class="mb-4">{{ 'CHARITY_EVENT.STEP1_TITLE' | translate }}</h5>
 
                                 <div class="row">
-                                    <!-- Request No (عرض فقط) -->
+                                    <!-- Request No  -->
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_NO' | translate }}</label>
                                         <input type="text" class="form-control" value="0" readonly>
                                     </div>
 
-                                    <!-- Request Date (عرض فقط) -->
+                                    <!-- Request Date  -->
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_DATE' | translate }}</label>
                                         <div class="form-control" readonly>
@@ -671,6 +667,81 @@
 
                                 </div>
 
+                                <!-- Ad Attachments (RequestAnEventAnnouncementOrDonationCampaign) -->
+                                <div class="mt-4">
+                                    <h6 class="mb-3">{{ 'CHARITY_EVENT.AD_ATTACHMENTS' | translate }}</h6>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-striped align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                                    <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                                    <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr
+                                                    *ngFor="let cfg of state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).configs">
+                                                    <td>
+                                                        {{
+                                                        getAttachmentName(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
+                                                        cfg.id!) }}
+                                                    </td>
+
+                                                    <td>
+                                                        <!-- Upload area -->
+                                                        <div *ngIf="!hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                                                            class="upload-area" (dragover)="onDragOver($event)"
+                                                            (dragleave)="onDragLeave($event)"
+                                                            (drop)="onDrop($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                                                            [class.drag-over]="isDragOver">
+
+                                                            <input type="file" class="d-none"
+                                                                [id]="'file-reqAd-' + cfg.id"
+                                                                (change)="onFileSelected($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                                                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+
+                                                            <label [for]="'file-reqAd-' + cfg.id" class="upload-label">
+                                                                <i class="fas fa-cloud-upload-alt"></i>
+                                                                <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate
+                                                                    }}</span>
+                                                            </label>
+                                                        </div>
+
+                                                        <!-- Preview -->
+                                                        <div *ngIf="hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                                                            class="file-preview">
+                                                            <span class="file-name">
+                                                                {{
+                                                                selectedFileName(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
+                                                                cfg.id!) }}
+                                                            </span>
+
+                                                            <img *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
+                          && state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).selected[cfg.id!].type.startsWith('image/')"
+                                                                [src]="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                                                                class="preview-image">
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <button
+                                                            *ngIf="hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                                                            type="button" class="btn btn-sm btn-danger"
+                                                            (click)="removeFile(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)">
+                                                            {{ 'COMMON.REMOVE' | translate }}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+
+
                                 <!-- Add button -->
                                 <div class="d-flex justify-content-end mt-3">
                                     <button type="button" class="btn btn-primary" (click)="addAdvertisement()">
@@ -734,39 +805,54 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr *ngFor="let config of attachmentConfigs; let i = index">
-                                                <td>{{ getAttachmentName(config) }}</td>
+                                            <tr
+                                                *ngFor="let config of state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).configs">
+                                                <td>{{
+                                                    getAttachmentName(AttachmentsConfigType.DeclarationOfCharityEffectiveness,
+                                                    config.id!) }}</td>
                                                 <td>
-                                                    <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
-                                                        (dragover)="onDragOver($event)"
+                                                    <!-- Upload Area -->
+                                                    <div *ngIf="!hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+                                                        class="upload-area" (dragover)="onDragOver($event)"
                                                         (dragleave)="onDragLeave($event)"
-                                                        (drop)="onDrop($event, config.id!)"
+                                                        (drop)="onDrop($event, AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
                                                         [class.drag-over]="isDragOver">
-                                                        <input type="file" class="d-none" [id]="'file-' + config.id"
-                                                            (change)="onFileSelected($event, config.id!)"
+                                                        <input type="file" class="d-none" [id]="'file-dec-' + config.id"
+                                                            (change)="onFileSelected($event, AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
                                                             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                                                        <label [for]="'file-' + config.id" class="upload-label">
+                                                        <label [for]="'file-dec-' + config.id" class="upload-label">
                                                             <i class="fas fa-cloud-upload-alt"></i>
                                                             <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate
                                                                 }}</span>
                                                         </label>
                                                     </div>
-                                                    <div *ngIf="selectedFiles[config.id!]" class="file-preview">
-                                                        <span class="file-name">{{ selectedFiles[config.id!].name
-                                                            }}</span>
-                                                        <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')"
-                                                            [src]="filePreviews[config.id!]" class="preview-image">
+
+                                                    <!-- File Preview -->
+                                                    <div *ngIf="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+                                                        class="file-preview">
+                                                        <span class="file-name">
+                                                            {{
+                                                            selectedFileName(AttachmentsConfigType.DeclarationOfCharityEffectiveness,
+                                                            config.id!) }}
+                                                        </span>
+                                                        <img *ngIf="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
+                      && state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).selected[config.id!].type.startsWith('image/')"
+                                                            [src]="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+                                                            class="preview-image">
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <button *ngIf="selectedFiles[config.id!]" type="button"
-                                                        class="btn btn-sm btn-danger" (click)="removeFile(config.id!)">
+                                                    <button
+                                                        *ngIf="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+                                                        type="button" class="btn btn-sm btn-danger"
+                                                        (click)="removeFile(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)">
                                                         {{ 'COMMON.REMOVE' | translate }}
                                                     </button>
                                                 </td>
                                             </tr>
-                                        </tbody> 
+                                        </tbody>
                                     </table>
+
                                 </div>
                             </div>
 
@@ -779,13 +865,6 @@
                                 </button>
 
                                 <div>
-                                    <!-- <button *ngIf="currentStep < totalSteps"
-                          type="button"
-                          class="btn btn-primary"
-                          (click)="nextStep()"
-                          [disabled]="isLoading || !isFormInitialized">
-                    {{ 'COMMON.NEXT' | translate }}
-                  </button> -->
                                     <button *ngIf="currentStep < totalSteps" type="button" class="btn btn-primary"
                                         (click)="handleNextClick()"
                                         [disabled]="isLoading || !isFormInitialized || isSaving">

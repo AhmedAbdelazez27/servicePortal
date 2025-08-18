@@ -310,4 +310,9 @@ export class ApiEndpoints {
     PlaintReasons: '/Lookup/PlaintReasons',
   };
 
+  static readonly RequestEventPermits = {
+    Base: '/RequestEventPermits',
+    Create: '/Create'
+  };
+
 }

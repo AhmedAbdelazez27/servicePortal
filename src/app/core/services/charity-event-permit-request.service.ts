@@ -54,12 +54,19 @@ export class CharityEventPermitRequestService {
         return this.http.post<any>(url, requestBody);
     }
 
-    getPartners(skip:any=0,take:any=600): Observable<any> {
+    getPartners(skip: any = 0, take: any = 600): Observable<any> {
         const params = new HttpParams()
             .set('skip', skip.toString())
             .set('take', take.toString());
         return this.http.get(`${this.BASE_URL}${Select2APIEndpoint.Select2.GetPartner}`, {
             params,
         });
+    };
+
+    create(dto: any): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.RequestEventPermits.Create}`,
+            dto
+        );
     }
 }

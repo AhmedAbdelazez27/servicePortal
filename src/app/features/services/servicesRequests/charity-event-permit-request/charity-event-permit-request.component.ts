@@ -17,6 +17,17 @@ import { arrayMinLength, dateRangeValidator } from '../../../../shared/customVal
 import { RequestAdvertisement } from '../../../../core/dtos/charity-event-permit/charity-event-permit.dto';
 import { ServiceSettingService } from '../../../../core/services/serviceSetting.service';
 
+type AttachmentState = {
+  configs: AttachmentsConfigDto[];
+  items: RequestPlaintAttachmentDto[];
+  selected: Record<number, File>;
+  previews: Record<number, string>;
+  sub?: Subscription;
+};
+
+
+
+
 @Component({
   selector: 'app-charity-event-permit-request',
   standalone: true,
@@ -31,8 +42,40 @@ import { ServiceSettingService } from '../../../../core/services/serviceSetting.
   styleUrl: './charity-event-permit-request.component.scss'
 })
 export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
+  private attachmentStates = new Map<AttachmentsConfigType, AttachmentState>();
+
+  // ============== helpers ==============
+  private ensureState(type: AttachmentsConfigType): AttachmentState {
+    if (!this.attachmentStates.has(type)) {
+      this.attachmentStates.set(type, {
+        configs: [],
+        items: [],
+        selected: {},
+        previews: {},
+        sub: undefined
+      });
+    }
+    return this.attachmentStates.get(type)!;
+  }
+
+  public AttachmentsConfigType = AttachmentsConfigType;
+
+  public state(type: AttachmentsConfigType): AttachmentState {
+    return this.ensureState(type);
+  }
+
+  public hasSelected(type: AttachmentsConfigType, id: number): boolean {
+    return !!this.ensureState(type).selected[id];
+  }
+
+  public selectedFileName(type: AttachmentsConfigType, id: number): string | null {
+    return this.ensureState(type).selected[id]?.name ?? null;
+  }
+
+
+
   currentStep: number = 1;
-  totalSteps: number = 5;
+  totalSteps: number = 4;
 
   // Forms
   firstStepForm!: FormGroup;
@@ -85,6 +128,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     { id: 'en', text: 'English' },
   ];
   service: any;
+  // custom attachment 
+
 
   constructor(
     private fb: FormBuilder,
@@ -222,7 +267,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       }).subscribe({
         next: (res: any) => {
           this.advertisementType = res.advertisementType;
-          this.advertisementMethodType = res.advertisementMethodType?.results;  
+          this.advertisementMethodType = res.advertisementMethodType?.results;
           this.advertisementTargetType = res.advertisementTargetType?.results;
           this.partnerTypes = res.partnerTypes?.data;
           console.log(res.donationChannelsLookup, "ddddddd");
@@ -237,7 +282,10 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.isFormInitialized = true; // Mark form as fully initialized
 
-          this.loadAttachmentConfigs();
+          // this.loadAttachmentConfigs();
+          this.loadAttachmentConfigs(AttachmentsConfigType.DeclarationOfCharityEffectiveness);
+          this.loadAttachmentConfigs(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign);
+
         },
         error: (error: any) => {
           console.error('Error loading essential data:', error);
@@ -296,26 +344,166 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   }
 
 
-  loadAttachmentConfigs(): void {
-    const sub = this.attachmentService.getAttachmentsConfigByType(
-      AttachmentsConfigType.DeclarationOfCharityEffectiveness
-    ).subscribe({
+  loadManyAttachmentConfigs(types: AttachmentsConfigType[]): void {
+    const calls = types.map(t => this.attachmentService.getAttachmentsConfigByType(t)
+      .pipe(map(cfgs => ({ type: t, cfgs: cfgs || [] }))));
+
+    forkJoin(calls).subscribe({
+      next: results => {
+        results.forEach(({ type, cfgs }) => {
+          const s = this.ensureState(type);
+          s.configs = cfgs;
+          s.items = cfgs.map(cfg => ({
+            fileBase64: '',
+            fileName: '',
+            masterId: 0,
+            attConfigID: cfg.id!
+          }));
+          s.selected = {};
+          s.previews = {};
+        });
+      },
+      error: e => console.error('Error loading multi attachment configs', e)
+    });
+  }
+
+  // ============== 
+  onFileSelected(event: Event, type: AttachmentsConfigType, configId: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0];
+    if (file) this.handleFileUpload(type, configId, file);
+  }
+
+  onDragOver(event: DragEvent): void { event.preventDefault(); }
+  onDragLeave(event: DragEvent): void { event.preventDefault(); }
+  onDrop(event: DragEvent, type: AttachmentsConfigType, configId: number): void {
+    event.preventDefault();
+    const file = event.dataTransfer?.files?.[0];
+    if (file) this.handleFileUpload(type, configId, file);
+  }
+
+  handleFileUpload(type: AttachmentsConfigType, configId: number, file: File): void {
+    if (!this.validateFile(file)) return;
+
+    const s = this.ensureState(type);
+    s.selected[configId] = file;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      s.previews[configId] = dataUrl;
+
+      const i = s.items.findIndex(a => a.attConfigID === configId);
+      if (i !== -1) {
+        s.items[i] = {
+          ...s.items[i],
+          fileBase64: (dataUrl.split(',')[1] ?? ''),
+          fileName: file.name
+        };
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ============== 
+  validateFile(file: File): boolean {
+    const MAX = 5 * 1024 * 1024;
+    const ALLOWED = new Set<string>([
+      'image/jpeg', 'image/png', 'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ]);
+
+    if (file.size > MAX) { this.toastr.error(this.translate.instant('VALIDATION.FILE_TOO_LARGE')); return false; }
+
+    const typeOk = ALLOWED.has(file.type);
+    const extOk = /\.(jpe?g|png|pdf|docx?|DOCX?)$/i.test(file.name);
+    if (!typeOk && !extOk) { this.toastr.error(this.translate.instant('VALIDATION.INVALID_FILE_TYPE')); return false; }
+
+    return true;
+  }
+
+  removeFile(type: AttachmentsConfigType, configId: number): void {
+    const s = this.ensureState(type);
+    delete s.selected[configId];
+    delete s.previews[configId];
+
+    const i = s.items.findIndex(a => a.attConfigID === configId);
+    if (i !== -1) {
+      s.items[i] = { ...s.items[i], fileBase64: '', fileName: '' };
+    }
+  }
+
+  // ============== 
+  getAttachmentName(type: AttachmentsConfigType, configId: number): string {
+    const s = this.ensureState(type);
+    const cfg = s.configs.find(c => c.id === configId);
+    if (!cfg) return '';
+    return this.translationService.currentLang === 'ar'
+      ? (cfg.name || '')
+      : (cfg.nameEn || cfg.name || '');
+  }
+
+  getPreview(type: AttachmentsConfigType, configId: number): string | undefined {
+    return this.ensureState(type).previews[configId];
+  }
+
+  // ============== 
+  getValidAttachments(type: AttachmentsConfigType): RequestPlaintAttachmentDto[] {
+    const s = this.ensureState(type);
+    return s.items.filter(a => a.fileBase64 && a.fileName);
+  }
+
+
+  getAllValidAttachments(types: AttachmentsConfigType[]): Record<AttachmentsConfigType, RequestPlaintAttachmentDto[]> {
+    const result = {} as Record<AttachmentsConfigType, RequestPlaintAttachmentDto[]>;
+    types.forEach(t => result[t] = this.getValidAttachments(t));
+    return result;
+  }
+
+
+  hasMissingRequiredAttachments(type: AttachmentsConfigType): boolean {
+    const s = this.ensureState(type);
+    return (s.configs || [])
+      .filter(c => (c as any).required === true)
+      .some(c => {
+        const a = s.items.find(x => x.attConfigID === c.id);
+        return !a || !a.fileBase64 || !a.fileName;
+      });
+  }
+
+
+  validateRequiredForAll(types: AttachmentsConfigType[]): boolean {
+    return types.every(t => !this.hasMissingRequiredAttachments(t));
+  }
+
+  // ============== reset/clear ==============
+  resetAttachments(type: AttachmentsConfigType): void {
+    const s = this.ensureState(type);
+    s.items.forEach(it => { it.fileBase64 = ''; it.fileName = ''; });
+    s.selected = {};
+    s.previews = {};
+  }
+  loadAttachmentConfigs(type: AttachmentsConfigType): void {
+    const s = this.ensureState(type);
+    s.sub?.unsubscribe();
+
+    s.sub = this.attachmentService.getAttachmentsConfigByType(type).subscribe({
       next: (configs) => {
-        this.attachmentConfigs = configs || [];
-        // Initialize attachments array based on configs
-        this.attachments = this.attachmentConfigs.map(config => ({
+        s.configs = configs || [];
+        s.items = s.configs.map(cfg => ({
           fileBase64: '',
           fileName: '',
           masterId: 0,
-          attConfigID: config.id!
+          attConfigID: cfg.id!
         }));
+        s.selected = {};
+        s.previews = {};
       },
-      error: (error) => {
-        console.error('Error loading attachment configs:', error);
-      }
+      error: (e) => console.error('Error loading attachment configs for type', type, e)
     });
-    this.subscriptions.push(sub);
   }
+  //////////////////////////////////////////////
 
   // Navigation methods
   nextStep(): void {
@@ -446,98 +634,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  // File upload methods
-  onFileSelected(event: Event, configId: number): void {
-    const target = event.target as HTMLInputElement;
-    if (target?.files?.[0]) {
-      this.handleFileUpload(target.files[0], configId);
-    }
-  }
-
-  onDragOver(event: DragEvent): void {
-    event.preventDefault();
-    this.isDragOver = true;
-  }
-
-  onDragLeave(event: DragEvent): void {
-    event.preventDefault();
-    this.isDragOver = false;
-  }
-
-  onDrop(event: DragEvent, configId: number): void {
-    event.preventDefault();
-    this.isDragOver = false;
-
-    const files = event.dataTransfer?.files;
-    if (files?.[0]) {
-      this.handleFileUpload(files[0], configId);
-    }
-  }
-
-  handleFileUpload(file: File, configId: number): void {
-    // Validate file type and size
-    if (!this.validateFile(file)) {
-      return;
-    }
-
-    this.selectedFiles[configId] = file;
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.filePreviews[configId] = e.target?.result as string;
-
-      // Update attachment data
-      const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
-      if (attachmentIndex !== -1) {
-        this.attachments[attachmentIndex] = {
-          ...this.attachments[attachmentIndex],
-          fileBase64: (e.target?.result as string).split(',')[1], // Remove data:image/... prefix
-          fileName: file.name
-        };
-      }
-    };
-    console.log(this.attachments);
-    
-    reader.readAsDataURL(file);
-  }
-
-  validateFile(file: File): boolean {
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-
-    if (file.size > maxSize) {
-      this.toastr.error(this.translate.instant('VALIDATION.FILE_TOO_LARGE'));
-      return false;
-    }
-
-    if (!allowedTypes.includes(file.type)) {
-      this.toastr.error(this.translate.instant('VALIDATION.INVALID_FILE_TYPE'));
-      return false;
-    }
-
-    return true;
-  }
-
-  removeFile(configId: number): void {
-    delete this.selectedFiles[configId];
-    delete this.filePreviews[configId];
-
-    const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
-    if (attachmentIndex !== -1) {
-      this.attachments[attachmentIndex] = {
-        ...this.attachments[attachmentIndex],
-        fileBase64: '',
-        fileName: ''
-      };
-    }
-  }
-
-  getAttachmentName(config: AttachmentsConfigDto): string {
-    const currentLang = this.translationService.currentLang;
-    return currentLang === 'ar' ? (config.name || '') : (config.nameEn || config.name || '');
-  }
-
 
   getSelectedEntityDisplayName(): string {
     const selectedEntityId = this.firstStepForm.get('requestingEntityId')?.value;
@@ -570,105 +666,170 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     }
   }
 
+  
+canSubmit(): boolean {
+  // لازم أكون في آخر خطوة
+  if (this.currentStep !== this.totalSteps) return false;
+
+  // حالات تمنع الإرسال
+  if (this.isSaving || !this.firstStepForm || !this.isFormInitialized) return false;
+
+  // صلاحية النموذج + عدم وجود خطأ التواريخ
+  if (!this.firstStepForm.valid || this.firstStepForm.hasError('dateRange')) return false;
+
+  // حقول أساسية من جدول الـ Data Dictionary (حسب الموجود في الفورم الحالي)
+  const mustHave = [
+    'eventName',
+    'eventLocation',
+    'startDate',
+    'endDate',
+    'supervisorName',
+    'jopTitle',
+    'telephone1',
+    'telephone2',
+    'advertisementType'
+  ];
+  const allHaveValues = mustHave.every(k => {
+    const c = this.firstStepForm.get(k);
+    return !!(c && c.value !== null && c.value !== undefined && `${c.value}`.trim() !== '');
+  });
+  if (!allHaveValues) return false;
+
+  // قنوات جمع التبرعات: لازم عنصر واحد على الأقل
+  const channels: number[] = this.firstStepForm.get('donationChannelsLookupIds')?.value || [];
+  if (!channels.length) return false;
+
+  // المرفقات المطلوبة أعلى الطلب (DeclarationOfCharityEffectiveness)
+  const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
+  if (this.hasMissingRequiredAttachments(mainAttachType)) return false;
+
+  // لو نوع الطلب "فعالية بإعلان" (بنعتبر 1 = بإعلان) لازم يكون في إعلان واحد على الأقل
+  const withAd = Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
+  if (withAd && this.requestAdvertisements.length === 0) return false;
+
+  return true;
+}
+
   // Submit form
-  onSubmit(): void {
+onSubmit(): void {
+  if (this.isSaving) return;
 
-    // Prevent multiple submissions
-    if (this.isSaving) {
-      return;
-    }
+  this.submitted = true;
+  if (!this.canSubmit()) {
+    this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
+    return;
+  }
 
-    this.submitted = true;
+  this.isSaving = true;
 
-    // Basic validation first
-    if (!this.canSubmit()) {
-      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
-      return;
-    }
-
-    this.isSaving = true;
-
-    try {
-      const formData = this.firstStepForm.getRawValue();
-
-      // Get current user info
-      const currentUser = this.authService.getCurrentUser();
-      if (!currentUser?.id) {
-        this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
-        this.isSaving = false;
-        return;
-      }
-
-      // Filter out empty attachments
-      const validAttachments = this.attachments.filter(a => a.fileBase64 && a.fileName);
-
-      const createDto: CreateRequestPlaintDto = {
-        userId: currentUser.id,
-        requestMainApplyServiceId: formData.requestMainApplyServiceId,
-        requestNo: 0, // Auto-generated in backend
-        requestDate: new Date().toISOString(),
-        details: formData.details,
-        notes: formData.notes || null,
-        attachments: validAttachments,
-        requestPlaintEvidences: this.evidences,
-        requestPlaintJustifications: this.justifications,
-        requestPlaintReasons: this.reasons,
-        // Note: requestingEntityId is not included as it's only for display purposes
-      };
-
-
-
-      const sub = this.requestPlaintService.create(createDto).subscribe({
-        next: (response) => {
-
-          this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
-          this.router.navigate(['/services']);
-          this.isSaving = false;
-        },
-        error: (error) => {
-          console.error('Error creating request plaint:', error);
-          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
-          this.isSaving = false;
-        }
-      });
-      this.subscriptions.push(sub);
-
-    } catch (error) {
-      console.error('Error in onSubmit:', error);
-      this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+  try {
+    const f = this.firstStepForm.getRawValue();
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser?.id) {
+      this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
       this.isSaving = false;
+      return;
     }
+
+    // helpers
+    const toISO = (x: any) => (x ? new Date(x).toISOString() : null);
+    const num = (x: any, d = 0) => (x === null || x === undefined || x === '' ? d : Number(x));
+
+    // مرفقات أعلى الطلب (DeclarationOfCharityEffectiveness)
+    const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
+    const mainAttachments = this.getValidAttachments(mainAttachType).map(a => ({
+      ...a,
+      masterId: a.masterId || 0 // عدّلها لو عندك masterId معين
+    }));
+
+    // لو backend عايز IDs القنوات Numbers
+    const donationChannelIds: number[] = (f.donationChannelsLookupIds || []).map((x: any) => Number(x));
+
+    // نحدد نوع الطلب (بإعلان/بدون إعلان) من حقل الفورم advertisementType
+    const lkpRequestTypeId = num(f.advertisementType, 1);
+
+    // لو محتاج lkpPermitTypeId ثابت (حسب الـ schema حطيته 1)
+    const lkpPermitTypeId = 1;
+
+    // نبني الـ payload طبقًا للـ schema
+    const payload: any = {
+      requestDate: toISO(f.requestDate),
+      lkpRequestTypeId,
+      userId: currentUser.id,
+
+      // لو عندك حقول للجهات في الفورم، استبدلها هنا
+      requestSide: this.getSelectedEntityDisplayName() || '',
+      supervisingSide: '',
+
+      eventName: f.eventName,
+      startDate: toISO(f.startDate),
+      endDate: toISO(f.endDate),
+      lkpPermitTypeId,
+      eventLocation: f.eventLocation,
+
+      // أوقات صباحي/مسائي (مش موجودة في الفورم الحالي)
+      amStartTime: null,
+      amEndTime: null,
+      pmStartTime: null,
+      pmEndTime: null,
+
+      // إدارية/تواصل (خرّطتها من حقولك الحالية)
+      admin: f.supervisorName,        // لو عندك حقل خاص بالـ admin استخدمه بدلًا من ده
+      delegateName: null,
+      alternateName: null,
+      adminTel: f.telephone1,
+      telephone: f.telephone2,
+      email: f.email || null,
+
+      notes: f.notes || null,
+      targetedAmount: null,
+      beneficiaryIdNumber: null,
+
+      donationCollectionChannelIds: donationChannelIds,
+
+      // الإعلانات (اتكوّنت مسبقًا في addAdvertisement و اتنضّفت IDs وأنواعها هناك)
+      requestAdvertisements: this.requestAdvertisements,
+
+      // مرفقات أعلى الطلب
+      attachments: mainAttachments,
+
+      // الشركاء (بنفس الشكل اللي بتكوّنه)
+      partners: (this.partners || []).map(p => ({
+        name: p.name,
+        type: Number(p.type),
+        licenseIssuer: p.licenseIssuer ?? null,
+        licenseExpiryDate: p.licenseExpiryDate ? toISO(p.licenseExpiryDate) : null,
+        licenseNumber: p.licenseNumber ?? null,
+        contactDetails: p.contactDetails ?? null,
+        mainApplyServiceId: p.mainApplyServiceId ?? null
+      })),
+    };
+    console.log("payload = ",payload);
+    
+    const sub = this._CharityEventPermitRequestService.create(payload).subscribe({
+      next: (res) => {
+        console.log(res);
+        
+        this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
+        this.router.navigate(['/services']);
+        this.isSaving = false;
+      },
+      error: (error: any) => {
+        console.error('Error creating charity event permit request:', error);
+        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+        this.isSaving = false;
+      }
+    });
+    this.subscriptions.push(sub);
+
+  } catch (error) {
+    console.error('Error in onSubmit:', error);
+    this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+    this.isSaving = false;
   }
+}
 
-  // Utility methods
-  isStepCompleted(step: number): boolean {
-    switch (step) {
-      case 1:
-        const step1Valid = !!(this.firstStepForm.get('requestMainApplyServiceId')?.valid &&
-          this.firstStepForm.get('requestingEntityId')?.valid &&
-          this.firstStepForm.get('details')?.valid);
 
-        return step1Valid;
-      case 2:
-        const step2Valid = this.reasons.length > 0;
-
-        return step2Valid;
-      case 3:
-        const step3Valid = this.evidences.length > 0;
-
-        return step3Valid;
-      case 4:
-        const step4Valid = this.justifications.length > 0;
-
-        return step4Valid;
-      case 5:
-        const step5Valid = this.attachments.some(a => a.fileBase64 && a.fileName);
-
-        return step5Valid;
-      default:
-        return false;
-    }
-  }
 
   isStepActive(step: number): boolean {
     return this.currentStep === step;
@@ -684,38 +845,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     return this.currentStep < this.totalSteps && this.validateCurrentStep();
   }
 
-  canSubmit(): boolean {
-
-    // Basic checks first
-    if (this.currentStep !== this.totalSteps) {
-      return false;
-    }
-
-    if (this.isSaving) {
-      return false;
-    }
-
-    if (!this.firstStepForm) {
-      return false;
-    }
-
-    // Wait for form to be properly initialized
-    if (!this.isFormInitialized) {
-      return false;
-    }
-
-    // Check only the most essential required fields
-    const requiredFields = ['requestMainApplyServiceId', 'requestingEntityId', 'details'];
-    const fieldResults = requiredFields.map(field => {
-      const control = this.firstStepForm.get(field);
-      const hasValue = control && control.value && control.value.toString().trim();
-      return hasValue;
-    });
-
-    const allFieldsValid = fieldResults.every(result => result);
-
-    return allFieldsValid;
-  }
 
   public handleNextClick(): void {
     this.submitted = true;
@@ -767,65 +896,89 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   addAdvertisement(): void {
     this.submitted = true;
     this.advertForm.markAllAsTouched();
-    console.log("this.advertForm ",this.advertForm.value);
-    
 
     const hasLocations = this.adLocations.length > 0;
-    if (!this.advertForm.valid || this.advertForm.hasError('dateRange') || this.advertForm.hasError('oldPermRequired') || !hasLocations) {
+    if (
+      !this.advertForm.valid ||
+      this.advertForm.hasError('dateRange') ||
+      this.advertForm.hasError('oldPermRequired') ||
+      !hasLocations
+    ) {
       this.toastr.error(this.translate.instant('VALIDATION.FORM_INVALID'));
       return;
     }
 
+    const adAttachType = AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
+    if (this.hasMissingRequiredAttachments(adAttachType)) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
+      return;
+    }
+
     const v = this.advertForm.getRawValue();
-
-
     const toRFC3339 = (x: string) => (x ? new Date(x).toISOString() : x);
 
+    const mainId = Number(v.mainApplyServiceId ?? 0);
+
+    const adAttachments = this.getValidAttachments(adAttachType).map(a => ({
+      ...a,
+      masterId: a.masterId || mainId
+    }));
+
     const ad: RequestAdvertisement = {
-      parentId: v.parentId,
-      mainApplyServiceId: v.mainApplyServiceId,
-      requestNo: v.requestNo,
-      serviceType: v.serviceType!,
-      workFlowServiceType: v.workFlowServiceType!,
+      parentId: Number(v.parentId ?? 0),
+      mainApplyServiceId: mainId,
+      requestNo: Number(v.requestNo ?? 0),
+
+      serviceType: Number(v.serviceType) as any,
+      workFlowServiceType: Number(v.workFlowServiceType) as any,
+
       requestDate: toRFC3339(v.requestDate)!,
       userId: v.userId,
+
       provider: v.provider ?? null,
       adTitle: v.adTitle,
       adLang: v.adLang,
+
       startDate: toRFC3339(v.startDate)!,
       endDate: toRFC3339(v.endDate)!,
+
       mobile: v.mobile ?? null,
       supervisorName: v.supervisorName ?? null,
       fax: v.fax ?? null,
       eMail: v.eMail ?? null,
-      targetedAmount: v.targetedAmount ?? null,
-      newAd: v.newAd === true ? true : (v.reNewAd ? false : null),
-      reNewAd: v.reNewAd === true ? true : (v.newAd ? false : null),
+
+      targetedAmount: v.targetedAmount != null ? Number(v.targetedAmount) : null,
+
+      newAd: v.newAd === true ? true : (v.reNewAd ? false : true),
+      reNewAd: v.reNewAd === true ? true : false,
       oldPermNumber: v.oldPermNumber ?? null,
-      requestEventPermitId: v.requestEventPermitId ?? null,
 
-      attachments: [],
+      requestEventPermitId: v.requestEventPermitId != null ? Number(v.requestEventPermitId) : null,
 
-      requestAdvertisementTargets: (v.targetTypeIds || []).map((id: number) => ({
-        mainApplyServiceId: v.mainApplyServiceId ?? null,
-        lkpTargetTypeId: id,
+      attachments: adAttachments,
+
+      requestAdvertisementTargets: (v.targetTypeIds || []).map((id: any) => ({
+        mainApplyServiceId: mainId,
+        lkpTargetTypeId: Number(id),
         othertxt: null
       })),
 
-      requestAdvertisementAdMethods: (v.adMethodIds || []).map((id: number) => ({
-        mainApplyServiceId: v.mainApplyServiceId ?? null,
-        lkpAdMethodId: id,
+      requestAdvertisementAdMethods: (v.adMethodIds || []).map((id: any) => ({
+        mainApplyServiceId: mainId,
+        lkpAdMethodId: Number(id),
         othertxt: null
       })),
 
       requestAdvertisementAdLocations: this.adLocations.map(loc => ({
-        mainApplyServiceId: v.mainApplyServiceId ?? null,
+        mainApplyServiceId: mainId,
         location: loc
       })),
     };
 
     this.requestAdvertisements.push(ad);
+    console.log('requestAdvertisements', this.requestAdvertisements);
 
+    this.resetAttachments(adAttachType);
 
     this.advertForm.reset({
       serviceType: 1,
@@ -843,18 +996,9 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     this.toastr.success(this.translate.instant('SUCCESS.AD_ADDED'));
   }
 
+
   removeAdvertisement(i: number): void {
     this.requestAdvertisements.splice(i, 1);
-  }
-  getServiceDetails() {
-    this.serviceSettingService.getById(6).subscribe({
-      next: (response: any) => {
-        this.service = response || null;
-      },
-      error: (error: any) => {
-
-      }
-    });
   }
 
 }
