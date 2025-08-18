@@ -42,6 +42,7 @@ type AttachmentState = {
   styleUrl: './charity-event-permit-request.component.scss'
 })
 export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
+  len = (a: readonly unknown[] | null | undefined) => a?.length ?? 0;
   private attachmentStates = new Map<AttachmentsConfigType, AttachmentState>();
 
   // ============== helpers ==============

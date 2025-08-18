@@ -777,10 +777,10 @@
                                                     </div>
                                                 </td>
                                                 <td>{{ ad.targetedAmount || '-' }}</td>
-                                                <td>{{ ad.requestAdvertisementTargets?.length || 0 }}</td>
-                                                <td>{{ ad.requestAdvertisementAdMethods?.length || 0 }}</td>
-                                                <td>{{ ad.requestAdvertisementAdLocations?.length || 0 }}</td>
-                                                <td>
+                                                <td>{{ len(ad.requestAdvertisementTargets) }}</td>
+                                                <td>{{ len(ad.requestAdvertisementAdMethods) }}</td>
+                                                <td>{{ len(ad.requestAdvertisementAdLocations) }}</td>
+                                                <td> 
                                                     <button type="button" class="btn btn-sm btn-danger"
                                                         (click)="removeAdvertisement(i)">
                                                         {{ 'COMMON.REMOVE' | translate }}
