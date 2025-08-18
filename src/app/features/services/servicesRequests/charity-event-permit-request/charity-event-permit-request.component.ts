@@ -3,7 +3,6 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { RequestPlaintService } from '../../../../core/services/request-plaint.service';
 import { AttachmentService } from '../../../../core/services/attachments/attachment.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { TranslationService } from '../../../../core/services/translation.service';
@@ -11,11 +10,10 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AttachmentsConfigDto, AttachmentsConfigType } from '../../../../core/dtos/attachments/attachments-config.dto';
 import { forkJoin, map, Observable, Subscription } from 'rxjs';
-import { CreateRequestPlaintDto, PlaintReasonsDto, RequestPlaintAttachmentDto, RequestPlaintEvidenceDto, RequestPlaintJustificationDto, RequestPlaintReasonDto, Select2Item, UserEntityDto } from '../../../../core/dtos/RequestPlaint/request-plaint.dto';
+import { PlaintReasonsDto, RequestPlaintAttachmentDto, RequestPlaintEvidenceDto, RequestPlaintJustificationDto, RequestPlaintReasonDto, Select2Item, UserEntityDto } from '../../../../core/dtos/RequestPlaint/request-plaint.dto';
 import { CharityEventPermitRequestService } from '../../../../core/services/charity-event-permit-request.service';
 import { arrayMinLength, dateRangeValidator } from '../../../../shared/customValidators';
 import { RequestAdvertisement } from '../../../../core/dtos/charity-event-permit/charity-event-permit.dto';
-import { ServiceSettingService } from '../../../../core/services/serviceSetting.service';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -134,16 +132,13 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private requestPlaintService: RequestPlaintService,
     private attachmentService: AttachmentService,
     private authService: AuthService,
     public translationService: TranslationService,
     private translate: TranslateService,
     private toastr: ToastrService,
     private router: Router,
-    private cdr: ChangeDetectorRef,
-    private _CharityEventPermitRequestService: CharityEventPermitRequestService,
-    private serviceSettingService: ServiceSettingService
+    private _CharityEventPermitRequestService: CharityEventPermitRequestService
   ) {
     this.initializeForm();
     this.initPartnerForm();
@@ -168,6 +163,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.attachmentStates.forEach(s => s.sub?.unsubscribe());
   }
 
   initializeForm(): void {
@@ -375,13 +371,15 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     if (file) this.handleFileUpload(type, configId, file);
   }
 
-  onDragOver(event: DragEvent): void { event.preventDefault(); }
-  onDragLeave(event: DragEvent): void { event.preventDefault(); }
+  onDragOver(event: DragEvent): void { event.preventDefault(); this.isDragOver = true; }
+  onDragLeave(event: DragEvent): void { event.preventDefault(); this.isDragOver = false; }
   onDrop(event: DragEvent, type: AttachmentsConfigType, configId: number): void {
     event.preventDefault();
+    this.isDragOver = false;
     const file = event.dataTransfer?.files?.[0];
     if (file) this.handleFileUpload(type, configId, file);
   }
+
 
   handleFileUpload(type: AttachmentsConfigType, configId: number, file: File): void {
     if (!this.validateFile(file)) return;
@@ -557,16 +555,29 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
   validateStep1(): boolean {
     const form = this.firstStepForm;
-    const requiredFields = ['requestMainApplyServiceId', 'requestingEntityId', 'details'];
+    if (form.hasError('dateRange')) return false;
 
-    for (const field of requiredFields) {
-      if (!form.get(field)?.value) {
-        this.showValidationToast(this.translate.instant(`VALIDATION.REQUIRED_FIELD`));
-        return false;
-      }
-    }
-    return true;
+    const required = [
+      'eventName',
+      'eventLocation',
+      'startDate',
+      'endDate',
+      'supervisorName',
+      'jopTitle',
+      'telephone1',
+      'telephone2',
+      'advertisementType'
+    ];
+
+    const allOk = required.every(k => {
+      const c = form.get(k);
+      return !!(c && c.value !== null && c.value !== undefined && `${c.value}`.trim() !== '');
+    });
+
+    const channels: number[] = form.get('donationChannelsLookupIds')?.value || [];
+    return allOk && channels.length > 0;
   }
+
 
   // Table management methods
   addEvidence(): void {
@@ -667,168 +678,150 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     }
   }
 
-  
-canSubmit(): boolean {
-  // لازم أكون في آخر خطوة
-  if (this.currentStep !== this.totalSteps) return false;
 
-  // حالات تمنع الإرسال
-  if (this.isSaving || !this.firstStepForm || !this.isFormInitialized) return false;
+  canSubmit(): boolean {
+    if (this.currentStep !== this.totalSteps) return false;
 
-  // صلاحية النموذج + عدم وجود خطأ التواريخ
-  if (!this.firstStepForm.valid || this.firstStepForm.hasError('dateRange')) return false;
+    if (this.isSaving || !this.firstStepForm || !this.isFormInitialized) return false;
 
-  // حقول أساسية من جدول الـ Data Dictionary (حسب الموجود في الفورم الحالي)
-  const mustHave = [
-    'eventName',
-    'eventLocation',
-    'startDate',
-    'endDate',
-    'supervisorName',
-    'jopTitle',
-    'telephone1',
-    'telephone2',
-    'advertisementType'
-  ];
-  const allHaveValues = mustHave.every(k => {
-    const c = this.firstStepForm.get(k);
-    return !!(c && c.value !== null && c.value !== undefined && `${c.value}`.trim() !== '');
-  });
-  if (!allHaveValues) return false;
+    if (!this.firstStepForm.valid || this.firstStepForm.hasError('dateRange')) return false;
 
-  // قنوات جمع التبرعات: لازم عنصر واحد على الأقل
-  const channels: number[] = this.firstStepForm.get('donationChannelsLookupIds')?.value || [];
-  if (!channels.length) return false;
+    const mustHave = [
+      'eventName',
+      'eventLocation',
+      'startDate',
+      'endDate',
+      'supervisorName',
+      'jopTitle',
+      'telephone1',
+      'telephone2',
+      'advertisementType'
+    ];
+    const allHaveValues = mustHave.every(k => {
+      const c = this.firstStepForm.get(k);
+      return !!(c && c.value !== null && c.value !== undefined && `${c.value}`.trim() !== '');
+    });
+    if (!allHaveValues) return false;
 
-  // المرفقات المطلوبة أعلى الطلب (DeclarationOfCharityEffectiveness)
-  const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
-  if (this.hasMissingRequiredAttachments(mainAttachType)) return false;
+    const channels: number[] = this.firstStepForm.get('donationChannelsLookupIds')?.value || [];
+    if (!channels.length) return false;
 
-  // لو نوع الطلب "فعالية بإعلان" (بنعتبر 1 = بإعلان) لازم يكون في إعلان واحد على الأقل
-  const withAd = Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
-  if (withAd && this.requestAdvertisements.length === 0) return false;
+    const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
+    if (this.hasMissingRequiredAttachments(mainAttachType)) return false;
 
-  return true;
-}
+    const withAd = Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
+    if (withAd && this.requestAdvertisements.length === 0) return false;
 
-  // Submit form
-onSubmit(): void {
-  if (this.isSaving) return;
-
-  this.submitted = true;
-  if (!this.canSubmit()) {
-    this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
-    return;
+    return true;
   }
 
-  this.isSaving = true;
+  // Submit form
+  onSubmit(): void {
+    if (this.isSaving) return;
 
-  try {
-    const f = this.firstStepForm.getRawValue();
-    const currentUser = this.authService.getCurrentUser();
-    if (!currentUser?.id) {
-      this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
-      this.isSaving = false;
+    this.submitted = true;
+    if (!this.canSubmit()) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
       return;
     }
 
-    // helpers
-    const toISO = (x: any) => (x ? new Date(x).toISOString() : null);
-    const num = (x: any, d = 0) => (x === null || x === undefined || x === '' ? d : Number(x));
+    this.isSaving = true;
 
-    // مرفقات أعلى الطلب (DeclarationOfCharityEffectiveness)
-    const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
-    const mainAttachments = this.getValidAttachments(mainAttachType).map(a => ({
-      ...a,
-      masterId: a.masterId || 0 // عدّلها لو عندك masterId معين
-    }));
-
-    // لو backend عايز IDs القنوات Numbers
-    const donationChannelIds: number[] = (f.donationChannelsLookupIds || []).map((x: any) => Number(x));
-
-    // نحدد نوع الطلب (بإعلان/بدون إعلان) من حقل الفورم advertisementType
-    const lkpRequestTypeId = num(f.advertisementType, 1);
-
-    // لو محتاج lkpPermitTypeId ثابت (حسب الـ schema حطيته 1)
-    const lkpPermitTypeId = 1;
-
-    // نبني الـ payload طبقًا للـ schema
-    const payload: any = {
-      requestDate: toISO(f.requestDate),
-      lkpRequestTypeId,
-      userId: currentUser.id,
-
-      // لو عندك حقول للجهات في الفورم، استبدلها هنا
-      requestSide: this.getSelectedEntityDisplayName() || '',
-      supervisingSide: '',
-
-      eventName: f.eventName,
-      startDate: toISO(f.startDate),
-      endDate: toISO(f.endDate),
-      lkpPermitTypeId,
-      eventLocation: f.eventLocation,
-
-      // أوقات صباحي/مسائي (مش موجودة في الفورم الحالي)
-      amStartTime: null,
-      amEndTime: null,
-      pmStartTime: null,
-      pmEndTime: null,
-
-      // إدارية/تواصل (خرّطتها من حقولك الحالية)
-      admin: f.supervisorName,        // لو عندك حقل خاص بالـ admin استخدمه بدلًا من ده
-      delegateName: null,
-      alternateName: null,
-      adminTel: f.telephone1,
-      telephone: f.telephone2,
-      email: f.email || null,
-
-      notes: f.notes || null,
-      targetedAmount: null,
-      beneficiaryIdNumber: null,
-
-      donationCollectionChannelIds: donationChannelIds,
-
-      // الإعلانات (اتكوّنت مسبقًا في addAdvertisement و اتنضّفت IDs وأنواعها هناك)
-      requestAdvertisements: this.requestAdvertisements,
-
-      // مرفقات أعلى الطلب
-      attachments: mainAttachments,
-
-      // الشركاء (بنفس الشكل اللي بتكوّنه)
-      partners: (this.partners || []).map(p => ({
-        name: p.name,
-        type: Number(p.type),
-        licenseIssuer: p.licenseIssuer ?? null,
-        licenseExpiryDate: p.licenseExpiryDate ? toISO(p.licenseExpiryDate) : null,
-        licenseNumber: p.licenseNumber ?? null,
-        contactDetails: p.contactDetails ?? null,
-        mainApplyServiceId: p.mainApplyServiceId ?? null
-      })),
-    };
-    console.log("payload = ",payload);
-    
-    const sub = this._CharityEventPermitRequestService.create(payload).subscribe({
-      next: (res) => {
-        console.log(res);
-        
-        this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
-        this.router.navigate(['/services']);
+    try {
+      const f = this.firstStepForm.getRawValue();
+      const currentUser = this.authService.getCurrentUser();
+      if (!currentUser?.id) {
+        this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
         this.isSaving = false;
-      },
-      error: (error: any) => {
-        console.error('Error creating charity event permit request:', error);
-        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
-        this.isSaving = false;
+        return;
       }
-    });
-    this.subscriptions.push(sub);
 
-  } catch (error) {
-    console.error('Error in onSubmit:', error);
-    this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
-    this.isSaving = false;
+      // helpers
+      const toISO = (x: any) => (x ? new Date(x).toISOString() : null);
+      const num = (x: any, d = 0) => (x === null || x === undefined || x === '' ? d : Number(x));
+
+      const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
+      const mainAttachments = this.getValidAttachments(mainAttachType).map(a => ({
+        ...a,
+        masterId: a.masterId || 0 
+      }));
+
+      const donationChannelIds: number[] = (f.donationChannelsLookupIds || []).map((x: any) => Number(x));
+
+      const lkpRequestTypeId = num(f.advertisementType, 1);
+
+      const lkpPermitTypeId = 1;
+
+      const payload: any = {
+        requestDate: toISO(f.requestDate),
+        lkpRequestTypeId,
+        userId: currentUser.id,
+
+        requestSide: this.getSelectedEntityDisplayName() || '',
+        supervisingSide: '',
+
+        eventName: f.eventName,
+        startDate: toISO(f.startDate),
+        endDate: toISO(f.endDate),
+        lkpPermitTypeId,
+        eventLocation: f.eventLocation,
+
+        amStartTime: null,
+        amEndTime: null,
+        pmStartTime: null,
+        pmEndTime: null,
+
+        admin: f.supervisorName, 
+        delegateName: null,
+        alternateName: null,
+        adminTel: f.telephone1,
+        telephone: f.telephone2,
+        email: f.email || null,
+
+        notes: f.notes || null,
+        targetedAmount: null,
+        beneficiaryIdNumber: null,
+
+        donationCollectionChannelIds: donationChannelIds,
+
+        requestAdvertisements: this.requestAdvertisements,
+
+        attachments: mainAttachments,
+
+        partners: (this.partners || []).map(p => ({
+          name: p.name,
+          type: Number(p.type),
+          licenseIssuer: p.licenseIssuer ?? null,
+          licenseExpiryDate: p.licenseExpiryDate ? toISO(p.licenseExpiryDate) : null,
+          licenseNumber: p.licenseNumber ?? null,
+          contactDetails: p.contactDetails ?? null,
+          mainApplyServiceId: p.mainApplyServiceId ?? null
+        })),
+      };
+      console.log("payload = ", payload);
+
+      const sub = this._CharityEventPermitRequestService.create(payload).subscribe({
+        next: (res) => {
+          console.log(res);
+
+          this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
+          this.router.navigate(['/services']);
+          this.isSaving = false;
+        },
+        error: (error: any) => {
+          console.error('Error creating charity event permit request:', error);
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+          this.isSaving = false;
+        }
+      });
+      this.subscriptions.push(sub);
+
+    } catch (error) {
+      console.error('Error in onSubmit:', error);
+      this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+      this.isSaving = false;
+    }
   }
-}
 
 
 
@@ -886,9 +879,10 @@ onSubmit(): void {
   addLocation(): void {
     const v = (this.newLocationInput || '').trim();
     if (!v) return;
-    this.adLocations.push(v);
+    if (!this.adLocations.includes(v)) this.adLocations.push(v);
     this.newLocationInput = '';
   }
+
 
   removeLocation(i: number): void {
     this.adLocations.splice(i, 1);
