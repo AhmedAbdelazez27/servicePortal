@@ -127,7 +127,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     { id: 'en', text: 'English' },
   ];
   service: any;
-  // custom attachment 
 
 
   constructor(
@@ -184,7 +183,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         email: this.fb.control<string | null>(null, { validators: [Validators.email] }),
         advertisementType: this.fb.control<1 | 2>(1, { validators: [Validators.required], nonNullable: true }),
         notes: this.fb.control<string | null>(null),
-        donationChannelsLookupIds: this.fb.control<number[]>([], {
+        donationCollectionChannelIds: this.fb.control<number[]>([], {
           validators: [arrayMinLength(1)],
           nonNullable: true,
         }),
@@ -340,6 +339,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     return this.partnerTypes.find((t: any) => t.id === id)?.text ?? '';
   }
 
+  ////////////////////////////////////////////// start attachment functions
 
   loadManyAttachmentConfigs(types: AttachmentsConfigType[]): void {
     const calls = types.map(t => this.attachmentService.getAttachmentsConfigByType(t)
@@ -502,7 +502,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       error: (e) => console.error('Error loading attachment configs for type', type, e)
     });
   }
-  //////////////////////////////////////////////
+  ////////////////////////////////////////////// end attachment functions
 
   // Navigation methods
   nextStep(): void {
@@ -574,110 +574,12 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       return !!(c && c.value !== null && c.value !== undefined && `${c.value}`.trim() !== '');
     });
 
-    const channels: number[] = form.get('donationChannelsLookupIds')?.value || [];
+    const channels: number[] = form.get('donationCollectionChannelIds')?.value || [];
     return allOk && channels.length > 0;
   }
-
+  // Navigation methods end
 
   // Table management methods
-  addEvidence(): void {
-    if (this.firstStepForm.get('newEvidence')?.value.trim()) {
-      this.evidences.push({
-        mainApplyServiceId: 0,
-        evidence: this.firstStepForm.get('newEvidence')?.value.trim()
-      });
-      this.firstStepForm.get('newEvidence')?.setValue('');
-    }
-  }
-
-  onReasonSelectionChange(event: any): void {
-    // Check if the selected reason exists in the options
-    if (this.firstStepForm.get('selectedReason')?.value) {
-      const selectedOption = this.plaintReasonsOptions.find(r => r.id === this.firstStepForm.get('selectedReason')?.value);
-    }
-  }
-
-
-
-  removeEvidence(index: number): void {
-    this.evidences.splice(index, 1);
-  }
-
-  addJustification(): void {
-    if (this.firstStepForm.get('newJustification')?.value.trim()) {
-      this.justifications.push({
-        mainApplyServiceId: 0,
-        justification: this.firstStepForm.get('newJustification')?.value.trim()
-      });
-      this.firstStepForm.get('newJustification')?.setValue('');
-    }
-  }
-
-  removeJustification(index: number): void {
-    this.justifications.splice(index, 1);
-  }
-
-  addReason(): void {
-    if (this.firstStepForm.get('selectedReason')?.value) {
-      // Check if reason already exists
-      const existingReason = this.reasons.find(r => r.lkpPlaintReasonsId === this.firstStepForm.get('selectedReason')?.value);
-      if (!existingReason) {
-        this.reasons.push({
-          mainApplyServiceId: 0,
-          lkpPlaintReasonsId: this.firstStepForm.get('selectedReason')?.value
-        });
-        this.firstStepForm.get('selectedReason')?.setValue(null);
-      } else {
-        this.toastr.warning(this.translate.instant('WARNINGS.REASON_ALREADY_ADDED'));
-      }
-    }
-  }
-
-  removeReason(index: number): void {
-    this.reasons.splice(index, 1);
-  }
-
-  getReasonText(reasonId: number): string {
-    const reason = this.plaintReasonsOptions.find(r => r.id === reasonId);
-    if (reason) {
-      const currentLang = this.translationService.currentLang;
-      return currentLang === 'ar' ? reason.reasonText : reason.reasonTextEn;
-    }
-    return '';
-  }
-
-
-  getSelectedEntityDisplayName(): string {
-    const selectedEntityId = this.firstStepForm.get('requestingEntityId')?.value;
-    if (selectedEntityId) {
-      const selectedEntity = this.userEntities.find(entity => entity.id === selectedEntityId);
-      if (selectedEntity) {
-        return selectedEntity[this.entityDisplayField as keyof UserEntityDto] as string;
-      }
-    }
-    return '';
-  }
-
-  selectEntity(entityId: string): void {
-    this.firstStepForm.patchValue({ requestingEntityId: entityId });
-
-    const selectedEntity = this.userEntities.find(entity => entity.id === entityId);
-    if (selectedEntity) {
-      this.userEntity = selectedEntity;
-
-    }
-  }
-
-  // Method to refresh entity display (useful when language changes)
-  refreshEntityDisplay(): void {
-
-    // Force form update to refresh the display
-    const currentValue = this.firstStepForm.get('requestingEntityId')?.value;
-    if (currentValue) {
-      this.firstStepForm.patchValue({ requestingEntityId: currentValue });
-    }
-  }
-
 
   canSubmit(): boolean {
     if (this.currentStep !== this.totalSteps) return false;
@@ -703,7 +605,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     });
     if (!allHaveValues) return false;
 
-    const channels: number[] = this.firstStepForm.get('donationChannelsLookupIds')?.value || [];
+    const channels: number[] = this.firstStepForm.get('donationCollectionChannelIds')?.value || [];
     if (!channels.length) return false;
 
     const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
@@ -728,7 +630,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     this.isSaving = true;
 
     try {
-      const f = this.firstStepForm.getRawValue();
       const currentUser = this.authService.getCurrentUser();
       if (!currentUser?.id) {
         this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
@@ -737,57 +638,25 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       }
 
       // helpers
-      const toISO = (x: any) => (x ? new Date(x).toISOString() : null);
-      const num = (x: any, d = 0) => (x === null || x === undefined || x === '' ? d : Number(x));
+      const toISO = (input: string | Date) => {
+        const s = typeof input === 'string' && input.length === 16 ? input + ':00' : input;
+        const d = new Date(s as any);
+        return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+      }
 
       const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
       const mainAttachments = this.getValidAttachments(mainAttachType).map(a => ({
         ...a,
-        masterId: a.masterId || 0 
+        masterId: a.masterId || 0
       }));
 
-      const donationChannelIds: number[] = (f.donationChannelsLookupIds || []).map((x: any) => Number(x));
-
-      const lkpRequestTypeId = num(f.advertisementType, 1);
-
-      const lkpPermitTypeId = 1;
-
       const payload: any = {
-        requestDate: toISO(f.requestDate),
-        lkpRequestTypeId,
-        userId: currentUser.id,
-
-        requestSide: this.getSelectedEntityDisplayName() || '',
-        supervisingSide: '',
-
-        eventName: f.eventName,
-        startDate: toISO(f.startDate),
-        endDate: toISO(f.endDate),
-        lkpPermitTypeId,
-        eventLocation: f.eventLocation,
-
-        amStartTime: null,
-        amEndTime: null,
-        pmStartTime: null,
-        pmEndTime: null,
-
-        admin: f.supervisorName, 
-        delegateName: null,
-        alternateName: null,
-        adminTel: f.telephone1,
-        telephone: f.telephone2,
-        email: f.email || null,
-
-        notes: f.notes || null,
-        targetedAmount: null,
-        beneficiaryIdNumber: null,
-
-        donationCollectionChannelIds: donationChannelIds,
-
+        ...this.firstStepForm.value,
+        requestDate: toISO(this.firstStepForm.value.requestDate ?? new Date()),
+        startDate: toISO(this.firstStepForm.value.startDate),
+        endDate: toISO(this.firstStepForm.value.endDate),
         requestAdvertisements: this.requestAdvertisements,
-
         attachments: mainAttachments,
-
         partners: (this.partners || []).map(p => ({
           name: p.name,
           type: Number(p.type),
@@ -845,6 +714,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     this.firstStepForm.markAllAsTouched();
 
     const isValidStep1 = this.firstStepForm.valid && !this.firstStepForm.hasError('dateRange');
+    console.log(this.firstStepForm.value);
 
     if (this.currentStep === 1) {
       if (isValidStep1) {

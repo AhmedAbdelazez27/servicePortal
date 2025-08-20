@@ -251,15 +251,15 @@
                                             {{ 'CHARITY_EVENT.DONATION_CHANNELS' | translate }} <span
                                                 class="text-danger">*</span>
                                         </label>
-                                        <ng-select formControlName="donationChannelsLookupIds"
+                                        <ng-select formControlName="donationCollectionChannelIds"
                                             [items]="donationChannelsLookup" bindLabel="text" bindValue="id"
                                             [multiple]="true" [closeOnSelect]="false" [clearable]="true"
                                             [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
                                             class="ng-select-custom"
-                                            [ngClass]="{'is-invalid': firstStepForm.get('donationChannelsLookupIds')?.touched && firstStepForm.get('donationChannelsLookupIds')?.invalid}">
+                                            [ngClass]="{'is-invalid': firstStepForm.get('donationCollectionChannelIds')?.touched && firstStepForm.get('donationCollectionChannelIds')?.invalid}">
                                         </ng-select>
                                         <div class="invalid-feedback d-block"
-                                            *ngIf="firstStepForm.get('donationChannelsLookupIds')?.touched && firstStepForm.get('donationChannelsLookupIds')?.hasError('minArrayLength')">
+                                            *ngIf="firstStepForm.get('donationCollectionChannelIds')?.touched && firstStepForm.get('donationCollectionChannelIds')?.hasError('minArrayLength')">
                                             {{ 'VALIDATION.MIN_ONE_CHANNEL' | translate }}
                                         </div>
                                     </div>

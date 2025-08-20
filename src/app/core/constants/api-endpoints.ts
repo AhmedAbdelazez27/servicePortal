@@ -375,5 +375,10 @@ export class ApiEndpoints {
     Base: '/RequestEventPermits',
     Create: '/Create'
   };
+    static readonly CharityEventPermit = {
+    Base: '/CharityEventPermit',
+    Create: '/Create'
+  };
+
 
 }

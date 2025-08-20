@@ -1,0 +1,114 @@
+{
+    "userId": "95f7250d-9786-4a4c-8a07-afbeb195a74d",
+    "requestDate": "2025-08-20T04:37:29Z",
+    "eventName": "event ",
+    "eventLocation": "loc",
+    "startDate": "2025-08-21T04:38:00Z",
+    "endDate": "2025-08-23T08:38:00Z",
+    "supervisorName": "sup",
+    "jopTitle": "dev",
+    "telephone1": "01022",
+    "telephone2": "01223",
+    "email": "ahmeeedzezo33@gmail.com",
+    "advertisementType": 2,
+    "notes": "notes",
+    "donationCollectionChannelIds": [
+        2
+    ],
+    "requestAdvertisements": [
+        {
+            "parentId": 0,
+            "mainApplyServiceId": 0,
+            "requestNo": 0,
+            "serviceType": 1,
+            "workFlowServiceType": 2,
+            "requestDate": "2025-08-20T04:37:29.983Z",
+            "userId": "95f7250d-9786-4a4c-8a07-afbeb195a74d",
+            "provider": "pro",
+            "adTitle": "adv tit",
+            "adLang": "ar",
+            "startDate": "2025-08-22T04:39:00.000Z",
+            "endDate": "2025-08-25T04:39:00.000Z",
+            "mobile": "0125",
+            "supervisorName": "sup name",
+            "fax": "465161",
+            "eMail": "ahmeeedzezo33@gmail.com",
+            "targetedAmount": 50,
+            "newAd": true,
+            "reNewAd": false,
+            "oldPermNumber": null,
+            "requestEventPermitId": null,
+            "attachments": [
+                {
+                    "fileBase64": "JVBERi0xLjMKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgaHR0cDovL3d3dy5yZXBvcnRsYWIuY29tCjEgMCBvYmoKPDwKL0YxIDIgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMSAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1BhZ2VNb2RlIC9Vc2VOb25lIC9QYWdlcyA1IDAgUiAvVHlwZSAvQ2F0YWxvZwo+PgplbmRvYmoKNCAwIG9iago8PAovQXV0aG9yIChcKGFub255bW91c1wpKSAvQ3JlYXRpb25EYXRlIChEOjIwMjUwNzE0MTMwMjQzKzAwJzAwJykgL0NyZWF0b3IgKFwodW5zcGVjaWZpZWRcKSkgL0tleXdvcmRzICgpIC9Nb2REYXRlIChEOjIwMjUwNzE0MTMwMjQzKzAwJzAwJykgL1Byb2R1Y2VyIChSZXBvcnRMYWIgUERGIExpYnJhcnkgLSB3d3cucmVwb3J0bGFiLmNvbSkgCiAgL1N1YmplY3QgKFwodW5zcGVjaWZpZWRcKSkgL1RpdGxlIChcKGFub255bW91c1wpKSAvVHJhcHBlZCAvRmFsc2UKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0NvdW50IDAgL0tpZHMgWyAgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA3MyAwMDAwMCBuIAowMDAwMDAwMTA0IDAwMDAwIG4gCjAwMDAwMDAyMTEgMDAwMDAgbiAKMDAwMDAwMDI3OSAwMDAwMCBuIAowMDAwMDAwNTYyIDAwMDAwIG4gCnRyYWlsZXIKPDwKL0lEIApbPDdlOTczZWVhZWYwZDI0YThjNTdmNGFkZWU0ZGVjMGMyPjw3ZTk3M2VlYWVmMGQyNGE4YzU3ZjRhZGVlNGRlYzBjMj5dCiUgUmVwb3J0TGFiIGdlbmVyYXRlZCBQREYgZG9jdW1lbnQgLS0gZGlnZXN0IChodHRwOi8vd3d3LnJlcG9ydGxhYi5jb20pCgovSW5mbyA0IDAgUgovUm9vdCAzIDAgUgovU2l6ZSA2Cj4+CnN0YXJ0eHJlZgo2MTYKJSVFT0YK",
+                    "fileName": "Weather_Condition_Checker_Task_Only (1).pdf",
+                    "masterId": 0,
+                    "attConfigID": 2010
+                },
+                {
+                    "fileBase64": "JVBERi0xLjMKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgaHR0cDovL3d3dy5yZXBvcnRsYWIuY29tCjEgMCBvYmoKPDwKL0YxIDIgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMSAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1BhZ2VNb2RlIC9Vc2VOb25lIC9QYWdlcyA1IDAgUiAvVHlwZSAvQ2F0YWxvZwo+PgplbmRvYmoKNCAwIG9iago8PAovQXV0aG9yIChcKGFub255bW91c1wpKSAvQ3JlYXRpb25EYXRlIChEOjIwMjUwNzE0MTMwMjQzKzAwJzAwJykgL0NyZWF0b3IgKFwodW5zcGVjaWZpZWRcKSkgL0tleXdvcmRzICgpIC9Nb2REYXRlIChEOjIwMjUwNzE0MTMwMjQzKzAwJzAwJykgL1Byb2R1Y2VyIChSZXBvcnRMYWIgUERGIExpYnJhcnkgLSB3d3cucmVwb3J0bGFiLmNvbSkgCiAgL1N1YmplY3QgKFwodW5zcGVjaWZpZWRcKSkgL1RpdGxlIChcKGFub255bW91c1wpKSAvVHJhcHBlZCAvRmFsc2UKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0NvdW50IDAgL0tpZHMgWyAgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA3MyAwMDAwMCBuIAowMDAwMDAwMTA0IDAwMDAwIG4gCjAwMDAwMDAyMTEgMDAwMDAgbiAKMDAwMDAwMDI3OSAwMDAwMCBuIAowMDAwMDAwNTYyIDAwMDAwIG4gCnRyYWlsZXIKPDwKL0lEIApbPDdlOTczZWVhZWYwZDI0YThjNTdmNGFkZWU0ZGVjMGMyPjw3ZTk3M2VlYWVmMGQyNGE4YzU3ZjRhZGVlNGRlYzBjMj5dCiUgUmVwb3J0TGFiIGdlbmVyYXRlZCBQREYgZG9jdW1lbnQgLS0gZGlnZXN0IChodHRwOi8vd3d3LnJlcG9ydGxhYi5jb20pCgovSW5mbyA0IDAgUgovUm9vdCAzIDAgUgovU2l6ZSA2Cj4+CnN0YXJ0eHJlZgo2MTYKJSVFT0YK",
+                    "fileName": "Weather_Condition_Checker_Task_Only.pdf",
+                    "masterId": 0,
+                    "attConfigID": 2008
+                }
+            ],
+            "requestAdvertisementTargets": [
+                {
+                    "mainApplyServiceId": 0,
+                    "lkpTargetTypeId": 4,
+                    "othertxt": null
+                }
+            ],
+            "requestAdvertisementAdMethods": [
+                {
+                    "mainApplyServiceId": 0,
+                    "lkpAdMethodId": 4,
+                    "othertxt": null
+                }
+            ],
+            "requestAdvertisementAdLocations": [
+                {
+                    "mainApplyServiceId": 0,
+                    "location": "loc 1"
+                }
+            ]
+        }
+    ],
+    "attachments": [
+        {
+            "fileBase64": "JVBERi0xLjMKMyAwIG9iago8PC9UeXBlIC9QYWdlCi9QYXJlbnQgMSAwIFIKL1Jlc291cmNlcyAyIDAgUgovQ29udGVudHMgNCAwIFI+PgplbmRvYmoKNCAwIG9iago8PC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggNTY1Pj4Kc3RyZWFtCnicjZRBc5swEIXv+RV7TGZcWQgw4FubOKk7nTYT0/aSiwxrQyIkjyTS+N9nIZCZDhx6Mmb2e+9JekLAtwvO4gT+XnzJYXkbQCAY55AfYJN3rwRPWJJAksXdT17C5a012qMu4dcWts1JYYPaS18bDRvn66Z/vIL8aVAIAxZkkIQZ4+8C99Y8YeFh1zaNtOf1dDbgLAn72U8wTufnE67hsz62Slr4CPHzBW0lWzURWaWChekgMmK/0TpKt4YgnQJxxPjoOqwES8iNlwq+mta6NaQcqu5pCouYrbIB/mPsc62PsCsqLFtFscU7tizleYLGWcLCaEDf3UaBG3km04gDcVPPeJX1R9WDXUB1hgfKTHYxh83d/ZSIOFvF/1hdG+cJ4AvO55koDVm26pldYU4IW12otkQ3Pbcopk0IBvnv5lhruJdHhMdLqorR6vx4NWVEwsTqYxENLm+kq/ZG2pK460pa7xaQ18UzenDUM/qHvmAzUmGWskwMUkO54EQBppNJ3/lhH3pt10+SpaqdB0nNKizSZi6xrP2cWSSYGM2uqYyyII3/x4OQpWM7d0a1/f2ZjzCDizRm8djVrd6bV8KKSnq6lHPjccKC0e0ONVo6+R16TyXrQkulwMu9m0NFytKxnT/kS33s7/cCrGk7fNEHtdg6uVcIhWlORtMHYVpXwTmLxivygI7mXP2CQFWqjxoOxkJj9rXCpe+k/EQgSAQLxii3taY1nAztVdVHONSv+GH6BoKvWScKZW5kc3RyZWFtCmVuZG9iagoxIDAgb2JqCjw8L1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUiBdCi9Db3VudCAxCi9NZWRpYUJveCBbMCAwIDU5NS4yOCA4NDEuODldCj4+CmVuZG9iago1IDAgb2JqCjw8L1R5cGUgL0ZvbnQKL0Jhc2VGb250IC9IZWx2ZXRpY2EKL1N1YnR5cGUgL1R5cGUxCi9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9Qcm9jU2V0IFsvUERGIC9UZXh0IC9JbWFnZUIgL0ltYWdlQyAvSW1hZ2VJXQovRm9udCA8PAovRjEgNSAwIFIKPj4KL1hPYmplY3QgPDwKPj4KPj4KZW5kb2JqCjYgMCBvYmoKPDwKL1Byb2R1Y2VyIChQeUZQREYgMS43LjIgaHR0cDovL3B5ZnBkZi5nb29nbGVjb2RlLmNvbS8pCi9DcmVhdGlvbkRhdGUgKEQ6MjAyNTA0MjExNTI4MzUpCj4+CmVuZG9iago3IDAgb2JqCjw8Ci9UeXBlIC9DYXRhbG9nCi9QYWdlcyAxIDAgUgovT3BlbkFjdGlvbiBbMyAwIFIgL0ZpdEggbnVsbF0KL1BhZ2VMYXlvdXQgL09uZUNvbHVtbgo+PgplbmRvYmoKeHJlZgowIDgKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwNzIyIDAwMDAwIG4gCjAwMDAwMDA5MDUgMDAwMDAgbiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDg3IDAwMDAwIG4gCjAwMDAwMDA4MDkgMDAwMDAgbiAKMDAwMDAwMTAwOSAwMDAwMCBuIAowMDAwMDAxMTE4IDAwMDAwIG4gCnRyYWlsZXIKPDwKL1NpemUgOAovUm9vdCA3IDAgUgovSW5mbyA2IDAgUgo+PgpzdGFydHhyZWYKMTIyMQolJUVPRgo=",
+            "fileName": "Angular_UI_Estimation.pdf",
+            "masterId": 0,
+            "attConfigID": 2050
+        },
+        {
+            "fileBase64": "JVBERi0xLjMKMyAwIG9iago8PC9UeXBlIC9QYWdlCi9QYXJlbnQgMSAwIFIKL1Jlc291cmNlcyAyIDAgUgovQ29udGVudHMgNCAwIFI+PgplbmRvYmoKNCAwIG9iago8PC9GaWx0ZXIgL0ZsYXRlRGVjb2RlIC9MZW5ndGggNTQzPj4Kc3RyZWFtCnicjVTLbtswELznK/ZooygrUtTLR6ftISiCAFHaiy+0RMWsJdIgabv5+5KULduRUvQoYmZ2d3ZWBB7uIpRkcLxblvDlOwacoiiCsoFvpX8iNEU0gaygHlXWMHtgB/ZcabGzUDKzNXMof5/AgU9u+DFGuIAsLlDU0z0H8AJejJCvUClpVMtRq15Xs9UcmKzhJ9OCrVt+q0w+UMYRyuJBeXHF6QFpQlHUAzCCe82Z5XA4lwDVQC2ahmsuLdTMMrBvO24mdEiC0iLoAMBneLbaDYBGuKTIUEwvuMd9t+Z6ApcWYZwzbqmcD0xOAGmE0uRasG2DTy+y5o2QvB5zaB6jIg0cgpzVfGS0VbBzA1iwG29Hu++9cF/m2h4hA+D+xB4XIhkifaG4L+Tt80IKqg2vtoHu37w6Z9VmEA8z1MLsWvYGwsL+fSDG1eIsOqeQDru0RwUmLOOq79WsEdrYR9b1dVrWf5wi5qpUjisDf8O78bpjShAhF9f7uPphVFvD0bW8mh0Eg0+r+USfOEZ5PkXuVM21BLbbaeXN6EVK3jkXXC8/hOWateZW9MOzIkmGcH45K7KAX0pvfbGjsBv46vPs510yIyp3WK1wERdK/s9lEZKjnP7jsnBGEKbvLstv47IG57NlQobp+R87oUGdU9G1U84et6expxgn/kc0IJ+YMUelJ8Kf5Cgbsv/EdaN0BwzWwYPD4MEpcKIZuvoLHKZnvQplbmRzdHJlYW0KZW5kb2JqCjUgMCBvYmoKPDwvVHlwZSAvUGFnZQovUGFyZW50IDEgMCBSCi9SZXNvdXJjZXMgMiAwIFIKL0NvbnRlbnRzIDYgMCBSPj4KZW5kb2JqCjYgMCBvYmoKPDwvRmlsdGVyIC9GbGF0ZURlY29kZSAvTGVuZ3RoIDU4Nz4+CnN0cmVhbQp4nI1Ty27bMBC85ysWOjlAy+hpSb45QVO0hyRo3JsvG2llM6FElaRi+O9LUvULdtPebGp2ZndmN4bvVyHLcthc3S7g5j6GKGZhCIsGvizcUxKxqIS8zFiew6KGCQB8hm8NmDXBoEl12BJwDdT2ZvsJaq57gVvADlCQMqBxy7vVDIKfR2BFvwauqA7YNSxenVTIpoUV2BxpTnOWxmeaPWq9kap2NIK0to9Wq4BqjQorQ0p/1MTTrrodtIEXAjSWBe3vYt/JaRdJycJx8oPCoe09blrELCk8LmFgZ4VKdloKYkKulpPlNRi57+vEO+zqw1DYWH73fevfPPIdBa/RcNkdy97cR5ezmsYZm5a+kwXqN0hmMFfKu1HD48srVQYee1KeUZ8w/iX9rMxZku4ZZ2fDZ6mNL/OAiMGdIjTkzfe6soFuaF+sbwyeSDVStX6uRgohNzYXMJZVX6C13SThYQPuUFSDcNyuXA+to0YhoJeaG/5OOx3gnYd4/fOs0iJh5fTA69JCEFL2LqRe8c4AYbX+Q/cvtjhn8cgWHw8vR6sV9Yo0dcYNihBoM9T2XwAbbtZWTNooDCe7zPyNzj1IyoKVR1fw4FZmOXk2tsvV8vocn/tz3uPnKwd/8INcgqcxi4/ovyqsP+aPElYUpwWDXyV4NmgGbYtvpd177C5Ux1nOov2VzGu78NDRZmfD1vnvsx1N2nlY2ZCphoBa5CIYL8an5A+pt8dhv47Y83ziMGTpeA8pgx/UyvdxgQJcUXCQbpRsL4n/l9pveDCM2QplbmRzdHJlYW0KZW5kb2JqCjEgMCBvYmoKPDwvVHlwZSAvUGFnZXMKL0tpZHMgWzMgMCBSIDUgMCBSIF0KL0NvdW50IDIKL01lZGlhQm94IFswIDAgNTk1LjI4IDg0MS44OV0KPj4KZW5kb2JqCjcgMCBvYmoKPDwvVHlwZSAvRm9udAovQmFzZUZvbnQgL0hlbHZldGljYS1Cb2xkCi9TdWJ0eXBlIC9UeXBlMQovRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZwo+PgplbmRvYmoKOCAwIG9iago8PC9UeXBlIC9Gb250Ci9CYXNlRm9udCAvSGVsdmV0aWNhCi9TdWJ0eXBlIC9UeXBlMQovRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZwo+PgplbmRvYmoKMiAwIG9iago8PAovUHJvY1NldCBbL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSV0KL0ZvbnQgPDwKL0YxIDcgMCBSCi9GMiA4IDAgUgo+PgovWE9iamVjdCA8PAo+Pgo+PgplbmRvYmoKOSAwIG9iago8PAovUHJvZHVjZXIgKFB5RlBERiAxLjcuMiBodHRwOi8vcHlmcGRmLmdvb2dsZWNvZGUuY29tLykKL0NyZWF0aW9uRGF0ZSAoRDoyMDI1MDgwNTE2MTQxNSkKPj4KZW5kb2JqCjEwIDAgb2JqCjw8Ci9UeXBlIC9DYXRhbG9nCi9QYWdlcyAxIDAgUgovT3BlbkFjdGlvbiBbMyAwIFIgL0ZpdEggbnVsbF0KL1BhZ2VMYXlvdXQgL09uZUNvbHVtbgo+PgplbmRvYmoKeHJlZgowIDExCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMTQzNSAwMDAwMCBuIAowMDAwMDAxNzI1IDAwMDAwIG4gCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA4NyAwMDAwMCBuIAowMDAwMDAwNzAwIDAwMDAwIG4gCjAwMDAwMDA3NzggMDAwMDAgbiAKMDAwMDAwMTUyOCAwMDAwMCBuIAowMDAwMDAxNjI5IDAwMDAwIG4gCjAwMDAwMDE4MzkgMDAwMDAgbiAKMDAwMDAwMTk0OCAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDExCi9Sb290IDEwIDAgUgovSW5mbyA5IDAgUgo+PgpzdGFydHhyZWYKMjA1MgolJUVPRgo=",
+            "fileName": "JavaScript_Tasks_3.pdf",
+            "masterId": 0,
+            "attConfigID": 2049
+        },
+        {
+            "fileBase64": "JVBERi0xLjMKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgaHR0cDovL3d3dy5yZXBvcnRsYWIuY29tCjEgMCBvYmoKPDwKL0YxIDIgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMSAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1BhZ2VNb2RlIC9Vc2VOb25lIC9QYWdlcyA1IDAgUiAvVHlwZSAvQ2F0YWxvZwo+PgplbmRvYmoKNCAwIG9iago8PAovQXV0aG9yIChcKGFub255bW91c1wpKSAvQ3JlYXRpb25EYXRlIChEOjIwMjUwNzE0MTMwMjQzKzAwJzAwJykgL0NyZWF0b3IgKFwodW5zcGVjaWZpZWRcKSkgL0tleXdvcmRzICgpIC9Nb2REYXRlIChEOjIwMjUwNzE0MTMwMjQzKzAwJzAwJykgL1Byb2R1Y2VyIChSZXBvcnRMYWIgUERGIExpYnJhcnkgLSB3d3cucmVwb3J0bGFiLmNvbSkgCiAgL1N1YmplY3QgKFwodW5zcGVjaWZpZWRcKSkgL1RpdGxlIChcKGFub255bW91c1wpKSAvVHJhcHBlZCAvRmFsc2UKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0NvdW50IDAgL0tpZHMgWyAgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA3MyAwMDAwMCBuIAowMDAwMDAwMTA0IDAwMDAwIG4gCjAwMDAwMDAyMTEgMDAwMDAgbiAKMDAwMDAwMDI3OSAwMDAwMCBuIAowMDAwMDAwNTYyIDAwMDAwIG4gCnRyYWlsZXIKPDwKL0lEIApbPDdlOTczZWVhZWYwZDI0YThjNTdmNGFkZWU0ZGVjMGMyPjw3ZTk3M2VlYWVmMGQyNGE4YzU3ZjRhZGVlNGRlYzBjMj5dCiUgUmVwb3J0TGFiIGdlbmVyYXRlZCBQREYgZG9jdW1lbnQgLS0gZGlnZXN0IChodHRwOi8vd3d3LnJlcG9ydGxhYi5jb20pCgovSW5mbyA0IDAgUgovUm9vdCAzIDAgUgovU2l6ZSA2Cj4+CnN0YXJ0eHJlZgo2MTYKJSVFT0YK",
+            "fileName": "Weather_Condition_Checker_Task_Only (1).pdf",
+            "masterId": 0,
+            "attConfigID": 2035
+        },
+        {
+            "fileBase64": "JVBERi0xLjMKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgaHR0cDovL3d3dy5yZXBvcnRsYWIuY29tCjEgMCBvYmoKPDwKL0YxIDIgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMSAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1BhZ2VNb2RlIC9Vc2VOb25lIC9QYWdlcyA1IDAgUiAvVHlwZSAvQ2F0YWxvZwo+PgplbmRvYmoKNCAwIG9iago8PAovQXV0aG9yIChcKGFub255bW91c1wpKSAvQ3JlYXRpb25EYXRlIChEOjIwMjUwNzE0MTMwMjQzKzAwJzAwJykgL0NyZWF0b3IgKFwodW5zcGVjaWZpZWRcKSkgL0tleXdvcmRzICgpIC9Nb2REYXRlIChEOjIwMjUwNzE0MTMwMjQzKzAwJzAwJykgL1Byb2R1Y2VyIChSZXBvcnRMYWIgUERGIExpYnJhcnkgLSB3d3cucmVwb3J0bGFiLmNvbSkgCiAgL1N1YmplY3QgKFwodW5zcGVjaWZpZWRcKSkgL1RpdGxlIChcKGFub255bW91c1wpKSAvVHJhcHBlZCAvRmFsc2UKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0NvdW50IDAgL0tpZHMgWyAgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCnhyZWYKMCA2CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA3MyAwMDAwMCBuIAowMDAwMDAwMTA0IDAwMDAwIG4gCjAwMDAwMDAyMTEgMDAwMDAgbiAKMDAwMDAwMDI3OSAwMDAwMCBuIAowMDAwMDAwNTYyIDAwMDAwIG4gCnRyYWlsZXIKPDwKL0lEIApbPDdlOTczZWVhZWYwZDI0YThjNTdmNGFkZWU0ZGVjMGMyPjw3ZTk3M2VlYWVmMGQyNGE4YzU3ZjRhZGVlNGRlYzBjMj5dCiUgUmVwb3J0TGFiIGdlbmVyYXRlZCBQREYgZG9jdW1lbnQgLS0gZGlnZXN0IChodHRwOi8vd3d3LnJlcG9ydGxhYi5jb20pCgovSW5mbyA0IDAgUgovUm9vdCAzIDAgUgovU2l6ZSA2Cj4+CnN0YXJ0eHJlZgo2MTYKJSVFT0YK",
+            "fileName": "Weather_Condition_Checker_Task_Only.pdf",
+            "masterId": 0,
+            "attConfigID": 22
+        }
+    ],
+    "partners": [
+        {
+            "name": "part n",
+            "type": 10,
+            "licenseIssuer": "li",
+            "licenseExpiryDate": "2025-08-22T00:00:00Z",
+            "licenseNumber": "4651651",
+            "contactDetails": "details",
+            "mainApplyServiceId": null
+        }
+    ]
+}

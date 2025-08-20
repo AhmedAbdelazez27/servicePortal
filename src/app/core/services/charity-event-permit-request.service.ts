@@ -65,7 +65,7 @@ export class CharityEventPermitRequestService {
 
     create(dto: any): Observable<any> {
         return this.http.post<any>(
-            `${this.BASE_URL}${ApiEndpoints.RequestEventPermits.Base}${ApiEndpoints.RequestEventPermits.Create}`,
+            `${this.BASE_URL}${ApiEndpoints.CharityEventPermit.Base}${ApiEndpoints.CharityEventPermit.Create}`,
             dto
         );
     }
