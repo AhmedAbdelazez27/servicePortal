@@ -130,15 +130,24 @@ export class ServiceDetailsComponent implements OnInit {
 
   onRequestService(): void {
     if (this.service) {
+      // Check if this is Fasting and Distribution Tent service (ID = 1)
+      if (this.service.serviceId === 1) {
+        this.router.navigate(['/fasting-tent-request']);
+      }
       // Check if this is RequestPlaint service (ID = 7)
-      if (this.service.serviceId === 7) {
+      else if (this.service.serviceId === 7) {
         this.router.navigate(['/request-plaint']);
       }
       // Check if this is RequestComplaint service (ID = 1002)
       else if (this.service.serviceId === 1002) {
         this.router.navigate(['/request-complaint']);
-      } else {
-        // Navigate to generic service request page
+      }
+      // Check if this is Distribution Site Permit Application (ID = 1001)
+      else if (this.service.serviceId === 1001) {
+        this.router.navigate(['/distribution-site-permit']);
+      }
+      // Navigate to generic service request page
+      else {
         this.router.navigate(['/service-request', this.service.serviceId]);
       }
     }

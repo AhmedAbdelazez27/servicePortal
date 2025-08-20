@@ -1,0 +1,622 @@
+.fasting-tent-request-container {
+  $primary: #8D734D;
+  $success: #28a745;
+  $danger: #dc3545;
+  $radius: 8px;
+  $trans: all 0.3s ease;
+
+  .main-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 1.5rem;
+  }
+
+  .title {
+    color: $primary;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  // Step Navigation Layout
+  .step-navigation-item {
+    display: flex;
+    position: relative;
+    margin-bottom: 40px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .step-container {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    transition: $trans;
+    
+    .step-bg {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #CCCCCC;
+      border: 1px solid #CCCCCC;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: $trans;
+      z-index: 1;
+    }
+    
+    .step {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      font-weight: 600;
+      font-size: 16px;
+      background: #fff;
+      color: #999999;
+      border: 1px solid #fff;
+      margin-top: 4px;
+      transition: $trans;
+    }
+    
+    // Active state - golden/brown circle with white number
+    &.active {
+      .step-bg {
+        background: $primary;
+        border-color: $primary;
+      }
+      
+      .step {
+        background: $primary;
+        color: white;
+        border-color: $primary;
+      }
+    }
+    
+    // Completed state - golden/brown circle with white checkmark
+    &.completed {
+      .step-bg {
+        background: $primary;
+        border-color: $primary;
+      }
+      
+      .step {
+        background: $primary;
+        color: white;
+        border-color: $primary;
+      }
+    }
+    
+    // Invalid state - red circle
+    &.invalid {
+      .step-bg {
+        background: $danger;
+        border-color: $danger;
+      }
+      
+      .step {
+        background: $danger;
+        color: white;
+        border-color: $danger;
+      }
+    }
+  }
+  
+  .connecting-line {
+    position: absolute;
+    left: 19.5px; // Center of the circle (40px / 2 - 0.5px for line width)
+    top: 40px; // Start from bottom of circle
+    width: 1px;
+    height: 40px; // Height to reach next circle
+    background: $primary;
+    z-index: 0;
+  }
+  
+  .step-content-wrapper {
+    margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .step-title {
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: $trans;
+    font-size: 16px;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    
+    &:hover { color: $primary; }
+    
+    &.text-primary {
+      color: $primary !important;
+      font-weight: 600;
+    }
+    
+    &.text-success {
+      font-weight: 600;
+    }
+    
+    &.text-danger {
+      font-weight: 600;
+    }
+  }
+  
+  .step-description {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    color: #6c757d;
+    line-height: 1.3;
+  }
+
+  .form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+    
+    .text-danger {
+      font-size: 1.1em;
+      font-weight: 600;
+    }
+  }
+
+  .form-control {
+    border-radius: $radius;
+    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    transition: $trans;
+    
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 0.2rem rgba(141,115,77,0.25);
+    }
+    
+    &.is-invalid { border-color: $danger; }
+  }
+
+  ::ng-deep .ng-select {
+    &.ng-select-focused .ng-select-container {
+      border-color: $primary;
+      box-shadow: 0 0 0 0.2rem rgba(141,115,77,0.25);
+    }
+    
+    .ng-select-container {
+      border-radius: $radius;
+      border: 1px solid #d1d5db;
+      min-height: 48px;
+      transition: $trans;
+      background: #fff;
+      
+      &.ng-appearance-outline {
+        border-radius: $radius;
+      }
+      
+      .ng-value-container {
+        padding: 0.5rem 1rem;
+        
+        .ng-placeholder { color: #6c757d; }
+        
+        .ng-value {
+          font-size: 0.875rem;
+          color: #333;
+        }
+      }
+      
+      .ng-arrow-wrapper {
+        padding-right: 0.75rem;
+        
+        .ng-arrow {
+          border-color: #6c757d transparent transparent;
+        }
+      }
+      
+      .ng-clear-wrapper {
+        padding-right: 0.75rem;
+        
+        .ng-clear {
+          color: #6c757d;
+          
+          &:hover { color: $danger; }
+        }
+      }
+    }
+    
+    &.ng-select-multiple .ng-select-container .ng-value-container {
+      .ng-value {
+        background: lighten($primary, 45%);
+        border: 1px solid lighten($primary, 30%);
+        border-radius: 4px;
+        color: $primary;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        
+        .ng-value-label { color: $primary; }
+        
+        .ng-value-icon {
+          border-right: 1px solid lighten($primary, 30%);
+          
+          &:hover { background: lighten($primary, 35%); }
+        }
+      }
+    }
+  }
+
+  ::ng-deep .ng-dropdown-panel {
+    border: 1px solid #d1d5db;
+    border-radius: $radius;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    
+    .ng-dropdown-panel-items {
+      .ng-option {
+        padding: 0.75rem 1rem;
+        
+        &.ng-option-highlighted {
+          background: lighten($primary, 50%);
+          color: $primary;
+        }
+        
+        &.ng-option-selected {
+          background: $primary;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .btn {
+    border-radius: $radius;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: $trans;
+    border: none;
+    
+    &.btn-primary {
+      background: $primary;
+      color: white;
+      
+      &:hover {
+        background: darken($primary, 10%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(141,115,77,0.3);
+      }
+      
+      &:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+    
+    &.btn-secondary {
+      background: #6c757d;
+      color: white;
+      
+      &:hover {
+        background: darken(#6c757d, 10%);
+        transform: translateY(-1px);
+      }
+      
+      &:disabled {
+        background: #adb5bd;
+        cursor: not-allowed;
+        transform: none;
+      }
+    }
+    
+    &.btn-success {
+      background: $success;
+      color: white;
+      
+      &:hover {
+        background: darken($success, 10%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(40,167,69,0.3);
+      }
+      
+      &:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+    
+    &.btn-danger {
+      background: $danger;
+      color: white;
+      
+      &:hover {
+        background: darken($danger, 10%);
+        transform: translateY(-1px);
+      }
+    }
+    
+    &.btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .table {
+    border-radius: $radius;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    
+    thead th {
+      background: $primary;
+      color: white;
+      font-weight: 500;
+      border: none;
+      padding: 1rem;
+    }
+    
+    tbody tr {
+      transition: $trans;
+      
+      &:hover { 
+        background: rgba(141,115,77,0.05); 
+      }
+      
+      td {
+        padding: 1rem;
+        border-color: lighten($primary, 45%);
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .invalid-feedback {
+    color: $danger;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+
+  .text-danger { color: $danger !important; }
+  .text-success { color: $success !important; }
+  .text-muted { color: #6c757d !important; }
+
+  // Attachments Styles
+  .upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: $radius;
+    padding: 2rem;
+    text-align: center;
+    background: #f8f9fa;
+    transition: $trans;
+    cursor: pointer;
+    
+    &:hover,
+    &.drag-over {
+      border-color: $primary;
+      background: lighten($primary, 55%);
+    }
+    
+    &.border-danger {
+      border-color: $danger;
+      background: lighten($danger, 55%);
+    }
+    
+    &.border-success {
+      border-color: $success;
+      background: lighten($success, 55%);
+    }
+    
+    .upload-label {
+      cursor: pointer;
+      margin: 0;
+      
+      i {
+        font-size: 2rem;
+        color: $primary;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+      
+      span {
+        color: #6c757d;
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  .file-preview {
+    padding: 1rem;
+    background: lighten($primary, 55%);
+    border-radius: $radius;
+    border: 1px solid lighten($primary, 40%);
+    
+    .file-name {
+      display: block;
+      font-weight: 500;
+      color: $primary;
+      margin-bottom: 0.5rem;
+    }
+    
+    .preview-image {
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+  }
+
+  // Map specific styles
+  #distributionMap {
+    border-radius: $radius;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    min-height: 400px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    border: 1px solid #ddd;
+    transition: $trans;
+    
+    &.border-danger {
+      border-color: $danger;
+      box-shadow: 0 2px 8px rgba(220,53,69,0.2);
+    }
+    
+    // Ensure proper Leaflet initialization
+    &.leaflet-container {
+      font-size: 12px;
+      line-height: 1.5;
+    }
+  }
+
+  // Custom marker styles for leaflet
+  ::ng-deep .custom-marker {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  // Form switches
+  .form-check {
+    .form-check-input {
+      &:checked {
+        background-color: $primary;
+        border-color: $primary;
+      }
+      
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(141,115,77,0.25);
+      }
+    }
+    
+    .form-check-label {
+      font-weight: 500;
+      color: #333;
+    }
+  }
+
+  // Alert styles
+  .alert {
+    border-radius: $radius;
+    border: none;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    
+    &.alert-success {
+      background: lighten($success, 50%);
+      color: darken($success, 20%);
+      border-left: 4px solid $success;
+    }
+    
+    &.alert-warning {
+      background: lighten(#ffc107, 40%);
+      color: darken(#ffc107, 30%);
+      border-left: 4px solid #ffc107;
+    }
+    
+    &.alert-info {
+      background: lighten($primary, 55%);
+      color: $primary;
+      border-left: 4px solid $primary;
+    }
+  }
+
+  // Spinner
+  .spinner-border {
+    &.spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  // Step content
+  .step-content {
+    min-height: 500px;
+  }
+
+  // Status indicators
+  .status-active {
+    color: $success;
+    font-weight: 500;
+  }
+
+  .status-inactive {
+    color: $danger;
+    font-weight: 500;
+  }
+
+  .location-photo-hover {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    max-height: 200px;
+    max-width: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 1;
+    &:hover {
+      transform: scale(2.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    .main-container {
+      padding: 1rem;
+    }
+    
+    .step-navigation-item {
+      margin-bottom: 30px;
+    }
+    
+    .step-container {
+      .step-bg, .step {
+        width: 32px;
+        height: 32px;
+      }
+      
+      .step {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+        margin-top: 2px;
+      }
+    }
+    
+    .connecting-line {
+      left: 15.5px; // Adjust for smaller circles
+      height: 30px;
+      top: 32px;
+    }
+    
+    .step-content-wrapper {
+      margin-left: 12px;
+    }
+    
+    .step-title {
+      font-size: 14px;
+    }
+    
+    .step-description {
+      font-size: 0.7rem;
+    }
+    
+    .table-responsive {
+      font-size: 0.875rem;
+    }
+    
+    #distributionMap {
+      height: 300px !important;
+    }
+  }
+}

@@ -203,6 +203,7 @@ export class ApiEndpoints {
     Delete: (id: number) => `/Delete/${id}`,
     Select2: '/Select2',
     CheckAvailable: '/CheckAvailable',
+    GetInteractiveMap: '/GetInteractiveMap',
   };
   static readonly SponsorshipReports = {
     Base: '/GuaranteesReports',
@@ -334,6 +335,8 @@ export class ApiEndpoints {
   static readonly Lookup = {
     PlaintReasons: '/Lookup/PlaintReasons',
     ComplaintType: '/Lookup/ComplaintType',
+    TentLocationType: '/Lookup/TentLocationType',
+    DistributionLocationType: '/Lookup/DistributionLocationType',
   };
 
   static readonly RequestComplaint = {
@@ -347,6 +350,26 @@ export class ApiEndpoints {
     GetAll: '/GetAll',
     GetById: (id: string) => `/Get/${id}`,
     Update: '/Update',
+  };
+
+  static readonly FastingTentRequest = {
+    Base: '/FastingTentRequest',
+    Create: '',
+    GetByMainApplyServiceId: (mainApplyServiceId: number) =>
+      `/GetByMainApplyServiceId/${mainApplyServiceId}`,
+    GetAll: '/GetAll',
+    Update: '/Update',
+    Delete: (id: number) => `/Delete/${id}`,
+  };
+
+  static readonly DistributionSiteRequest = {
+    Base: '/DistributionSiteRequest',
+    Create: '',
+    GetByMainApplyServiceId: (mainApplyServiceId: number) =>
+      `/GetByMainApplyServiceId/${mainApplyServiceId}`,
+    GetAll: '/GetAll',
+    Update: '/Update',
+    Delete: (id: number) => `/Delete/${id}`,
   };
   static readonly RequestEventPermits = {
     Base: '/RequestEventPermits',

@@ -1,0 +1,650 @@
+<div class="fasting-tent-request-container">
+    <section>
+        <div class="container services">
+            <h4 class="title">{{ 'FASTING_TENT.TITLE' | translate }}</h4>
+            <p class="mb-5">{{ 'FASTING_TENT.DESCRIPTION' | translate }}</p>
+
+            <!-- Loading state -->
+            <div *ngIf="isLoading" class="text-center py-5">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+                </div>
+                <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+            </div>
+
+            <!-- Main Content -->
+            <div *ngIf="!isLoading" class="row">
+                <!-- Tabs Navigation -->
+                <div class="col-lg-3 mb-4">
+                    <div class="main-container h-100">
+                        <!-- Tab 1: Main Information -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(1)" 
+                                 [class.completed]="isTabCompleted(1)"
+                                 [class.invalid]="currentTab > 1 && !isTabCompleted(1)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(1)">1</span>
+                                    <i *ngIf="isTabCompleted(1)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="connecting-line"></div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(1)"
+                                      [class.text-success]="isTabCompleted(1)"
+                                      [class.text-danger]="currentTab > 1 && !isTabCompleted(1)"
+                                      [class.text-primary]="isTabActive(1)">
+                                    {{ 'FASTING_TENT.TAB1_TITLE' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.MAIN_INFO_DESC' | translate }}</small>
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Date Details -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(2)" 
+                                 [class.completed]="isTabCompleted(2)"
+                                 [class.invalid]="currentTab > 2 && !isTabCompleted(2)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(2)">2</span>
+                                    <i *ngIf="isTabCompleted(2)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="connecting-line"></div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(2)"
+                                      [class.text-success]="isTabCompleted(2)"
+                                      [class.text-danger]="currentTab > 2 && !isTabCompleted(2)"
+                                      [class.text-primary]="isTabActive(2)">
+                                    {{ 'FASTING_TENT.DATE_DETAILS_TITLE' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.DATE_DETAILS_DESC' | translate }}</small>
+                            </div>
+                        </div>
+
+                        <!-- Tab 3: Supervisor Information -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(3)" 
+                                 [class.completed]="isTabCompleted(3)"
+                                 [class.invalid]="currentTab > 3 && !isTabCompleted(3)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(3)">3</span>
+                                    <i *ngIf="isTabCompleted(3)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="connecting-line"></div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(3)"
+                                      [class.text-success]="isTabCompleted(3)"
+                                      [class.text-danger]="currentTab > 3 && !isTabCompleted(3)"
+                                      [class.text-primary]="isTabActive(3)">
+                                    {{ 'FASTING_TENT.SUPERVISOR_INFO' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.SUPERVISOR_INFO_DESC' | translate }}</small>
+                            </div>
+                        </div>
+
+                        <!-- Tab 4: Partners -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(4)" 
+                                 [class.completed]="isTabCompleted(4)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(4)">4</span>
+                                    <i *ngIf="isTabCompleted(4)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="connecting-line"></div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(4)"
+                                      [class.text-primary]="isTabActive(4)">
+                                    {{ 'FASTING_TENT.PARTNERS' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.PARTNERS_OPTIONAL_SHORT' | translate }}</small>
+                            </div>
+                        </div>
+
+                        <!-- Tab 5: Attachments -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(5)" 
+                                 [class.completed]="isTabCompleted(5)"
+                                 [class.invalid]="currentTab === 5 && !isTabCompleted(5)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(5)">5</span>
+                                    <i *ngIf="isTabCompleted(5)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(5)"
+                                      [class.text-success]="isTabCompleted(5)"
+                                      [class.text-danger]="currentTab === 5 && !isTabCompleted(5)"
+                                      [class.text-primary]="isTabActive(5)">
+                                    {{ 'FASTING_TENT.TAB4_TITLE' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.ATTACHMENTS_DESC' | translate }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="col-lg-9 mb-4">
+                    <div class="main-container h-100">
+                        
+                        <!-- Tab 1: Main Information -->
+                        <div *ngIf="currentTab === 1" class="step-content">
+                            <h5 class="mb-4">{{ 'FASTING_TENT.MAIN_INFO' | translate }}</h5>
+                            
+                            <form [formGroup]="mainInfoForm">
+                                <div class="row">
+                                    <!-- Request Type Dropdown -->
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">{{ 'FASTING_TENT.REQUEST_TYPE' | translate }} <span class="text-danger">*</span></label>
+                                        <ng-select 
+                                            formControlName="tentLocationType"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                            bindLabel="text"
+                                            bindValue="id"
+                                            [items]="tentLocationTypes"
+                                            [clearable]="true"
+                                            [class.is-invalid]="submitted && mainInfoForm.get('tentLocationType')?.errors">
+                                        </ng-select>
+                                        <div *ngIf="submitted && mainInfoForm.get('tentLocationType')?.errors" class="invalid-feedback d-block">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Location Selection Options - Always Available -->
+                                    <div class="col-xl-12 mb-4">
+                                        <h6 class="mb-3">{{ 'FASTING_TENT.LOCATION_SELECTION' | translate }}</h6>
+                                        
+                                        <!-- Dropdown Selection -->
+                                        <div class="mb-4">
+                                            <label class="form-label">{{ 'FASTING_TENT.LOCATION' | translate }} <span class="text-danger">*</span></label>
+                                            <ng-select 
+                                                formControlName="locationId"
+                                                [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                                bindLabel="text"
+                                                bindValue="id"
+                                                [items]="locationOptions"
+                                                [clearable]="true"
+                                                (change)="onDropdownLocationSelect($event)"
+                                                [class.is-invalid]="submitted && mainInfoForm.get('locationId')?.errors"
+                                                [loading]="isCheckingAvailability && lastSelectionSource === 'dropdown'">
+                                            </ng-select>
+                                            <div *ngIf="submitted && mainInfoForm.get('locationId')?.errors" class="invalid-feedback d-block">
+                                                {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                            </div>
+                                            <div *ngIf="locationAvailabilityStatus && lastSelectionSource === 'dropdown'" class="mt-2">
+                                                <div *ngIf="locationAvailabilityStatus === 'available'" class="alert alert-success p-2">
+                                                    <i class="fas fa-check-circle me-2"></i>{{ 'SUCCESS.LOCATION_AVAILABLE' | translate }}
+                                                </div>
+                                                <div *ngIf="locationAvailabilityStatus === 'unavailable'" class="alert alert-danger p-2">
+                                                    <i class="fas fa-times-circle me-2"></i>{{ 'ERRORS.LOCATION_NOT_AVAILABLE' | translate }}
+                                                </div>
+                                                <div *ngIf="locationAvailabilityStatus === 'checking'" class="alert alert-info p-2">
+                                                    <i class="fas fa-spinner fa-spin me-2"></i>{{ 'COMMON.CHECKING_AVAILABILITY' | translate }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Map Selection -->
+                                        <div class="mb-4">
+                                            <label class="form-label">{{ 'FASTING_TENT.SELECT_LOCATION_ON_MAP' | translate }} <span class="text-danger">*</span></label>
+                                            <div id="distributionMap" style="height: 400px; border: 1px solid #ddd; border-radius: 4px;"
+                                                 [class.border-danger]="submitted && lastSelectionSource === 'map' && !selectedLocationDetails"
+                                                 [class.border-success]="selectedLocationDetails && lastSelectionSource === 'map'"></div>
+                                            <small class="text-muted d-block mt-2">
+                                                {{ 'FASTING_TENT.MAP_INSTRUCTIONS' | translate }}
+                                            </small>
+                                            <div *ngIf="submitted && (!selectedLocationDetails || (lastSelectionSource !== 'dropdown' && !mainInfoForm.get('locationId')?.value))" class="text-danger small mt-1">
+                                                {{ 'VALIDATION.LOCATION_REQUIRED' | translate }}
+                                            </div>
+                                            <div *ngIf="locationAvailabilityStatus && lastSelectionSource === 'map'" class="mt-2">
+                                                <div *ngIf="locationAvailabilityStatus === 'available'" class="alert alert-success p-2">
+                                                    <i class="fas fa-check-circle me-2"></i>{{ 'SUCCESS.LOCATION_AVAILABLE' | translate }}
+                                                </div>
+                                                <div *ngIf="locationAvailabilityStatus === 'unavailable'" class="alert alert-danger p-2">
+                                                    <i class="fas fa-times-circle me-2"></i>{{ 'ERRORS.LOCATION_NOT_AVAILABLE' | translate }}
+                                                </div>
+                                                <div *ngIf="locationAvailabilityStatus === 'checking'" class="alert alert-info p-2">
+                                                    <i class="fas fa-spinner fa-spin me-2"></i>{{ 'COMMON.CHECKING_AVAILABILITY' | translate }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Auto-populated Location Fields (Read-only) -->
+                                    <div *ngIf="selectedLocationDetails" class="col-xl-12">
+                                        <h6 class="mb-3">{{ 'FASTING_TENT.LOCATION_DETAILS' | translate }}</h6>
+                                        
+                                        <div class="row">
+                                            <div class="col-xl-6 mb-3">
+                                                <label class="form-label">{{ 'FASTING_TENT.OWNER_NAME' | translate }}</label>
+                                                <input type="text" class="form-control" formControlName="ownerName" readonly>
+                                            </div>
+                                            
+                                            <div class="col-xl-6 mb-3">
+                                                <label class="form-label">{{ 'FASTING_TENT.REGION_NAME' | translate }}</label>
+                                                <input type="text" class="form-control" formControlName="regionName" readonly>
+                                            </div>
+                                            
+                                            <div class="col-xl-6 mb-3">
+                                                <label class="form-label">{{ 'FASTING_TENT.STREET_NAME' | translate }}</label>
+                                                <input type="text" class="form-control" formControlName="streetName" readonly>
+                                            </div>
+                                            
+                                            <div class="col-xl-6 mb-3">
+                                                <label class="form-label">{{ 'FASTING_TENT.GROUND_NO' | translate }}</label>
+                                                <input type="text" class="form-control" formControlName="groundNo" readonly>
+                                            </div>
+                                            
+                                            <div class="col-xl-12 mb-3">
+                                                <label class="form-label">{{ 'FASTING_TENT.ADDRESS' | translate }}</label>
+                                                <input type="text" class="form-control" formControlName="address" readonly>
+                                            </div>
+                                            
+
+                                            <div class="col-xl-12 mb-3" *ngIf="selectedLocationDetails?.locationPhotoPath">
+                                                <label class="form-label">{{ 'FASTING_TENT.LOCATION_PHOTO' | translate }}</label>
+                                                <div>
+                                                    <img [src]="selectedLocationDetails.locationPhotoPath" alt="Location Photo" class="img-fluid location-photo-hover" style="max-height: 200px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">{{ 'FASTING_TENT.NOTES' | translate }}</label>
+                                        <textarea class="form-control" formControlName="notes" rows="2"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tab 2: Date Details -->
+                        <div *ngIf="currentTab === 2" class="step-content">
+                            <h5 class="mb-4">{{ 'FASTING_TENT.DATE_DETAILS' | translate }}</h5>
+                            
+                            <form [formGroup]="dateDetailsForm">
+                                <div class="row">
+                                    <!-- Start Date -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'FASTING_TENT.START_DATE' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" formControlName="startDate" 
+                                               [class.is-invalid]="submitted && dateDetailsForm.get('startDate')?.errors">
+                                        <div *ngIf="submitted && dateDetailsForm.get('startDate')?.errors" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- End Date -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'FASTING_TENT.END_DATE' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" formControlName="endDate"
+                                               [class.is-invalid]="submitted && dateDetailsForm.get('endDate')?.errors">
+                                        <div *ngIf="submitted && dateDetailsForm.get('endDate')?.errors" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Tent Setup Date -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'FASTING_TENT.SETUP_DATE' | translate }}</label>
+                                        <input type="date" class="form-control" formControlName="tentDate" [disabled]="true">
+                                    </div>
+                                    <!-- Tent is Set Up Toggle -->
+                                    <div class="col-12 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" formControlName="tentIsSetUp" id="tentIsSetUpDetail">
+                                            <label class="form-check-label" for="tentIsSetUpDetail">
+                                                {{ 'FASTING_TENT.TENT_IS_SET_UP' | translate }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Consultant approved by Police Toggle -->
+                                    <div class="col-12 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" formControlName="consultantApprovedByPolice" id="consultantApprovedByPoliceDetail">
+                                            <label class="form-check-label" for="consultantApprovedByPoliceDetail">
+                                                {{ 'FASTING_TENT.CONSULTANT_APPROVED_BY_POLICE' | translate }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Consultant from Ajman Toggle -->
+                                    <div class="col-12 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" formControlName="consultantFromAjman" id="consultantFromAjmanDetail">
+                                            <label class="form-check-label" for="consultantFromAjmanDetail">
+                                                {{ 'FASTING_TENT.CONSULTANT_FROM_AJMAN' | translate }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tab 3: Supervisor Information -->
+                        <div *ngIf="currentTab === 3" class="step-content">
+                            <h5 class="mb-4">{{ 'FASTING_TENT.SUPERVISOR_INFO' | translate }}</h5>
+                            
+                            <form [formGroup]="supervisorForm">
+                                <div class="row">
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'FASTING_TENT.SUPERVISOR_NAME' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" formControlName="supervisorName"
+                                               [class.is-invalid]="submitted && supervisorForm.get('supervisorName')?.errors">
+                                        <div *ngIf="submitted && supervisorForm.get('supervisorName')?.errors" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'FASTING_TENT.JOB_TITLE' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" formControlName="jopTitle"
+                                               [class.is-invalid]="submitted && supervisorForm.get('jopTitle')?.errors">
+                                        <div *ngIf="submitted && supervisorForm.get('jopTitle')?.errors" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'FASTING_TENT.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" formControlName="supervisorMobile"
+                                               [class.is-invalid]="submitted && supervisorForm.get('supervisorMobile')?.errors">
+                                        <div *ngIf="submitted && supervisorForm.get('supervisorMobile')?.errors" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tab 4: Partners -->
+                        <div *ngIf="currentTab === 4" class="step-content">
+                            <h5 class="mb-4">{{ 'FASTING_TENT.PARTNERS' | translate }}</h5>
+                            
+                            <form [formGroup]="partnersForm">
+                                <div class="row">
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'FASTING_TENT.PARTNER_NAME' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="name">
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'FASTING_TENT.PARTNER_TYPE' | translate }}</label>
+                                        <ng-select 
+                                            formControlName="type"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                            bindLabel="text"
+                                            bindValue="id"
+                                            [items]="partnerTypes"
+                                            [clearable]="true"
+                                            (change)="onPartnerTypeChange()">
+                                        </ng-select>
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'FASTING_TENT.LICENSE_ISSUER' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="licenseIssuer">
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'FASTING_TENT.LICENSE_EXPIRY_DATE' | translate }}</label>
+                                        <input type="date" class="form-control" formControlName="licenseExpiryDate">
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'FASTING_TENT.LICENSE_NUMBER' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="licenseNumber">
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'FASTING_TENT.CONTACT_DETAILS' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="contactDetails">
+                                    </div>
+                                    
+                                    <!-- Partner Attachments Section -->
+                                    <div *ngIf="showPartnerAttachments" class="col-xl-12 mb-4">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                                        <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                                        <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let config of getPartnerAttachmentConfigsForType(partnersForm.get('type')?.value); let i = index">
+                                                        <td>
+                                                            {{ getAttachmentName(config) }}
+                                                            <span *ngIf="config.mendatory" class="text-danger ms-1">*</span>
+                                                        </td>
+                                                        <td>
+                                                            <div *ngIf="!partnerSelectedFiles[partnersForm.get('type')?.value]?.[config.id!]" 
+                                                                 class="upload-area"
+                                                                 (dragover)="onPartnerDragOver($event)"
+                                                                 (dragleave)="onPartnerDragLeave($event)"
+                                                                 (drop)="onPartnerDrop($event, config.id!, partnersForm.get('type')?.value)"
+                                                                 [class.drag-over]="isDragOver"
+                                                                 [class.border-danger]="config.mendatory && partnersForm.get('type')?.value && !partnerSelectedFiles[partnersForm.get('type')?.value][config.id!] && (currentTab === 4 || submitted)"
+                                                                 [class.border-success]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]">
+                                                                <input type="file" 
+                                                                       class="d-none" 
+                                                                       [id]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id"
+                                                                       (change)="onPartnerFileSelected($event, config.id!, partnersForm.get('type')?.value)"
+                                                                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                                <label [for]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id" class="upload-label">
+                                                                    <i class="fas fa-cloud-upload-alt mb-2"></i>
+                                                                    <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
+                                                                    <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
+                                                                </label>
+                                                            </div>
+                                                            
+                                                            <div *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]" class="uploaded-file">
+                                                                <div class="d-flex align-items-center">
+                                                                    <i class="fas fa-file me-2 text-success"></i>
+                                                                    <span class="file-name">{{ partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].name }}</span>
+                                                                </div>
+                                                                <div *ngIf="partnerFilePreviews[partnersForm.get('type')?.value][config.id!]" class="mt-2">
+                                                                    <img [src]="partnerFilePreviews[partnersForm.get('type')?.value][config.id!]" 
+                                                                         class="img-thumbnail" 
+                                                                         style="max-height: 100px; max-width: 100px;"
+                                                                         *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].type.startsWith('image/')"
+                                                                         [alt]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].name">
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <button *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]" 
+                                                                    type="button" 
+                                                                    class="btn btn-sm btn-danger" 
+                                                                    (click)="removePartnerFile(config.id!, partnersForm.get('type')?.value)">
+                                                                <i class="fas fa-trash"></i> {{ 'COMMON.REMOVE' | translate }}
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-xl-12 mb-4">
+                                        <button type="button" class="btn btn-primary" (click)="addPartner()">
+                                            {{ 'COMMON.ADD_PARTNER' | translate }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Partners Table -->
+                            <div *ngIf="partners.length > 0" class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>{{ 'FASTING_TENT.PARTNER_NAME' | translate }}</th>
+                                            <th>{{ 'FASTING_TENT.PARTNER_TYPE' | translate }}</th>
+                                            <th>{{ 'FASTING_TENT.LICENSE_NUMBER' | translate }}</th>
+                                            <th>{{ 'FASTING_TENT.CONTACT_DETAILS' | translate }}</th>
+                                            <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let partner of partners; let i = index">
+                                            <td>{{ i + 1 }}</td>
+                                            <td>{{ partner.name }}</td>
+                                            <td>{{ getPartnerTypeName(partner.type) }}</td>
+                                            <td>{{ partner.licenseNumber || '-' }}</td>
+                                            <td>{{ partner.contactDetails || '-' }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-danger" (click)="removePartner(i)">
+                                                    {{ 'COMMON.REMOVE' | translate }}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div *ngIf="partners.length === 0" class="alert alert-info">
+                                {{ 'FASTING_TENT.NO_PARTNERS_ADDED' | translate }}
+                            </div>
+                        </div>
+
+                        <!-- Tab 5: Attachments -->
+                        <div *ngIf="currentTab === 5" class="step-content">
+                            <h5 class="mb-4">{{ 'ATTACHMENTS.TITLE' | translate }}</h5>
+                            
+                            <!-- Validation Status Indicator -->
+                            <div class="alert" [class.alert-success]="isTabCompleted(5)" [class.alert-warning]="!isTabCompleted(5)" class="mb-3">
+                                <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
+                                <span *ngIf="isTabCompleted(5)" class="text-success">{{ 'VALIDATION.ALL_REQUIRED_ATTACHMENTS_UPLOADED' | translate }}</span>
+                                <span *ngIf="!isTabCompleted(5)" class="text-warning">{{ 'VALIDATION.PLEASE_UPLOAD_REQUIRED_ATTACHMENTS' | translate }}</span>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                            <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                            <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let config of attachmentConfigs; let i = index">
+                                            <td>
+                                                {{ config.nameEn || config.name | translate }}
+                                                <span *ngIf="isAttachmentMandatory(config.id!)" class="text-danger ms-1">*</span>
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && selectedFiles[config.id!]" class="text-success small">
+                                                    <i class="fas fa-check-circle"></i> {{ 'VALIDATION.UPLOADED' | translate }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
+                                                     (dragover)="onDragOver($event)"
+                                                     (dragleave)="onDragLeave($event)"
+                                                     (drop)="onDrop($event, config.id!)"
+                                                     [class.drag-over]="isDragOver"
+                                                     [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)"
+                                                     [class.border-success]="selectedFiles[config.id!]">
+                                                    <input type="file" 
+                                                           class="d-none" 
+                                                           [id]="'file-' + config.id"
+                                                           (change)="onFileSelected($event, config.id!)"
+                                                           [accept]="supportedAttachmentFormats">
+                                                    <label [for]="'file-' + config.id" class="upload-label">
+                                                        <i class="fas fa-cloud-upload-alt"></i>
+                                                        <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
+                                                    </label>
+                                                </div>
+                                                <div *ngIf="selectedFiles[config.id!]" class="file-preview">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-file me-2"></i>
+                                                        <div>
+                                                            <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
+                                                            <small class="text-muted d-block">{{ (selectedFiles[config.id!].size / 1024).toFixed(1) }} KB</small>
+                                                        </div>
+                                                    </div>
+                                                    <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')" 
+                                                         [src]="filePreviews[config.id!]" 
+                                                         class="preview-image mt-2"
+                                                         style="max-width: 200px; max-height: 100px; border-radius: 4px;">
+                                                </div>
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)" class="text-danger small mt-1">
+                                                    <i class="fas fa-exclamation-triangle"></i> {{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button *ngIf="selectedFiles[config.id!]" 
+                                                        type="button" 
+                                                        class="btn btn-sm btn-danger" 
+                                                        (click)="removeFile(config.id!)">
+                                                    <i class="fas fa-trash"></i> {{ 'COMMON.REMOVE' | translate }}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" 
+                                    class="btn btn-secondary" 
+                                    (click)="previousTab()" 
+                                    [disabled]="currentTab === 1">
+                                {{ 'COMMON.PREVIOUS' | translate }}
+                            </button>
+                            
+                            <div>
+                                <button *ngIf="currentTab < totalTabs" 
+                                        type="button" 
+                                        class="btn btn-primary" 
+                                        (click)="nextTab()"
+                                        [disabled]="!canProceedToNext()"
+                                        [title]="!canProceedToNext() ? ('VALIDATION.COMPLETE_REQUIRED_FIELDS' | translate) : ''">
+                                    {{ 'COMMON.NEXT' | translate }}
+                                    <i *ngIf="canProceedToNext()" class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                                
+                                <button *ngIf="currentTab === totalTabs" 
+                                        type="button" 
+                                        class="btn btn-success" 
+                                        (click)="onSubmit()"
+                                        [disabled]="!canSubmit() || isSaving"
+                                        [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
+                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                    {{ 'COMMON.SUBMIT' | translate }}
+                                    <i *ngIf="!isSaving && canSubmit()" class="fas fa-check ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Validation feedback for current tab -->
+                        <div *ngIf="currentTab < totalTabs && !canProceedToNext()" class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            {{ 'VALIDATION.COMPLETE_REQUIRED_FIELDS_TO_CONTINUE' | translate }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

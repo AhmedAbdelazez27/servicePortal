@@ -69,6 +69,22 @@ export const routes: Routes = [
             './features/home/RequestComplaint/request-complaint.component'
           ).then((m) => m.RequestComplaintComponent),
       },
+      {
+        path: 'fasting-tent-request',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import(
+            './features/home/fasting-tent-request/fasting-tent-request.component'
+          ).then((m) => m.FastingTentRequestComponent),
+      },
+      {
+        path: 'distribution-site-permit',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import(
+            './features/home/distribution-site-permit/distribution-site-permit.component'
+          ).then((m) => m.DistributionSitePermitComponent),
+      },
 
       // Contact Us route - accessible without authentication
       {

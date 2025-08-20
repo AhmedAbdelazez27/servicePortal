@@ -1,0 +1,688 @@
+<div class="distribution-site-permit-container">
+    <section>
+        <div class="container services">
+            <h4 class="title">{{ 'DISTRIBUTION_SITE.TITLE' | translate }}</h4>
+            <p class="mb-5">{{ 'DISTRIBUTION_SITE.DESCRIPTION' | translate }}</p>
+
+            <!-- Loading state -->
+            <div *ngIf="isLoading" class="text-center py-5">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+                </div>
+                <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+            </div>
+
+            <!-- Main Content -->
+            <div *ngIf="!isLoading" class="row">
+                <!-- Tabs Navigation -->
+                <div class="col-lg-3 mb-4">
+                    <div class="main-container h-100">
+                        <!-- Tab 1: Main Information -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(1)" 
+                                 [class.completed]="isTabCompleted(1)"
+                                 [class.invalid]="currentTab > 1 && !isTabCompleted(1)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(1)">1</span>
+                                    <i *ngIf="isTabCompleted(1)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="connecting-line" *ngIf="currentTab !== 5"></div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(1)"
+                                      [class.text-success]="isTabCompleted(1)"
+                                      [class.text-danger]="currentTab > 1 && !isTabCompleted(1)"
+                                      [class.text-primary]="isTabActive(1)">
+                                    {{ 'DISTRIBUTION_SITE.TAB1_TITLE' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.MAIN_INFO_DESC' | translate }}</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab 2: Date Details -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(2)" 
+                                 [class.completed]="isTabCompleted(2)"
+                                 [class.invalid]="currentTab > 2 && !isTabCompleted(2)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(2)">2</span>
+                                    <i *ngIf="isTabCompleted(2)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="connecting-line"></div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(2)"
+                                      [class.text-success]="isTabCompleted(2)"
+                                      [class.text-danger]="currentTab > 2 && !isTabCompleted(2)"
+                                      [class.text-primary]="isTabActive(2)">
+                                    {{ 'DISTRIBUTION_SITE.DATE_DETAILS_TAB' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.DATE_DETAILS_DESC' | translate }}</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab 3: Supervisor Information -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(3)" 
+                                 [class.completed]="isTabCompleted(3)"
+                                 [class.invalid]="currentTab > 3 && !isTabCompleted(3)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(3)">3</span>
+                                    <i *ngIf="isTabCompleted(3)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="connecting-line"></div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(3)"
+                                      [class.text-success]="isTabCompleted(3)"
+                                      [class.text-danger]="currentTab > 3 && !isTabCompleted(3)"
+                                      [class.text-primary]="isTabActive(3)">
+                                    {{ 'DISTRIBUTION_SITE.SUPERVISOR_INFO_TAB' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.SUPERVISOR_INFO_DESC' | translate }}</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab 4: Partners -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(4)" 
+                                 [class.completed]="isTabCompleted(4)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(4)">4</span>
+                                    <i *ngIf="isTabCompleted(4)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="connecting-line"></div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(4)"
+                                      [class.text-primary]="isTabActive(4)">
+                                    {{ 'DISTRIBUTION_SITE.TAB2_TITLE' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.PARTNERS_OPTIONAL_SHORT' | translate }}</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab 5: Attachments -->
+                        <div class="step-navigation-item">
+                            <div class="step-container" 
+                                 [class.active]="isTabActive(5)" 
+                                 [class.completed]="isTabCompleted(5)"
+                                 [class.invalid]="currentTab === 5 && !isTabCompleted(5)">
+                                <div class="step-bg"></div>
+                                <div class="step">
+                                    <span *ngIf="!isTabCompleted(5)">5</span>
+                                    <i *ngIf="isTabCompleted(5)" class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="step-content-wrapper">
+                                <span class="step-title" 
+                                      (click)="goToTab(5)"
+                                      [class.text-success]="isTabCompleted(5)"
+                                      [class.text-danger]="currentTab === 5 && !isTabCompleted(5)"
+                                      [class.text-primary]="isTabActive(5)">
+                                    {{ 'DISTRIBUTION_SITE.TAB3_TITLE' | translate }}
+                                </span>
+                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.ATTACHMENTS_DESC' | translate }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="col-lg-9 mb-4">
+                    <div class="main-container h-100">
+                        
+                        <!-- Tab 1: Main Information Content -->
+                        <div *ngIf="currentTab === 1" class="step-content">
+                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.MAIN_INFO' | translate }}</h5>
+                            
+                            <!-- Validation Status Indicator
+                            <div class="alert" [class.alert-success]="isCurrentTabValid()" [class.alert-warning]="!isCurrentTabValid()" class="mb-3">
+                                <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
+                                <span *ngIf="isCurrentTabValid()" class="text-success">{{ 'VALIDATION.ALL_REQUIRED_FIELDS_COMPLETED' | translate }}</span>
+                                <span *ngIf="!isCurrentTabValid()" class="text-warning">{{ 'VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS' | translate }}</span>
+                            </div>
+                             -->
+                            <form [formGroup]="mainInfoForm">
+                                <div class="row">
+                                    <!-- Request Type Dropdown -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.REQUEST_TYPE' | translate }} <span class="text-danger">*</span></label>
+                                        
+                                        <ng-select 
+                                            formControlName="locationTypeId"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                            [bindLabel]="getBindLabelField()"
+                                            bindValue="id"
+                                            [items]="distributionLocationTypes"
+                                            [clearable]="true"
+                                            (change)="onLocationTypeChange($event)"
+                                            (ngModelChange)="onLocationTypeChange($event)"
+                                            [class.is-invalid]="isFieldInvalid('locationTypeId')"
+                                            [class.is-valid]="isFieldValid('locationTypeId')">
+                                        </ng-select>
+                                        <div *ngIf="isFieldInvalid('locationTypeId')" class="invalid-feedback d-block">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Owner Name -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.OWNER_NAME' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="ownerName"
+                                               [placeholder]="'DISTRIBUTION_SITE.OWNER_NAME_PLACEHOLDER' | translate">
+                                    </div>
+
+                                    <!-- Region Name -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.REGION_NAME' | translate }} <span class="text-danger">*</span></label>
+                                        <ng-select 
+                                            formControlName="regionName"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                            bindLabel="text"
+                                            bindValue="text"
+                                            [items]="regionOptions"
+                                            [clearable]="true"
+                                            [class.is-invalid]="isFieldInvalid('regionName')"
+                                            [class.is-valid]="isFieldValid('regionName')">
+                                        </ng-select>
+                                        <div *ngIf="isFieldInvalid('regionName')" class="invalid-feedback d-block">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Street Name -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.STREET_NAME' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" formControlName="streetName"
+                                               [placeholder]="'DISTRIBUTION_SITE.STREET_NAME_PLACEHOLDER' | translate"
+                                               [class.is-invalid]="isFieldInvalid('streetName')"
+                                               [class.is-valid]="isFieldValid('streetName')">
+                                        <div *ngIf="isFieldInvalid('streetName')" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Ground Number -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.GROUND_NO' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="groundNo"
+                                               [placeholder]="'DISTRIBUTION_SITE.GROUND_NO_PLACEHOLDER' | translate">
+                                    </div>
+
+                                    <!-- Address -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.ADDRESS' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="address"
+                                               [placeholder]="'DISTRIBUTION_SITE.ADDRESS_PLACEHOLDER' | translate">
+                                    </div>
+
+                                    <!-- Notes -->
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.NOTES' | translate }}</label>
+                                        <textarea class="form-control" formControlName="notes" rows="3"
+                                                  [placeholder]="'DISTRIBUTION_SITE.NOTES_PLACEHOLDER' | translate"></textarea>
+                                    </div>
+
+                                    <!-- Map Section for Location Selection -->
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.SELECT_LOCATION_ON_MAP' | translate }} <span class="text-danger">*</span></label>
+                                        <div id="distributionMap" style="height: 400px; border: 1px solid #ddd; border-radius: 4px;"
+                                             [class.border-danger]="!selectedCoordinates && (currentTab > 1 || submitted)"
+                                             [class.border-success]="selectedCoordinates"></div>
+                                        <small class="text-muted d-block mt-2">
+                                            {{ 'DISTRIBUTION_SITE.MAP_INSTRUCTIONS' | translate }}
+                                        </small>
+                                        <div *ngIf="!selectedCoordinates && (currentTab > 1 || submitted)" class="text-danger small mt-1">
+                                            {{ 'VALIDATION.LOCATION_REQUIRED' | translate }}
+                                        </div>
+                                        
+                                        <!-- Selected Coordinates Display -->
+                                        <div *ngIf="selectedCoordinates" class="mt-2">
+                                            <small class="text-success">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                {{ 'DISTRIBUTION_SITE.SELECTED_COORDINATES' | translate }}: {{ selectedCoordinates }}
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Distribution Site Coordinators (Selected Coordinates) Field -->
+                                    <div class="col-xl-12 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.SELECTED_COORDINATES' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="distributionSiteCoordinators" readonly>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tab 2: Date Details Content -->
+                        <div *ngIf="currentTab === 2" class="step-content">
+                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.DATE_DETAILS' | translate }}</h5>
+                            
+                            <!-- Validation Status Indicator
+                            <div class="alert" [class.alert-success]="isCurrentTabValid()" [class.alert-warning]="!isCurrentTabValid()" class="mb-3">
+                                <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
+                                <span *ngIf="isCurrentTabValid()" class="text-success">{{ 'VALIDATION.ALL_REQUIRED_FIELDS_COMPLETED' | translate }}</span>
+                                <span *ngIf="!isCurrentTabValid()" class="text-warning">{{ 'VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS' | translate }}</span>
+                            </div> -->
+                            
+                            <form [formGroup]="mainInfoForm">
+                                <div class="row">
+                                    <!-- Start Date -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.START_DATE' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" formControlName="startDate"
+                                               [class.is-invalid]="isFieldInvalid('startDate')"
+                                               [class.is-valid]="isFieldValid('startDate')">
+                                        <div *ngIf="isFieldInvalid('startDate')" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+                                    <!-- End Date -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.END_DATE' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" formControlName="endDate"
+                                               [class.is-invalid]="isFieldInvalid('endDate')"
+                                               [class.is-valid]="isFieldValid('endDate')">
+                                        <div *ngIf="isFieldInvalid('endDate')" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+                                    <!-- Tent Date -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.TENT_DATE' | translate }}</label>
+                                        <input type="date" class="form-control" formControlName="tentDate" [disabled]="true">
+                                    </div>
+                                    <!-- Consultant from Ajman Toggle -->
+                                    <div class="col-12 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" formControlName="isConsultantFromAjman" id="consultantFromAjman">
+                                            <label class="form-check-label" for="consultantFromAjman">
+                                                {{ 'DISTRIBUTION_SITE.CONSULTANT_FROM_AJMAN' | translate }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Consultant Approved from Police Toggle -->
+                                    <div class="col-12 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" formControlName="isConsultantApprovedFromPolice" id="consultantApprovedFromPolice">
+                                            <label class="form-check-label" for="consultantApprovedFromPolice">
+                                                {{ 'DISTRIBUTION_SITE.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Tent Is Set Up Toggle -->
+                                    <div class="col-12 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" formControlName="tentIsSetUp" id="tentIsSetUp">
+                                            <label class="form-check-label" for="tentIsSetUp">
+                                                {{ 'DISTRIBUTION_SITE.TENT_IS_SET_UP' | translate }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tab 3: Supervisor Information Content -->
+                        <div *ngIf="currentTab === 3" class="step-content">
+                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.SUPERVISOR_INFO' | translate }}</h5>
+                            
+                            <!-- Validation Status Indicator
+                            <div class="alert" [class.alert-success]="isCurrentTabValid()" [class.alert-warning]="!isCurrentTabValid()" class="mb-3">
+                                <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
+                                <span *ngIf="isCurrentTabValid()" class="text-success">{{ 'VALIDATION.ALL_REQUIRED_FIELDS_COMPLETED' | translate }}</span>
+                                <span *ngIf="!isCurrentTabValid()" class="text-warning">{{ 'VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS' | translate }}</span>
+                            </div> -->
+                            
+                            <form [formGroup]="mainInfoForm">
+                                <div class="row">
+                                    <!-- Supervisor Name -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.SUPERVISOR_NAME' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" formControlName="supervisorName"
+                                               [placeholder]="'DISTRIBUTION_SITE.SUPERVISOR_NAME_PLACEHOLDER' | translate"
+                                               [class.is-invalid]="isFieldInvalid('supervisorName')"
+                                               [class.is-valid]="isFieldValid('supervisorName')">
+                                        <div *ngIf="isFieldInvalid('supervisorName')" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+                                    <!-- Job Title -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.JOB_TITLE' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="jopTitle"
+                                               [placeholder]="'DISTRIBUTION_SITE.JOB_TITLE_PLACEHOLDER' | translate">
+                                    </div>
+                                    <!-- Supervisor Mobile -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control" formControlName="supervisorMobile"
+                                               [placeholder]="'DISTRIBUTION_SITE.SUPERVISOR_MOBILE_PLACEHOLDER' | translate"
+                                               [class.is-invalid]="isFieldInvalid('supervisorMobile')"
+                                               [class.is-valid]="isFieldValid('supervisorMobile')">
+                                        <div *ngIf="isFieldInvalid('supervisorMobile')" class="invalid-feedback">
+                                            <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('required')">
+                                                {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                            </div>
+                                            <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('pattern')">
+                                                {{ 'VALIDATION.INVALID_PHONE' | translate }}
+                                            </div>
+                                            <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('minlength')">
+                                                {{ 'VALIDATION.PHONE_MIN_LENGTH' | translate }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tab 4: Partners Content -->
+                        <div *ngIf="currentTab === 4" class="step-content">
+                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.PARTNERS' | translate }}</h5>
+                            
+                            <!-- Info Alert -->
+                            <!-- <div class="alert alert-info mb-3">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>{{ 'DISTRIBUTION_SITE.PARTNERS_OPTIONAL' | translate }}:</strong>
+                                {{ 'DISTRIBUTION_SITE.PARTNERS_OPTIONAL_DESC' | translate }}
+                            </div> -->
+                            
+                            <!-- Partner Form -->
+                            <form [formGroup]="partnersForm" class="mb-4">
+                                <div class="row">
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.PARTNER_NAME' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="name"
+                                               [placeholder]="'DISTRIBUTION_SITE.PARTNER_NAME_PLACEHOLDER' | translate">
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.PARTNER_TYPE' | translate }}</label>
+                                        <ng-select 
+                                            formControlName="type"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                                            bindLabel="text"
+                                            bindValue="id"
+                                            [items]="partnerTypes"
+                                            [clearable]="true"
+                                            (change)="onPartnerTypeChange()">
+                                        </ng-select>
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.LICENSE_ISSUER' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="licenseIssuer"
+                                               [placeholder]="'DISTRIBUTION_SITE.LICENSE_ISSUER_PLACEHOLDER' | translate">
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.LICENSE_EXPIRY_DATE' | translate }}</label>
+                                        <input type="date" class="form-control" formControlName="licenseExpiryDate">
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.LICENSE_NUMBER' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="licenseNumber"
+                                               [placeholder]="'DISTRIBUTION_SITE.LICENSE_NUMBER_PLACEHOLDER' | translate">
+                                    </div>
+                                    
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.CONTACT_DETAILS' | translate }}</label>
+                                        <input type="text" class="form-control" formControlName="contactDetails"
+                                               [placeholder]="'DISTRIBUTION_SITE.CONTACT_DETAILS_PLACEHOLDER' | translate">
+                                    </div>
+                                    
+                                    <!-- Partner Attachments Section -->
+                                    <div *ngIf="showPartnerAttachments" class="col-xl-12 mb-4">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                                        <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                                        <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let config of getPartnerAttachmentConfigsForType(partnersForm.get('type')?.value); let i = index">
+                                                        <td>
+                                                            {{ getAttachmentName(config) }}
+                                                            <span *ngIf="config.mendatory" class="text-danger ms-1">*</span>
+                                                        </td>
+                                                        <td>
+                                                            <div *ngIf="!partnerSelectedFiles[partnersForm.get('type')?.value]?.[config.id!]" 
+                                                                 class="upload-area"
+                                                                 (dragover)="onPartnerDragOver($event)"
+                                                                 (dragleave)="onPartnerDragLeave($event)"
+                                                                 (drop)="onPartnerDrop($event, config.id!, partnersForm.get('type')?.value)"
+                                                                 [class.drag-over]="isDragOver"
+                                                                 [class.border-danger]="config.mendatory && partnersForm.get('type')?.value && !partnerSelectedFiles[partnersForm.get('type')?.value][config.id!] && (currentTab === 4 || submitted)"
+                                                                 [class.border-success]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]">
+                                                                <input type="file" 
+                                                                       class="d-none" 
+                                                                       [id]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id"
+                                                                       (change)="onPartnerFileSelected($event, config.id!, partnersForm.get('type')?.value)"
+                                                                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                                <label [for]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id" class="upload-label">
+                                                                    <i class="fas fa-cloud-upload-alt mb-2"></i>
+                                                                    <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
+                                                                    <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
+                                                                </label>
+                                                            </div>
+                                                            
+                                                            <div *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]" class="uploaded-file">
+                                                                <div class="d-flex align-items-center">
+                                                                    <i class="fas fa-file me-2 text-success"></i>
+                                                                    <span class="file-name">{{ partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].name }}</span>
+                                                                </div>
+                                                                <div *ngIf="partnerFilePreviews[partnersForm.get('type')?.value][config.id!]" class="mt-2">
+                                                                    <img [src]="partnerFilePreviews[partnersForm.get('type')?.value][config.id!]" 
+                                                                         class="img-thumbnail" 
+                                                                         style="max-height: 100px; max-width: 100px;"
+                                                                         *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].type.startsWith('image/')"
+                                                                         [alt]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].name">
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <button *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]" 
+                                                                    type="button" 
+                                                                    class="btn btn-sm btn-danger" 
+                                                                    (click)="removePartnerFile(config.id!, partnersForm.get('type')?.value)">
+                                                                <i class="fas fa-trash"></i> {{ 'COMMON.REMOVE' | translate }}
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-xl-12">
+                                        <button type="button" class="btn btn-primary" (click)="addPartner()">
+                                            <i class="fas fa-plus"></i> {{ 'DISTRIBUTION_SITE.ADD_PARTNER' | translate }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Partners Table -->
+                            <div *ngIf="partners.length > 0" class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ 'DISTRIBUTION_SITE.PARTNER_NAME' | translate }}</th>
+                                            <th>{{ 'DISTRIBUTION_SITE.PARTNER_TYPE' | translate }}</th>
+                                            <th>{{ 'DISTRIBUTION_SITE.LICENSE_ISSUER' | translate }}</th>
+                                            <th>{{ 'DISTRIBUTION_SITE.LICENSE_NUMBER' | translate }}</th>
+                                            <th>{{ 'DISTRIBUTION_SITE.CONTACT_DETAILS' | translate }}</th>
+                                            <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let partner of partners; let i = index">
+                                            <td>{{ partner.name }}</td>
+                                            <td>{{ getPartnerTypeName(partner.type) }}</td>
+                                            <td>{{ partner.licenseIssuer || '-' }}</td>
+                                            <td>{{ partner.licenseNumber || '-' }}</td>
+                                            <td>{{ partner.contactDetails || '-' }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-danger" (click)="removePartner(i)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div *ngIf="partners.length === 0" class="text-center py-4 text-muted">
+                                <i class="fas fa-users fa-3x mb-3"></i>
+                                <p>{{ 'DISTRIBUTION_SITE.NO_PARTNERS_ADDED' | translate }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Tab 5: Attachments Content -->
+                        <div *ngIf="currentTab === 5" class="step-content">
+                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.ATTACHMENTS' | translate }}</h5>
+                            
+                            <!-- Validation Status Indicator -->
+                            <!-- <div class="alert" [class.alert-success]="isCurrentTabValid()" [class.alert-warning]="!isCurrentTabValid()" class="mb-3">
+                                <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
+                                <span *ngIf="isCurrentTabValid()" class="text-success">{{ 'VALIDATION.ALL_REQUIRED_ATTACHMENTS_UPLOADED' | translate }}</span>
+                                <span *ngIf="!isCurrentTabValid()" class="text-warning">{{ 'VALIDATION.PLEASE_UPLOAD_REQUIRED_ATTACHMENTS' | translate }}</span>
+                            </div>
+                             -->
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                            <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                            <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let config of attachmentConfigs; let i = index">
+                                            <td>
+                                                {{ getAttachmentName(config) }}
+                                                <span *ngIf="isAttachmentMandatory(config.id!)" class="text-danger ms-1">*</span>
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && selectedFiles[config.id!]" class="text-success small">
+                                                    <i class="fas fa-check-circle"></i> {{ 'VALIDATION.UPLOADED' | translate }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
+                                                     (dragover)="onDragOver($event)"
+                                                     (dragleave)="onDragLeave($event)"
+                                                     (drop)="onDrop($event, config.id!)"
+                                                     [class.drag-over]="isDragOver"
+                                                     [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)"
+                                                     [class.border-success]="selectedFiles[config.id!]">
+                                                    <input type="file" 
+                                                           class="d-none" 
+                                                           [id]="'file-' + config.id"
+                                                           (change)="onFileSelected($event, config.id!)"
+                                                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                    <label [for]="'file-' + config.id" class="upload-label">
+                                                        <i class="fas fa-cloud-upload-alt"></i>
+                                                        <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
+                                                    </label>
+                                                </div>
+                                                <div *ngIf="selectedFiles[config.id!]" class="file-preview">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-file me-2"></i>
+                                                        <div>
+                                                            <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
+                                                            <small class="text-muted d-block">{{ (selectedFiles[config.id!].size / 1024).toFixed(1) }} KB</small>
+                                                        </div>
+                                                    </div>
+                                                    <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')" 
+                                                         [src]="filePreviews[config.id!]" 
+                                                         class="preview-image mt-2"
+                                                         style="max-width: 200px; max-height: 100px; border-radius: 4px;">
+                                                </div>
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)" class="text-danger small mt-1">
+                                                    <i class="fas fa-exclamation-triangle"></i> {{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button *ngIf="selectedFiles[config.id!]" 
+                                                        type="button" 
+                                                        class="btn btn-sm btn-danger" 
+                                                        (click)="removeFile(config.id!)">
+                                                    <i class="fas fa-trash"></i> {{ 'COMMON.REMOVE' | translate }}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons: update for 5 tabs -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" 
+                                    class="btn btn-secondary" 
+                                    (click)="previousTab()" 
+                                    [disabled]="currentTab === 1">
+                                <i class="fas fa-arrow-left"></i> {{ 'COMMON.PREVIOUS' | translate }}
+                            </button>
+                            
+                            <!-- Next Button -->
+                            <div *ngIf="currentTab < totalTabs" class="d-flex align-items-center">
+                                <div *ngIf="!isCurrentTabValid()" class="me-3">
+                                    <small class="text-warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ 'VALIDATION.COMPLETE_REQUIRED_FIELDS_TO_CONTINUE' | translate }}
+                                    </small>
+                                </div>
+                                <button type="button" 
+                                        class="btn" 
+                                        [class.btn-primary]="isCurrentTabValid()"
+                                        [class.btn-outline-secondary]="!isCurrentTabValid()"
+                                        (click)="nextTab()" 
+                                        [disabled]="!canProceedToNext()">
+                                    {{ 'COMMON.NEXT' | translate }} <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div *ngIf="currentTab === totalTabs" class="d-flex align-items-center">
+                                <div *ngIf="!canSubmit()" class="me-3">
+                                    <small class="text-warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ 'VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS_TO_SUBMIT' | translate }}
+                                    </small>
+                                </div>
+                                <button type="button" 
+                                        class="btn"
+                                        [class.btn-success]="canSubmit()"
+                                        [class.btn-outline-secondary]="!canSubmit()"
+                                        (click)="onSubmit()" 
+                                        [disabled]="!canSubmit() || isSaving">
+                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                    <i *ngIf="!isSaving" class="fas fa-paper-plane me-2"></i>
+                                    {{ 'COMMON.SUBMIT' | translate }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
