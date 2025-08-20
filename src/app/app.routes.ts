@@ -21,69 +21,117 @@ export const routes: Routes = [
       {
         path: '',
         redirectTo: 'home',
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
 
       // Home page - accessible without authentication
       {
         path: 'home',
         loadComponent: () =>
-          import('./features/home/home/home.component').then((m) => m.HomeComponent)
+          import('./features/home/home/home.component').then(
+            (m) => m.HomeComponent
+          ),
       },
 
       // Services routes - accessible without authentication
       {
         path: 'services',
         loadComponent: () =>
-          import('./features/home/services-list/services-list.component').then((m) => m.ServicesListComponent)
+          import('./features/home/services-list/services-list.component').then(
+            (m) => m.ServicesListComponent
+          ),
+      },
+      {
+        path: 'request',
+        loadComponent: () =>
+          import('./features/mainApplyService/Pages/mainApplyService.component').then((m) => m.MainApplyServiceComponent)
       },
       {
         path: 'service-details/:id',
         loadComponent: () =>
-          import('./features/home/service-details/service-details.component').then((m) => m.ServiceDetailsComponent)
+          import(
+            './features/home/service-details/service-details.component'
+          ).then((m) => m.ServiceDetailsComponent),
       },
       {
         path: 'request-plaint',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/home/request-plaint/request-plaint.component').then((m) => m.RequestPlaintComponent)
+          import(
+            './features/home/request-plaint/request-plaint.component'
+          ).then((m) => m.RequestPlaintComponent),
+      },
+      {
+        path: 'request-complaint',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import(
+            './features/home/RequestComplaint/request-complaint.component'
+          ).then((m) => m.RequestComplaintComponent),
       },
 
       // Contact Us route - accessible without authentication
       {
         path: 'contact-us',
         loadComponent: () =>
-          import('./features/home/contact-us/contact-us.component').then((m) => m.ContactUsComponent)
+          import('./features/home/contact-us/contact-us.component').then(
+            (m) => m.ContactUsComponent
+          ),
       },
 
       // Authentication routes
       {
-        path: 'login', canActivate: [loginGuard], loadComponent: () =>
-          import('./features/auth/login/login.component').then((m) => m.LoginComponent)
+        path: 'login',
+        canActivate: [loginGuard],
+        loadComponent: () =>
+          import('./features/auth/login/login.component').then(
+            (m) => m.LoginComponent
+          ),
       },
       {
-        path: 'forgot-password', canActivate: [loginGuard], loadComponent: () =>
-          import('./features/auth/forgetpassword/forgetpassword.component').then((m) => m.ForgetpasswordComponent)
+        path: 'forgot-password',
+        canActivate: [loginGuard],
+        loadComponent: () =>
+          import(
+            './features/auth/forgetpassword/forgetpassword.component'
+          ).then((m) => m.ForgetpasswordComponent),
       },
       {
-        path: 'verify-otp', canActivate: [loginGuard], loadComponent: () =>
-          import('./features/auth/verifyotp/verifyotp.component').then((m) => m.VerifyotpComponent)
+        path: 'verify-otp',
+        canActivate: [loginGuard],
+        loadComponent: () =>
+          import('./features/auth/verifyotp/verifyotp.component').then(
+            (m) => m.VerifyotpComponent
+          ),
       },
       {
-        path: 'reset-password', canActivate: [loginGuard], loadComponent: () =>
-          import('./features/auth/resetpassword/resetpassword.component').then((m) => m.ResetpasswordComponent)
+        path: 'reset-password',
+        canActivate: [loginGuard],
+        loadComponent: () =>
+          import('./features/auth/resetpassword/resetpassword.component').then(
+            (m) => m.ResetpasswordComponent
+          ),
       },
       {
-        path: 'register/individual', /* canActivate: [loginGuard], */ loadComponent: () =>
-          import('./features/auth/registration/individualregistration/individualregistration.component').then((m) => m.IndividualregistrationComponent)
+        path: 'register/individual',
+        /* canActivate: [loginGuard], */ loadComponent: () =>
+          import(
+            './features/auth/registration/individualregistration/individualregistration.component'
+          ).then((m) => m.IndividualregistrationComponent),
       },
       {
-        path: 'register/institution', /* canActivate: [loginGuard], */ loadComponent: () =>
-          import('./features/auth/registration/institutionregistration/institutionregistration.component').then((m) => m.InstitutionregistrationComponent)
+        path: 'register/institution',
+        /* canActivate: [loginGuard], */ loadComponent: () =>
+          import(
+            './features/auth/registration/institutionregistration/institutionregistration.component'
+          ).then((m) => m.InstitutionregistrationComponent),
       },
       {
-        path: 'register/pending', /* canActivate: [loginGuard], */ loadComponent: () =>
-          import('./features/auth/registration/registration-pending/registration-pending.component').then((m) => m.RegistrationPendingComponent)
+        path: 'register/pending',
+        /* canActivate: [loginGuard], */ loadComponent: () =>
+          import(
+            './features/auth/registration/registration-pending/registration-pending.component'
+          ).then((m) => m.RegistrationPendingComponent),
       },
 
       // // Users routes - require authentication
@@ -97,7 +145,10 @@ export const routes: Routes = [
       {
         path: 'edit-profile',
         canActivate: [authGuard],
-        loadChildren: () => import('./features/auth/EditProfile/edit-profile.routes').then((m) => m.editProfileRoutes)
+        loadChildren: () =>
+          import('./features/auth/EditProfile/edit-profile.routes').then(
+            (m) => m.editProfileRoutes
+          ),
       },
       {
         path: 'services-requests',
@@ -108,7 +159,7 @@ export const routes: Routes = [
       // Example:
       // { path: 'dashboard', canActivate: [authGuard], loadComponent: () =>
       //   import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent) },
-    ]
+    ],
   },
-  { path: '**', component: PageNotFoundComponent }
+  { path: '**', component: PageNotFoundComponent },
 ];

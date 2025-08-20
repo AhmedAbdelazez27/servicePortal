@@ -1,0 +1,18 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="title">{{ 'mainApplyServiceResourceName.title' | translate }}</h1>
+  </div>
+
+  <app-generic-data-table [columnDefs]="columnDefs"
+                          [rowData]="loadgridData"
+                          [totalCount]="pagination.totalCount"
+                          [pageSize]="pagination.take"
+                          [currentPage]="pagination.currentPage - 1"
+                          [columnHeaderMap]="columnHeaderMap"
+                          [rowActions]="rowActions"
+                          (actionClick)="onTableAction($event)"
+                          (pageChange)="onPageChange($event)"
+                          [showActionColumn]="true"
+                          (search)="onTableSearch($event)">
+  </app-generic-data-table>
+</div>

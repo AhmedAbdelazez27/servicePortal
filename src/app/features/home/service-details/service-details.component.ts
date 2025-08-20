@@ -3,7 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ServiceSettingService } from '../../../core/services/serviceSetting.service';
-import { ServiceDto, AttributeDto, ServiceDepartmentDto, AttributeValueDto } from '../../../core/dtos/serviceSetting/serviceSetting.dto';
+import {
+  ServiceDto,
+  AttributeDto,
+  ServiceDepartmentDto,
+  AttributeValueDto,
+} from '../../../core/dtos/serviceSetting/serviceSetting.dto';
 import { AttachmentsConfigDto } from '../../../core/dtos/attachments/attachments-config.dto';
 import { TranslationService } from '../../../core/services/translation.service';
 
@@ -12,7 +17,7 @@ import { TranslationService } from '../../../core/services/translation.service';
   standalone: true,
   imports: [CommonModule, TranslateModule],
   templateUrl: './service-details.component.html',
-  styleUrls: ['./service-details.component.scss']
+  styleUrls: ['./service-details.component.scss'],
 })
 export class ServiceDetailsComponent implements OnInit {
   service: ServiceDto | null = null;
@@ -50,53 +55,69 @@ export class ServiceDetailsComponent implements OnInit {
       error: (error: any) => {
         this.error = 'ERRORS.FAILED_LOAD_SERVICE_DETAILS';
         this.loading = false;
-      }
+      },
     });
   }
 
   getServiceName(service: ServiceDto): string {
     const currentLanguage = this.translationService.currentLang;
-    return currentLanguage === 'ar' ? (service.serviceName || '') : (service.serviceNameEn || service.serviceName || '');
+    return currentLanguage === 'ar'
+      ? service.serviceName || ''
+      : service.serviceNameEn || service.serviceName || '';
   }
 
   getServiceDescription(service: ServiceDto): string {
     const currentLanguage = this.translationService.currentLang;
-    return currentLanguage === 'ar' ? (service.descriptionAr || '') : (service.descriptionEn || service.descriptionAr || '');
+    return currentLanguage === 'ar'
+      ? service.descriptionAr || ''
+      : service.descriptionEn || service.descriptionAr || '';
   }
 
   getAttributeName(attribute: AttributeDto): string {
     const currentLanguage = this.translationService.currentLang;
-    return currentLanguage === 'ar' ? (attribute.nameAr || '') : (attribute.nameEn || attribute.nameAr || '');
+    return currentLanguage === 'ar'
+      ? attribute.nameAr || ''
+      : attribute.nameEn || attribute.nameAr || '';
   }
 
   getAttributeValues(attribute: AttributeDto): AttributeValueDto[] {
     if (attribute.attributeValues && attribute.attributeValues.length > 0) {
       // Sort by viewOrder if available
-      return [...attribute.attributeValues].sort((a, b) => (a.viewOrder || 0) - (b.viewOrder || 0));
+      return [...attribute.attributeValues].sort(
+        (a, b) => (a.viewOrder || 0) - (b.viewOrder || 0)
+      );
     }
     return [];
   }
 
   getAttributeValueText(value: AttributeValueDto): string {
     const currentLanguage = this.translationService.currentLang;
-    return currentLanguage === 'ar' ? (value.valueAr || '') : (value.valueEn || value.valueAr || '');
+    return currentLanguage === 'ar'
+      ? value.valueAr || ''
+      : value.valueEn || value.valueAr || '';
   }
 
   hasAttributeValues(attribute: AttributeDto): boolean {
-    return !!(attribute.attributeValues && attribute.attributeValues.length > 0);
+    return !!(
+      attribute.attributeValues && attribute.attributeValues.length > 0
+    );
   }
 
   getDepartmentName(dept: ServiceDepartmentDto): string {
     if (dept.department) {
       const currentLanguage = this.translationService.currentLang;
-      return currentLanguage === 'ar' ? (dept.department.aname || '') : (dept.department.ename || dept.department.aname || '');
+      return currentLanguage === 'ar'
+        ? dept.department.aname || ''
+        : dept.department.ename || dept.department.aname || '';
     }
     return 'ERRORS.UNKNOWN_DEPARTMENT';
   }
 
   getAttachmentName(attachment: AttachmentsConfigDto): string {
     const currentLanguage = this.translationService.currentLang;
-    return currentLanguage === 'ar' ? (attachment.name || '') : (attachment.nameEn || attachment.name || '');
+    return currentLanguage === 'ar'
+      ? attachment.name || ''
+      : attachment.nameEn || attachment.name || '';
   }
 
   onBackToServices(): void {
@@ -112,10 +133,11 @@ export class ServiceDetailsComponent implements OnInit {
       // Check if this is RequestPlaint service (ID = 7)
       if (this.service.serviceId === 7) {
         this.router.navigate(['/request-plaint']);
-      }else if (this.service.serviceId === 6) {
-        this.router.navigate(['/services-requests/charity-event-permit-request']);
       }
-       else {
+      // Check if this is RequestComplaint service (ID = 1002)
+      else if (this.service.serviceId === 1002) {
+        this.router.navigate(['/request-complaint']);
+      } else {
         // Navigate to generic service request page
         this.router.navigate(['/service-request', this.service.serviceId]);
       }

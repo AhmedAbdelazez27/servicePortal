@@ -19,11 +19,12 @@
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
-    "@ng-select/ng-select": "^19.0.0",
+    "@ng-select/ng-select": "^14.0.0",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
     "@popperjs/core": "^2.11.8",
-    "ag-grid-community": "^34.1.1",
+    "ag-grid-angular": "^31.3.4",
+    "ag-grid-community": "^31.3.4",
     "bootstrap": "^5.3.6",
     "chart.js": "^4.4.9",
     "jquery": "^3.7.1",
@@ -34,6 +35,7 @@
     "owl.carousel": "^2.3.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

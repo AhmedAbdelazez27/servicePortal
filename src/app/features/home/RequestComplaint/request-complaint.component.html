@@ -1,0 +1,127 @@
+<div class="request-complaint-container">
+  <section>
+    <div class="container services">
+      <h4 class="title">{{ 'REQUEST_COMPLAINT.TITLE' | translate }}</h4>
+      <p class="mb-5">{{ 'REQUEST_COMPLAINT.DESCRIPTION' | translate }}</p>
+
+      <!-- Loading state -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+        </div>
+        <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+      </div>
+
+      <!-- Main Content -->
+      <div *ngIf="!isLoading" class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="main-container">
+            <h5 class="mb-4 text-primary">{{ 'REQUEST_COMPLAINT.MAIN_INFO' | translate }}</h5>
+
+            <form [formGroup]="requestComplaintForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <!-- Request Date -->
+                <div class="col-md-6 mb-4">
+                  <label class="form-label">{{ 'REQUEST_COMPLAINT.REQUEST_DATE' | translate }} <span
+                      class="text-danger">*</span></label>
+                  <input type="date" class="form-control" formControlName="requestDate" readonly
+                    [class.is-invalid]="hasFieldError('requestDate')">
+                  <div *ngIf="hasFieldError('requestDate')" class="invalid-feedback">
+                    {{ getFieldErrorMessage('requestDate') }}
+                  </div>
+                </div>
+
+                <!-- Complaint Type -->
+                <div class="col-md-6 mb-4">
+                  <label class="form-label">{{ 'REQUEST_COMPLAINT.COMPLAINT_TYPE' | translate }} <span
+                      class="text-danger">*</span></label>
+                  <ng-select formControlName="complaintType" [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                    bindLabel="text" bindValue="id" [items]="complaintTypes" [clearable]="true"
+                    [class.is-invalid]="hasFieldError('complaintType')">
+                  </ng-select>
+                  <div *ngIf="hasFieldError('complaintType')" class="invalid-feedback d-block">
+                    {{ getFieldErrorMessage('complaintType') }}
+                  </div>
+                  <!-- Show message when no types are available -->
+                  <div *ngIf="complaintTypes.length === 0 && !isLoading" class="text-muted small mt-1">
+                    {{ 'REQUEST_COMPLAINT.NO_TYPES_AVAILABLE' | translate }}
+                  </div>
+                </div>
+
+                <!-- Applicant Name -->
+                <div class="col-md-6 mb-4">
+                  <label class="form-label">{{ 'REQUEST_COMPLAINT.APPLICANT_NAME' | translate }} <span
+                      class="text-danger">*</span></label>
+                  <input type="text" class="form-control" formControlName="applicantName"
+                    [placeholder]="'REQUEST_COMPLAINT.APPLICANT_NAME_PLACEHOLDER' | translate"
+                    [class.is-invalid]="hasFieldError('applicantName')">
+                  <div *ngIf="hasFieldError('applicantName')" class="invalid-feedback">
+                    {{ getFieldErrorMessage('applicantName') }}
+                  </div>
+                </div>
+
+                <!-- Contact Number -->
+                <div class="col-md-6 mb-4">
+                  <label class="form-label">{{ 'REQUEST_COMPLAINT.CONTACT_NUMBER' | translate }} <span
+                      class="text-danger">*</span></label>
+                  <input type="tel" class="form-control" formControlName="contactNumber"
+                    [placeholder]="'REQUEST_COMPLAINT.CONTACT_NUMBER_PLACEHOLDER' | translate"
+                    [class.is-invalid]="hasFieldError('contactNumber')">
+                  <div *ngIf="hasFieldError('contactNumber')" class="invalid-feedback">
+                    {{ getFieldErrorMessage('contactNumber') }}
+                  </div>
+                </div>
+
+                <!-- Email -->
+                <div class="col-md-12 mb-4">
+                  <label class="form-label">{{ 'REQUEST_COMPLAINT.EMAIL' | translate }} <span class="text-muted">({{
+                      'COMMON.OPTIONAL' | translate }})</span></label>
+                  <input type="email" class="form-control" formControlName="email"
+                    [placeholder]="'REQUEST_COMPLAINT.EMAIL_PLACEHOLDER' | translate"
+                    [class.is-invalid]="hasEmailError()">
+                  <div *ngIf="hasEmailError()" class="invalid-feedback">
+                    {{ getFieldErrorMessage('email') }}
+                  </div>
+                </div>
+
+                <!-- Details -->
+                <div class="col-md-12 mb-4">
+                  <label class="form-label">{{ 'REQUEST_COMPLAINT.DETAILS' | translate }} <span
+                      class="text-danger">*</span></label>
+                  <textarea class="form-control" formControlName="details" rows="4"
+                    [placeholder]="'REQUEST_COMPLAINT.DETAILS_PLACEHOLDER' | translate"
+                    [class.is-invalid]="hasFieldError('details')">
+                                    </textarea>
+                  <div *ngIf="hasFieldError('details')" class="invalid-feedback">
+                    {{ getFieldErrorMessage('details') }}
+                  </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="col-md-12 mb-4">
+                  <label class="form-label">{{ 'REQUEST_COMPLAINT.NOTES' | translate }} <span class="text-muted">({{
+                      'COMMON.OPTIONAL' | translate }})</span></label>
+                  <textarea class="form-control" formControlName="notes" rows="3"
+                    [placeholder]="'REQUEST_COMPLAINT.NOTES_PLACEHOLDER' | translate">
+                                    </textarea>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="text-end mt-4">
+                <button type="button" class="btn btn-secondary me-2" (click)="navigateToServices()">
+                  {{ 'COMMON.CANCEL' | translate }}
+                </button>
+
+                <button type="submit" class="btn btn-primary" [disabled]="!canSubmit() || isSaving">
+                  <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                  {{ 'COMMON.SUBMIT' | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

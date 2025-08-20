@@ -1,42 +1,30 @@
 .request-plaint-container {
+  $primary: #8D734D;
+  $success: #28a745;
+  $danger: #dc3545;
+  $radius: 8px;
+  $trans: all 0.3s ease;
+
   .main-container {
-    background: #ffffff;
+    background: #fff;
     border-radius: 12px;
     padding: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     margin-bottom: 1.5rem;
   }
 
   .title {
-    color: #8D734D;
+    color: $primary;
     font-weight: 600;
     margin-bottom: 1rem;
   }
 
-  // Step navigation styles
   .step-container {
     position: relative;
     cursor: pointer;
     
-    &.active {
-      .step-bg {
-        background: #8D734D;
-      }
-      .step {
-        color: white;
-        font-weight: 600;
-      }
-    }
-    
-    &.completed {
-      .step-bg {
-        background: #28a745;
-      }
-      .step {
-        color: white;
-        font-weight: 600;
-      }
-    }
+    &.active .step-bg { background: $primary; }
+    &.completed .step-bg { background: $success; }
     
     .step-bg {
       width: 40px;
@@ -60,20 +48,23 @@
       font-weight: 500;
       color: #6c757d;
     }
+    
+    &.active .step,
+    &.completed .step {
+      color: white;
+      font-weight: 600;
+    }
   }
 
   .step-title {
     font-weight: 500;
     color: #333;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: $trans;
     
-    &:hover {
-      color: #8D734D;
-    }
+    &:hover { color: $primary; }
   }
 
-  // Form styles
   .form-label {
     font-weight: 500;
     color: #333;
@@ -81,34 +72,31 @@
   }
 
   .form-control {
-    border-radius: 8px;
+    border-radius: $radius;
     border: 1px solid #ddd;
     padding: 0.75rem 1rem;
-    transition: all 0.3s ease;
+    transition: $trans;
     
     &:focus {
-      border-color: #8D734D;
-      box-shadow: 0 0 0 0.2rem rgba(141, 115, 77, 0.25);
+      border-color: $primary;
+      box-shadow: 0 0 0 0.2rem rgba(141,115,77,0.25);
     }
     
-    &.is-invalid {
-      border-color: #dc3545;
-    }
+    &.is-invalid { border-color: $danger; }
   }
 
-  /* ng-select Styling - Matching EditProfile component */
   ::ng-deep .ng-select {
     &.ng-select-focused .ng-select-container {
-      border-color: #8D734D;
-      box-shadow: 0 0 0 0.2rem rgba(141, 115, 77, 0.25);
+      border-color: $primary;
+      box-shadow: 0 0 0 0.2rem rgba(141,115,77,0.25);
     }
     
     .ng-select-container {
-      border-radius: 8px;
+      border-radius: $radius;
       border: 1px solid #d1d5db;
       min-height: 48px;
-      transition: all 0.3s ease;
-      background-color: #ffffff;
+      transition: $trans;
+      background: #fff;
       
       .ng-value-container {
         padding: 0.75rem 1rem;
@@ -123,53 +111,46 @@
           color: #374151;
           font-weight: 500;
           
-          .ng-value-label {
-            font-size: 0.875rem;
-          }
+          .ng-value-label { font-size: 0.875rem; }
         }
         
         .ng-value-icon {
           color: #6b7280;
           margin-right: 0.5rem;
           
-          &:hover {
-            color: #dc3545;
-          }
+          &:hover { color: $danger; }
         }
       }
       
       .ng-arrow-wrapper {
         color: #6b7280;
-        transition: color 0.3s ease;
+        transition: $trans;
         padding-right: 0.5rem;
         
-        &:hover {
-          color: #8D734D;
-        }
+        &:hover { color: $primary; }
       }
       
       &:hover {
         border-color: #9ca3af;
-        background-color: #fafbfc;
+        background: #fafbfc;
       }
     }
     
     &.is-invalid .ng-select-container {
-      border-color: #dc3545;
-      background-color: #fef2f2;
+      border-color: $danger;
+      background: #fef2f2;
       
       &:focus {
-        border-color: #dc3545;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        border-color: $danger;
+        box-shadow: 0 0 0 0.2rem rgba(220,53,69,0.25);
       }
     }
     
-    /* Dropdown panel styling */
     .ng-dropdown-panel {
-      border-radius: 8px;
+      border-radius: $radius;
       border: 1px solid #d1d5db;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-      background-color: #ffffff;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      background: #fff;
       margin-top: 4px;
       
       .ng-dropdown-panel-items {
@@ -180,34 +161,28 @@
           font-size: 0.875rem;
           border-bottom: 1px solid #f3f4f6;
           
-          &:last-child {
-            border-bottom: none;
-          }
+          &:last-child { border-bottom: none; }
           
           &:hover {
-            background-color: #f3f4f6;
-            color: #8D734D;
+            background: #f3f4f6;
+            color: $primary;
           }
           
           &.ng-option-selected {
-            background-color: #8D734D;
+            background: $primary;
             color: white;
             font-weight: 500;
           }
           
-          &.ng-option-marked {
-            background-color: #f9fafb;
-          }
-          
+          &.ng-option-marked { background: #f9fafb; }
           &.ng-option-disabled {
             color: #9ca3af;
-            background-color: #f9fafb;
+            background: #f9fafb;
             cursor: not-allowed;
           }
         }
       }
       
-      /* Search input styling */
       .ng-dropdown-panel-items .ng-input {
         padding: 0.75rem 1rem;
         border-bottom: 1px solid #e5e7eb;
@@ -219,18 +194,13 @@
           color: #374151;
           font-size: 0.875rem;
           
-          &::placeholder {
-            color: #9ca3af;
-          }
+          &::placeholder { color: #9ca3af; }
         }
       }
     }
     
-    /* Loading state */
-    &.ng-select-loading .ng-select-container {
-      .ng-arrow-wrapper {
-        animation: spin 1s linear infinite;
-      }
+    &.ng-select-loading .ng-select-container .ng-arrow-wrapper {
+      animation: spin 1s linear infinite;
     }
     
     @keyframes spin {
@@ -238,7 +208,6 @@
       to { transform: rotate(360deg); }
     }
     
-    /* Clear button styling */
     .ng-clear-wrapper {
       color: #9ca3af;
       transition: color 0.2s ease;
@@ -246,59 +215,45 @@
       border-radius: 4px;
       
       &:hover {
-        color: #dc3545;
-        background-color: #fef2f2;
+        color: $danger;
+        background: #fef2f2;
       }
     }
     
-    /* Multi-select styling */
-    &.ng-select-multiple .ng-select-container {
-      .ng-value {
-        background-color: #8D734D;
+    &.ng-select-multiple .ng-select-container .ng-value {
+      background: $primary;
+      color: white;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      
+      .ng-value-label { color: white; }
+      
+      .ng-value-icon {
         color: white;
-        border-radius: 4px;
-        padding: 0.25rem 0.5rem;
-        margin-right: 0.5rem;
-        margin-bottom: 0.25rem;
-        font-size: 0.75rem;
-        font-weight: 500;
+        margin-left: 0.5rem;
         
-        .ng-value-label {
-          color: white;
-        }
-        
-        .ng-value-icon {
-          color: white;
-          margin-left: 0.5rem;
-          
-          &:hover {
-            color: #fca5a5;
-          }
-        }
+        &:hover { color: #fca5a5; }
       }
     }
     
-    /* Disabled state */
     &.ng-select-disabled .ng-select-container {
-      background-color: #f3f4f6;
+      background: #f3f4f6;
       border-color: #e5e7eb;
       cursor: not-allowed;
       
-      .ng-value-container {
-        color: #9ca3af;
-      }
-      
-      .ng-arrow-wrapper {
-        color: #9ca3af;
-      }
+      .ng-value-container { color: #9ca3af; }
+      .ng-arrow-wrapper { color: #9ca3af; }
     }
   }
 
-  // Table styles
   .table {
-    border-radius: 8px;
+    border-radius: $radius;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     
     thead {
       background: #f8f9fa;
@@ -321,23 +276,20 @@
       tr {
         border-bottom: 1px solid #f0f0f0;
         
-        &:last-child {
-          border-bottom: none;
-        }
+        &:last-child { border-bottom: none; }
       }
     }
   }
 
-  // Button styles
   .btn {
-    border-radius: 8px;
+    border-radius: $radius;
     padding: 0.75rem 1.5rem;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: $trans;
     
     &.btn-primary {
-      background: #8D734D;
-      border-color: #8D734D;
+      background: $primary;
+      border-color: $primary;
       
       &:hover {
         background: #745f3f;
@@ -351,8 +303,8 @@
     }
     
     &.btn-success {
-      background: #28a745;
-      border-color: #28a745;
+      background: $success;
+      border-color: $success;
       
       &:hover {
         background: #218838;
@@ -371,8 +323,8 @@
     }
     
     &.btn-danger {
-      background: #dc3545;
-      border-color: #dc3545;
+      background: $danger;
+      border-color: $danger;
       
       &:hover {
         background: #c82333;
@@ -381,30 +333,28 @@
     }
   }
 
-  // Step content
   .step-content {
     min-height: 400px;
     
     h5 {
-      color: #8D734D;
+      color: $primary;
       font-weight: 600;
       border-bottom: 2px solid #f0f0f0;
       padding-bottom: 0.5rem;
     }
   }
 
-  // File upload styles
   .upload-area {
     border: 2px dashed #ddd;
-    border-radius: 8px;
+    border-radius: $radius;
     padding: 2rem;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: $trans;
     cursor: pointer;
     
     &:hover, &.drag-over {
-      border-color: #8D734D;
-      background: rgba(141, 115, 77, 0.05);
+      border-color: $primary;
+      background: rgba(141,115,77,0.05);
     }
     
     .upload-label {
@@ -417,7 +367,7 @@
       
       i {
         font-size: 2rem;
-        color: #8D734D;
+        color: $primary;
       }
       
       span {
@@ -447,56 +397,9 @@
     }
   }
 
-  // Loading states
-  .spinner-border {
-    color: #8D734D;
-  }
+  .spinner-border { color: $primary; }
 
-  // Responsive
-  @media (max-width: 768px) {
-    .main-container {
-      padding: 1rem;
-    }
-    
-    .step-title {
-      font-size: 0.9rem;
-    }
-    
-    .table-responsive {
-      font-size: 0.9rem;
-    }
-  }
-
-  // Error states
-  .invalid-feedback {
-    color: #dc3545;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-  }
-
-  .text-danger {
-    color: #dc3545 !important;
-  }
-
-  .text-muted {
-    color: #6c757d !important;
-  }
-
-  // Success states
-  .alert {
-    border-radius: 8px;
-    border: none;
-    
-    &.alert-danger {
-      background: rgba(220, 53, 69, 0.1);
-      color: #721c24;
-    }
-  }
-
-  // Entity Tags Styling
-  .entity-tags-container {
-    margin-bottom: 0.5rem;
-  }
+  .entity-tags-container { margin-bottom: 0.5rem; }
 
   .entity-tags {
     display: flex;
@@ -511,30 +414,30 @@
     padding: 0.75rem 1rem;
     background: #f8f9fa;
     border: 2px solid #e9ecef;
-    border-radius: 8px;
+    border-radius: $radius;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: $trans;
     position: relative;
     min-width: 120px;
     user-select: none;
     
     &:hover {
-      border-color: #8D734D;
-      background: rgba(141, 115, 77, 0.05);
+      border-color: $primary;
+      background: rgba(141,115,77,0.05);
       transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(141, 115, 77, 0.15);
+      box-shadow: 0 2px 8px rgba(141,115,77,0.15);
     }
     
     &:focus {
       outline: none;
-      border-color: #8D734D;
-      background: rgba(141, 115, 77, 0.05);
-      box-shadow: 0 0 0 3px rgba(141, 115, 77, 0.25);
+      border-color: $primary;
+      background: rgba(141,115,77,0.05);
+      box-shadow: 0 0 0 3px rgba(141,115,77,0.25);
     }
     
     &.selected {
-      background: #8D734D;
-      border-color: #8D734D;
+      background: $primary;
+      border-color: $primary;
       color: white;
       
       .entity-tag-text {
@@ -549,20 +452,14 @@
     }
     
     &.is-invalid {
-      border-color: #dc3545;
-      background: rgba(220, 53, 69, 0.05);
+      border-color: $danger;
+      background: rgba(220,53,69,0.05);
     }
   }
 
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.8);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
   }
 
   .entity-tag-text {
@@ -579,23 +476,41 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #8D734D;
+    color: $primary;
     flex-shrink: 0;
   }
 
-  // Responsive adjustments for entity tags
-  @media (max-width: 768px) {
-    .entity-tags {
-      gap: 0.5rem;
+  .invalid-feedback {
+    color: $danger;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+
+  .text-danger { color: $danger !important; }
+  .text-muted { color: #6c757d !important; }
+
+  .alert {
+    border-radius: $radius;
+    border: none;
+    
+    &.alert-danger {
+      background: rgba(220,53,69,0.1);
+      color: #721c24;
     }
+  }
+
+  @media (max-width: 768px) {
+    .main-container { padding: 1rem; }
+    .step-title { font-size: 0.9rem; }
+    .table-responsive { font-size: 0.9rem; }
+    
+    .entity-tags { gap: 0.5rem; }
     
     .entity-tag {
       padding: 0.5rem 0.75rem;
       min-width: 100px;
       
-      .entity-tag-text {
-        font-size: 0.9rem;
-      }
+      .entity-tag-text { font-size: 0.9rem; }
     }
   }
 }
