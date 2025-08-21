@@ -90,4 +90,11 @@ export class CharityEventPermitRequestService {
         };
         return this.http.post<any>(url, requestBody);
     }
+
+    createRequestEvent(dto: any): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.RequestEventPermits.Base}${ApiEndpoints.RequestEventPermits.Create}`,
+            dto
+        );
+    }
 }

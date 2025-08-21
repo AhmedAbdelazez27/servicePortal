@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AttachmentService } from '../../../../core/services/attachments/attachment.service';
@@ -165,111 +165,137 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     this.attachmentStates.forEach(s => s.sub?.unsubscribe());
   }
 
-initializeForm(): void {
-  this.firstStepForm = this.fb.group(
-    {
-      requestDate: this.fb.control<string>('', {
-        validators: [Validators.required, rfc3339Required],
-        nonNullable: true,
-      }),
+  initializeForm(): void {
+    this.firstStepForm = this.fb.group(
+      {
+        requestDate: this.fb.control<string>(
+          new Date().toISOString(), // RFC 3339 format
+          {
+            validators: [Validators.required, rfc3339Required],
+            nonNullable: true,
+          }
+        ),
 
-      lkpRequestTypeId: this.fb.control<number>(1, {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
 
-      userId: this.fb.control<string>('', {
-        validators: [Validators.required, Validators.maxLength(450)],
-        nonNullable: true,
-      }),
+        lkpRequestTypeId: this.fb.control<number>(1, {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
 
-      requestSide: this.fb.control<string>('', {
-        validators: [Validators.required, Validators.maxLength(200)],
-        nonNullable: true,
-      }),
+        userId: this.fb.control<string>('', {
+          validators: [Validators.required, Validators.maxLength(450)],
+          nonNullable: true,
+        }),
 
-      supervisingSide: this.fb.control<string>('', {
-        validators: [Validators.required, Validators.maxLength(200)],
-        nonNullable: true,
-      }),
+        requestSide: this.fb.control<string>('', {
+          validators: [Validators.required, Validators.maxLength(200)],
+          nonNullable: true,
+        }),
 
-      eventName: this.fb.control<string>('', {
-        validators: [Validators.required, Validators.maxLength(200)],
-        nonNullable: true,
-      }),
+        supervisingSide: this.fb.control<string>('', {
+          validators: [Validators.required, Validators.maxLength(200)],
+          nonNullable: true,
+        }),
 
-      startDate: this.fb.control<string>('', {
-        validators: [Validators.required, rfc3339Required],
-        nonNullable: true,
-      }),
+        eventName: this.fb.control<string>('', {
+          validators: [Validators.required, Validators.maxLength(200)],
+          nonNullable: true,
+        }),
 
-      endDate: this.fb.control<string>('', {
-        validators: [Validators.required, rfc3339Required],
-        nonNullable: true,
-      }),
+        startDate: this.fb.control<string>('', {
+          validators: [Validators.required, rfc3339Required],
+          nonNullable: true,
+        }),
 
-      lkpPermitTypeId: this.fb.control<number>(1, {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
+        endDate: this.fb.control<string>('', {
+          validators: [Validators.required, rfc3339Required],
+          nonNullable: true,
+        }),
 
-      eventLocation: this.fb.control<string>('', {
-        validators: [Validators.required, Validators.maxLength(500)],
-        nonNullable: true,
-      }),
+        lkpPermitTypeId: this.fb.control<number>(1, {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
 
-      amStartTime: this.fb.control<string>('', { validators: [rfc3339OrEmpty], nonNullable: true }),
-      amEndTime:   this.fb.control<string>('', { validators: [rfc3339OrEmpty], nonNullable: true }),
-      pmStartTime: this.fb.control<string>('', { validators: [rfc3339OrEmpty], nonNullable: true }),
-      pmEndTime:   this.fb.control<string>('', { validators: [rfc3339OrEmpty], nonNullable: true }),
+        eventLocation: this.fb.control<string>('', {
+          validators: [Validators.required, Validators.maxLength(500)],
+          nonNullable: true,
+        }),
 
-      admin: this.fb.control<string>('', {
-        validators: [Validators.required, Validators.maxLength(200)],
-        nonNullable: true,
-      }),
+        amStartTime: this.fb.control<string>('', {
+          validators: [rfc3339Required],
+          nonNullable: true
+        }),
+        amEndTime: this.fb.control<string>('', {
+          validators: [rfc3339Required],
+          nonNullable: true
+        }),
+        pmStartTime: this.fb.control<string>('', {
+          validators: [rfc3339Required],
+          nonNullable: true
+        }),
+        pmEndTime: this.fb.control<string>('', {
+          validators: [rfc3339Required],
+          nonNullable: true
+        }),
 
-      delegateName: this.fb.control<string>('', {
-        validators: [Validators.required, Validators.maxLength(200)],
-        nonNullable: true,
-      }),
+        // amStartTime: this.fb.control('', [Validators.required]),
+        // amEndTime: this.fb.control('', [Validators.required]),
+        // pmStartTime: this.fb.control('', [Validators.required]),
+        // pmEndTime: this.fb.control('', [Validators.required]),
 
-      alternateName: this.fb.control<string>('', {
-        validators: [Validators.required, Validators.maxLength(100)],
-        nonNullable: true,
-      }),
+        admin: this.fb.control<string>('', {
+          validators: [Validators.required, Validators.maxLength(200)],
+          nonNullable: true,
+        }),
 
-      adminTel: this.fb.control<string>('', {
-        validators: [phoneRules(7, 20)],
-        nonNullable: true,
-      }),
+        delegateName: this.fb.control<string>('', {
+          validators: [Validators.required, Validators.maxLength(200)],
+          nonNullable: true,
+        }),
 
-      telephone: this.fb.control<string>('', {
-        validators: [phoneRules(7, 20)],
-        nonNullable: true,
-      }),
+        alternateName: this.fb.control<string>('', {
+          validators: [Validators.required, Validators.maxLength(100)],
+          nonNullable: true,
+        }),
 
-      email: this.fb.control<string | null>(null, {
-        validators: [Validators.maxLength(50), Validators.email],
-      }),
+        adminTel: this.fb.control<string>('', {
+          validators: [Validators.required, phoneRules(7, 20)],
+          nonNullable: true,
+        }),
 
-      notes: this.fb.control<string | null>(null, {
-        validators: [Validators.maxLength(4000)],
-      }),
+        telephone: this.fb.control<string>('', {
+          validators: [Validators.required, phoneRules(7, 20)],
+          nonNullable: true,
+        }),
 
-      targetedAmount: this.fb.control<number | null>(null, {
-        validators: [Validators.min(0)],
-      }),
+        email: this.fb.control<string | null>(null, {
+          validators: [Validators.maxLength(50), Validators.email],
+        }),
 
-      beneficiaryIdNumber: this.fb.control<string | null>(null),
+        notes: this.fb.control<string | null>(null, {
+          validators: [Validators.maxLength(4000)],
+        }),
 
-      donationCollectionChannelIds: this.fb.control<number[]>([1], {
-        validators: [arrayMinLength(1)],
-        nonNullable: true,
-      }),
-    },
-    { validators: [timeRangesOk] }
-  );
-}
+        targetedAmount: this.fb.control<number | null>(null, {
+          validators: [Validators.min(0)],
+        }),
+
+        beneficiaryIdNumber: this.fb.control<string | null>(null),
+
+        donationCollectionChannelIds: this.fb.control<number[]>([1], {
+          validators: [arrayMinLength(1)],
+          nonNullable: true,
+        }),
+      },
+      {
+        validators: [timeRangesOk,
+          // this.timeRangeValidator('amStartTime', 'amEndTime'),
+          // this.timeRangeValidator('pmStartTime', 'pmEndTime')
+        ]
+      }
+    );
+  }
   initAdvertisementForm(): void {
     const currentUser = this.authService.getCurrentUser();
     this.advertForm = this.fb.group(
@@ -362,6 +388,7 @@ initializeForm(): void {
           // this.loadAttachmentConfigs();
           this.loadAttachmentConfigs(AttachmentsConfigType.DeclarationOfCharityEffectiveness);
           this.loadAttachmentConfigs(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign);
+          this.loadAttachmentConfigs(AttachmentsConfigType.Partner);
 
         },
         error: (error: any) => {
@@ -397,8 +424,19 @@ initializeForm(): void {
   addPartner(): void {
     this.partnerForm.markAllAsTouched();
     if (this.partnerForm.invalid) return;
+    const partnerAttachType = AttachmentsConfigType.Partner;
+    if (this.hasMissingRequiredAttachments(partnerAttachType)) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
+      return;
+    }
 
     const v = this.partnerForm.getRawValue();
+
+    const partnerAttachments = this.getValidAttachments(partnerAttachType).map(a => ({
+      ...a,
+      masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
+    }));
+
     this.partners.push({
       name: v.name!,
       type: v.type!,
@@ -407,8 +445,10 @@ initializeForm(): void {
       licenseNumber: v.licenseNumber!,
       contactDetails: v.contactDetails ?? null,
       mainApplyServiceId: v.mainApplyServiceId ?? null,
+      attachments: partnerAttachments,
     });
-
+    console.log(this.partners);
+    this.resetAttachments(partnerAttachType);
     this.partnerForm.reset();
   }
 
@@ -636,28 +676,137 @@ initializeForm(): void {
 
   validateStep1(): boolean {
     const form = this.firstStepForm;
-    if (form.hasError('dateRange')) return false;
 
-    const required = [
-      'eventName',
-      'eventLocation',
-      'startDate',
-      'endDate',
-      'supervisorName',
-      'jopTitle',
-      'telephone1',
-      'telephone2',
-      'advertisementType'
-    ];
 
-    const allOk = required.every(k => {
-      const c = form.get(k);
-      return !!(c && c.value !== null && c.value !== undefined && `${c.value}`.trim() !== '');
+    if (form.hasError('dateRange') || form.errors?.['dateRange']) return false;
+
+    const get = (k: string) => form.get(k);
+    const val = (k: string) => get(k)?.value;
+
+    const addErr = (k: string, key: string) => {
+      const c = get(k);
+      if (!c) return;
+      const curr = c.errors || {};
+      curr[key] = true;
+      c.setErrors(curr);
+      c.markAsTouched();
+    };
+
+    const isNonEmptyString = (v: unknown) => typeof v === 'string' && v.trim().length > 0;
+    const maxLen = (v: unknown, n: number) => typeof v === 'string' && v.trim().length <= n;
+    const withinLen = (v: unknown, min: number, max: number) =>
+      typeof v === 'string' && v.trim().length >= min && v.trim().length <= max;
+
+    // RFC3339: 2025-08-21T02:21:57Z 
+    const rfc3339 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+\-]\d{2}:\d{2})$/;
+    const isRfc3339 = (s: unknown) => typeof s === 'string' && rfc3339.test(s) && !Number.isNaN(Date.parse(s));
+
+    const phoneRe = /^[\d\s\-\+\(\)]+$/;
+    const isPhone = (s: unknown) => typeof s === 'string' && withinLen(s, 7, 20) && phoneRe.test(s.trim());
+
+    const isEnum123 = (v: unknown) => {
+      const n = typeof v === 'string' ? Number(v) : v;
+      return Number.isInteger(n) && (n as number) >= 1 && (n as number) <= 3;
+    };
+
+    let ok = true;
+
+    // 1)required
+    ([
+      ['userId', 450],
+      ['requestSide', 200],
+      ['supervisingSide', 200],
+      ['eventName', 200],
+      ['eventLocation', 500],
+      ['admin', 200],
+      ['delegateName', 200],
+      ['alternateName', 100],
+    ] as const).forEach(([k, max]) => {
+      const v = val(k);
+      if (!isNonEmptyString(v)) { addErr(k, 'required'); ok = false; return; }
+      if (!maxLen(v, max)) { addErr(k, 'maxlength'); ok = false; }
     });
 
-    const channels: number[] = form.get('donationCollectionChannelIds')?.value || [];
-    return allOk && channels.length > 0;
+
+    (['adminTel', 'telephone'] as const).forEach(k => {
+      const v = val(k);
+      if (!isNonEmptyString(v)) { addErr(k, 'required'); ok = false; return; }
+      if (!isPhone(v)) { addErr(k, 'phone'); ok = false; }
+    });
+
+    // 3) startDate / endDate
+    (['startDate', 'endDate'] as const).forEach(k => {
+      const v = val(k);
+      if (!isNonEmptyString(v)) { addErr(k, 'required'); ok = false; return; }
+      if (!isRfc3339(v)) { addErr(k, 'dateTime'); ok = false; }
+    });
+
+    const startStr = val('startDate');
+    const endStr = val('endDate');
+    if (isRfc3339(startStr) && isRfc3339(endStr)) {
+      const start = new Date(startStr);
+      const end = new Date(endStr);
+      if (start > end) {
+        addErr('startDate', 'range');
+        addErr('endDate', 'range');
+        ok = false;
+      }
+    }
+
+    // requestDate
+    const reqDate = val('requestDate');
+    if (reqDate != null && reqDate !== '' && !isRfc3339(reqDate)) {
+      addErr('requestDate', 'dateTime');
+      ok = false;
+    }
+
+    // AM/PM 
+    (['amStartTime', 'amEndTime', 'pmStartTime', 'pmEndTime'] as const).forEach(k => {
+      const v = val(k);
+      if (v != null && v !== '' && !isRfc3339(v)) { addErr(k, 'dateTime'); ok = false; }
+    });
+
+    // 4) Enums: lkpRequestTypeId / lkpPermitTypeId
+    (['lkpRequestTypeId', 'lkpPermitTypeId'] as const).forEach(k => {
+      const v = val(k);
+      if (v === null || v === undefined || `${v}`.trim() === '') {
+        addErr(k, 'required'); ok = false;
+      } else if (!isEnum123(v)) {
+        addErr(k, 'enum'); ok = false;
+      }
+    });
+
+
+    const email = val('email');
+    if (email != null && `${email}`.trim() !== '') {
+      const emailStr = String(email).trim();
+      const basicEmailRe = /^[^@]+@[^@]+$/;
+      if (emailStr.length > 50) { addErr('email', 'maxlength'); ok = false; }
+      if (!basicEmailRe.test(emailStr)) { addErr('email', 'email'); ok = false; }
+    }
+
+    // 6) notes
+    const notes = val('notes');
+    if (typeof notes === 'string' && notes.trim().length > 4000) {
+      addErr('notes', 'maxlength'); ok = false;
+    }
+
+    // 7) targetedAmount
+    const targetedAmount = val('targetedAmount');
+    if (targetedAmount !== null && targetedAmount !== undefined && `${targetedAmount}`.trim() !== '') {
+      const n = Number(targetedAmount);
+      if (!Number.isFinite(n) || n < 0) { addErr('targetedAmount', 'min'); ok = false; }
+    }
+    const channels = val('donationCollectionChannelIds');
+    if (channels !== null && channels !== undefined && `${channels}` !== '') {
+      if (!Array.isArray(channels) || !channels.every(x => Number.isInteger(typeof x === 'string' ? Number(x) : x))) {
+        addErr('donationCollectionChannelIds', 'arrayOfIntegers'); ok = false;
+      }
+    }
+
+    return ok;
   }
+
   // Navigation methods end
 
   // Table management methods
@@ -670,15 +819,14 @@ initializeForm(): void {
     if (!this.firstStepForm.valid || this.firstStepForm.hasError('dateRange')) return false;
 
     const mustHave = [
+      'userId',
+      'requestSide',
+      'supervisingSide',
       'eventName',
       'eventLocation',
-      'startDate',
-      'endDate',
-      'supervisorName',
-      'jopTitle',
-      'telephone1',
-      'telephone2',
-      'advertisementType'
+      'admin',
+      'delegateName',
+      'alternateName'
     ];
     const allHaveValues = mustHave.every(k => {
       const c = this.firstStepForm.get(k);
@@ -733,6 +881,9 @@ initializeForm(): void {
 
       const payload: any = {
         ...this.firstStepForm.value,
+        lkpPermitTypeId : +this.firstStepForm.value.lkpPermitTypeId ,
+        lkpRequestTypeId : +this.firstStepForm.value.lkpRequestTypeId ,
+
         requestDate: toISO(this.firstStepForm.value.requestDate ?? new Date()),
         startDate: toISO(this.firstStepForm.value.startDate),
         endDate: toISO(this.firstStepForm.value.endDate),
@@ -750,7 +901,7 @@ initializeForm(): void {
       };
       console.log("payload = ", payload);
 
-      const sub = this._CharityEventPermitRequestService.create(payload).subscribe({
+      const sub = this._CharityEventPermitRequestService.createRequestEvent(payload).subscribe({
         next: (res) => {
           console.log(res);
 
@@ -948,30 +1099,153 @@ initializeForm(): void {
   }
 
   // new helper
-onLocalDateChange(localValue: string | null, controlName: string): void {
-  const control = this.firstStepForm.get(controlName);
-  if (!control) return;
+  // onLocalDateChange(localValue: string | null, controlName: string): void {
+  //   const control = this.firstStepForm.get(controlName);
+  //   if (!control) return;
 
-  if (!localValue) {
-    control.setValue('');
+  //   if (!localValue) {
+  //     control.setValue('');
+  //     control.markAsDirty();
+  //     return;
+  //   }
+
+  //   // لو القيمة جاية بصيغة yyyy-MM-ddTHH:mm كمّل ثواني
+  //   const withSeconds = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(localValue)
+  //     ? `${localValue}:00`
+  //     : localValue;
+
+  //   const date = new Date(withSeconds);
+  //   if (isNaN(date.getTime())) {
+  //     control.setErrors({ rfc3339: true });
+  //     return;
+  //   }
+
+  //   const iso = date.toISOString();
+  //   control.setValue(iso);
+  //   control.markAsDirty();
+  // }
+
+
+  onLocalDateChange(event: Event, controlName: string): void {
+    const control = this.firstStepForm.get(controlName);
+    if (!control) return;
+
+    const input = event.target as HTMLInputElement;
+    const localValue = input.value;
+
+    if (!localValue) {
+      control.setValue('');
+      control.markAsDirty();
+      return;
+    }
+
+    const withSeconds = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(localValue)
+      ? `${localValue}:00`
+      : localValue;
+
+    const date = new Date(withSeconds);
+
+    if (isNaN(date.getTime())) {
+      control.setErrors({ rfc3339: true });
+      return;
+    }
+
+    const iso = date.toISOString(); // بصيغة RFC3339 مع التوقيت العالمي
+    control.setValue(iso);
     control.markAsDirty();
-    return;
+  }
+  // onLocalDateChange(event: Event, controlName: string): void {
+  //   const control = this.firstStepForm.get(controlName);
+  //   if (!control) return;
+
+  //   const input = event.target as HTMLInputElement;
+  //   const localValue = input.value;
+
+  //   if (!localValue) {
+  //     control.setValue('');
+  //     control.markAsDirty();
+  //     return;
+  //   }
+
+  //   const withSeconds = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(localValue)
+  //     ? `${localValue}:00`
+  //     : localValue;
+
+  //   const date = new Date(withSeconds);
+
+  //   if (isNaN(date.getTime())) {
+  //     control.setErrors({ rfc3339: true });
+  //     return;
+  //   }
+
+  //   const iso = date.toISOString();
+  //   control.setValue(iso);
+  //   control.markAsDirty();
+  // }
+  onTimeChange(event: Event, controlName: string) {
+    const input = event.target as HTMLInputElement;
+    const timeValue = input.value;
+
+    const control = this.firstStepForm.get(controlName);
+    if (!control) return;
+
+    if (!timeValue) {
+      control.setValue('');
+      control.markAsDirty();
+      return;
+    }
+
+    const startDateValue = this.firstStepForm.get('startDate')?.value;
+    if (!startDateValue) return;
+
+    const baseDate = new Date(startDateValue);
+    const [hours, minutes] = timeValue.split(':').map(Number);
+
+    baseDate.setHours(hours, minutes, 0, 0);
+
+    const iso = baseDate.toISOString();
+    control.setValue(iso);
+    control.markAsDirty();
   }
 
-  // لو القيمة جاية بصيغة yyyy-MM-ddTHH:mm كمّل ثواني
-  const withSeconds = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(localValue)
-    ? `${localValue}:00`
-    : localValue;
+  getLocalTimeValue(controlName: string): string | null {
+    const value = this.firstStepForm.get(controlName)?.value;
+    if (!value) return null;
 
-  const date = new Date(withSeconds);
-  if (isNaN(date.getTime())) {
-    control.setErrors({ rfc3339: true });
-    return;
+    const date = new Date(value);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
   }
 
-  const iso = date.toISOString(); // RFC3339 في UTC (ينتهي بـ Z)
-  control.setValue(iso);
-  control.markAsDirty();
-}
+
+
+  getTimeOnly(value: string): string {
+    if (!value) return '';
+    const date = new Date(value);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+
+
+
+  // timeRangeValidator(startKey: string, endKey: string): ValidatorFn {
+  //   return (formGroup: AbstractControl): ValidationErrors | null => {
+  //     const start = formGroup.get(startKey)?.value;
+  //     const end = formGroup.get(endKey)?.value;
+
+  //     if (!start || !end) return null;
+
+  //     const startDate = new Date(start);
+  //     const endDate = new Date(end);
+
+  //     console.log('start:', startDate, 'end:', endDate);
+  //     return endDate >= startDate ? null : { timeRangeInvalid: true };
+  //   };
+
+  // }
+
 
 }

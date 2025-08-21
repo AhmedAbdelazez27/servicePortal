@@ -4,7 +4,6 @@
   "TOGGLE_LANG": "Switch to Arabic",
   "PAGE_NOT_FOUND": "Oops! Page not found.",
   "BACK_HOME": "Back to Home",
-
   "TOAST": {
     "TITLE": {
       "SUCCESS": "Success",
@@ -514,6 +513,8 @@
     "REASON_ALREADY_ADDED": "This reason has already been added."
   },
   "VALIDATION": {
+    "PHONE_PATTERN":"Please enter a valid phone number.",
+"PHONE_LENGTH": "Please enter a valid phone number with 7 to 20 digits.",
     "REQUIRED_FIELD": "This field is required",
     "FORM_INVALID": "Please fill in all required fields correctly",
     "FILE_TOO_LARGE": "File size must not exceed 5MB",
@@ -564,7 +565,6 @@
     "VIEW": "View",
     "DELETE": "Delete"
   },
-
   "Common": {
     "Action": "Action",
     "ViewInfo": "Show Details",
@@ -598,7 +598,6 @@
     "userdept": "Users in Department",
     "deleteWarning": "Are you sure you want delete"
   },
-
   "REGIONS": {
     "TITLE": "Regions Management",
     "ADD_NEW": "Add New Region",
@@ -844,7 +843,6 @@
     "PARTNER_ADDED": "Partner added successfully",
     "PARTNER_REMOVED": "Partner removed successfully"
   },
-
   "mainApplyServiceResourceName": {
     "title": "Request",
     "accep": "Approve",
@@ -1275,6 +1273,7 @@
     "SELECT_OPTION": "Select..."
   },
   "VALIDATIONCHARITY_EVENT": {
+    "RFC3339_REQUIRED": "This field is required",
     "REQUIRED_FIELD": "This field is required",
     "INVALID_EMAIL": "Please enter a valid email",
     "DATE_RANGE": "End date must be after or equal to start date",
@@ -1325,6 +1324,22 @@
     "PROVIDER": "Provider",
     "MOBILE": "Mobile number",
     "FAX": "Fax"
+  },
+  "event": {
+    "PmStartTime": "Evening Start Time",
+    "PmEndTime": "Evening End Time",
+    "AmStartTime": "Morning Start Time",
+    "AmEndTime": "Morning End Time",
+    "Admin": "Supervisor",
+    "DelegateName": "Delegate Name",
+    "AlternateName": "Alternate Name",
+    "AdminTel": "Supervisor Phone",
+    "LkpPermitTypeId": "Permit Type",
+    "LkpRequestTypeId": "Request Type",
+    "RequestSide": "Requesting Entity",
+    "SupervisingSide": "Supervising Entity",
+    "TELEPHONE": "Telephone",
+    "beneficiaryIdNumber": "Beneficiary ID Number"
   },
   "PARTNERS": {
     "NAME": "Partner Name",

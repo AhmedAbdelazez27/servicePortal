@@ -93,7 +93,7 @@
                                     </div>
 
                                     <!-- Request Date -->
-                                    <div class="col-xl-6 mb-4">
+                                    <!-- <div class="col-xl-6 mb-4">
                                         <label class="form-label">
                                             {{ 'CHARITY_EVENT.REQUEST_DATE' | translate }} <span
                                                 class="text-danger">*</span>
@@ -104,15 +104,25 @@
                                             (change)="onLocalDateChange(firstStepForm.get('requestDate')?.value,'requestDate')" />
                                         <div class="invalid-feedback"
                                             *ngIf="firstStepForm.get('requestDate')?.touched && firstStepForm.get('requestDate')?.errors">
-                                            {{ 'VALIDATION.RFC3339_REQUIRED' | translate }}
+                                            {{ 'VALIDATIONCHARITY_EVENT.RFC3339_REQUIRED' | translate }}
+                                        </div>
+                                    </div> -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.REQUEST_DATE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+
+                                        <!-- readonly style with date only -->
+                                        <div class="form-control bg-light">
+                                            {{ firstStepForm.get('requestDate')?.value | date:'yyyy-MM-dd' }}
                                         </div>
                                     </div>
 
                                     <!-- Request Side -->
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">
-                                            {{ 'CHARITY_EVENT.REQUEST_SIDE' | translate }} <span
-                                                class="text-danger">*</span>
+                                            {{ 'event.RequestSide' | translate }} <span class="text-danger">*</span>
                                         </label>
                                         <input class="form-control" formControlName="requestSide"
                                             [class.is-invalid]="firstStepForm.get('requestSide')?.touched && firstStepForm.get('requestSide')?.invalid">
@@ -125,8 +135,7 @@
                                     <!-- Supervising Side -->
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">
-                                            {{ 'CHARITY_EVENT.SUPERVISING_SIDE' | translate }} <span
-                                                class="text-danger">*</span>
+                                            {{ 'event.SupervisingSide' | translate }} <span class="text-danger">*</span>
                                         </label>
                                         <input class="form-control" formControlName="supervisingSide"
                                             [class.is-invalid]="firstStepForm.get('supervisingSide')?.touched && firstStepForm.get('supervisingSide')?.invalid">
@@ -153,7 +162,7 @@
                                     <!-- Request Type (ng-select) -->
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">
-                                            {{ 'CHARITY_EVENT.REQUEST_TYPE' | translate }} <span
+                                            {{ 'event.LkpRequestTypeId' | translate }} <span
                                                 class="text-danger">*</span>
                                         </label>
                                         <ng-select formControlName="lkpRequestTypeId" [items]="requestTypes"
@@ -180,50 +189,10 @@
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
-
-                                    <!-- Start / End -->
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">
-                                            {{ 'CHARITY_EVENT.START_DATE' | translate }} <span
-                                                class="text-danger">*</span>
-                                        </label>
-                                        <input type="datetime-local" class="form-control"
-                                            [value]="(firstStepForm.get('startDate')?.value | date:'yyyy-MM-ddTHH:mm')"
-                                            (change)="onLocalDateChange(firstStepForm.get('startDate')?.value,'startDate')"
-                                            [class.is-invalid]="firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.invalid">
-                                        <div class="invalid-feedback"
-                                            *ngIf="firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.errors">
-                                            {{ 'VALIDATION.RFC3339_REQUIRED' | translate }}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xl-6 mb-1">
-                                        <label class="form-label">
-                                            {{ 'CHARITY_EVENT.END_DATE' | translate }} <span
-                                                class="text-danger">*</span>
-                                        </label>
-                                        <input type="datetime-local" class="form-control"
-                                            [value]="(firstStepForm.get('endDate')?.value | date:'yyyy-MM-ddTHH:mm')"
-                                            (change)="onLocalDateChange(firstStepForm.get('endDate')?.value,'endDate')"
-                                            [class.is-invalid]="firstStepForm.get('endDate')?.touched && firstStepForm.get('endDate')?.invalid">
-                                        <div class="invalid-feedback"
-                                            *ngIf="firstStepForm.get('endDate')?.touched && firstStepForm.get('endDate')?.errors">
-                                            {{ 'VALIDATION.RFC3339_REQUIRED' | translate }}
-                                        </div>
-                                    </div>
-
-                                    <!-- خطأ ترتيب التواريخ العام -->
-                                    <div class="col-12 mb-4" *ngIf="firstStepForm.hasError('order')">
-                                        <div class="text-danger small">
-                                            {{ 'VALIDATION.DATE_RANGE' | translate }}
-                                        </div>
-                                    </div>
-
                                     <!-- Permit Type (ng-select) -->
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">
-                                            {{ 'CHARITY_EVENT.PERMIT_TYPE' | translate }} <span
-                                                class="text-danger">*</span>
+                                            {{ 'event.LkpPermitTypeId' | translate }} <span class="text-danger">*</span>
                                         </label>
                                         <ng-select formControlName="lkpPermitTypeId" [items]="permitsTypes"
                                             bindLabel="text" bindValue="id" [clearable]="true" [searchable]="true"
@@ -235,73 +204,130 @@
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
-
-                                    <!-- AM times -->
+                                    <!-- Start / End -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.AM_START_TIME' | translate
-                                            }}</label>
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.START_DATE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <!-- <input type="datetime-local" class="form-control"
+                                            [value]="(firstStepForm.get('startDate')?.value | date:'yyyy-MM-ddTHH:mm')"
+                                            (change)="onLocalDateChange(firstStepForm.get('startDate')?.value,'startDate')"
+                                            [class.is-invalid]="firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.invalid"> -->
                                         <input type="datetime-local" class="form-control"
-                                            [value]="(firstStepForm.get('amStartTime')?.value | date:'yyyy-MM-ddTHH:mm')"
-                                            (change)="onLocalDateChange(firstStepForm.get('amStartTime')?.value,'amStartTime')"
-                                            [class.is-invalid]="firstStepForm.get('amStartTime')?.touched && firstStepForm.get('amStartTime')?.invalid">
+                                            [value]="(firstStepForm.get('startDate')?.value | date:'yyyy-MM-ddTHH:mm')"
+                                            (change)="onLocalDateChange($event, 'startDate')"
+                                            [class.is-invalid]="firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.invalid">
+
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.errors">
+                                            {{ 'VALIDATIONCHARITY_EVENT.RFC3339_REQUIRED' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">
+                                            {{ 'CHARITY_EVENT.END_DATE' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <!-- <input type="datetime-local" class="form-control"
+                                            [value]="(firstStepForm.get('endDate')?.value | date:'yyyy-MM-ddTHH:mm')"
+                                            (change)="onLocalDateChange(firstStepForm.get('endDate')?.value,'endDate')"
+                                            [class.is-invalid]="firstStepForm.get('endDate')?.touched && firstStepForm.get('endDate')?.invalid"> -->
+                                        <input type="datetime-local" class="form-control"
+                                            [value]="(firstStepForm.get('endDate')?.value | date:'yyyy-MM-ddTHH:mm')"
+                                            (change)="onLocalDateChange($event, 'endDate')"
+                                            [class.is-invalid]="firstStepForm.get('endDate')?.touched && firstStepForm.get('endDate')?.invalid">
+
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('endDate')?.touched && firstStepForm.get('endDate')?.errors">
+                                            {{ 'VALIDATIONCHARITY_EVENT.RFC3339_REQUIRED' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- خطأ ترتيب التواريخ العام -->
+                                    <div class="col-12 mb-4" *ngIf="firstStepForm.hasError('order') ">
+                                        <div class="text-danger small">
+                                            {{ 'VALIDATION.DATE_RANGE' | translate }}
+                                        </div>
+                                    </div>
+                                    <!-- AM Start Time -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'event.AmStartTime' | translate }}
+                                            <span class="text-danger">*</span>
+
+                                        </label>
+                                        <input type="time" class="form-control"
+                                            [value]="getTimeOnly(firstStepForm.get('amStartTime')?.value)"
+                                            (change)="onTimeChange($event, 'amStartTime')"
+                                            [disabled]="!firstStepForm.get('startDate')?.value"
+                                            [title]="!firstStepForm.get('startDate')?.value ? 'Please select the start date first' : ''"
+                                            [class.is-invalid]="firstStepForm.get('amStartTime')?.touched && firstStepForm.get('amStartTime')?.invalid" />
+
                                         <div class="invalid-feedback"
                                             *ngIf="firstStepForm.get('amStartTime')?.touched && firstStepForm.get('amStartTime')?.errors">
-                                            {{ 'VALIDATION.RFC3339_FORMAT' | translate }}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.AM_END_TIME' | translate }}</label>
-                                        <input type="datetime-local" class="form-control"
-                                            [value]="(firstStepForm.get('amEndTime')?.value | date:'yyyy-MM-ddTHH:mm')"
-                                            (change)="onLocalDateChange(firstStepForm.get('amEndTime')?.value,'amEndTime')"
-                                            [class.is-invalid]="firstStepForm.get('amEndTime')?.touched && firstStepForm.get('amEndTime')?.invalid">
-                                        <div class="invalid-feedback"
-                                            *ngIf="firstStepForm.get('amEndTime')?.touched && firstStepForm.get('amEndTime')?.errors">
-                                            {{ 'VALIDATION.RFC3339_FORMAT' | translate }}
-                                        </div>
-                                    </div>
-
-                                    <!-- PM times -->
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.PM_START_TIME' | translate
-                                            }}</label>
-                                        <input type="datetime-local" class="form-control"
-                                            [value]="(firstStepForm.get('pmStartTime')?.value | date:'yyyy-MM-ddTHH:mm')"
-                                            (change)="onLocalDateChange(firstStepForm.get('pmStartTime')?.value,'pmStartTime')"
-                                            [class.is-invalid]="firstStepForm.get('pmStartTime')?.touched && firstStepForm.get('pmStartTime')?.invalid">
-                                        <div class="invalid-feedback"
-                                            *ngIf="firstStepForm.get('pmStartTime')?.touched && firstStepForm.get('pmStartTime')?.errors">
-                                            {{ 'VALIDATION.RFC3339_FORMAT' | translate }}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.PM_END_TIME' | translate }}</label>
-                                        <input type="datetime-local" class="form-control"
-                                            [value]="(firstStepForm.get('pmEndTime')?.value | date:'yyyy-MM-ddTHH:mm')"
-                                            (change)="onLocalDateChange(firstStepForm.get('pmEndTime')?.value,'pmEndTime')"
-                                            [class.is-invalid]="firstStepForm.get('pmEndTime')?.touched && firstStepForm.get('pmEndTime')?.invalid">
-                                        <div class="invalid-feedback"
-                                            *ngIf="firstStepForm.get('pmEndTime')?.touched && firstStepForm.get('pmEndTime')?.errors">
-                                            {{ 'VALIDATION.RFC3339_FORMAT' | translate }}
-                                        </div>
-                                    </div>
-
-                                    <!-- Admin / Delegate / Alternate -->
-                                    <div class="col-xl-4 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.ADMIN' | translate }} <span
-                                                class="text-danger">*</span></label>
-                                        <input class="form-control" formControlName="admin"
-                                            [class.is-invalid]="firstStepForm.get('admin')?.touched && firstStepForm.get('admin')?.invalid">
-                                        <div class="invalid-feedback"
-                                            *ngIf="firstStepForm.get('admin')?.touched && firstStepForm.get('admin')?.errors">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-4 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.DELEGATE_NAME' | translate }} <span
+                                    <!-- AM End Time -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'event.AmEndTime' | translate }}<span
+                                                class="text-danger">*</span></label>
+                                        <input type="time" class="form-control"
+                                            [value]="getTimeOnly(firstStepForm.get('amEndTime')?.value)"
+                                            (change)="onTimeChange($event, 'amEndTime')"
+                                            [disabled]="!firstStepForm.get('startDate')?.value"
+                                            [title]="!firstStepForm.get('startDate')?.value ? 'Please select the start date first' : ''"
+                                            [class.is-invalid]="firstStepForm.get('amEndTime')?.touched && firstStepForm.get('amEndTime')?.invalid" />
+
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('amEndTime')?.touched && firstStepForm.get('amEndTime')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+
+                                    <!-- PM Start Time -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'event.PmStartTime' | translate }} <span
+                                                class="text-danger">*</span></label>
+                                        <input type="time" class="form-control"
+                                            [value]="getLocalTimeValue('pmStartTime')"
+                                            (change)="onTimeChange($event, 'pmStartTime')"
+                                            [disabled]="!firstStepForm.get('startDate')?.value"
+                                            [title]="!firstStepForm.get('startDate')?.value ? 'Please select the start date first' : ''"
+                                            [class.is-invalid]="firstStepForm.get('pmStartTime')?.touched && firstStepForm.get('pmStartTime')?.invalid">
+
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('pmStartTime')?.touched && firstStepForm.get('pmStartTime')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+                                    <!-- PM End Time -->
+                                    <div class="col-xl-6 mb-4">
+
+                                        <label class="form-label">{{ 'event.PmEndTime' | translate }} <span
+                                                class="text-danger">*</span></label>
+                                        <input type="time" class="form-control" [value]="getLocalTimeValue('pmEndTime')"
+                                            (change)="onTimeChange($event, 'pmEndTime')"
+                                            [disabled]="!firstStepForm.get('startDate')?.value"
+                                            [title]="!firstStepForm.get('startDate')?.value ? 'Please select the start date first' : ''"
+                                            [class.is-invalid]="firstStepForm.get('pmEndTime')?.touched && firstStepForm.get('pmEndTime')?.invalid">
+
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('pmEndTime')?.touched && firstStepForm.get('pmEndTime')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Admin / Delegate / Alternate -->
+
+
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'event.DelegateName' | translate }} <span
                                                 class="text-danger">*</span></label>
                                         <input class="form-control" formControlName="delegateName"
                                             [class.is-invalid]="firstStepForm.get('delegateName')?.touched && firstStepForm.get('delegateName')?.invalid">
@@ -311,8 +337,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-4 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.ALTERNATE_NAME' | translate }} <span
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'event.AlternateName' | translate }} <span
                                                 class="text-danger">*</span></label>
                                         <input class="form-control" formControlName="alternateName"
                                             [class.is-invalid]="firstStepForm.get('alternateName')?.touched && firstStepForm.get('alternateName')?.invalid">
@@ -321,10 +347,19 @@
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
-
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'event.Admin' | translate }} <span
+                                                class="text-danger">*</span></label>
+                                        <input class="form-control" formControlName="admin"
+                                            [class.is-invalid]="firstStepForm.get('admin')?.touched && firstStepForm.get('admin')?.invalid">
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('admin')?.touched && firstStepForm.get('admin')?.errors">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                    </div>
                                     <!-- Phones -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.ADMIN_TEL' | translate }} <span
+                                        <label class="form-label">{{ 'event.AdminTel' | translate }} <span
                                                 class="text-danger">*</span></label>
                                         <input class="form-control" formControlName="adminTel"
                                             [class.is-invalid]="firstStepForm.get('adminTel')?.touched && firstStepForm.get('adminTel')?.invalid">
@@ -340,7 +375,7 @@
                                     </div>
 
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.TELEPHONE' | translate }} <span
+                                        <label class="form-label">{{ 'event.TELEPHONE' | translate }} <span
                                                 class="text-danger">*</span></label>
                                         <input class="form-control" formControlName="telephone"
                                             [class.is-invalid]="firstStepForm.get('telephone')?.touched && firstStepForm.get('telephone')?.invalid">
@@ -381,7 +416,7 @@
 
                                     <!-- Beneficiary ID Number -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'CHARITY_EVENT.BENEFICIARY_ID' | translate
+                                        <label class="form-label">{{ 'event.beneficiaryIdNumber' | translate
                                             }}</label>
                                         <input class="form-control" formControlName="beneficiaryIdNumber">
                                     </div>
@@ -399,9 +434,9 @@
                                             class="ng-select-custom"
                                             [ngClass]="{'is-invalid': firstStepForm.get('donationCollectionChannelIds')?.touched && firstStepForm.get('donationCollectionChannelIds')?.invalid}">
                                         </ng-select>
-                                        <div class="invalid-feedback d-block"
-                                            *ngIf="firstStepForm.get('donationCollectionChannelIds')?.touched && firstStepForm.get('donationCollectionChannelIds')?.hasError('arrayMin')">
-                                            {{ 'VALIDATION.MIN_ONE_CHANNEL' | translate }}
+                                        <div class="invalid-feedback"
+                                            *ngIf="firstStepForm.get('donationCollectionChannelIds')?.touched && firstStepForm.get('donationCollectionChannelIds')?.hasError('minArrayLength')">
+                                            {{ 'VALIDATIONCHARITY_EVENT.MIN_ONE_CHANNEL' | translate }}
                                         </div>
                                     </div>
 
@@ -498,6 +533,80 @@
                                         <textarea rows="1" class="form-control"
                                             formControlName="contactDetails"></textarea>
                                     </div>
+
+                                    <!-- Partner Attachments (AttachmentsConfigType.Partner) -->
+                                    <div class="col-12 mt-4">
+                                        <h6 class="mb-3">{{ 'PARTNERS.ATTACHMENTS' | translate }}</h6>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-striped align-middle">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                                        <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                                        <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr
+                                                        *ngFor="let cfg of state(AttachmentsConfigType.Partner).configs">
+                                                        <td>
+                                                            {{ getAttachmentName(AttachmentsConfigType.Partner, cfg.id!)
+                                                            }}
+                                                        </td>
+
+                                                        <td>
+                                                            <!-- Upload area -->
+                                                            <div *ngIf="!hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                class="upload-area" (dragover)="onDragOver($event)"
+                                                                (dragleave)="onDragLeave($event)"
+                                                                (drop)="onDrop($event, AttachmentsConfigType.Partner, cfg.id!)"
+                                                                [class.drag-over]="isDragOver">
+
+                                                                <input type="file" class="d-none"
+                                                                    [id]="'file-partner-' + cfg.id"
+                                                                    (change)="onFileSelected($event, AttachmentsConfigType.Partner, cfg.id!)"
+                                                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+
+                                                                <label [for]="'file-partner-' + cfg.id"
+                                                                    class="upload-label">
+                                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                                    <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' |
+                                                                        translate }}</span>
+                                                                </label>
+                                                            </div>
+
+                                                            <!-- Preview -->
+                                                            <div *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                class="file-preview">
+                                                                <span class="file-name">
+                                                                    {{ selectedFileName(AttachmentsConfigType.Partner,
+                                                                    cfg.id!) }}
+                                                                </span>
+
+                                                                <img *ngIf="getPreview(AttachmentsConfigType.Partner, cfg.id!)
+                          && state(AttachmentsConfigType.Partner).selected[cfg.id!].type?.startsWith('image/')"
+                                                                    [src]="getPreview(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                    class="preview-image">
+                                                            </div>
+                                                        </td>
+
+                                                        <td>
+                                                            <button
+                                                                *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                type="button" class="btn btn-sm btn-danger"
+                                                                (click)="removeFile(AttachmentsConfigType.Partner, cfg.id!)">
+                                                                {{ 'COMMON.REMOVE' | translate }}
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+
 
                                     <!-- Add Button -->
                                     <div class="col-12 d-flex justify-content-end">

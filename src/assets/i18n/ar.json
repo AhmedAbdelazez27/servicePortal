@@ -73,6 +73,7 @@
       "CONFIRM_BUTTON": "تأكيد"
     },
     "VALIDATION": {
+
       "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
       "EMAIL_INVALID": "يرجى إدخال عنوان بريد إلكتروني صحيح",
       "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
@@ -319,6 +320,7 @@
     "LOGO": "الشعار"
   },
   "VALIDATION": {
+    "PHONE_LENGTH": "يرجى إدخال رقم هاتف صحيح بين 7 و20 رقمًا.",
     "REQUIRED": "هذا الحقل مطلوب",
     "EMAIL": "يرجى إدخال عنوان بريد إلكتروني صحيح",
     "MINLENGTH": "الحد الأدنى للطول هو {{length}} أحرف",
@@ -658,7 +660,7 @@
     "CONSECUTIVE_DOTS": "لا يمكن أن يحتوي البريد الإلكتروني على نقاط متتالية",
     "LEADING_TRAILING_DOTS": "لا يمكن أن يبدأ أو ينتهي البريد الإلكتروني بنقاط",
     "INVALID_DOMAIN": "تنسيق نطاق البريد الإلكتروني غير صحيح",
-     "DATE_RANGE": "تاريخ الانتهاء يجب أن يكون بعد أو يساوي تاريخ البدء.",
+    "DATE_RANGE": "تاريخ الانتهاء يجب أن يكون بعد أو يساوي تاريخ البدء.",
     "MIN_ONE_TARGET": "اختر نوع استهداف واحد على الأقل.",
     "MIN_ONE_METHOD": "اختر وسيلة إعلان واحدة على الأقل.",
     "MIN_ONE_LOCATION": "أضف موقعًا واحدًا على الأقل.",
@@ -674,7 +676,6 @@
     "PASSWORD_PATTERN": "يجب أن تحتوي كلمة المرور على أحرف كبيرة وصغيرة ورقم ورمز خاص",
     "CONFIRM_PASSWORD_REQUIRED": "تأكيد كلمة المرور مطلوب",
     "PASSWORDS_DONT_MATCH": "كلمات المرور غير متطابقة"
-    
   },
   "COMMON": {
     "REQUEST_SERVICE": "طلب الخدمة",
@@ -698,8 +699,6 @@
     "VIEW": "عرض",
     "DELETE": "حذف"
   },
-
-
   "Common": {
     "Action": "العمليات",
     "ViewInfo": "عرض التفاصيل",
@@ -790,7 +789,6 @@
   "ERROR": {
     "FETCH_REGIONS": "فشل في جلب المناطق"
   },
-
   "mainApplyServiceResourceName": {
     "title": "الطلبات المقدمة",
     "menuTitle": "الشاشة الرئيسية",
@@ -991,6 +989,22 @@
     "PROVIDER": "مزود الخدمة",
     "MOBILE": "رقم الجوال",
     "FAX": "رقم الفاكس"
+  },
+  "event": {
+    "PmStartTime": "وقت البدء مساء",
+    "PmEndTime": "وقت الانتهاء مساء",
+    "AmStartTime": "وقت البدء صباحا",
+    "AmEndTime": "وقت الانتهاء صباحا",
+    "Admin": "المسؤول",
+    "DelegateName": "اسم المندوب",
+    "AlternateName": "اسم البديل",
+    "AdminTel": "هاتف المسؤول",
+    "LkpPermitTypeId": "نوع التصريح",
+    "LkpRequestTypeId": "نوع الطلب",
+    "RequestSide": "الجهة الطالبة للتصريح",
+    "SupervisingSide": "الجهة المشرفة على الفعالية",
+    "TELEPHONE":"الهاتف",
+    "beneficiaryIdNumber":"رقم هوية المستفيد"
   },
   "PARTNERS": {
     "NAME": "اسم الشريك",
