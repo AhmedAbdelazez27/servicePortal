@@ -69,4 +69,25 @@ export class CharityEventPermitRequestService {
             dto
         );
     }
+
+    getPermitTypeSelect2(body: any): Observable<any> {
+        const url = `${this.BASE_URL}${Select2APIEndpoint.Select2.GetPermitTypeSelect2}`;
+        const requestBody = {
+            skip: body.skip || 0,
+            take: body.take || 600,
+            searchValue: body.searchValue || '',
+            orderByValue: body.orderByValue || null,
+        };
+        return this.http.post<any>(url, requestBody);
+    }
+    getPermitRequestTypeSelect2(body: any): Observable<any> {
+        const url = `${this.BASE_URL}${Select2APIEndpoint.Select2.GetPermitRequestTypeSelect2}`;
+        const requestBody = {
+            skip: body.skip || 0,
+            take: body.take || 600,
+            searchValue: body.searchValue || '',
+            orderByValue: body.orderByValue || null,
+        };
+        return this.http.post<any>(url, requestBody);
+    }
 }

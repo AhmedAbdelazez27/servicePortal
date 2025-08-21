@@ -77,3 +77,31 @@ export interface RequestAdvertisement {
   requestAdvertisementAdLocations: RequestAdvertisementLocation[];
   requestAdvertisementAdMethods: RequestAdvertisementMethod[];
 }
+
+
+export interface PermitRequestForm {
+  requestDate: string;                    // RFC3339
+  lkpRequestTypeId: any;          
+  userId: string;                         // max 450
+  requestSide: string;                    // max 200
+  supervisingSide: string;                // max 200
+  eventName: string;                      // max 200
+  startDate: string;                      // RFC3339
+  endDate: string;                        // RFC3339
+  lkpPermitTypeId: any;            
+  eventLocation: string;                  // max 500
+  amStartTime: string;                    // RFC3339 or ''
+  amEndTime: string;                      // RFC3339 or ''
+  pmStartTime: string;                    // RFC3339 or ''
+  pmEndTime: string;                      // RFC3339 or ''
+  admin: string;                          // max 200
+  delegateName: string;                   // max 200
+  alternateName: string;                  // max 100
+  adminTel: string;                       // 7..20, phone pattern
+  telephone: string;                      // 7..20, phone pattern
+  email: string | null;                   // max 50, email
+  notes: string | null;                   // max 4000
+  targetedAmount: number | null;          // >= 0
+  beneficiaryIdNumber: string | null;
+  donationCollectionChannelIds: number[]; // min length 1
+}

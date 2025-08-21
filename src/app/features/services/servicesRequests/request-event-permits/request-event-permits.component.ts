@@ -9,11 +9,12 @@ import { TranslationService } from '../../../../core/services/translation.servic
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AttachmentsConfigDto, AttachmentsConfigType } from '../../../../core/dtos/attachments/attachments-config.dto';
-import { forkJoin, map, Observable, Subscription } from 'rxjs';
+import { forkJoin, map, Subscription } from 'rxjs';
 import { PlaintReasonsDto, RequestPlaintAttachmentDto, RequestPlaintEvidenceDto, RequestPlaintJustificationDto, RequestPlaintReasonDto, Select2Item, UserEntityDto } from '../../../../core/dtos/RequestPlaint/request-plaint.dto';
 import { CharityEventPermitRequestService } from '../../../../core/services/charity-event-permit-request.service';
 import { arrayMinLength, dateRangeValidator } from '../../../../shared/customValidators';
 import { RequestAdvertisement } from '../../../../core/dtos/charity-event-permit/charity-event-permit.dto';
+import { phoneRules, rfc3339OrEmpty, rfc3339Required, timeRangesOk } from '../../../../shared/customValidators/requestevent.validators';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -24,11 +25,8 @@ type AttachmentState = {
 };
 
 
-
-
 @Component({
-  selector: 'app-charity-event-permit-request',
-  standalone: true,
+  selector: 'app-request-event-permits',
   imports: [
     CommonModule,
     FormsModule,
@@ -36,10 +34,10 @@ type AttachmentState = {
     TranslateModule,
     NgSelectModule,
   ],
-  templateUrl: './charity-event-permit-request.component.html',
-  styleUrl: './charity-event-permit-request.component.scss'
+  templateUrl: './request-event-permits.component.html',
+  styleUrl: './request-event-permits.component.scss'
 })
-export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
+export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   len = (a: readonly unknown[] | null | undefined) => a?.length ?? 0;
   private attachmentStates = new Map<AttachmentsConfigType, AttachmentState>();
 
@@ -115,6 +113,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   advertisementMethodType: any[] = [];
   donationChannelsLookup: any[] = [];
   partnerTypes: any[] = [];
+  requestTypes: any[] = [];
+  permitsTypes: any[] = [];
   partners: any[] = [];
   partnerForm!: FormGroup;
   adsStepIndex = 3;
@@ -165,34 +165,111 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     this.attachmentStates.forEach(s => s.sub?.unsubscribe());
   }
 
-  initializeForm(): void {
-    const currentUser = this.authService.getCurrentUser();
+initializeForm(): void {
+  this.firstStepForm = this.fb.group(
+    {
+      requestDate: this.fb.control<string>('', {
+        validators: [Validators.required, rfc3339Required],
+        nonNullable: true,
+      }),
 
-    this.firstStepForm = this.fb.group(
-      {
-        userId: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        requestDate: this.fb.control(new Date().toISOString(), { validators: [Validators.required], nonNullable: true }),
-        eventName: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        eventLocation: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        startDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        endDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        supervisorName: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        jopTitle: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        telephone1: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        telephone2: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        email: this.fb.control<string | null>(null, { validators: [Validators.email] }),
-        advertisementType: this.fb.control<1 | 2>(1, { validators: [Validators.required], nonNullable: true }),
-        notes: this.fb.control<string | null>(null),
-        donationCollectionChannelIds: this.fb.control<number[]>([], {
-          validators: [arrayMinLength(1)],
-          nonNullable: true,
-        }),
-      },
-      { validators: [dateRangeValidator] }
-    );
+      lkpRequestTypeId: this.fb.control<number>(1, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
 
-  }
+      userId: this.fb.control<string>('', {
+        validators: [Validators.required, Validators.maxLength(450)],
+        nonNullable: true,
+      }),
 
+      requestSide: this.fb.control<string>('', {
+        validators: [Validators.required, Validators.maxLength(200)],
+        nonNullable: true,
+      }),
+
+      supervisingSide: this.fb.control<string>('', {
+        validators: [Validators.required, Validators.maxLength(200)],
+        nonNullable: true,
+      }),
+
+      eventName: this.fb.control<string>('', {
+        validators: [Validators.required, Validators.maxLength(200)],
+        nonNullable: true,
+      }),
+
+      startDate: this.fb.control<string>('', {
+        validators: [Validators.required, rfc3339Required],
+        nonNullable: true,
+      }),
+
+      endDate: this.fb.control<string>('', {
+        validators: [Validators.required, rfc3339Required],
+        nonNullable: true,
+      }),
+
+      lkpPermitTypeId: this.fb.control<number>(1, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+
+      eventLocation: this.fb.control<string>('', {
+        validators: [Validators.required, Validators.maxLength(500)],
+        nonNullable: true,
+      }),
+
+      amStartTime: this.fb.control<string>('', { validators: [rfc3339OrEmpty], nonNullable: true }),
+      amEndTime:   this.fb.control<string>('', { validators: [rfc3339OrEmpty], nonNullable: true }),
+      pmStartTime: this.fb.control<string>('', { validators: [rfc3339OrEmpty], nonNullable: true }),
+      pmEndTime:   this.fb.control<string>('', { validators: [rfc3339OrEmpty], nonNullable: true }),
+
+      admin: this.fb.control<string>('', {
+        validators: [Validators.required, Validators.maxLength(200)],
+        nonNullable: true,
+      }),
+
+      delegateName: this.fb.control<string>('', {
+        validators: [Validators.required, Validators.maxLength(200)],
+        nonNullable: true,
+      }),
+
+      alternateName: this.fb.control<string>('', {
+        validators: [Validators.required, Validators.maxLength(100)],
+        nonNullable: true,
+      }),
+
+      adminTel: this.fb.control<string>('', {
+        validators: [phoneRules(7, 20)],
+        nonNullable: true,
+      }),
+
+      telephone: this.fb.control<string>('', {
+        validators: [phoneRules(7, 20)],
+        nonNullable: true,
+      }),
+
+      email: this.fb.control<string | null>(null, {
+        validators: [Validators.maxLength(50), Validators.email],
+      }),
+
+      notes: this.fb.control<string | null>(null, {
+        validators: [Validators.maxLength(4000)],
+      }),
+
+      targetedAmount: this.fb.control<number | null>(null, {
+        validators: [Validators.min(0)],
+      }),
+
+      beneficiaryIdNumber: this.fb.control<string | null>(null),
+
+      donationCollectionChannelIds: this.fb.control<number[]>([1], {
+        validators: [arrayMinLength(1)],
+        nonNullable: true,
+      }),
+    },
+    { validators: [timeRangesOk] }
+  );
+}
   initAdvertisementForm(): void {
     const currentUser = this.authService.getCurrentUser();
     this.advertForm = this.fb.group(
@@ -260,12 +337,16 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         advertisementType: this._CharityEventPermitRequestService.getAdvertisementType(),
         donationChannelsLookup: this._CharityEventPermitRequestService.getDonationCollectionChannel({}),
         partnerTypes: this._CharityEventPermitRequestService.getPartners(),
+        requestTypes: this._CharityEventPermitRequestService.getPermitRequestTypeSelect2({}),
+        permitsTypes: this._CharityEventPermitRequestService.getPermitTypeSelect2({}),
       }).subscribe({
         next: (res: any) => {
           this.advertisementType = res.advertisementType;
           this.advertisementMethodType = res.advertisementMethodType?.results;
           this.advertisementTargetType = res.advertisementTargetType?.results;
           this.partnerTypes = res.partnerTypes?.data;
+          this.requestTypes = res.requestTypes?.results;
+          this.permitsTypes = res.permitsTypes?.results;
           console.log(res.donationChannelsLookup, "ddddddd");
 
           this.donationChannelsLookup = res.donationChannelsLookup.results?.length ? res.donationChannelsLookup.results : [
@@ -865,5 +946,32 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   removeAdvertisement(i: number): void {
     this.requestAdvertisements.splice(i, 1);
   }
+
+  // new helper
+onLocalDateChange(localValue: string | null, controlName: string): void {
+  const control = this.firstStepForm.get(controlName);
+  if (!control) return;
+
+  if (!localValue) {
+    control.setValue('');
+    control.markAsDirty();
+    return;
+  }
+
+  // لو القيمة جاية بصيغة yyyy-MM-ddTHH:mm كمّل ثواني
+  const withSeconds = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(localValue)
+    ? `${localValue}:00`
+    : localValue;
+
+  const date = new Date(withSeconds);
+  if (isNaN(date.getTime())) {
+    control.setErrors({ rfc3339: true });
+    return;
+  }
+
+  const iso = date.toISOString(); // RFC3339 في UTC (ينتهي بـ Z)
+  control.setValue(iso);
+  control.markAsDirty();
+}
 
 }
