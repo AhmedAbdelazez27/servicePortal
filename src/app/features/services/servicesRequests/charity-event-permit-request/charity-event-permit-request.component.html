@@ -296,7 +296,7 @@
                                         <label class="form-label">
                                             {{ 'PARTNERS.TYPE' | translate }} <span class="text-danger">*</span>
                                         </label>
-                                        <ng-select formControlName="type" [items]="partnerTypes" bindLabel="name"
+                                        <ng-select formControlName="type" [items]="partnerTypes" bindLabel="label"
                                             bindValue="id" [multiple]="false" [closeOnSelect]="true" [clearable]="true"
                                             [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
                                             class="ng-select-custom"
@@ -355,6 +355,79 @@
                                         <label class="form-label">{{ 'PARTNERS.CONTACT_DETAILS' | translate }}</label>
                                         <textarea rows="1" class="form-control"
                                             formControlName="contactDetails"></textarea>
+                                    </div>
+
+                                                                        <!-- Partner Attachments (AttachmentsConfigType.Partner) -->
+                                    <div class="col-12 mt-4">
+                                        <h6 class="mb-3">{{ 'PARTNERS.ATTACHMENTS' | translate }}</h6>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-striped align-middle">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                                        <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                                        <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr
+                                                        *ngFor="let cfg of state(AttachmentsConfigType.Partner).configs">
+                                                        <td>
+                                                            {{ getAttachmentName(AttachmentsConfigType.Partner, cfg.id!)
+                                                            }}
+                                                        </td>
+
+                                                        <td>
+                                                            <!-- Upload area -->
+                                                            <div *ngIf="!hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                class="upload-area" (dragover)="onDragOver($event)"
+                                                                (dragleave)="onDragLeave($event)"
+                                                                (drop)="onDrop($event, AttachmentsConfigType.Partner, cfg.id!)"
+                                                                [class.drag-over]="isDragOver">
+
+                                                                <input type="file" class="d-none"
+                                                                    [id]="'file-partner-' + cfg.id"
+                                                                    (change)="onFileSelected($event, AttachmentsConfigType.Partner, cfg.id!)"
+                                                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+
+                                                                <label [for]="'file-partner-' + cfg.id"
+                                                                    class="upload-label">
+                                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                                    <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' |
+                                                                        translate }}</span>
+                                                                </label>
+                                                            </div>
+
+                                                            <!-- Preview -->
+                                                            <div *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                class="file-preview">
+                                                                <span class="file-name">
+                                                                    {{ selectedFileName(AttachmentsConfigType.Partner,
+                                                                    cfg.id!) }}
+                                                                </span>
+
+                                                                <img *ngIf="getPreview(AttachmentsConfigType.Partner, cfg.id!)
+                          && state(AttachmentsConfigType.Partner).selected[cfg.id!].type?.startsWith('image/')"
+                                                                    [src]="getPreview(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                    class="preview-image">
+                                                            </div>
+                                                        </td>
+
+                                                        <td>
+                                                            <button
+                                                                *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                type="button" class="btn btn-sm btn-danger"
+                                                                (click)="removeFile(AttachmentsConfigType.Partner, cfg.id!)">
+                                                                {{ 'COMMON.REMOVE' | translate }}
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
                                     </div>
 
                                     <!-- Add Button -->

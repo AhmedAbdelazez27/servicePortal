@@ -14,6 +14,7 @@ import { PlaintReasonsDto, RequestPlaintAttachmentDto, RequestPlaintEvidenceDto,
 import { CharityEventPermitRequestService } from '../../../../core/services/charity-event-permit-request.service';
 import { arrayMinLength, dateRangeValidator } from '../../../../shared/customValidators';
 import { RequestAdvertisement } from '../../../../core/dtos/charity-event-permit/charity-event-permit.dto';
+import { PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -114,7 +115,12 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   advertisementTargetType: any[] = [];
   advertisementMethodType: any[] = [];
   donationChannelsLookup: any[] = [];
-  partnerTypes: any[] = [];
+  partnerTypes: any[] = [
+  { id: PartnerType.Person,     label: 'Person' },
+  { id: PartnerType.Government, label: 'Government' },
+  { id: PartnerType.Supplier,   label: 'Supplier' },
+  { id: PartnerType.Company,    label: 'Company' },
+];
   partners: any[] = [];
   partnerForm!: FormGroup;
   adsStepIndex = 3;
@@ -259,13 +265,14 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         advertisementTargetType: this._CharityEventPermitRequestService.getAdvertisementTargetType({}),
         advertisementType: this._CharityEventPermitRequestService.getAdvertisementType(),
         donationChannelsLookup: this._CharityEventPermitRequestService.getDonationCollectionChannel({}),
-        partnerTypes: this._CharityEventPermitRequestService.getPartners(),
+        // partnerTypes: this._CharityEventPermitRequestService.getPartners(),
       }).subscribe({
         next: (res: any) => {
           this.advertisementType = res.advertisementType;
           this.advertisementMethodType = res.advertisementMethodType?.results;
           this.advertisementTargetType = res.advertisementTargetType?.results;
-          this.partnerTypes = res.partnerTypes?.data;
+          // this.partnerTypes = res.partnerTypes?.data;
+          console.log(this.partnerTypes);
           console.log(res.donationChannelsLookup, "ddddddd");
 
           this.donationChannelsLookup = res.donationChannelsLookup.results?.length ? res.donationChannelsLookup.results : [
@@ -281,6 +288,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           // this.loadAttachmentConfigs();
           this.loadAttachmentConfigs(AttachmentsConfigType.DeclarationOfCharityEffectiveness);
           this.loadAttachmentConfigs(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign);
+          this.loadAttachmentConfigs(AttachmentsConfigType.Partner);
 
         },
         error: (error: any) => {
@@ -313,11 +321,39 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   }
 
 
-  addPartner(): void {
+  // addPartner(): void {
+  //   this.partnerForm.markAllAsTouched();
+  //   if (this.partnerForm.invalid) return;
+
+  //   const v = this.partnerForm.getRawValue();
+  //   this.partners.push({
+  //     name: v.name!,
+  //     type: v.type!,
+  //     licenseIssuer: v.licenseIssuer!,
+  //     licenseExpiryDate: v.licenseExpiryDate!,
+  //     licenseNumber: v.licenseNumber!,
+  //     contactDetails: v.contactDetails ?? null,
+  //     mainApplyServiceId: v.mainApplyServiceId ?? null,
+  //   });
+
+  //   this.partnerForm.reset();
+  // } 
+   addPartner(): void {
     this.partnerForm.markAllAsTouched();
     if (this.partnerForm.invalid) return;
+    const partnerAttachType = AttachmentsConfigType.Partner;
+    if (this.hasMissingRequiredAttachments(partnerAttachType)) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
+      return;
+    }
 
     const v = this.partnerForm.getRawValue();
+
+    const partnerAttachments = this.getValidAttachments(partnerAttachType).map(a => ({
+      ...a,
+      masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
+    }));
+
     this.partners.push({
       name: v.name!,
       type: v.type!,
@@ -326,8 +362,10 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       licenseNumber: v.licenseNumber!,
       contactDetails: v.contactDetails ?? null,
       mainApplyServiceId: v.mainApplyServiceId ?? null,
+      attachments: partnerAttachments,
     });
-
+    console.log(this.partners);
+    this.resetAttachments(partnerAttachType);
     this.partnerForm.reset();
   }
 
@@ -664,7 +702,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           licenseExpiryDate: p.licenseExpiryDate ? toISO(p.licenseExpiryDate) : null,
           licenseNumber: p.licenseNumber ?? null,
           contactDetails: p.contactDetails ?? null,
-          mainApplyServiceId: p.mainApplyServiceId ?? null
+          mainApplyServiceId: p.mainApplyServiceId ?? null,
+          attachments :p.attachments
         })),
       };
       console.log("payload = ", payload);

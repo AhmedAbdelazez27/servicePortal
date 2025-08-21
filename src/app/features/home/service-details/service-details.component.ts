@@ -30,7 +30,7 @@ export class ServiceDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private translationService: TranslationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.serviceId = this.route.snapshot.paramMap.get('id');
@@ -145,6 +145,12 @@ export class ServiceDetailsComponent implements OnInit {
       // Check if this is Distribution Site Permit Application (ID = 1001)
       else if (this.service.serviceId === 1001) {
         this.router.navigate(['/distribution-site-permit']);
+      }
+      else if (this.service.serviceId === 6) {
+        this.router.navigate(['/services-requests/request-event-permits']);
+      }
+      else if (this.service.serviceId === 2) {
+        this.router.navigate(['/services-requests/charity-event-permit-request']);
       }
       // Navigate to generic service request page
       else {

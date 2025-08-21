@@ -15,6 +15,7 @@ import { CharityEventPermitRequestService } from '../../../../core/services/char
 import { arrayMinLength, dateRangeValidator } from '../../../../shared/customValidators';
 import { RequestAdvertisement } from '../../../../core/dtos/charity-event-permit/charity-event-permit.dto';
 import { phoneRules, rfc3339OrEmpty, rfc3339Required, timeRangesOk } from '../../../../shared/customValidators/requestevent.validators';
+import { PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -112,7 +113,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   advertisementTargetType: any[] = [];
   advertisementMethodType: any[] = [];
   donationChannelsLookup: any[] = [];
-  partnerTypes: any[] = [];
+  partnerTypes: any[] = [
+    { id: PartnerType.Person,     label: 'Person' },
+    { id: PartnerType.Government, label: 'Government' },
+    { id: PartnerType.Supplier,   label: 'Supplier' },
+    { id: PartnerType.Company,    label: 'Company' },
+  ];
   requestTypes: any[] = [];
   permitsTypes: any[] = [];
   partners: any[] = [];
@@ -362,7 +368,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         advertisementTargetType: this._CharityEventPermitRequestService.getAdvertisementTargetType({}),
         advertisementType: this._CharityEventPermitRequestService.getAdvertisementType(),
         donationChannelsLookup: this._CharityEventPermitRequestService.getDonationCollectionChannel({}),
-        partnerTypes: this._CharityEventPermitRequestService.getPartners(),
+        // partnerTypes: this._CharityEventPermitRequestService.getPartners(),
         requestTypes: this._CharityEventPermitRequestService.getPermitRequestTypeSelect2({}),
         permitsTypes: this._CharityEventPermitRequestService.getPermitTypeSelect2({}),
       }).subscribe({
@@ -370,7 +376,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           this.advertisementType = res.advertisementType;
           this.advertisementMethodType = res.advertisementMethodType?.results;
           this.advertisementTargetType = res.advertisementTargetType?.results;
-          this.partnerTypes = res.partnerTypes?.data;
+          // this.partnerTypes = res.partnerTypes?.data;
+          console.log,("testttst"+this.partnerTypes);  
+          
           this.requestTypes = res.requestTypes?.results;
           this.permitsTypes = res.permitsTypes?.results;
           console.log(res.donationChannelsLookup, "ddddddd");
@@ -896,7 +904,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           licenseExpiryDate: p.licenseExpiryDate ? toISO(p.licenseExpiryDate) : null,
           licenseNumber: p.licenseNumber ?? null,
           contactDetails: p.contactDetails ?? null,
-          mainApplyServiceId: p.mainApplyServiceId ?? null
+          mainApplyServiceId: p.mainApplyServiceId ?? null,
+          attachments : p.attachments
         })),
       };
       console.log("payload = ", payload);
