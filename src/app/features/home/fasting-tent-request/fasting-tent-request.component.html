@@ -94,19 +94,21 @@
 
                         <!-- Tab 4: Partners -->
                         <div class="step-navigation-item">
-                            <div class="step-container" 
+                            <div class="step-container partners-tab" 
                                  [class.active]="isTabActive(4)" 
-                                 [class.completed]="isTabCompleted(4)">
+                                 [class.completed]="isTabCompleted(4)"
+                                 [class.invalid]="currentTab > 4 && !isTabCompleted(4)">
                                 <div class="step-bg"></div>
                                 <div class="step">
-                                    <span *ngIf="!isTabCompleted(4)">4</span>
-                                    <i *ngIf="isTabCompleted(4)" class="fas fa-check"></i>
+                                    <span>4</span>
                                 </div>
                             </div>
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" 
                                       (click)="goToTab(4)"
+                                     
+                                      [class.text-danger]="currentTab > 4 && !isTabCompleted(4)"
                                       [class.text-primary]="isTabActive(4)">
                                     {{ 'FASTING_TENT.PARTNERS' | translate }}
                                 </span>
@@ -184,6 +186,7 @@
                                                 (change)="onDropdownLocationSelect($event)"
                                                 [class.is-invalid]="submitted && mainInfoForm.get('locationId')?.errors"
                                                 [loading]="isCheckingAvailability && lastSelectionSource === 'dropdown'">
+                                               
                                             </ng-select>
                                             <div *ngIf="submitted && mainInfoForm.get('locationId')?.errors" class="invalid-feedback d-block">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
@@ -285,9 +288,13 @@
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'FASTING_TENT.START_DATE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" formControlName="startDate" 
-                                               [class.is-invalid]="submitted && dateDetailsForm.get('startDate')?.errors">
-                                        <div *ngIf="submitted && dateDetailsForm.get('startDate')?.errors" class="invalid-feedback">
+                                               [class.is-invalid]="dateDetailsForm.get('startDate')?.invalid && (dateDetailsForm.get('startDate')?.touched || submitted)"
+                                               [class.is-valid]="dateDetailsForm.get('startDate')?.valid && (dateDetailsForm.get('startDate')?.touched || submitted)">
+                                        <div *ngIf="dateDetailsForm.get('startDate')?.invalid && (dateDetailsForm.get('startDate')?.touched || submitted)" class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                        <div *ngIf="isStartDatePast()" class="text-danger small mt-1">
+                                            {{ 'VALIDATION.START_DATE_PAST' | translate }}
                                         </div>
                                     </div>
                                     
@@ -295,9 +302,13 @@
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'FASTING_TENT.END_DATE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" formControlName="endDate"
-                                               [class.is-invalid]="submitted && dateDetailsForm.get('endDate')?.errors">
-                                        <div *ngIf="submitted && dateDetailsForm.get('endDate')?.errors" class="invalid-feedback">
+                                               [class.is-invalid]="dateDetailsForm.get('endDate')?.invalid && (dateDetailsForm.get('endDate')?.touched || submitted)"
+                                               [class.is-valid]="dateDetailsForm.get('endDate')?.valid && (dateDetailsForm.get('endDate')?.touched || submitted)">
+                                        <div *ngIf="dateDetailsForm.get('endDate')?.invalid && (dateDetailsForm.get('endDate')?.touched || submitted)" class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                        <div *ngIf="isEndDateBeforeStart()" class="text-danger small mt-1">
+                                            {{ 'VALIDATION.END_DATE_BEFORE_START' | translate }}
                                         </div>
                                     </div>
 
@@ -364,7 +375,8 @@
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">{{ 'FASTING_TENT.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" formControlName="supervisorMobile"
-                                               [class.is-invalid]="submitted && supervisorForm.get('supervisorMobile')?.errors">
+                                               [class.is-invalid]="submitted && supervisorForm.get('supervisorMobile')?.errors"
+                                               (keypress)="restrictMobileInput($event)">
                                         <div *ngIf="submitted && supervisorForm.get('supervisorMobile')?.errors" class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
@@ -637,11 +649,11 @@
                             </div>
                         </div>
                         
-                        <!-- Validation feedback for current tab -->
+                        <!-- Validation feedback for current tab
                         <div *ngIf="currentTab < totalTabs && !canProceedToNext()" class="alert alert-warning mt-3">
                             <i class="fas fa-exclamation-triangle me-2"></i>
                             {{ 'VALIDATION.COMPLETE_REQUIRED_FIELDS_TO_CONTINUE' | translate }}
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

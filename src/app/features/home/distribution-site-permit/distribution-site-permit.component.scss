@@ -113,6 +113,20 @@
         border-color: $danger;
       }
     }
+    
+    // Partners tab - always golden (unless invalid)
+    &.partners-tab:not(.invalid) {
+      .step-bg {
+        background: $primary;
+        border-color: $primary;
+      }
+      
+      .step {
+        background: $primary;
+        color: white;
+        border-color: $primary;
+      }
+    }
   }
   
   .connecting-line {
@@ -410,17 +424,24 @@
     }
   }
 
-  // Form Switches
+ // Form switches
+ .form-check {
   .form-check-input {
     &:checked {
-      background-color: $primary;
-      border-color: $primary;
+      background-color: $primary !important;
+      border-color: $primary !important;
     }
     
     &:focus {
       box-shadow: 0 0 0 0.2rem rgba(141,115,77,0.25);
     }
   }
+  
+  .form-check-label {
+    font-weight: 500;
+    color: #333;
+  }
+}
 
   // Validation styles
   .invalid-feedback {
@@ -559,5 +580,15 @@
     .upload-area {
       padding: 1.5rem 1rem;
     }
+  }
+
+  input:not([readonly]):not([disabled]),
+  textarea:not([readonly]):not([disabled]),
+  select:not([disabled]) {
+   
+    background-color: #fff !important; // i need to keep the background color of the input field with color that i can read 
+    color: #000 !important;
+
+
   }
 }

@@ -144,6 +144,7 @@ export interface LocationMapDto {
 
 export interface LocationDetailsDto {
   id: number;
+  locationName: string;
   locationOwner: string;
   region: string;
   street: string;

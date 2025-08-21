@@ -6,6 +6,8 @@ import {
   FormsModule,
   ReactiveFormsModule,
   Validators,
+  AbstractControl,
+  ValidatorFn,
 } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -138,8 +140,8 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       streetName: ['', ],
       groundNo: [''],
       address: [''],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
+      startDate: ['', [Validators.required, this.startDateNotPastValidator()]],
+      endDate: ['', [Validators.required, this.endDateAfterStartDateValidator()]],
       notes: [''],
       locationId: [null],
       isConsultantFromAjman: [true],
@@ -1088,6 +1090,50 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       return 'active';
     } else {
       return '';
+    }
+  }
+
+  // Custom Validators
+  startDateNotPastValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      if (!control.value) return null;
+      const inputDate = new Date(control.value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (inputDate < today) {
+        return { startDatePast: true };
+      }
+      return null;
+    };
+  }
+
+  endDateAfterStartDateValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      if (!control.parent) return null;
+      const startDate = new Date(control.parent.get('startDate')?.value);
+      const endDate = new Date(control.value);
+      if (control.value && startDate && endDate < startDate) {
+        return { endDateBeforeStart: true };
+      }
+      return null;
+    };
+  }
+
+  // Helper methods for template error display
+  isStartDatePast(): boolean {
+    const control = this.mainInfoForm.get('startDate');
+    return control && control.touched && control.errors && control.errors['startDatePast'];
+  }
+  isEndDateBeforeStart(): boolean {
+    const control = this.mainInfoForm.get('endDate');
+    return control && control.touched && control.errors && control.errors['endDateBeforeStart'];
+  }
+
+  restrictMobileInput(event: KeyboardEvent) {
+    const allowedChars = /[0-9+\-\s]/;
+    const key = event.key;
+    if (!allowedChars.test(key)) {
+      event.preventDefault();
     }
   }
 }

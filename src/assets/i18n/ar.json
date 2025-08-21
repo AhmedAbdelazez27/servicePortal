@@ -73,7 +73,6 @@
       "CONFIRM_BUTTON": "تأكيد"
     },
     "VALIDATION": {
-
       "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
       "EMAIL_INVALID": "يرجى إدخال عنوان بريد إلكتروني صحيح",
       "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
@@ -320,7 +319,6 @@
     "LOGO": "الشعار"
   },
   "VALIDATION": {
-    "PHONE_LENGTH": "يرجى إدخال رقم هاتف صحيح بين 7 و20 رقمًا.",
     "REQUIRED": "هذا الحقل مطلوب",
     "EMAIL": "يرجى إدخال عنوان بريد إلكتروني صحيح",
     "MINLENGTH": "الحد الأدنى للطول هو {{length}} أحرف",
@@ -339,20 +337,34 @@
     "FILE_TOO_LARGE": "يجب ألا يتجاوز حجم الملف 5 ميجابايت",
     "INVALID_FILE_TYPE": "نوع ملف غير صالح. مسموح فقط بملفات JPEG، PNG، PDF، DOC، DOCX",
     "INVALID_PHONE": "يرجى إدخال رقم هاتف صحيح",
+    "INVALID_PHONE_FORMAT": "يرجى إدخال تنسيق رقم هاتف صحيح",
     "INVALID_EMAIL": "يرجى إدخال عنوان بريد إلكتروني صحيح",
     "PLEASE_COMPLETE_REQUIRED_FIELDS": "يرجى إكمال جميع الحقول المطلوبة",
+    "PLEASE_WAIT_CHECKING_AVAILABILITY": "يرجى الانتظار أثناء فحص التوفر...",
+    "LOCATION_NOT_AVAILABLE": "الموقع المحدد غير متاح",
+    "PLEASE_SELECT_VALID_LOCATION": "يرجى اختيار موقع صحيح",
     "END_DATE_AFTER_START_DATE": "يجب أن يكون تاريخ النهاية بعد تاريخ البداية",
     "CONSECUTIVE_DOTS": "لا يمكن أن يحتوي البريد الإلكتروني على نقاط متتالية",
     "LEADING_TRAILING_DOTS": "لا يمكن أن يبدأ أو ينتهي البريد الإلكتروني بنقاط",
     "INVALID_DOMAIN": "تنسيق نطاق البريد الإلكتروني غير صحيح",
     "LOCATION_REQUIRED": "يرجى اختيار موقع",
     "SELECT_LOCATION_METHOD": "يرجى اختيار طريقة اختيار الموقع",
-    "LOCATION_NOT_AVAILABLE": "الموقع المحدد غير متاح",
     "ATTACHMENT_REQUIRED": "المرفق مطلوب",
-    "LOCATION_REQUIRED": "يرجى اختيار موقع",
-    "SELECT_LOCATION_METHOD": "يرجى اختيار طريقة اختيار الموقع",
-    "LOCATION_NOT_AVAILABLE": "الموقع المحدد غير متاح",
-    "ATTACHMENT_REQUIRED": "المرفق مطلوب"
+    "DATE_RANGE": "تاريخ الانتهاء يجب أن يكون بعد أو يساوي تاريخ البدء.",
+    "DATE_RANGE_TOO_LONG": "لا يمكن أن يتجاوز نطاق التاريخ سنة واحدة",
+    "MIN_ONE_TARGET": "اختر نوع استهداف واحد على الأقل.",
+    "MIN_ONE_METHOD": "اختر وسيلة إعلان واحدة على الأقل.",
+    "MIN_ONE_LOCATION": "أضف موقعًا واحدًا على الأقل.",
+    "MIN_LENGTH_2": "الحد الأدنى للطول هو حرفان",
+    "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+    "EMAIL_INVALID": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+    "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
+    "PASSWORD_MIN_LENGTH": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+    "PASSWORD_PATTERN": "يجب أن تحتوي كلمة المرور على أحرف كبيرة وصغيرة ورقم ورمز خاص",
+    "CONFIRM_PASSWORD_REQUIRED": "تأكيد كلمة المرور مطلوب",
+    "PASSWORDS_DONT_MATCH": "كلمات المرور غير متطابقة",
+    "START_DATE_PAST": "لا يمكن أن يكون تاريخ البداية قبل اليوم.",
+    "END_DATE_BEFORE_START": "يجب أن يكون تاريخ النهاية مساوياً أو بعد تاريخ البداية."
   },
   "SERVICES": {
     "TITLE": "الخدمات",
@@ -500,8 +512,10 @@
     "TAB3_TITLE": "المرفقات",
     "DATE_DETAILS_TITLE": "تفاصيل التاريخ",
     "TAB4_TITLE": "المرفقات",
+    "SETUP_DATE": "تاريخ الإعداد",
     "MAIN_INFO_DESC": "أدخل التفاصيل الأساسية والموقع",
     "DATE_DETAILS_DESC": "حدد التواريخ والأذونات",
+    "SUPERVISOR_INFO": "معلومات المشرف",
     "SUPERVISOR_INFO_DESC": "قدم تفاصيل المشرف",
     "PARTNERS_OPTIONAL_SHORT": "إضافة شركاء (اختياري)",
     "ATTACHMENTS_DESC": "رفع الوثائق المطلوبة",
@@ -516,6 +530,7 @@
     "SELECT_LOCATION_ON_MAP": "اختر الموقع على الخريطة",
     "MAP_INSTRUCTIONS": "العلامات الخضراء: المواقع المتاحة | العلامات الحمراء: المواقع غير المتاحة",
     "LOCATION_DETAILS": "تفاصيل الموقع",
+    "LOCATION_PHOTO": "صورة الموقع",
     "OWNER_NAME": "اسم المالك",
     "REGION_NAME": "اسم المنطقة",
     "STREET_NAME": "اسم الشارع",
@@ -527,18 +542,18 @@
     "IS_CONSULTANT_FROM_AJMAN": "مستشار من عجمان",
     "IS_CONSULTANT_APPROVED_FROM_POLICE": "مستشار معتمد من الشرطة",
     "TENT_IS_SET_UP": "تم إقامة الخيمة",
-    "SUPERVISOR_INFO": "معلومات المشرف",
     "SUPERVISOR_NAME": "اسم المشرف",
     "JOB_TITLE": "المسمى الوظيفي",
     "SUPERVISOR_MOBILE": "جوال المشرف",
-    "TENT_DATE": "تاريخ إقامة الخيمة",
-    "PARTNERS": "الشركاء",
+    "SUPERVISOR_MOBILE_PLACEHOLDER": "أدخل رقم جوال المشرف",
     "PARTNER_NAME": "اسم الشريك",
-    "PARTNER_TYPE": "نوع الشريك",
+    "PARTNER_NAME_PLACEHOLDER": "أدخل اسم الشريك",
     "LICENSE_ISSUER": "جهة إصدار الترخيص",
     "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الترخيص",
     "LICENSE_NUMBER": "رقم الترخيص",
+    "LICENSE_NUMBER_PLACEHOLDER": "أدخل رقم الترخيص",
     "CONTACT_DETAILS": "تفاصيل الاتصال",
+    "CONTACT_DETAILS_PLACEHOLDER": "أدخل تفاصيل الاتصال",
     "NO_PARTNERS_ADDED": "لم يتم إضافة أي شركاء حتى الآن.",
     "ATTACHMENTS": "المرفقات",
     "DATE_DETAILS": "تفاصيل التاريخ",
@@ -559,6 +574,7 @@
     "MAIN_INFO_DESC": "معلومات الموقع والعنوان الأساسية",
     "DATE_DETAILS": "تفاصيل التاريخ",
     "DATE_DETAILS_DESC": "الجدولة وتوقيت الإعداد",
+    "LOCATION_PHOTO": "صورة الموقع",
     "REQUEST_TYPE": "نوع الطلب",
     "OWNER_NAME": "اسم المالك",
     "OWNER_NAME_PLACEHOLDER": "أدخل اسم المالك",
@@ -613,9 +629,14 @@
     "SUPPORTED_FORMATS": "الصيغ المدعومة: PDF، DOC، DOCX، JPG، PNG (حد أقصى 5 ميجابايت)"
   },
   "ATTACHMENTS": {
+    "TITLE": "المرفقات",
     "DOCUMENT_TYPE": "نوع المستند",
     "FILE": "الملف",
-    "DRAG_DROP_OR_CLICK": "اسحب وأفلت الملفات هنا أو انقر للاختيار"
+    "DRAG_DROP_OR_CLICK": "اسحب وأفلت الملفات هنا أو انقر للاختيار",
+    "SUPPORTED_FORMATS": "الصيغ المدعومة: PDF، DOC، DOCX، JPG، PNG (حد أقصى 5 ميجابايت)",
+    "DRAG_DROP_FILES": "اسحب وأفلت الملفات هنا",
+    "OR": "أو",
+    "BROWSE_FILES": "تصفح الملفات"
   },
   "SUCCESS": {
     "REQUEST_PLAINT_CREATED": "تم تقديم طلب التظلم بنجاح!",
@@ -677,6 +698,7 @@
     "CONFIRM_PASSWORD_REQUIRED": "تأكيد كلمة المرور مطلوب",
     "PASSWORDS_DONT_MATCH": "كلمات المرور غير متطابقة"
   },
+
   "COMMON": {
     "REQUEST_SERVICE": "طلب الخدمة",
     "LOADING": "جاري التحميل...",
@@ -699,6 +721,44 @@
     "VIEW": "عرض",
     "DELETE": "حذف"
   },
+  "SHARED": {
+    "SUPERVISOR_INFO": "معلومات المشرف",
+    "SUPERVISOR_NAME": "اسم المشرف",
+    "SUPERVISOR_NAME_PLACEHOLDER": "أدخل اسم المشرف الكامل",
+    "SUPERVISOR_MOBILE": "جوال المشرف",
+    "SUPERVISOR_MOBILE_PLACEHOLDER": "أدخل رقم جوال المشرف",
+    "JOB_TITLE": "المسمى الوظيفي",
+    "JOB_TITLE_PLACEHOLDER": "أدخل المسمى الوظيفي أو المنصب",
+    "PARTNER_NAME": "اسم الشريك",
+    "PARTNER_NAME_PLACEHOLDER": "أدخل اسم الشريك",
+    "PARTNER_TYPE": "نوع الشريك",
+    "LICENSE_ISSUER": "جهة إصدار الترخيص",
+    "LICENSE_ISSUER_PLACEHOLDER": "أدخل جهة إصدار الترخيص",
+    "LICENSE_NUMBER": "رقم الترخيص",
+    "LICENSE_NUMBER_PLACEHOLDER": "أدخل رقم الترخيص",
+    "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الترخيص",
+    "CONTACT_DETAILS": "تفاصيل الاتصال",
+    "CONTACT_DETAILS_PLACEHOLDER": "أدخل تفاصيل الاتصال",
+    "START_DATE": "تاريخ البداية",
+    "END_DATE": "تاريخ النهاية",
+    "OWNER_NAME": "اسم المالك",
+    "OWNER_NAME_PLACEHOLDER": "أدخل اسم المالك الكامل",
+    "REGION_NAME": "اسم المنطقة",
+    "STREET_NAME": "اسم الشارع",
+    "STREET_NAME_PLACEHOLDER": "أدخل اسم الشارع",
+    "GROUND_NO": "رقم الأرض",
+    "GROUND_NO_PLACEHOLDER": "أدخل رقم الأرض/القطعة",
+    "ADDRESS": "العنوان",
+    "ADDRESS_PLACEHOLDER": "أدخل العنوان الكامل",
+    "NOTES": "الملاحظات",
+    "NOTES_PLACEHOLDER": "ملاحظات أو تعليقات إضافية",
+    "PARTNERS": "الشركاء",
+    "NO_PARTNERS_ADDED": "لم يتم إضافة أي شركاء حتى الآن",
+    "ATTACHMENTS": "المرفقات",
+    "ATTACHMENTS_DESC": "رفع الوثائق والمرفقات المطلوبة"
+  },
+
+
   "Common": {
     "Action": "العمليات",
     "ViewInfo": "عرض التفاصيل",
@@ -789,6 +849,7 @@
   "ERROR": {
     "FETCH_REGIONS": "فشل في جلب المناطق"
   },
+
   "mainApplyServiceResourceName": {
     "title": "الطلبات المقدمة",
     "menuTitle": "الشاشة الرئيسية",
@@ -990,7 +1051,7 @@
     "MOBILE": "رقم الجوال",
     "FAX": "رقم الفاكس"
   },
-  "event": {
+    "event": {
     "PmStartTime": "وقت البدء مساء",
     "PmEndTime": "وقت الانتهاء مساء",
     "AmStartTime": "وقت البدء صباحا",
@@ -1014,5 +1075,7 @@
     "LICENSE_EXPIRY": "تاريخ انتهاء الترخيص",
     "CONTACT_DETAILS": "بيانات التواصل",
     "MAIN_APPLY_SERVICE": "الخدمة الرئيسية (اختياري)"
-  }
+  },
+  "START_DATE_PAST": "لا يمكن أن يكون تاريخ البداية قبل اليوم.",
+  "END_DATE_BEFORE_START": "يجب أن يكون تاريخ النهاية مساوياً أو بعد تاريخ البداية."
 }

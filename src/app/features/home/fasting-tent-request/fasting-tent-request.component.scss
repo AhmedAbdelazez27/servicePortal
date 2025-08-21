@@ -112,6 +112,20 @@
         border-color: $danger;
       }
     }
+    
+    // Partners tab - always golden (unless invalid)
+    &.partners-tab:not(.invalid) {
+      .step-bg {
+        background: $primary;
+        border-color: $primary;
+      }
+      
+      .step {
+        background: $primary;
+        color: white;
+        border-color: $primary;
+      }
+    }
   }
   
   .connecting-line {
@@ -186,6 +200,10 @@
     }
     
     &.is-invalid { border-color: $danger; }
+    &.is-valid {
+      border-color: $success;
+      box-shadow: 0 0 0 0.2rem rgba(40,167,69,0.25);
+    }
   }
 
   ::ng-deep .ng-select {
@@ -193,65 +211,44 @@
       border-color: $primary;
       box-shadow: 0 0 0 0.2rem rgba(141,115,77,0.25);
     }
-    
     .ng-select-container {
       border-radius: $radius;
       border: 1px solid #d1d5db;
       min-height: 48px;
       transition: $trans;
       background: #fff;
-      
       &.ng-appearance-outline {
         border-radius: $radius;
       }
-      
       .ng-value-container {
         padding: 0.5rem 1rem;
-        
         .ng-placeholder { color: #6c757d; }
-        
         .ng-value {
           font-size: 0.875rem;
           color: #333;
         }
       }
-      
       .ng-arrow-wrapper {
         padding-right: 0.75rem;
-        
         .ng-arrow {
           border-color: #6c757d transparent transparent;
         }
       }
-      
       .ng-clear-wrapper {
         padding-right: 0.75rem;
-        
         .ng-clear {
           color: #6c757d;
-          
           &:hover { color: $danger; }
         }
       }
     }
-    
-    &.ng-select-multiple .ng-select-container .ng-value-container {
-      .ng-value {
-        background: lighten($primary, 45%);
-        border: 1px solid lighten($primary, 30%);
-        border-radius: 4px;
-        color: $primary;
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
-        
-        .ng-value-label { color: $primary; }
-        
-        .ng-value-icon {
-          border-right: 1px solid lighten($primary, 30%);
-          
-          &:hover { background: lighten($primary, 35%); }
-        }
-      }
+    &.is-invalid .ng-select-container {
+      border-color: $danger;
+      box-shadow: 0 0 0 0.2rem rgba(220,53,69,0.25);
+    }
+    &.is-valid .ng-select-container {
+      border-color: $success;
+      box-shadow: 0 0 0 0.2rem rgba(40,167,69,0.25);
     }
   }
 
@@ -490,8 +487,8 @@
   .form-check {
     .form-check-input {
       &:checked {
-        background-color: $primary;
-        border-color: $primary;
+        background-color: $primary !important;
+        border-color: $primary !important;
       }
       
       &:focus {
@@ -618,5 +615,15 @@
     #distributionMap {
       height: 300px !important;
     }
+  }
+
+  input:not([readonly]):not([disabled]),
+  textarea:not([readonly]):not([disabled]),
+  select:not([disabled]) {
+   
+    background-color: #fff !important; // i need to keep the background color of the input field with color that i can read 
+    color: #000 !important;
+
+
   }
 }

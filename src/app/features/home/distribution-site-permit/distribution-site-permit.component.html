@@ -94,19 +94,21 @@
                         
                         <!-- Tab 4: Partners -->
                         <div class="step-navigation-item">
-                            <div class="step-container" 
+                            <div class="step-container partners-tab" 
                                  [class.active]="isTabActive(4)" 
-                                 [class.completed]="isTabCompleted(4)">
+                                 [class.completed]="isTabCompleted(4)"
+                                 [class.invalid]="currentTab > 4 && !isTabCompleted(4)">
                                 <div class="step-bg"></div>
                                 <div class="step">
-                                    <span *ngIf="!isTabCompleted(4)">4</span>
-                                    <i *ngIf="isTabCompleted(4)" class="fas fa-check"></i>
+                                    <span>4</span>
                                 </div>
                             </div>
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" 
                                       (click)="goToTab(4)"
+                                     
+                                      [class.text-danger]="currentTab > 4 && !isTabCompleted(4)"
                                       [class.text-primary]="isTabActive(4)">
                                     {{ 'DISTRIBUTION_SITE.TAB2_TITLE' | translate }}
                                 </span>
@@ -289,6 +291,9 @@
                                         <div *ngIf="isFieldInvalid('startDate')" class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
+                                        <div *ngIf="isStartDatePast()" class="text-danger small mt-1">
+                                            {{ 'VALIDATION.START_DATE_PAST' | translate }}
+                                        </div>
                                     </div>
                                     <!-- End Date -->
                                     <div class="col-xl-6 mb-4">
@@ -298,6 +303,9 @@
                                                [class.is-valid]="isFieldValid('endDate')">
                                         <div *ngIf="isFieldInvalid('endDate')" class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                        <div *ngIf="isEndDateBeforeStart()" class="text-danger small mt-1">
+                                            {{ 'VALIDATION.END_DATE_BEFORE_START' | translate }}
                                         </div>
                                     </div>
                                     <!-- Tent Date -->
@@ -372,7 +380,8 @@
                                         <input type="tel" class="form-control" formControlName="supervisorMobile"
                                                [placeholder]="'DISTRIBUTION_SITE.SUPERVISOR_MOBILE_PLACEHOLDER' | translate"
                                                [class.is-invalid]="isFieldInvalid('supervisorMobile')"
-                                               [class.is-valid]="isFieldValid('supervisorMobile')">
+                                               [class.is-valid]="isFieldValid('supervisorMobile')"
+                                               (keypress)="restrictMobileInput($event)">
                                         <div *ngIf="isFieldInvalid('supervisorMobile')" class="invalid-feedback">
                                             <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('required')">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
@@ -644,12 +653,12 @@
                             
                             <!-- Next Button -->
                             <div *ngIf="currentTab < totalTabs" class="d-flex align-items-center">
-                                <div *ngIf="!isCurrentTabValid()" class="me-3">
+                                <!-- <div *ngIf="!isCurrentTabValid()" class="me-3">
                                     <small class="text-warning">
                                         <i class="fas fa-exclamation-triangle"></i>
                                         {{ 'VALIDATION.COMPLETE_REQUIRED_FIELDS_TO_CONTINUE' | translate }}
                                     </small>
-                                </div>
+                                </div> -->
                                 <button type="button" 
                                         class="btn" 
                                         [class.btn-primary]="isCurrentTabValid()"
