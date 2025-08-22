@@ -21,6 +21,7 @@ export class GenericDataTableComponent implements OnChanges, OnInit {
   @Input() columnHeaderMap: { [key: string]: string } = {};
   @Input() rowActions: Array<{ label: string, icon?: string, action: string }> = [];
   @Output() actionClick = new EventEmitter<{ action: string, row: any }>();
+  @Output() cellClicked = new EventEmitter<any>();
   @Input() gridOptions: GridOptions = {};
   @Output() pageChange = new EventEmitter<{ pageNumber: number; pageSize: number }>();
   @Output() search = new EventEmitter<string>();
@@ -103,6 +104,11 @@ export class GenericDataTableComponent implements OnChanges, OnInit {
 
   onGridReady(params: any) {
     params.api.addEventListener('cellClicked', (event: any) => {
+        // Emit the cell click event to parent component
+        this.cellClicked.emit(event);
+      
+        // Handle action column clicks
+
       if (event.colDef.colId === 'action' && event.event.target) {
         const action = event.event.target.getAttribute('data-action');
         if (action) {

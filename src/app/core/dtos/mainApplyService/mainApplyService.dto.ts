@@ -23,7 +23,7 @@ export class FiltermainApplyServiceByIdDto {
 export class mainApplyServiceDto {
   id: number | null = null;
   userId: string | null = null;
-  serviceId: string | null = null;
+  serviceId: number | null = null;
   applyDate: Date | null = null;
   applyNo: string | null = null;
   parentId: number | null = null;
@@ -65,7 +65,7 @@ export class ServiceDto {
   lastModified: Date | null = null;
   attributes: AttributeDto | null = null;
   serviceDepartments: ServiceDepartmentDto | null = null;
-  attachmentsConfigs: AttachmentsConfigDto | null = null;
+  attachmentsConfigs: AttachmentsConfigDto[] | null = null;
 }
 export class AttributeDto {
   id: number | null = null;
@@ -158,6 +158,7 @@ export class WorkFlowStepDto {
   id: number | null = null;
   empId: string | null = null;
   deptId: number | null = null;
+  departmentName: string | null = null;
   mainApplyServiceId: number | null = null;
   serviceStatus: number | null = null;
   serviceStatusName: string | null = null;
@@ -170,6 +171,8 @@ export class WorkFlowCommentDto {
   paymentId: string | null = null;
   id: number | null = null;
   empId: string | null = null;
+  employeeDepartmentName: string | null = null;
+
   workFlowStepsId: number | null = null;
   comment: string | null = null;
   lastModified: Date | null = null;
@@ -189,9 +192,11 @@ export class PartnerDto {
   contactDetails: string | null = null;
   createdBy: string | null = null;
   creationDate: Date | null = null;
+
   modifiedBy: string | null = null;
   modificationDate: Date | null = null;
   mainApplyServiceId: number | null = null;
+  attachments: AttachmentDto[] = [];
 }
 
 export class RequestAdvertisementAdLocationDto {
@@ -365,7 +370,9 @@ export class RequestPlaintDto {
   requestNo: number | null = null;
   requestDate: Date | null = null;
   notes: string | null = null;
+  details: string | null = null;
   mainApplyService: mainApplyServiceDto | null = null;
+  attachmentsConfigs: AttachmentsConfigDto [] = [];
 }
 
 export class CharityEventPermitDto {

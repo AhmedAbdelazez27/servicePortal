@@ -12,8 +12,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Subscription, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { forkJoin, Subscription, Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { RequestPlaintService } from '../../../core/services/request-plaint.service';
 import { AttachmentService } from '../../../core/services/attachments/attachment.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -32,6 +32,9 @@ import {
   AttachmentsConfigDto,
   AttachmentsConfigType,
 } from '../../../core/dtos/attachments/attachments-config.dto';
+import { FiltermainApplyServiceByIdDto, mainApplyServiceDto } from '../../../core/dtos/mainApplyService/mainApplyService.dto';
+import { MainApplyService } from '../../../core/services/mainApplyService/mainApplyService.service';
+import { SpinnerService } from '../../../core/services/spinner.service';
 
 @Component({
   selector: 'app-request-plaint',
@@ -47,6 +50,8 @@ import {
   styleUrls: ['./request-plaint.component.scss']
 })
 export class RequestPlaintComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   currentStep: number = 1;
   totalSteps: number = 5;
   
@@ -63,7 +68,8 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   userEntity: UserEntityDto | null = null;
   userEntities: UserEntityDto[] = [];
   attachmentConfigs: AttachmentsConfigDto[] = [];
-  
+  loadformData: mainApplyServiceDto = {} as mainApplyServiceDto;
+
   // Computed property for entity display name
   get entityDisplayField(): string {
     return this.translationService.currentLang === 'ar' ? 'entityName' : 'entityNameEn';
@@ -99,17 +105,35 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
+    private mainApplyService: MainApplyService,
+    private spinnerService: SpinnerService,
     private cdr: ChangeDetectorRef
   ) {
     this.initializeForm();
+    const nav = this.router.getCurrentNavigation();
+    this.loadformData = nav?.extras?.state?.['loadformData'];
   }
 
   ngOnInit(): void {
     // Clear any existing toasts to ensure clean start
     this.clearAllToasts();
     this.loadInitialData();
-  }
 
+    this.loadformData = history.state?.loadformData;
+    if (this.loadformData) {
+      this.requestPlaintForm.patchValue({
+        requestDate: this.loadformData.requestPlaint?.requestDate,
+        requestMainApplyServiceId: this.loadformData.requestPlaint?.requestMainApplyServiceId,
+        requestingEntityId: this.loadformData.requestPlaint?.requestMainApplyServiceId,
+        details: this.loadformData.requestPlaint?.details,
+        notes: this.loadformData.requestPlaint?.notes
+      });
+      this.evidences = this.loadformData?.requestPlaintEvidences as unknown as RequestPlaintEvidenceDto[] ?? [];
+      this.justifications = this.loadformData?.requestPlaintJustifications as unknown as RequestPlaintJustificationDto[] ?? [];
+      this.reasons = this.loadformData?.requestPlaintReasons as unknown as RequestPlaintReasonDto[] ?? [];
+      this.attachments = this.loadformData?.requestPlaint?.attachmentsConfigs as unknown as RequestPlaintAttachmentDto[] ?? [];
+    }
+  }
   // Method to clear all existing toasts
   private clearAllToasts(): void {
     // Clear all toasts when component initializes

@@ -20,6 +20,7 @@ import {
   ComplaintTypeDto,
 } from '../../../core/dtos/RequestComplaint/request-complaint.dto';
 import { enhancedEmailValidator } from '../../../shared/customValidators/registration-validators';
+import { mainApplyServiceDto } from '../../../core/dtos/mainApplyService/mainApplyService.dto';
 
 @Component({
   selector: 'app-request-complaint',
@@ -47,6 +48,7 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
   serviceId: string | null = null;
 
   private subscriptions: Subscription[] = [];
+  loadformData: mainApplyServiceDto = {} as mainApplyServiceDto;
 
   constructor(
     private fb: FormBuilder,
@@ -65,6 +67,19 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
     this.clearAllToasts();
     this.loadInitialData();
     this.getServiceIdFromRoute();
+
+    this.loadformData = history.state?.loadformData;
+    if (this.loadformData) {
+      this.requestComplaintForm.patchValue({
+        requestDate: this.loadformData.requestComplaint?.requestDate,
+        complaintType: this.loadformData.requestComplaint?.complaintType,
+        contactNumber: this.loadformData.requestComplaint?.contactNumber,
+        applicantName: this.loadformData.requestComplaint?.applicantName,
+        email: this.loadformData.requestComplaint?.email,
+        details: this.loadformData.requestComplaint?.details,
+        notes: this.loadformData.requestComplaint?.notes,
+      });
+    }
   }
 
   ngOnDestroy(): void {

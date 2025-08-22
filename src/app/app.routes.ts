@@ -78,6 +78,14 @@ export const routes: Routes = [
           ).then((m) => m.FastingTentRequestComponent),
       },
       {
+        path: 'view-fasting-tent-request/:id',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import(
+            './features/home/view-fasting-tent-request/view-fasting-tent-request.component'
+          ).then((m) => m.ViewFastingTentRequestComponent),
+      },
+      {
         path: 'distribution-site-permit',
         canActivate: [authGuard],
         loadComponent: () =>
@@ -168,7 +176,7 @@ export const routes: Routes = [
       },
       {
         path: 'services-requests',
-        //  canActivate: [authGuard],
+         canActivate: [authGuard],
         loadChildren: () => import('./features/services/servicesRequests/servicesRequests.routes').then((m) => m.servicesRequestsRoutes)
       }
       // Add other authenticated routes here as children with authGuard
