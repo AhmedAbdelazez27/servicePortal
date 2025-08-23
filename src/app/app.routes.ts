@@ -178,6 +178,11 @@ export const routes: Routes = [
         path: 'services-requests',
          canActivate: [authGuard],
         loadChildren: () => import('./features/services/servicesRequests/servicesRequests.routes').then((m) => m.servicesRequestsRoutes)
+      },
+      {
+        path: 'view-services-requests',
+        //  canActivate: [authGuard],
+        loadChildren: () => import('./features/services/servicesViews/servicesView.routes').then((m) => m.servicesViewsRoutes)
       }
       // Add other authenticated routes here as children with authGuard
       // Example:

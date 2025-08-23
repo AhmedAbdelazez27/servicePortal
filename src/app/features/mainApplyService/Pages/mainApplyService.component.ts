@@ -166,6 +166,15 @@ export class MainApplyServiceComponent {
             state: { loadformData: this.loadformData }
           });
         }
+         if (serviceId == this.appEnum.serviceId2) {
+          this.router.navigate([`/view-services-requests/charity-event-permit/${params.id}`], {
+            state: { loadformData: this.loadformData }
+          });
+        } if (serviceId == this.appEnum.serviceId6) {
+          this.router.navigate([`/view-services-requests/request-event-permit/${params.id}`], {
+            state: { loadformData: this.loadformData }
+          });
+        }
         this.spinnerService.hide();
       },
       error: (err) => {

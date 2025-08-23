@@ -146,6 +146,12 @@ export class ServiceDetailsComponent implements OnInit {
       else if (this.service.serviceId === 1001) {
         this.router.navigate(['/distribution-site-permit']);
       }
+      else if (this.service.serviceId === 2) {
+        this.router.navigate(['/services-requests/charity-event-permit-request']);
+      }
+      else if (this.service.serviceId === 6) {
+        this.router.navigate(['/services-requests/request-event-permits']);
+      }
       // Navigate to generic service request page
       else {
         this.router.navigate(['/service-request', this.service.serviceId]);

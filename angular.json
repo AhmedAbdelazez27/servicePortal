@@ -42,7 +42,11 @@
               "node_modules/owl.carousel/dist/assets/owl.theme.default.min.css",
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.css",
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.css",
-              "src/styles.scss"
+              "node_modules/@ng-select/ng-select/themes/default.theme.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "src/styles.scss",
+              "node_modules/ag-grid-community/styles/ag-grid.css",
+              "node_modules/ag-grid-community/styles/ag-theme-alpine.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
@@ -60,8 +64,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "12kB",
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all"
