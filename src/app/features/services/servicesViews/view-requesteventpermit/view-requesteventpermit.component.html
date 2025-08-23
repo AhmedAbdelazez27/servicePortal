@@ -5,16 +5,13 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="title">{{ 'REQUEST_EVENT_PERMIT.VIEW_TITLE' | translate }}</h4>
         <button type="button" class="btn btn-secondary" (click)="goBack()">
-          <i class="fas fa-arrow-left me-2"></i>
-          {{ 'COMMON.BACK' | translate }}
+          <i class="fas fa-arrow-left me-2"></i>{{ 'COMMON.BACK' | translate }}
         </button>
       </div>
 
       <!-- Loading -->
       <div *ngIf="isLoading" class="text-center py-5">
-        <div class="spinner-border" role="status">
-          <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
-        </div>
+        <div class="spinner-border" role="status"></div>
         <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
       </div>
 
@@ -37,8 +34,8 @@
               </p>
             </div>
 
-            <!-- Steps list (7 tabs) -->
-            <div class="step-navigation-item" *ngFor="let t of [1,2,3,4,5,6,7]">
+            <!-- Steps list (8 tabs) -->
+            <div class="step-navigation-item" *ngFor="let t of [1,2,3,4,5,6,7,8]">
               <div class="step-container" [class.active]="isTabActive(t)">
                 <div class="step-bg"></div>
                 <div class="step"><span>{{t}}</span></div>
@@ -51,14 +48,13 @@
                     t === 2 ? ('REQUEST_EVENT_PERMIT.REQUEST_DETAILS' | translate) :
                     t === 3 ? ('REQUEST_EVENT_PERMIT.DATES_TIMES' | translate) :
                     t === 4 ? ('REQUEST_EVENT_PERMIT.CONTACTS' | translate) :
-                    t === 5 ? ('REQUEST_EVENT_PERMIT.PARTNERS' | translate) :
-                    t === 6 ? ('REQUEST_EVENT_PERMIT.ATTACHMENTS' | translate) :
+                    t === 5 ? ('REQUEST_EVENT_PERMIT.ADVERTISEMENTS' | translate) :
+                    t === 6 ? ('REQUEST_EVENT_PERMIT.PARTNERS' | translate) :
+                    t === 7 ? ('REQUEST_EVENT_PERMIT.ATTACHMENTS' | translate) :
                               ('WORKFLOW.PROCESS_STEPS' | translate)
                   }}
                 </span>
-                <small class="d-block text-muted step-description">
-                  <!-- وصف مختصر لكل تبويب لو حبيت -->
-                </small>
+                <small class="d-block text-muted step-description"></small>
               </div>
             </div>
           </div>
@@ -203,17 +199,164 @@
                   <div class="form-control-plaintext">{{requestEventPermit.beneficiaryIdNumber || '-'}}</div>
                 </div>
 
-                <div class="col-md-12 mb-3" *ngIf="requestEventPermit.donationCollectionChannels?.length">
+                <div class="col-md-12 mb-3" *ngIf="requestEventPermit?.donationCollectionChannels?.length">
                   <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.DONATION_CHANNELS' | translate }}</label>
                   <div class="form-control-plaintext">
-                    {{ requestEventPermit.donationCollectionChannels?.join(', ') }}
+                    <span class="badge bg-light text-dark border me-1 mb-1"
+                          *ngFor="let name of getDonationChannelNames()">{{ name }}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Tab 5: Partners -->
+            <!-- Tab 5: Advertisements (Accordion) -->
             <div *ngIf="currentTab === 5" class="step-content">
+              <h5 class="mb-4">{{ 'REQUEST_EVENT_PERMIT.ADVERTISEMENTS' | translate }}</h5>
+
+              <ng-container *ngIf="requestEventPermit?.requestAdvertisements?.length; else noAds">
+                <div class="accordion" id="adsAccordion">
+                  <div class="accordion-item" *ngFor="let ad of requestEventPermit!.requestAdvertisements!; let i = index">
+                    <h2 class="accordion-header" [id]="'adHeading' + i">
+                      <button class="accordion-button collapsed"
+                              type="button"
+                              data-bs-toggle="collapse"
+                              [attr.data-bs-target]="'#adCollapse' + i"
+                              aria-expanded="false"
+                              [attr.aria-controls]="'adCollapse' + i">
+                        {{ 'REQUEST_EVENT_PERMIT.AD' | translate }} #{{ i + 1 }} — {{ ad.adTitle || '-' }}
+                        <!-- <span class="ms-2 badge bg-secondary">{{ ad.adLang?.toUpperCase() || '—' }}</span> -->
+                      </button>
+                    </h2>
+                    <div [id]="'adCollapse' + i"
+                         class="accordion-collapse collapse"
+                         [attr.aria-labelledby]="'adHeading' + i"
+                         data-bs-parent="#adsAccordion">
+                      <div class="accordion-body">
+
+                        <div class="row">
+                          <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_START' | translate }}</label>
+                            <div class="form-control-plaintext">{{ formatDateTime(ad.startDate) }}</div>
+                          </div>
+                          <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_END' | translate }}</label>
+                            <div class="form-control-plaintext">{{ formatDateTime(ad.endDate) }}</div>
+                          </div>
+                          <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_TARGETED_AMOUNT' | translate }}</label>
+                            <div class="form-control-plaintext">{{ ad?.targetedAmount ?? '-' }}</div>
+                          </div>
+
+                          <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_SUPERVISOR' | translate }}</label>
+                            <div class="form-control-plaintext">{{ ad.supervisorName || '-' }}</div>
+                          </div>
+                          <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_MOBILE' | translate }}</label>
+                            <div class="form-control-plaintext">{{ ad.mobile || '-' }}</div>
+                          </div>
+                          <div class="col-md-4 mb-2">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_EMAIL' | translate }}</label>
+                            <div class="form-control-plaintext">{{ ad.eMail || '-' }}</div>
+                          </div>
+
+                          <div class="col-md-6 mb-2">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_FLAGS' | translate }}</label>
+                            <div class="form-control-plaintext">
+                              <span class="badge bg-primary me-2" *ngIf="ad.newAd">{{ 'REQUEST_EVENT_PERMIT.NEW_AD' | translate }}</span>
+                              <span class="badge bg-info" *ngIf="ad.reNewAd">{{ 'REQUEST_EVENT_PERMIT.RENEW_AD' | translate }}</span>
+                              <span *ngIf="!ad.newAd && !ad.reNewAd">-</span>
+                            </div>
+                          </div>
+
+                          <!-- Targets -->
+                          <div class="col-md-6 mb-2">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_TARGETS' | translate }}</label>
+                            <div class="form-control-plaintext">
+                              <ng-container *ngIf="ad.requestAdvertisementTargets?.length; else noTargets">
+                                <span class="badge bg-light text-dark border me-1"
+                                      *ngFor="let t of ad.requestAdvertisementTargets">
+                                  {{ t.othertxt || ('REQUEST_EVENT_PERMIT.TARGET_TYPE' | translate) + ' ' + t.lkpTargetTypeId }}
+                                </span>
+                              </ng-container>
+                              <ng-template #noTargets>-</ng-template>
+                            </div>
+                          </div>
+
+                          <!-- Locations -->
+                          <div class="col-md-6 mb-2">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_LOCATIONS' | translate }}</label>
+                            <div class="form-control-plaintext">
+                              <ng-container *ngIf="ad.requestAdvertisementAdLocations?.length; else noLocs">
+                                <span class="badge bg-light text-dark border me-1"
+                                      *ngFor="let l of ad.requestAdvertisementAdLocations">
+                                  {{ l.location }}
+                                </span>
+                              </ng-container>
+                              <ng-template #noLocs>-</ng-template>
+                            </div>
+                          </div>
+
+                          <!-- Methods -->
+                          <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_METHODS' | translate }}</label>
+                            <div class="form-control-plaintext">
+                              <ng-container *ngIf="ad.requestAdvertisementAdMethods?.length; else noMethods">
+                                <span class="badge bg-light text-dark border me-1"
+                                      *ngFor="let m of ad.requestAdvertisementAdMethods">
+                                  {{ m.othertxt || ('REQUEST_EVENT_PERMIT.METHOD' | translate) + ' ' + m.lkpAdMethodId }}
+                                </span>
+                              </ng-container>
+                              <ng-template #noMethods>-</ng-template>
+                            </div>
+                          </div>
+
+                          <!-- Ad Attachments -->
+                          <div class="col-12">
+                            <label class="form-label fw-bold">{{ 'COMMON.ATTACHMENTS' | translate }}</label>
+
+                            <ng-container *ngIf="ad.attachments && ad.attachments.length > 0; else noAdAtts">
+                              <div class="row">
+                                <div class="col-xl-4 col-lg-6 mb-3" *ngFor="let att of ad.attachments">
+                                  <div class="attachment-box">
+                                    <h6 class="card-title">
+                                      {{ att.attachmentTitle || ('REQUEST_EVENT_PERMIT.ATTACHMENT' | translate) }}
+                                    </h6>
+                                    <p class="mb-3">
+                                      {{ 'COMMON.UPLOADED_ON' | translate }}:
+                                      {{ formatDateTime(att.lastModified) }}
+                                    </p>
+                                    <div class="d-flex justify-content-end">
+                                      <button class="btn btn-next-style me-2" (click)="viewAttachment(att)">
+                                        <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }}
+                                      </button>
+                                      <button class="btn btn-download-style" (click)="downloadAttachment(att)">
+                                        <i class="fas fa-download me-1"></i>{{ 'COMMON.DOWNLOAD' | translate }}
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-container>
+                            <ng-template #noAdAtts>
+                              <div class="alert alert-info py-2 mb-0">{{ 'REQUEST_EVENT_PERMIT.NO_ATTACHMENTS' | translate }}</div>
+                            </ng-template>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-template #noAds>
+                <div class="alert alert-info">{{ 'REQUEST_EVENT_PERMIT.NO_ADS' | translate }}</div>
+              </ng-template>
+            </div>
+
+            <!-- Tab 6: Partners -->
+            <div *ngIf="currentTab === 6" class="step-content">
               <h5 class="mb-4">{{ 'REQUEST_EVENT_PERMIT.PARTNERS' | translate }}</h5>
 
               <div *ngIf="partners?.length; else noPartners">
@@ -262,8 +405,8 @@
               </ng-template>
             </div>
 
-            <!-- Tab 6: Attachments -->
-            <div *ngIf="currentTab === 6" class="step-content">
+            <!-- Tab 7: Attachments (service level) -->
+            <div *ngIf="currentTab === 7" class="step-content">
               <h5 class="mb-4">{{ 'REQUEST_EVENT_PERMIT.ATTACHMENTS' | translate }}</h5>
 
               <div *ngIf="attachments?.length; else noAtts">
@@ -291,8 +434,8 @@
               </ng-template>
             </div>
 
-            <!-- Tab 7: Workflow steps & comments -->
-            <div *ngIf="currentTab === 7" class="step-content">
+            <!-- Tab 8: Workflow steps & comments -->
+            <div *ngIf="currentTab === 8" class="step-content">
               <h5 class="mb-4">{{ 'WORKFLOW.PROCESS_STEPS' | translate }}</h5>
 
               <div class="row mt-2" *ngIf="workFlowSteps?.length">

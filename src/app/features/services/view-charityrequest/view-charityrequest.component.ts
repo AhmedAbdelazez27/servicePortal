@@ -1,3 +1,14 @@
+// import { Component } from '@angular/core';
+
+// @Component({
+//   selector: 'app-view-charityrequest',
+//   imports: [],
+//   templateUrl: './view-charityrequest.component.html',
+//   styleUrl: './view-charityrequest.component.scss'
+// })
+// export class ViewCharityrequestComponent {
+
+// }
 import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
@@ -5,18 +16,25 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { GenericDataTableComponent } from '../../../../../shared/generic-data-table/generic-data-table.component';
+import { GenericDataTableComponent } from '../../../../shared/generic-data-table/generic-data-table.component';
+
 import { ColDef } from 'ag-grid-community';
-import { environment } from '../../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
+// === خدماتك الموجودة بالفعل ===
 
+import { MainApplyService } from '../../../core/services/mainApplyService/mainApplyService.service';
+import { WorkFlowCommentsService } from '../../../core/services/workFlowComments/workFlowComments.service';
+import { AttachmentService } from '../../../core/services/attachments/attachment.service';
+
+// ====== Types مختصرة لسهولة الدمج ======
 type AttachmentDto = {
   id?: number;
   masterId?: number;
   imgPath: string;
+  masterType?: number;
   attachmentTitle?: string;
   lastModified?: string | Date;
-  masterType?: number;
   attConfigID?: number;
 };
 
@@ -25,6 +43,7 @@ type WorkFlowCommentDto = {
   comment: string;
   lastModified?: string | Date;
   attachments?: AttachmentDto[];
+  employeeDepartmentName?: string;
 };
 
 type WorkFlowStepDto = {
@@ -46,16 +65,16 @@ type PartnerDto = {
   licenseExpiryDate?: string | Date | null;
   licenseNumber?: string | null;
   contactDetails?: string | null;
-  attachments?: AttachmentDto[] | null;
+  attachments?: AttachmentDto[];
 };
 
-type DonationChannel = {
+type CharityEventDonationChannel = {
   id: number;
-  nameAr: string;
-  nameEn: string;
+  nameAr?: string | null;
+  nameEn?: string | null;
   descriptionAr?: string | null;
   descriptionEn?: string | null;
-  isActive?: boolean;
+  isActive?: boolean | null;
 };
 
 type RequestAdvertisementTarget = {
@@ -65,20 +84,20 @@ type RequestAdvertisementTarget = {
   othertxt?: string | null;
 };
 
-type RequestAdvertisementAdLocation = {
+type RequestAdvertisementLocation = {
   id: number;
   mainApplyServiceId: number;
   location: string;
 };
 
-type RequestAdvertisementAdMethod = {
+type RequestAdvertisementMethod = {
   id: number;
   mainApplyServiceId: number;
   lkpAdMethodId: number;
   othertxt?: string | null;
 };
 
-type RequestAdvertisementDto = {
+type RequestAdvertisement = {
   id: number;
   mainApplyServiceId: number;
   requestNo: number;
@@ -95,45 +114,34 @@ type RequestAdvertisementDto = {
   targetedAmount: number;
   newAd: boolean;
   reNewAd: boolean;
-  oldPermNumber?: string | null;
+  oldPermNumber: string | null;
   parentId: number;
   requestEventPermitId: number;
-  attachments?: AttachmentDto[] | null;
-  requestAdvertisementTargets?: RequestAdvertisementTarget[] | null;
-  requestAdvertisementAdLocations?: RequestAdvertisementAdLocation[] | null;
-  requestAdvertisementAdMethods?: RequestAdvertisementAdMethod[] | null;
+  attachments: AttachmentDto[] | null;
+  requestAdvertisementTargets: RequestAdvertisementTarget[];
+  requestAdvertisementAdLocations: RequestAdvertisementLocation[];
+  requestAdvertisementAdMethods: RequestAdvertisementMethod[];
 };
 
-type RequestEventPermitDto = {
+type CharityEventPermitDto = {
   id: number;
   mainApplyServiceId: number;
-  requestDate?: string;
-  requestNo?: number;
-  lkpRequestTypeId?: number | null;
-  lkpRequestTypeName?: string | null;
-  requestSide?: string;
-  supervisingSide?: string;
-  eventName?: string;
-  startDate?: string;
-  endDate?: string;
-  lkpPermitTypeId?: number | null;
-  lkpPermitTypeName?: string | null;
-  eventLocation?: string;
-  amStartTime?: string | null;
-  amEndTime?: string | null;
-  pmStartTime?: string | null;
-  pmEndTime?: string | null;
-  admin?: string;
-  delegateName?: string;
-  alternateName?: string;
-  adminTel?: string;
-  telephone?: string;
+  requestNo?: number | null;
+  requestDate?: string | null;
+  eventName?: string | null;
+  eventLocation?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  supervisorName?: string | null;
+  jopTitle?: string | null;
+  telephone1?: string | null;
+  telephone2?: string | null;
   email?: string | null;
+  advertisementType?: number | null;
+  advertisementTypeName?: string | null;
   notes?: string | null;
-  targetedAmount?: number | null;
-  beneficiaryIdNumber?: string | null;
-  requestAdvertisements?: RequestAdvertisementDto[] | null;
-  donationCollectionChannels?: DonationChannel[] | null;
+  requestAdvertisements?: RequestAdvertisement[] | null;
+  donationCollectionChannels?: CharityEventDonationChannel[] | null;
 };
 
 type MainApplyServiceView = {
@@ -146,11 +154,11 @@ type MainApplyServiceView = {
   lastStatusEN?: string;
   lastModified: string;
   permitNumber?: string;
-  service?: { serviceId: number; serviceName: string; serviceNameEn?: string };
+  service?: { serviceId: number; serviceName: string; serviceNameEn?: string; descriptionAr?: string | null; descriptionEn?: string | null; serviceType?: number };
   workFlowSteps: WorkFlowStepDto[];
   attachments: AttachmentDto[];
   partners: PartnerDto[];
-  requestEventPermit: RequestEventPermitDto | null;
+  charityEventPermit: CharityEventPermitDto | null;
 };
 
 export enum ServiceStatus {
@@ -162,42 +170,33 @@ export enum ServiceStatus {
   ReturnForModifications = 7
 }
 
-import { MainApplyService } from '../../../../core/services/mainApplyService/mainApplyService.service';
-import { WorkFlowCommentsService } from '../../../../core/services/workFlowComments/workFlowComments.service';
-import { AttachmentService } from '../../../../core/services/attachments/attachment.service';
-
 @Component({
-  selector: 'app-view-requesteventpermit',
+  selector: 'app-view-charityrequest',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    GenericDataTableComponent
-  ],
-  templateUrl: './view-requesteventpermit.component.html',
-  styleUrls: ['./view-requesteventpermit.component.scss']
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, GenericDataTableComponent],
+  templateUrl: './view-charityrequest.component.html',
+  styleUrl: './view-charityrequest.component.scss'
 })
-export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
+export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
+  // Tabs: 1 Basic, 2 Event, 3 Dates, 4 Contacts, 5 Advertisements, 6 Partners, 7 Attachments, 8 Workflow
   currentTab = 1;
   totalTabs = 8;
 
+  // Data
   mainApplyService: MainApplyServiceView | null = null;
-  requestEventPermit: RequestEventPermitDto | null = null;
+  charityEventPermit: CharityEventPermitDto | null = null;
   workFlowSteps: WorkFlowStepDto[] = [];
   partners: PartnerDto[] = [];
   attachments: AttachmentDto[] = [];
 
+  // Workflow comments (view)
   targetWorkFlowStep: WorkFlowStepDto | null = null;
-  workFlowComments: WorkFlowCommentDto[] = [];
   allWorkFlowComments: any[] = [];
   commentsColumnDefs: ColDef[] = [];
-  commentsColumnHeaderMap: { [key: string]: string } = {};
+  commentsColumnHeaderMap: { [k: string]: string } = {};
   isLoadingComments = false;
 
-  isLoading = false;
-
+  // Modals: attachments (comments / partners)
   showAttachmentModal = false;
   selectedCommentAttachments: AttachmentDto[] = [];
   isLoadingAttachments = false;
@@ -207,6 +206,7 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   selectedPartnerAttachments: AttachmentDto[] = [];
   isLoadingPartnerAttachments = false;
 
+  // Optional add comment form (disabled by default visually)
   commentForm!: FormGroup;
   newCommentText = '';
   isSavingComment = false;
@@ -230,11 +230,11 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadMainApplyServiceData();
   }
-
   ngOnDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
   }
 
+  // ===== Load =====
   private loadMainApplyServiceData(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
@@ -243,11 +243,11 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isLoading = true;
     const sub = this.mainApplyServiceService.getDetailById({ id }).subscribe({
       next: (resp: any) => {
+
         this.mainApplyService = resp;
-        this.requestEventPermit = resp.requestEventPermit;
+        this.charityEventPermit = resp.charityEventPermit || null;
         this.workFlowSteps = resp.workFlowSteps || [];
         this.partners = resp.partners || [];
         this.attachments = resp.attachments || [];
@@ -258,12 +258,9 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
         } else {
           this.initializeCommentsTable([]);
         }
-
-        this.isLoading = false;
       },
       error: () => {
         this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
-        this.isLoading = false;
         this.router.navigate(['/']);
       }
     });
@@ -282,7 +279,8 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   private loadWorkFlowComments(): void {
     const rows: any[] = [];
     (this.workFlowSteps || []).forEach(step => {
-      (step.workFlowComments || []).forEach(c => {
+      const comments = step.workFlowComments || [];
+      comments.forEach(c => {
         rows.push({
           ...c,
           stepDepartmentName: step.departmentName,
@@ -300,8 +298,6 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     this.allWorkFlowComments = rows;
     this.initializeCommentsTable(rows);
     this.isLoadingComments = false;
-
-    this.workFlowComments = this.targetWorkFlowStep?.workFlowComments || [];
   }
 
   private initializeCommentsTable(_: any[]): void {
@@ -350,13 +346,13 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     };
   }
 
-  goToTab(n: number) {
-    if (n >= 1 && n <= this.totalTabs) this.currentTab = n;
-  }
+  // ===== Tabs =====
+  goToTab(n: number) { if (n >= 1 && n <= this.totalTabs) this.currentTab = n; }
   nextTab() { if (this.currentTab < this.totalTabs) this.currentTab++; }
   previousTab() { if (this.currentTab > 1) this.currentTab--; }
   isTabActive(n: number) { return this.currentTab === n; }
 
+  // ===== Helpers =====
   formatDate(d: string | Date | null | undefined): string {
     if (!d) return '-';
     return new Date(d).toLocaleDateString();
@@ -367,11 +363,11 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   }
 
   getAttachmentUrl(imgPath: string): string {
+    if (!imgPath) return '';
     if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) return imgPath;
     const clean = imgPath.startsWith('/') ? imgPath.slice(1) : imgPath;
     return `${environment.apiBaseUrl}/files/${clean}`;
   }
-
   viewAttachment(a: AttachmentDto) {
     if (!a?.imgPath) return;
     window.open(this.getAttachmentUrl(a.imgPath), '_blank');
@@ -388,22 +384,29 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     document.body.removeChild(link);
   }
 
-  getDonationChannelNames(): string[] {
-    const ch = this.requestEventPermit?.donationCollectionChannels || [];
-    const lang = (this.translate.currentLang || 'ar').toLowerCase();
-    return ch.map(c => lang.startsWith('ar') ? c.nameAr : c.nameEn).filter(Boolean) as string[];
+  // Advertisements helpers
+  adLangLabel(code?: string | null): string {
+    if (!code) return '-';
+    const map: Record<string, string> = { ar: this.translate.instant('COMMON.ARABIC') || 'Arabic', en: this.translate.instant('COMMON.ENGLISH') || 'English' };
+    return map[code.toLowerCase()] || code;
   }
 
+  // Donation channel display (AR/EN بحسب لغة الواجهة)
+  channelName(ch: CharityEventDonationChannel): string {
+    const isAr = (this.translate.currentLang || '').toLowerCase().startsWith('ar');
+    return (isAr ? (ch.nameAr || ch.nameEn) : (ch.nameEn || ch.nameAr)) || '-';
+  }
+
+  // Partners
   viewPartnerAttachments(partner: PartnerDto) {
     if (partner.attachments?.length) {
       this.selectedPartner = partner;
-      this.selectedPartnerAttachments = partner.attachments || [];
+      this.selectedPartnerAttachments = partner.attachments;
       this.showPartnerAttachmentModal = true;
     } else {
       this.fetchPartnerAttachments(partner);
     }
   }
-
   fetchPartnerAttachments(partner: PartnerDto) {
     if (!partner?.id) {
       this.toastr.warning(this.translate.instant('COMMON.INVALID_PARTNER_ID'));
@@ -439,7 +442,6 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(sub);
   }
-
   closePartnerAttachmentModal() {
     this.showPartnerAttachmentModal = false;
     this.selectedPartner = null;
@@ -447,6 +449,7 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     this.isLoadingPartnerAttachments = false;
   }
 
+  // Workflow comment attachments
   onTableCellClick(event: any) {
     const btn = event.event?.target?.closest?.('.attachment-btn');
     if (btn) {
@@ -477,24 +480,13 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(sub);
   }
-
   closeAttachmentModal() {
     this.showAttachmentModal = false;
     this.selectedCommentAttachments = [];
     this.isLoadingAttachments = false;
   }
 
-  getRequestTypeName(): string {
-    if (!this.requestEventPermit) return '-';
-    return this.requestEventPermit.lkpRequestTypeName ||
-           (this.requestEventPermit.lkpRequestTypeId != null ? String(this.requestEventPermit.lkpRequestTypeId) : '-') ;
-  }
-  getPermitTypeName(): string {
-    if (!this.requestEventPermit) return '-';
-    return this.requestEventPermit.lkpPermitTypeName ||
-           (this.requestEventPermit.lkpPermitTypeId != null ? String(this.requestEventPermit.lkpPermitTypeId) : '-') ;
-  }
-
+  // Workflow visuals
   getStatusColor(statusId: number | null): string {
     if (statusId === null) return '#6c757d';
     switch (statusId) {
@@ -527,7 +519,7 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
       case ServiceStatus.RejectForReason: return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
       case ServiceStatus.Wait: return 'WORKFLOW.STATUS_WAITING';
       case ServiceStatus.Received: return 'WORKFLOW.STATUS_RECEIVED';
-      case ServiceStatus?.ReturnForModifications: return 'WORKFLOW.STATUS_RETURN_FOR_MODIFICATIONS';
+      case ServiceStatus.ReturnForModifications: return 'WORKFLOW.STATUS_RETURN_FOR_MODIFICATIONS';
       default: return 'WORKFLOW.STATUS_UNKNOWN';
     }
   }
@@ -536,5 +528,6 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   isStepPending(s: number | null) { return s === ServiceStatus.Wait; }
   trackByStepId(i: number, step: WorkFlowStepDto) { return step.id ?? i; }
 
+  // Navigation
   goBack() { this.router.navigate(['/mainApplyService']); }
 }
