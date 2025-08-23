@@ -1,14 +1,4 @@
-// import { Component } from '@angular/core';
 
-// @Component({
-//   selector: 'app-view-charityrequest',
-//   imports: [],
-//   templateUrl: './view-charityrequest.component.html',
-//   styleUrl: './view-charityrequest.component.scss'
-// })
-// export class ViewCharityrequestComponent {
-
-// }
 import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
@@ -21,13 +11,11 @@ import { GenericDataTableComponent } from '../../../../shared/generic-data-table
 import { ColDef } from 'ag-grid-community';
 import { environment } from '../../../../environments/environment';
 
-// === خدماتك الموجودة بالفعل ===
 
 import { MainApplyService } from '../../../core/services/mainApplyService/mainApplyService.service';
 import { WorkFlowCommentsService } from '../../../core/services/workFlowComments/workFlowComments.service';
 import { AttachmentService } from '../../../core/services/attachments/attachment.service';
 
-// ====== Types مختصرة لسهولة الدمج ======
 type AttachmentDto = {
   id?: number;
   masterId?: number;
