@@ -30,7 +30,7 @@ export class ServiceDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private translationService: TranslationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.serviceId = this.route.snapshot.paramMap.get('id');
@@ -129,6 +129,8 @@ export class ServiceDetailsComponent implements OnInit {
   }
 
   onRequestService(): void {
+    console.log("rrrrrrrrr");
+    
     if (this.service) {
       // Check if this is Fasting and Distribution Tent service (ID = 1)
       if (this.service.serviceId === 1) {

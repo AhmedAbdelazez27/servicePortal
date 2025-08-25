@@ -17,12 +17,12 @@ import { AttachmentService } from '../../../core/services/attachments/attachment
 
 import { 
   mainApplyServiceDto, 
-  FastingTentServiceDto,
   WorkFlowStepDto,
   WorkFlowCommentDto,
   PartnerDto,
   LocationDto,
-  AttachmentDto as PartnerAttachmentDto
+  AttachmentDto as PartnerAttachmentDto,
+  FastingTentServiceDto
 } from '../../../core/dtos/mainApplyService/mainApplyService.dto';
 import { AttachmentDto, GetAllAttachmentsParamters } from '../../../core/dtos/attachments/attachment.dto';
 import { 
@@ -48,7 +48,7 @@ export enum ServiceStatus {
 }
 
 @Component({
-  selector: 'app-view-fasting-tent-request',
+  selector: 'app-view-distribution-site-permit',
   standalone: true,
   imports: [
     CommonModule,
@@ -58,17 +58,17 @@ export enum ServiceStatus {
     NgSelectModule,
     GenericDataTableComponent,
   ],
-  templateUrl: './view-fasting-tent-request.component.html',
-  styleUrl: './view-fasting-tent-request.component.scss',
+  templateUrl: './view-distribution-site-permit.component.html',
+  styleUrl: './view-distribution-site-permit.component.scss',
 })
-export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
+export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
   // Tab management
   currentTab: number = 1;
   totalTabs: number = 7; // Added workflow steps tab and workflow comments tab
 
   // Data properties
   mainApplyService: mainApplyServiceDto | null = null;
-  fastingTentService: FastingTentServiceDto | null = null;
+  distributionSiteService: FastingTentServiceDto | null = null;
   workFlowSteps: WorkFlowStepDto[] = [];
   partners: PartnerDto[] = [];
   attachments: any[] = []; // Keep as any[] for main service attachments
@@ -93,6 +93,11 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
   isLoading = false;
   isLoadingComments = false;
   isSavingComment = false;
+
+  // Error handling states
+  hasError = false;
+  errorMessage = '';
+  errorDetails = '';
 
   // Map variables
   map: any;
@@ -168,7 +173,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   private onWindowFocus(): void {
     // Refresh map when window gains focus (e.g., when switching back to tab)
-    if (this.currentTab === 2 && this.fastingTentService?.location?.locationCoordinates) {
+    if (this.currentTab === 2 && this.distributionSiteService?.distributionSiteCoordinators) {
       setTimeout(() => {
         if (this.map) {
           this.map.invalidateSize();
@@ -181,7 +186,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Public method to manually refresh the map (can be called from template if needed)
   refreshMap(): void {
-    if (this.currentTab === 2 && this.fastingTentService?.location?.locationCoordinates) {
+    if (this.currentTab === 2 && this.distributionSiteService?.distributionSiteCoordinators) {
       this.cleanupMap();
       setTimeout(() => this.initializeMap(), 100);
     }
@@ -272,8 +277,11 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
   private loadMainApplyServiceData(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      this.toastr.error(this.translate.instant('COMMON.INVALID_ID'));
-      this.router.navigate(['/']);
+      this.hasError = true;
+      this.errorMessage = this.translate.instant('COMMON.INVALID_ID');
+              this.errorDetails = this.translate.instant('COMMON.NO_VALID_ID_URL');
+      // Remove navigation - keep user on the page
+      // this.router.navigate(['/']);
       return;
     }
 
@@ -281,7 +289,9 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     const subscription = this.mainApplyServiceService.getDetailById({ id }).subscribe({
       next: (response) => {
         this.mainApplyService = response;
-        this.fastingTentService = response.fastingTentService;
+        // For serviceId 1001, the location data comes from fastingTentService
+        // This is the backend structure for distribution site permit applications
+        this.distributionSiteService = response.fastingTentService;
         this.workFlowSteps = response.workFlowSteps || [];
         this.partners = response.partners || [];
         this.attachments = response.attachments || [];
@@ -292,19 +302,138 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         }
         
         // If we're currently on the location tab, refresh the map
-        if (this.currentTab === 2 && this.fastingTentService?.location?.locationCoordinates) {
+        if (this.currentTab === 2 && this.distributionSiteService?.distributionSiteCoordinators) {
           setTimeout(() => this.initializeMap(), 500);
         }
         
         this.isLoading = false;
       },
       error: (error) => {
-        this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
+        this.hasError = true;
+        this.errorMessage = this.getErrorMessage(error);
+        
+        // Provide more detailed error information and guidance
+        if (this.isAuthenticationError(error)) {
+          this.errorDetails = this.getErrorGuidance(error);
+        } else if (this.isErrorRecoverable(error)) {
+          this.errorDetails = this.getErrorGuidance(error);
+        } else {
+          this.errorDetails = this.getErrorGuidance(error);
+        }
+        
         this.isLoading = false;
-        this.router.navigate(['/']);
+        // Remove navigation - keep user on the page
+        // this.router.navigate(['/']);
       }
     });
     this.subscriptions.push(subscription);
+  }
+
+  // Retry loading data when there's an error
+  retryLoadingData(): void {
+    this.hasError = false;
+    this.errorMessage = '';
+    this.errorDetails = '';
+    this.loadMainApplyServiceData();
+  }
+
+  // Refresh the entire page as a last resort
+  refreshPage(): void {
+    window.location.reload();
+  }
+
+  // Contact support for persistent errors
+  contactSupport(): void {
+    // Navigate to contact us page or open support modal
+    this.router.navigate(['/contact-us']);
+  }
+
+  // Check if the service is available (alternative to retry)
+  checkServiceAvailability(): void {
+    // This could be used to ping the service or check status
+    // For now, we'll just show a message and then retry
+    this.toastr.info('Checking service availability...');
+    setTimeout(() => {
+      this.retryLoadingData();
+    }, 1000);
+  }
+
+  // Copy error details to clipboard for support
+  copyErrorDetails(): void {
+    const errorInfo = `Error: ${this.errorMessage}\nDetails: ${this.errorDetails}\nURL: ${window.location.href}\nTime: ${new Date().toISOString()}`;
+    
+          if (navigator.clipboard) {
+        navigator.clipboard.writeText(errorInfo).then(() => {
+          this.toastr.success(this.translate.instant('COMMON.ERROR_DETAILS_COPIED'));
+        }).catch(() => {
+          this.toastr.error(this.translate.instant('COMMON.FAILED_COPY_ERROR'));
+        });
+    } else {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = errorInfo;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        this.toastr.success(this.translate.instant('COMMON.ERROR_DETAILS_COPIED'));
+      } catch (err) {
+        this.toastr.error(this.translate.instant('COMMON.FAILED_COPY_ERROR'));
+      }
+      document.body.removeChild(textArea);
+    }
+  }
+
+  // Get additional error context and suggestions
+  getErrorContext(): string {
+    if (this.isAuthenticationError({ status: 401 })) {
+      return this.translate.instant('COMMON.LOGIN_AGAIN_SESSION_EXPIRED');
+    } else if (this.isErrorRecoverable({ status: 500 })) {
+      return this.translate.instant('COMMON.TEMPORARY_ISSUE_TRY_AGAIN');
+    } else if (this.isErrorRecoverable({ status: 0 })) {
+      return this.translate.instant('COMMON.CHECK_INTERNET_CONNECTION');
+    } else {
+      return this.translate.instant('COMMON.CONTACT_SUPPORT_IF_PERSISTS');
+    }
+  }
+
+  // Helper method to determine error type and provide appropriate message
+  private getErrorMessage(error: any): string {
+    if (error?.status === 0 || error?.status === 500) {
+      return this.translate.instant('COMMON.NETWORK_ERROR');
+    } else if (error?.status === 404) {
+      return this.translate.instant('COMMON.DATA_NOT_FOUND');
+    } else if (error?.status === 401 || error?.status === 403) {
+      return this.translate.instant('COMMON.UNAUTHORIZED_ACCESS');
+    } else {
+      return this.translate.instant('COMMON.ERROR_LOADING_DATA');
+    }
+  }
+
+  // Check if error is recoverable (can be retried)
+  private isErrorRecoverable(error: any): boolean {
+    // Network errors and server errors are usually recoverable
+    return error?.status === 0 || error?.status >= 500;
+  }
+
+  // Check if error requires authentication
+  private isAuthenticationError(error: any): boolean {
+    return error?.status === 401 || error?.status === 403;
+  }
+
+  // Get specific error guidance based on error type
+  private getErrorGuidance(error: any): string {
+    if (this.isAuthenticationError(error)) {
+      return this.translate.instant('COMMON.LOGIN_AGAIN_ACCESS_SERVICE');
+    } else if (error?.status === 404) {
+      return this.translate.instant('COMMON.PERMIT_NOT_FOUND_VERIFY_ID');
+    } else if (error?.status === 0) {
+      return this.translate.instant('COMMON.UNABLE_CONNECT_SERVER');
+    } else if (error?.status >= 500) {
+      return this.translate.instant('COMMON.SERVER_ISSUES_TRY_LATER');
+    } else {
+      return this.translate.instant('COMMON.UNEXPECTED_ERROR_TRY_AGAIN');
+    }
   }
 
   private findTargetWorkFlowStep(): void {
@@ -378,7 +507,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       this.currentTab = tabNumber;
       
       // Initialize map when location tab is opened
-      if (tabNumber === 3 && this.fastingTentService?.location?.locationCoordinates) {
+      if (tabNumber === 3 && this.distributionSiteService?.distributionSiteCoordinators) {
         // Use a longer delay to ensure DOM is fully rendered
         setTimeout(() => this.initializeMap(), 300);
       }
@@ -414,8 +543,8 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Map initialization for location display
   private initializeMap(): void {
-    if (!this.fastingTentService?.location?.locationCoordinates) {
-      this.toastr.warning('No location coordinates available to display on map');
+    if (!this.distributionSiteService?.distributionSiteCoordinators) {
+      this.toastr.warning(this.translate.instant('COMMON.NO_COORDINATES_AVAILABLE'));
       return;
     }
 
@@ -450,13 +579,13 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       // Double-check that the map container exists and has dimensions
       const mapElement = document.getElementById('viewMap');
       if (!mapElement) {
-        this.toastr.error('Map container not found');
+        this.toastr.error(this.translate.instant('COMMON.MAP_CONTAINER_NOT_FOUND'));
         this.mapLoadError = true;
         return;
       }
       
       if (mapElement.offsetWidth === 0 || mapElement.offsetHeight === 0) {
-        this.toastr.error('Map container has no dimensions');
+        this.toastr.error(this.translate.instant('COMMON.MAP_CONTAINER_NO_DIMENSIONS'));
         this.mapLoadError = true;
         return;
       }
@@ -466,15 +595,15 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         this.map = null;
       }
 
-      if (!this.fastingTentService?.location?.locationCoordinates) {
-        this.toastr.error('No location coordinates available');
+      if (!this.distributionSiteService?.distributionSiteCoordinators) {
+        this.toastr.error(this.translate.instant('COMMON.NO_LOCATION_COORDINATES'));
         this.mapLoadError = true;
         return;
       }
 
       // Enhanced coordinate parsing with multiple format support
       let coordinates: string[] = [];
-      const coordString = this.fastingTentService.location.locationCoordinates;
+      const coordString = this.distributionSiteService.distributionSiteCoordinators;
       
       // Try to parse as JSON first (most common format)
       try {
@@ -508,14 +637,14 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
           coordinates = coordString.split('\t');
         } else {
           // Try fallback parsing as last resort
-          this.toastr.error(this.translate.instant('FASTING_TENT.INVALID_COORDINATES_SEPARATOR', { 0: coordString }));
+          this.toastr.error(this.translate.instant('DISTRIBUTION_SITE.INVALID_COORDINATES_SEPARATOR', { 0: coordString }));
           this.mapLoadError = true;
           return;
         }
       }
       
       if (coordinates.length !== 2) {
-        this.toastr.error(this.translate.instant('FASTING_TENT.INVALID_COORDINATES_COUNT', { 0: coordinates.length }));
+        this.toastr.error(this.translate.instant('DISTRIBUTION_SITE.INVALID_COORDINATES_COUNT', { 0: coordinates.length }));
         this.mapLoadError = true;
         return;
       }
@@ -528,7 +657,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       // Check if coordinates are valid numbers
       if (isNaN(lat) || isNaN(lng)) {
 
-        this.toastr.error(this.translate.instant('FASTING_TENT.INVALID_COORDINATES_NUMBERS'));
+        this.toastr.error(this.translate.instant('DISTRIBUTION_SITE.INVALID_COORDINATES_NUMBERS'));
         this.mapLoadError = true;
         return;
       }
@@ -536,13 +665,13 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       // Check if coordinates are reasonable (not 0,0 which is usually invalid)
       if (lat === 0 && lng === 0) {
 
-        this.toastr.warning(this.translate.instant('FASTING_TENT.INVALID_COORDINATES_ZERO'));
+        this.toastr.warning(this.translate.instant('DISTRIBUTION_SITE.INVALID_COORDINATES_ZERO'));
       }
 
       // Check if coordinates are within reasonable ranges
       if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
 
-        this.toastr.error(this.translate.instant('FASTING_TENT.INVALID_COORDINATES_RANGE'));
+        this.toastr.error(this.translate.instant('DISTRIBUTION_SITE.INVALID_COORDINATES_RANGE'));
         this.mapLoadError = true;
         return;
       }
@@ -550,13 +679,13 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       // Validate coordinate ranges (roughly UAE bounds)
       if (lat < 22 || lat > 27 || lng < 51 || lng > 57) {
        
-        this.toastr.warning(this.translate.instant('FASTING_TENT.INVALID_COORDINATES_UAE'));
+        this.toastr.warning(this.translate.instant('DISTRIBUTION_SITE.INVALID_COORDINATES_UAE'));
       }
 
       try {
         this.map = L.map('viewMap').setView([lat, lng], 15);
       } catch (mapError) {
-        this.toastr.error(this.translate.instant('FASTING_TENT.MAP_CREATION_FAILED'));
+        this.toastr.error(this.translate.instant('DISTRIBUTION_SITE.MAP_CREATION_FAILED'));
         this.mapLoadError = true;
         return;
       }
@@ -578,7 +707,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         
         tileLayer.addTo(this.map);
       } catch (tileError) {
-        this.toastr.error(this.translate.instant('FASTING_TENT.MAP_TILES_FAILED'));
+        this.toastr.error(this.translate.instant('DISTRIBUTION_SITE.MAP_TILES_FAILED'));
         this.mapLoadError = true;
         return;
       }
@@ -587,12 +716,12 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       try {
         const marker = L.marker([lat, lng], { icon: this.customIcon })
           .addTo(this.map)
-          .bindPopup(this.fastingTentService.location.locationName || this.translate.instant('FASTING_TENT.SELECTED_LOCATION'))
+          .bindPopup(this.distributionSiteService.address || this.translate.instant('DISTRIBUTION_SITE.SELECTED_LOCATION'))
           .openPopup();
 
         this.markers = [marker];
       } catch (markerError) {
-        this.toastr.error('Failed to add location marker');
+        this.toastr.error(this.translate.instant('COMMON.FAILED_ADD_MARKER'));
         this.mapLoadError = true;
         return;
       }
@@ -613,7 +742,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       this.mapLoadError = false;
 
     } catch (error) {
-      this.toastr.error('Failed to initialize map');
+      this.toastr.error(this.translate.instant('COMMON.FAILED_INITIALIZE_MAP'));
       this.mapLoadError = true;
     }
   }
@@ -633,7 +762,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       minZoom: 5,
     }).addTo(this.map);
     
-    this.toastr.info('Using fallback map tiles');
+    this.toastr.info(this.translate.instant('COMMON.USING_FALLBACK_TILES'));
   }
 
   private checkTileLayersLoaded(): boolean {
@@ -762,7 +891,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   getCommentAttachmentName(config: AttachmentsConfigDto): string {
-    return config.nameEn || config.name || 'Attachment';
+    return config.nameEn || config.name || this.translate.instant('COMMON.ATTACHMENT');
   }
 
   isCommentAttachmentMandatory(configId: number): boolean {
@@ -1016,11 +1145,11 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     if (type === null) return '';
     // Add your partner type mapping here
     const types: { [key: number]: string } = {
-      1: 'Individual',
-      2: 'Organization',
-      3: 'Government'
+      1: this.translate.instant('COMMON.INDIVIDUAL'),
+      2: this.translate.instant('COMMON.ORGANIZATION'),
+      3: this.translate.instant('COMMON.GOVERNMENT')
     };
-    return types[type] || 'Unknown';
+    return types[type] || this.translate.instant('COMMON.UNKNOWN');
   }
 
   downloadAttachment(attachment: AttachmentDto | PartnerAttachmentDto | any): void {
@@ -1116,7 +1245,14 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Navigation methods
   goBack(): void {
-    this.router.navigate(['/mainApplyService']);
+    // If there's an error, go back to the main request page
+    // If no error, go back to the previous page
+    if (this.hasError) {
+      this.router.navigate(['/request']);
+    } else {
+      // Use browser history to go back
+      window.history.back();
+    }
   }
 
   nextTab(): void {

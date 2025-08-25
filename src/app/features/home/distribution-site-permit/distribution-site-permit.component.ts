@@ -149,8 +149,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       supervisorName: ['', [Validators.required, Validators.minLength(2)]],
       jopTitle: [''],
       supervisorMobile: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s]+$/), Validators.minLength(7)]],
-      tentIsSetUp: [true],
-      tentDate: [{ value: '', disabled: true }], // disabled so user cannot enter value
+
       serviceType: [ServiceType.DistributionSitePermitApplication],
       distributionSiteCoordinators: ['', Validators.required], // renamed and only this field
     });
@@ -901,8 +900,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
         supervisorName: formData.supervisorName,
         jopTitle: formData.jopTitle,
         supervisorMobile: formData.supervisorMobile,
-        tentIsSetUp: formData.tentIsSetUp,
-        tentDate: formData.tentDate || null,
+
         serviceType: ServiceType.DistributionSitePermitApplication,
         distributionSiteCoordinators: formData.distributionSiteCoordinators,
         attachments: validAttachments,

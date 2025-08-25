@@ -1,3 +1,5 @@
+import { DistributionSiteRequestDto } from '../DistributionSiteRequest/distribution-site-request.dto';
+
 export class FiltermainApplyServiceDto {
   searchValue: string | null = null;
   skip: number = 0;
@@ -45,6 +47,7 @@ export class mainApplyServiceDto {
   requestPlaintJustifications: RequestPlaintJustificationDto[] = [];
   requestPlaintReasons: RequestPlaintReasonDto[] = [];
   fastingTentService: FastingTentServiceDto | null = null;
+  distributionSiteRequest: DistributionSiteRequestDto | null = null;
   requestEventPermit: RequestEventPermitDto | null = null;
   requestPlaint: RequestPlaintDto | null = null;
   charityEventPermit: CharityEventPermitDto | null = null;

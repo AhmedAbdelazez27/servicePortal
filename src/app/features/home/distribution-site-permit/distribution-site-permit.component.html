@@ -1,8 +1,8 @@
 <div class="distribution-site-permit-container">
     <section>
         <div class="container services">
-            <h4 class="title">{{ 'DISTRIBUTION_SITE.TITLE' | translate }}</h4>
-            <p class="mb-5">{{ 'DISTRIBUTION_SITE.DESCRIPTION' | translate }}</p>
+            <h4 class="title">{{ 'DIST_SITE.TITLE' | translate }}</h4>
+            <p class="mb-5">{{ 'DIST_SITE.DESCRIPTION' | translate }}</p>
 
             <!-- Loading state -->
             <div *ngIf="isLoading" class="text-center py-5">
@@ -36,9 +36,9 @@
                                       [class.text-success]="isTabCompleted(1)"
                                       [class.text-danger]="currentTab > 1 && !isTabCompleted(1)"
                                       [class.text-primary]="isTabActive(1)">
-                                    {{ 'DISTRIBUTION_SITE.TAB1_TITLE' | translate }}
+                                    {{ 'DIST_SITE.TAB1_TITLE' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.MAIN_INFO_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'DIST_SITE.MAIN_INFO_DESC' | translate }}</small>
                             </div>
                         </div>
                         
@@ -61,9 +61,9 @@
                                       [class.text-success]="isTabCompleted(2)"
                                       [class.text-danger]="currentTab > 2 && !isTabCompleted(2)"
                                       [class.text-primary]="isTabActive(2)">
-                                    {{ 'DISTRIBUTION_SITE.DATE_DETAILS_TAB' | translate }}
+                                    {{ 'DIST_SITE.DATE_DETAILS_TAB' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.DATE_DETAILS_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'DIST_SITE.DATE_DETAILS_DESC' | translate }}</small>
                             </div>
                         </div>
                         
@@ -86,9 +86,9 @@
                                       [class.text-success]="isTabCompleted(3)"
                                       [class.text-danger]="currentTab > 3 && !isTabCompleted(3)"
                                       [class.text-primary]="isTabActive(3)">
-                                    {{ 'DISTRIBUTION_SITE.SUPERVISOR_INFO_TAB' | translate }}
+                                    {{ 'DIST_SITE.SUPERVISOR_INFO_TAB' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.SUPERVISOR_INFO_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'DIST_SITE.SUPERVISOR_INFO_DESC' | translate }}</small>
                             </div>
                         </div>
                         
@@ -110,9 +110,9 @@
                                      
                                       [class.text-danger]="currentTab > 4 && !isTabCompleted(4)"
                                       [class.text-primary]="isTabActive(4)">
-                                    {{ 'DISTRIBUTION_SITE.TAB2_TITLE' | translate }}
+                                    {{ 'DIST_SITE.TAB2_TITLE' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.PARTNERS_OPTIONAL_SHORT' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'DIST_SITE.PARTNERS_OPTIONAL_SHORT' | translate }}</small>
                             </div>
                         </div>
                         
@@ -134,9 +134,9 @@
                                       [class.text-success]="isTabCompleted(5)"
                                       [class.text-danger]="currentTab === 5 && !isTabCompleted(5)"
                                       [class.text-primary]="isTabActive(5)">
-                                    {{ 'DISTRIBUTION_SITE.TAB3_TITLE' | translate }}
+                                    {{ 'DIST_SITE.TAB3_TITLE' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'DISTRIBUTION_SITE.ATTACHMENTS_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'DIST_SITE.ATTACHMENTS_DESC' | translate }}</small>
                             </div>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
                         
                         <!-- Tab 1: Main Information Content -->
                         <div *ngIf="currentTab === 1" class="step-content">
-                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.MAIN_INFO' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'DIST_SITE.MAIN_INFO' | translate }}</h5>
                             
                             <!-- Validation Status Indicator
                             <div class="alert" [class.alert-success]="isCurrentTabValid()" [class.alert-warning]="!isCurrentTabValid()" class="mb-3">
@@ -161,7 +161,7 @@
                                 <div class="row">
                                     <!-- Request Type Dropdown -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.REQUEST_TYPE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'DIST_SITE.REQUEST_TYPE' | translate }} <span class="text-danger">*</span></label>
                                         
                                         <ng-select 
                                             formControlName="locationTypeId"
@@ -182,14 +182,14 @@
 
                                     <!-- Owner Name -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.OWNER_NAME' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.OWNER_NAME' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="ownerName"
-                                               [placeholder]="'DISTRIBUTION_SITE.OWNER_NAME_PLACEHOLDER' | translate">
+                                               [placeholder]="'DIST_SITE.OWNER_NAME_PLACEHOLDER' | translate">
                                     </div>
 
                                     <!-- Region Name -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.REGION_NAME' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'DIST_SITE.REGION_NAME' | translate }} <span class="text-danger">*</span></label>
                                         <ng-select 
                                             formControlName="regionName"
                                             [placeholder]="'COMMON.SELECT_OPTION' | translate"
@@ -207,9 +207,9 @@
 
                                     <!-- Street Name -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.STREET_NAME' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'DIST_SITE.STREET_NAME' | translate }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" formControlName="streetName"
-                                               [placeholder]="'DISTRIBUTION_SITE.STREET_NAME_PLACEHOLDER' | translate"
+                                               [placeholder]="'DIST_SITE.STREET_NAME_PLACEHOLDER' | translate"
                                                [class.is-invalid]="isFieldInvalid('streetName')"
                                                [class.is-valid]="isFieldValid('streetName')">
                                         <div *ngIf="isFieldInvalid('streetName')" class="invalid-feedback">
@@ -219,33 +219,33 @@
 
                                     <!-- Ground Number -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.GROUND_NO' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.GROUND_NO' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="groundNo"
-                                               [placeholder]="'DISTRIBUTION_SITE.GROUND_NO_PLACEHOLDER' | translate">
+                                               [placeholder]="'DIST_SITE.GROUND_NO_PLACEHOLDER' | translate">
                                     </div>
 
                                     <!-- Address -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.ADDRESS' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.ADDRESS' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="address"
-                                               [placeholder]="'DISTRIBUTION_SITE.ADDRESS_PLACEHOLDER' | translate">
+                                               [placeholder]="'DIST_SITE.ADDRESS_PLACEHOLDER' | translate">
                                     </div>
 
                                     <!-- Notes -->
                                     <div class="col-xl-12 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.NOTES' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.NOTES' | translate }}</label>
                                         <textarea class="form-control" formControlName="notes" rows="3"
-                                                  [placeholder]="'DISTRIBUTION_SITE.NOTES_PLACEHOLDER' | translate"></textarea>
+                                                  [placeholder]="'DIST_SITE.NOTES_PLACEHOLDER' | translate"></textarea>
                                     </div>
 
                                     <!-- Map Section for Location Selection -->
                                     <div class="col-xl-12 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.SELECT_LOCATION_ON_MAP' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'DIST_SITE.SELECT_LOCATION_ON_MAP' | translate }} <span class="text-danger">*</span></label>
                                         <div id="distributionMap" style="height: 400px; border: 1px solid #ddd; border-radius: 4px;"
                                              [class.border-danger]="!selectedCoordinates && (currentTab > 1 || submitted)"
                                              [class.border-success]="selectedCoordinates"></div>
                                         <small class="text-muted d-block mt-2">
-                                            {{ 'DISTRIBUTION_SITE.MAP_INSTRUCTIONS' | translate }}
+                                            {{ 'DIST_SITE.MAP_INSTRUCTIONS' | translate }}
                                         </small>
                                         <div *ngIf="!selectedCoordinates && (currentTab > 1 || submitted)" class="text-danger small mt-1">
                                             {{ 'VALIDATION.LOCATION_REQUIRED' | translate }}
@@ -255,14 +255,14 @@
                                         <div *ngIf="selectedCoordinates" class="mt-2">
                                             <small class="text-success">
                                                 <i class="fas fa-map-marker-alt"></i>
-                                                {{ 'DISTRIBUTION_SITE.SELECTED_COORDINATES' | translate }}: {{ selectedCoordinates }}
+                                                {{ 'DIST_SITE.SELECTED_COORDINATES' | translate }}: {{ selectedCoordinates }}
                                             </small>
                                         </div>
                                     </div>
 
                                     <!-- Distribution Site Coordinators (Selected Coordinates) Field -->
                                     <div class="col-xl-12 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.SELECTED_COORDINATES' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.SELECTED_COORDINATES' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="distributionSiteCoordinators" readonly>
                                     </div>
                                 </div>
@@ -271,7 +271,7 @@
 
                         <!-- Tab 2: Date Details Content -->
                         <div *ngIf="currentTab === 2" class="step-content">
-                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.DATE_DETAILS' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'DIST_SITE.DATE_DETAILS' | translate }}</h5>
                             
                             <!-- Validation Status Indicator
                             <div class="alert" [class.alert-success]="isCurrentTabValid()" [class.alert-warning]="!isCurrentTabValid()" class="mb-3">
@@ -284,7 +284,7 @@
                                 <div class="row">
                                     <!-- Start Date -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.START_DATE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'DIST_SITE.START_DATE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" formControlName="startDate"
                                                [class.is-invalid]="isFieldInvalid('startDate')"
                                                [class.is-valid]="isFieldValid('startDate')">
@@ -297,7 +297,7 @@
                                     </div>
                                     <!-- End Date -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.END_DATE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'DIST_SITE.END_DATE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" formControlName="endDate"
                                                [class.is-invalid]="isFieldInvalid('endDate')"
                                                [class.is-valid]="isFieldValid('endDate')">
@@ -308,17 +308,13 @@
                                             {{ 'VALIDATION.END_DATE_BEFORE_START' | translate }}
                                         </div>
                                     </div>
-                                    <!-- Tent Date -->
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.TENT_DATE' | translate }}</label>
-                                        <input type="date" class="form-control" formControlName="tentDate" [disabled]="true">
-                                    </div>
+
                                     <!-- Consultant from Ajman Toggle -->
                                     <div class="col-12 mb-3">
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" formControlName="isConsultantFromAjman" id="consultantFromAjman">
                                             <label class="form-check-label" for="consultantFromAjman">
-                                                {{ 'DISTRIBUTION_SITE.CONSULTANT_FROM_AJMAN' | translate }}
+                                                {{ 'DIST_SITE.CONSULTANT_FROM_AJMAN' | translate }}
                                             </label>
                                         </div>
                                     </div>
@@ -327,26 +323,18 @@
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" formControlName="isConsultantApprovedFromPolice" id="consultantApprovedFromPolice">
                                             <label class="form-check-label" for="consultantApprovedFromPolice">
-                                                {{ 'DISTRIBUTION_SITE.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
+                                                {{ 'DIST_SITE.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
                                             </label>
                                         </div>
                                     </div>
-                                    <!-- Tent Is Set Up Toggle -->
-                                    <div class="col-12 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" formControlName="tentIsSetUp" id="tentIsSetUp">
-                                            <label class="form-check-label" for="tentIsSetUp">
-                                                {{ 'DISTRIBUTION_SITE.TENT_IS_SET_UP' | translate }}
-                                            </label>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </form>
                         </div>
 
                         <!-- Tab 3: Supervisor Information Content -->
                         <div *ngIf="currentTab === 3" class="step-content">
-                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.SUPERVISOR_INFO' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'DIST_SITE.SUPERVISOR_INFO' | translate }}</h5>
                             
                             <!-- Validation Status Indicator
                             <div class="alert" [class.alert-success]="isCurrentTabValid()" [class.alert-warning]="!isCurrentTabValid()" class="mb-3">
@@ -359,9 +347,9 @@
                                 <div class="row">
                                     <!-- Supervisor Name -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.SUPERVISOR_NAME' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'DIST_SITE.SUPERVISOR_NAME' | translate }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" formControlName="supervisorName"
-                                               [placeholder]="'DISTRIBUTION_SITE.SUPERVISOR_NAME_PLACEHOLDER' | translate"
+                                               [placeholder]="'DIST_SITE.SUPERVISOR_NAME_PLACEHOLDER' | translate"
                                                [class.is-invalid]="isFieldInvalid('supervisorName')"
                                                [class.is-valid]="isFieldValid('supervisorName')">
                                         <div *ngIf="isFieldInvalid('supervisorName')" class="invalid-feedback">
@@ -370,15 +358,15 @@
                                     </div>
                                     <!-- Job Title -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.JOB_TITLE' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.JOB_TITLE' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="jopTitle"
-                                               [placeholder]="'DISTRIBUTION_SITE.JOB_TITLE_PLACEHOLDER' | translate">
+                                               [placeholder]="'DIST_SITE.JOB_TITLE_PLACEHOLDER' | translate">
                                     </div>
                                     <!-- Supervisor Mobile -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'DIST_SITE.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="tel" class="form-control" formControlName="supervisorMobile"
-                                               [placeholder]="'DISTRIBUTION_SITE.SUPERVISOR_MOBILE_PLACEHOLDER' | translate"
+                                               [placeholder]="'DIST_SITE.SUPERVISOR_MOBILE_PLACEHOLDER' | translate"
                                                [class.is-invalid]="isFieldInvalid('supervisorMobile')"
                                                [class.is-valid]="isFieldValid('supervisorMobile')"
                                                (keypress)="restrictMobileInput($event)">
@@ -400,7 +388,7 @@
 
                         <!-- Tab 4: Partners Content -->
                         <div *ngIf="currentTab === 4" class="step-content">
-                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.PARTNERS' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'DIST_SITE.PARTNERS' | translate }}</h5>
                             
                             <!-- Info Alert -->
                             <!-- <div class="alert alert-info mb-3">
@@ -413,13 +401,13 @@
                             <form [formGroup]="partnersForm" class="mb-4">
                                 <div class="row">
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.PARTNER_NAME' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.PARTNER_NAME' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="name"
-                                               [placeholder]="'DISTRIBUTION_SITE.PARTNER_NAME_PLACEHOLDER' | translate">
+                                               [placeholder]="'DIST_SITE.PARTNER_NAME_PLACEHOLDER' | translate">
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.PARTNER_TYPE' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.PARTNER_TYPE' | translate }}</label>
                                         <ng-select 
                                             formControlName="type"
                                             [placeholder]="'COMMON.SELECT_OPTION' | translate"
@@ -432,26 +420,26 @@
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.LICENSE_ISSUER' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.LICENSE_ISSUER' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="licenseIssuer"
-                                               [placeholder]="'DISTRIBUTION_SITE.LICENSE_ISSUER_PLACEHOLDER' | translate">
+                                               [placeholder]="'DIST_SITE.LICENSE_ISSUER_PLACEHOLDER' | translate">
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.LICENSE_EXPIRY_DATE' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.LICENSE_EXPIRY_DATE' | translate }}</label>
                                         <input type="date" class="form-control" formControlName="licenseExpiryDate">
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.LICENSE_NUMBER' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.LICENSE_NUMBER' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="licenseNumber"
-                                               [placeholder]="'DISTRIBUTION_SITE.LICENSE_NUMBER_PLACEHOLDER' | translate">
+                                               [placeholder]="'DIST_SITE.LICENSE_NUMBER_PLACEHOLDER' | translate">
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'DISTRIBUTION_SITE.CONTACT_DETAILS' | translate }}</label>
+                                        <label class="form-label">{{ 'DIST_SITE.CONTACT_DETAILS' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="contactDetails"
-                                               [placeholder]="'DISTRIBUTION_SITE.CONTACT_DETAILS_PLACEHOLDER' | translate">
+                                               [placeholder]="'DIST_SITE.CONTACT_DETAILS_PLACEHOLDER' | translate">
                                     </div>
                                     
                                     <!-- Partner Attachments Section -->
@@ -522,7 +510,7 @@
                                     
                                     <div class="col-xl-12">
                                         <button type="button" class="btn btn-primary" (click)="addPartner()">
-                                            <i class="fas fa-plus"></i> {{ 'DISTRIBUTION_SITE.ADD_PARTNER' | translate }}
+                                            <i class="fas fa-plus"></i> {{ 'DIST_SITE.ADD_PARTNER' | translate }}
                                         </button>
                                     </div>
                                 </div>
@@ -533,11 +521,11 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>{{ 'DISTRIBUTION_SITE.PARTNER_NAME' | translate }}</th>
-                                            <th>{{ 'DISTRIBUTION_SITE.PARTNER_TYPE' | translate }}</th>
-                                            <th>{{ 'DISTRIBUTION_SITE.LICENSE_ISSUER' | translate }}</th>
-                                            <th>{{ 'DISTRIBUTION_SITE.LICENSE_NUMBER' | translate }}</th>
-                                            <th>{{ 'DISTRIBUTION_SITE.CONTACT_DETAILS' | translate }}</th>
+                                            <th>{{ 'DIST_SITE.PARTNER_NAME' | translate }}</th>
+                                            <th>{{ 'DIST_SITE.PARTNER_TYPE' | translate }}</th>
+                                            <th>{{ 'DIST_SITE.LICENSE_ISSUER' | translate }}</th>
+                                            <th>{{ 'DIST_SITE.LICENSE_NUMBER' | translate }}</th>
+                                            <th>{{ 'DIST_SITE.CONTACT_DETAILS' | translate }}</th>
                                             <th>{{ 'COMMON.ACTIONS' | translate }}</th>
                                         </tr>
                                     </thead>
@@ -560,13 +548,13 @@
 
                             <div *ngIf="partners.length === 0" class="text-center py-4 text-muted">
                                 <i class="fas fa-users fa-3x mb-3"></i>
-                                <p>{{ 'DISTRIBUTION_SITE.NO_PARTNERS_ADDED' | translate }}</p>
+                                <p>{{ 'DIST_SITE.NO_PARTNERS_ADDED' | translate }}</p>
                             </div>
                         </div>
 
                         <!-- Tab 5: Attachments Content -->
                         <div *ngIf="currentTab === 5" class="step-content">
-                            <h5 class="mb-4">{{ 'DISTRIBUTION_SITE.ATTACHMENTS' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'DIST_SITE.ATTACHMENTS' | translate }}</h5>
                             
                             <!-- Validation Status Indicator -->
                             <!-- <div class="alert" [class.alert-success]="isCurrentTabValid()" [class.alert-warning]="!isCurrentTabValid()" class="mb-3">

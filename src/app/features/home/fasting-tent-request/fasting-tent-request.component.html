@@ -1,8 +1,8 @@
 <div class="fasting-tent-request-container">
     <section>
         <div class="container services">
-            <h4 class="title">{{ 'FASTING_TENT.TITLE' | translate }}</h4>
-            <p class="mb-5">{{ 'FASTING_TENT.DESCRIPTION' | translate }}</p>
+            <h4 class="title">{{ 'FASTING_TENT_REQ.TITLE' | translate }}</h4>
+            <p class="mb-5">{{ 'FASTING_TENT_REQ.DESCRIPTION' | translate }}</p>
 
             <!-- Loading state -->
             <div *ngIf="isLoading" class="text-center py-5">
@@ -36,9 +36,9 @@
                                       [class.text-success]="isTabCompleted(1)"
                                       [class.text-danger]="currentTab > 1 && !isTabCompleted(1)"
                                       [class.text-primary]="isTabActive(1)">
-                                    {{ 'FASTING_TENT.TAB1_TITLE' | translate }}
+                                    {{ 'FASTING_TENT_REQ.TAB1_TITLE' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.MAIN_INFO_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.MAIN_INFO_DESC' | translate }}</small>
                             </div>
                         </div>
 
@@ -61,9 +61,9 @@
                                       [class.text-success]="isTabCompleted(2)"
                                       [class.text-danger]="currentTab > 2 && !isTabCompleted(2)"
                                       [class.text-primary]="isTabActive(2)">
-                                    {{ 'FASTING_TENT.DATE_DETAILS_TITLE' | translate }}
+                                    {{ 'FASTING_TENT_REQ.DATE_DETAILS_TITLE' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.DATE_DETAILS_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.DATE_DETAILS_DESC' | translate }}</small>
                             </div>
                         </div>
 
@@ -86,9 +86,9 @@
                                       [class.text-success]="isTabCompleted(3)"
                                       [class.text-danger]="currentTab > 3 && !isTabCompleted(3)"
                                       [class.text-primary]="isTabActive(3)">
-                                    {{ 'FASTING_TENT.SUPERVISOR_INFO' | translate }}
+                                    {{ 'FASTING_TENT_REQ.SUPERVISOR_INFO' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.SUPERVISOR_INFO_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.SUPERVISOR_INFO_DESC' | translate }}</small>
                             </div>
                         </div>
 
@@ -110,9 +110,9 @@
                                      
                                       [class.text-danger]="currentTab > 4 && !isTabCompleted(4)"
                                       [class.text-primary]="isTabActive(4)">
-                                    {{ 'FASTING_TENT.PARTNERS' | translate }}
+                                    {{ 'FASTING_TENT_REQ.PARTNERS' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.PARTNERS_OPTIONAL_SHORT' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.PARTNERS_OPTIONAL_SHORT' | translate }}</small>
                             </div>
                         </div>
 
@@ -134,9 +134,9 @@
                                       [class.text-success]="isTabCompleted(5)"
                                       [class.text-danger]="currentTab === 5 && !isTabCompleted(5)"
                                       [class.text-primary]="isTabActive(5)">
-                                    {{ 'FASTING_TENT.TAB4_TITLE' | translate }}
+                                    {{ 'FASTING_TENT_REQ.ATTACHMENTS' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT.ATTACHMENTS_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.ATTACHMENTS_DESC' | translate }}</small>
                             </div>
                         </div>
                     </div>
@@ -148,13 +148,13 @@
                         
                         <!-- Tab 1: Main Information -->
                         <div *ngIf="currentTab === 1" class="step-content">
-                            <h5 class="mb-4">{{ 'FASTING_TENT.MAIN_INFO' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'FASTING_TENT_REQ.MAIN_INFO' | translate }}</h5>
                             
                             <form [formGroup]="mainInfoForm">
                                 <div class="row">
                                     <!-- Request Type Dropdown -->
                                     <div class="col-xl-12 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT.REQUEST_TYPE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.REQUEST_TYPE' | translate }} <span class="text-danger">*</span></label>
                                         <ng-select 
                                             formControlName="tentLocationType"
                                             [placeholder]="'COMMON.SELECT_OPTION' | translate"
@@ -171,11 +171,11 @@
 
                                     <!-- Location Selection Options - Always Available -->
                                     <div class="col-xl-12 mb-4">
-                                        <h6 class="mb-3">{{ 'FASTING_TENT.LOCATION_SELECTION' | translate }}</h6>
+                                        <h6 class="mb-3">{{ 'FASTING_TENT_REQ.LOCATION_SELECTION' | translate }}</h6>
                                         
                                         <!-- Dropdown Selection -->
                                         <div class="mb-4">
-                                            <label class="form-label">{{ 'FASTING_TENT.LOCATION' | translate }} <span class="text-danger">*</span></label>
+                                            <label class="form-label">{{ 'FASTING_TENT_REQ.LOCATION_TYPE' | translate }} <span class="text-danger">*</span></label>
                                             <ng-select 
                                                 formControlName="locationId"
                                                 [placeholder]="'COMMON.SELECT_OPTION' | translate"
@@ -206,12 +206,12 @@
 
                                         <!-- Map Selection -->
                                         <div class="mb-4">
-                                            <label class="form-label">{{ 'FASTING_TENT.SELECT_LOCATION_ON_MAP' | translate }} <span class="text-danger">*</span></label>
+                                            <label class="form-label">{{ 'FASTING_TENT_REQ.SELECT_FROM_MAP' | translate }} <span class="text-danger">*</span></label>
                                             <div id="distributionMap" style="height: 400px; border: 1px solid #ddd; border-radius: 4px;"
                                                  [class.border-danger]="submitted && lastSelectionSource === 'map' && !selectedLocationDetails"
                                                  [class.border-success]="selectedLocationDetails && lastSelectionSource === 'map'"></div>
                                             <small class="text-muted d-block mt-2">
-                                                {{ 'FASTING_TENT.MAP_INSTRUCTIONS' | translate }}
+                                                {{ 'SHARED.MAP.INSTRUCTIONS_FASTING_TENT' | translate }}
                                             </small>
                                             <div *ngIf="submitted && (!selectedLocationDetails || (lastSelectionSource !== 'dropdown' && !mainInfoForm.get('locationId')?.value))" class="text-danger small mt-1">
                                                 {{ 'VALIDATION.LOCATION_REQUIRED' | translate }}
@@ -232,37 +232,37 @@
 
                                     <!-- Auto-populated Location Fields (Read-only) -->
                                     <div *ngIf="selectedLocationDetails" class="col-xl-12">
-                                        <h6 class="mb-3">{{ 'FASTING_TENT.LOCATION_DETAILS' | translate }}</h6>
+                                        <h6 class="mb-3">{{ 'SHARED.LOCATION.DETAILS' | translate }}</h6>
                                         
                                         <div class="row">
                                             <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT.OWNER_NAME' | translate }}</label>
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.OWNER_NAME' | translate }}</label>
                                                 <input type="text" class="form-control" formControlName="ownerName" readonly>
                                             </div>
                                             
                                             <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT.REGION_NAME' | translate }}</label>
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.REGION_NAME' | translate }}</label>
                                                 <input type="text" class="form-control" formControlName="regionName" readonly>
                                             </div>
                                             
                                             <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT.STREET_NAME' | translate }}</label>
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.STREET_NAME' | translate }}</label>
                                                 <input type="text" class="form-control" formControlName="streetName" readonly>
                                             </div>
                                             
                                             <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT.GROUND_NO' | translate }}</label>
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.GROUND_NO' | translate }}</label>
                                                 <input type="text" class="form-control" formControlName="groundNo" readonly>
                                             </div>
                                             
                                             <div class="col-xl-12 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT.ADDRESS' | translate }}</label>
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.ADDRESS' | translate }}</label>
                                                 <input type="text" class="form-control" formControlName="address" readonly>
                                             </div>
                                             
 
                                             <div class="col-xl-12 mb-3" *ngIf="selectedLocationDetails?.locationPhotoPath">
-                                                <label class="form-label">{{ 'FASTING_TENT.LOCATION_PHOTO' | translate }}</label>
+                                                <label class="form-label">{{ 'SHARED.LOCATION.PHOTO' | translate }}</label>
                                                 <div>
                                                     <img [src]="selectedLocationDetails.locationPhotoPath" alt="Location Photo" class="img-fluid location-photo-hover" style="max-height: 200px;">
                                                 </div>
@@ -271,7 +271,7 @@
                                     </div>
 
                                     <div class="col-xl-12 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT.NOTES' | translate }}</label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.NOTES' | translate }}</label>
                                         <textarea class="form-control" formControlName="notes" rows="2"></textarea>
                                     </div>
                                 </div>
@@ -280,13 +280,13 @@
 
                         <!-- Tab 2: Date Details -->
                         <div *ngIf="currentTab === 2" class="step-content">
-                            <h5 class="mb-4">{{ 'FASTING_TENT.DATE_DETAILS' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'FASTING_TENT_REQ.DATE_DETAILS_TITLE' | translate }}</h5>
                             
                             <form [formGroup]="dateDetailsForm">
                                 <div class="row">
                                     <!-- Start Date -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT.START_DATE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.START_DATE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" formControlName="startDate" 
                                                [class.is-invalid]="dateDetailsForm.get('startDate')?.invalid && (dateDetailsForm.get('startDate')?.touched || submitted)"
                                                [class.is-valid]="dateDetailsForm.get('startDate')?.valid && (dateDetailsForm.get('startDate')?.touched || submitted)">
@@ -300,7 +300,7 @@
                                     
                                     <!-- End Date -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT.END_DATE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.END_DATE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" formControlName="endDate"
                                                [class.is-invalid]="dateDetailsForm.get('endDate')?.invalid && (dateDetailsForm.get('endDate')?.touched || submitted)"
                                                [class.is-valid]="dateDetailsForm.get('endDate')?.valid && (dateDetailsForm.get('endDate')?.touched || submitted)">
@@ -314,7 +314,7 @@
 
                                     <!-- Tent Setup Date -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT.SETUP_DATE' | translate }}</label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SETUP_DATE' | translate }}</label>
                                         <input type="date" class="form-control" formControlName="tentDate" [disabled]="true">
                                     </div>
                                     <!-- Tent is Set Up Toggle -->
@@ -322,7 +322,7 @@
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" formControlName="tentIsSetUp" id="tentIsSetUpDetail">
                                             <label class="form-check-label" for="tentIsSetUpDetail">
-                                                {{ 'FASTING_TENT.TENT_IS_SET_UP' | translate }}
+                                                {{ 'FASTING_TENT_REQ.TENT_IS_SET_UP' | translate }}
                                             </label>
                                         </div>
                                     </div>
@@ -331,7 +331,7 @@
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" formControlName="consultantApprovedByPolice" id="consultantApprovedByPoliceDetail">
                                             <label class="form-check-label" for="consultantApprovedByPoliceDetail">
-                                                {{ 'FASTING_TENT.CONSULTANT_APPROVED_BY_POLICE' | translate }}
+                                                {{ 'FASTING_TENT_REQ.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
                                             </label>
                                         </div>
                                     </div>
@@ -340,7 +340,7 @@
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" formControlName="consultantFromAjman" id="consultantFromAjmanDetail">
                                             <label class="form-check-label" for="consultantFromAjmanDetail">
-                                                {{ 'FASTING_TENT.CONSULTANT_FROM_AJMAN' | translate }}
+                                                {{ 'FASTING_TENT_REQ.CONSULTANT_FROM_AJMAN' | translate }}
                                             </label>
                                         </div>
                                     </div>
@@ -350,12 +350,12 @@
 
                         <!-- Tab 3: Supervisor Information -->
                         <div *ngIf="currentTab === 3" class="step-content">
-                            <h5 class="mb-4">{{ 'FASTING_TENT.SUPERVISOR_INFO' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'FASTING_TENT_REQ.SUPERVISOR_INFO' | translate }}</h5>
                             
                             <form [formGroup]="supervisorForm">
                                 <div class="row">
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT.SUPERVISOR_NAME' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SUPERVISOR_NAME' | translate }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" formControlName="supervisorName"
                                                [class.is-invalid]="submitted && supervisorForm.get('supervisorName')?.errors">
                                         <div *ngIf="submitted && supervisorForm.get('supervisorName')?.errors" class="invalid-feedback">
@@ -364,7 +364,7 @@
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT.JOB_TITLE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.JOB_TITLE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" formControlName="jopTitle"
                                                [class.is-invalid]="submitted && supervisorForm.get('jopTitle')?.errors">
                                         <div *ngIf="submitted && supervisorForm.get('jopTitle')?.errors" class="invalid-feedback">
@@ -373,7 +373,7 @@
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" formControlName="supervisorMobile"
                                                [class.is-invalid]="submitted && supervisorForm.get('supervisorMobile')?.errors"
                                                (keypress)="restrictMobileInput($event)">
@@ -387,17 +387,17 @@
 
                         <!-- Tab 4: Partners -->
                         <div *ngIf="currentTab === 4" class="step-content">
-                            <h5 class="mb-4">{{ 'FASTING_TENT.PARTNERS' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'FASTING_TENT_REQ.PARTNERS' | translate }}</h5>
                             
                             <form [formGroup]="partnersForm">
                                 <div class="row">
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT.PARTNER_NAME' | translate }}</label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.PARTNER_NAME' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="name">
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT.PARTNER_TYPE' | translate }}</label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.PARTNER_TYPE' | translate }}</label>
                                         <ng-select 
                                             formControlName="type"
                                             [placeholder]="'COMMON.SELECT_OPTION' | translate"
@@ -410,22 +410,22 @@
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT.LICENSE_ISSUER' | translate }}</label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.LICENSE_ISSUER' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="licenseIssuer">
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT.LICENSE_EXPIRY_DATE' | translate }}</label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.LICENSE_EXPIRY_DATE' | translate }}</label>
                                         <input type="date" class="form-control" formControlName="licenseExpiryDate">
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT.LICENSE_NUMBER' | translate }}</label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.LICENSE_NUMBER' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="licenseNumber">
                                     </div>
                                     
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT.CONTACT_DETAILS' | translate }}</label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.CONTACT_DETAILS' | translate }}</label>
                                         <input type="text" class="form-control" formControlName="contactDetails">
                                     </div>
                                     
@@ -497,7 +497,7 @@
                                     
                                     <div class="col-xl-12 mb-4">
                                         <button type="button" class="btn btn-primary" (click)="addPartner()">
-                                            {{ 'COMMON.ADD_PARTNER' | translate }}
+                                            {{ 'FASTING_TENT_REQ.ADD_PARTNER' | translate }}
                                         </button>
                                     </div>
                                 </div>
@@ -509,10 +509,10 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>{{ 'FASTING_TENT.PARTNER_NAME' | translate }}</th>
-                                            <th>{{ 'FASTING_TENT.PARTNER_TYPE' | translate }}</th>
-                                            <th>{{ 'FASTING_TENT.LICENSE_NUMBER' | translate }}</th>
-                                            <th>{{ 'FASTING_TENT.CONTACT_DETAILS' | translate }}</th>
+                                            <th>{{ 'FASTING_TENT_REQ.PARTNER_NAME' | translate }}</th>
+                                            <th>{{ 'FASTING_TENT_REQ.PARTNER_TYPE' | translate }}</th>
+                                            <th>{{ 'FASTING_TENT_REQ.LICENSE_NUMBER' | translate }}</th>
+                                            <th>{{ 'FASTING_TENT_REQ.CONTACT_DETAILS' | translate }}</th>
                                             <th>{{ 'COMMON.ACTIONS' | translate }}</th>
                                         </tr>
                                     </thead>
@@ -534,13 +534,13 @@
                             </div>
 
                             <div *ngIf="partners.length === 0" class="alert alert-info">
-                                {{ 'FASTING_TENT.NO_PARTNERS_ADDED' | translate }}
+                                {{ 'FASTING_TENT_REQ.NO_PARTNERS_ADDED' | translate }}
                             </div>
                         </div>
 
                         <!-- Tab 5: Attachments -->
                         <div *ngIf="currentTab === 5" class="step-content">
-                            <h5 class="mb-4">{{ 'ATTACHMENTS.TITLE' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'FASTING_TENT_REQ.ATTACHMENTS' | translate }}</h5>
                             
                             <!-- Validation Status Indicator -->
                             <div class="alert" [class.alert-success]="isTabCompleted(5)" [class.alert-warning]="!isTabCompleted(5)" class="mb-3">

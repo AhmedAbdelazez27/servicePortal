@@ -1,8 +1,8 @@
-<div class="view-fasting-tent-request-container">
+<div class="view-distribution-site-permit-container">
     <section>
         <div class="container services">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="title">{{ 'VIEW_FASTING_TENT.VIEW_TITLE' | translate }}</h4>
+                <h4 class="title">{{ 'VIEW_DISTRIBUTION_SITE.TITLE' | translate }}</h4>
                 <button type="button" class="btn btn-secondary" (click)="goBack()">
                     <i class="fas fa-arrow-left me-2"></i>
                     {{ 'COMMON.BACK' | translate }}
@@ -15,6 +15,45 @@
                     <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
                 </div>
                 <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+            </div>
+
+            <!-- Error state -->
+            <div *ngIf="hasError && !isLoading" class="text-center py-5">
+                <div class="error-container">
+                    <i class="fas fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                    <h4 class="text-danger mt-3">{{ 'COMMON.ERROR_OCCURRED' | translate }}</h4>
+                    <p class="text-muted">{{ errorMessage }}</p>
+                    <div *ngIf="errorDetails" class="alert alert-light mt-3">
+                        <small class="text-muted">{{ 'COMMON.ERROR_DETAILS' | translate }}:</small>
+                        <br>
+                        <code>{{ errorDetails }}</code>
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <small class="text-muted">{{ 'COMMON.SUGGESTIONS' | translate }}:</small>
+                        <br>
+                        <span>{{ getErrorContext() }}</span>
+                    </div>
+                    <div class="mt-4">
+                        <button type="button" class="btn btn-primary me-2" (click)="retryLoadingData()">
+                            <i class="fas fa-redo me-2"></i>{{ 'COMMON.RETRY' | translate }}
+                        </button>
+                        <button type="button" class="btn btn-warning me-2" (click)="refreshPage()">
+                            <i class="fas fa-sync-alt me-2"></i>{{ 'COMMON.REFRESH_PAGE' | translate }}
+                        </button>
+                        <button type="button" class="btn btn-success me-2" (click)="checkServiceAvailability()">
+                            <i class="fas fa-check-circle me-2"></i>{{ 'COMMON.CHECK_SERVICE' | translate }}
+                        </button>
+                        <button type="button" class="btn btn-info me-2" (click)="contactSupport()">
+                            <i class="fas fa-headset me-2"></i>{{ 'COMMON.CONTACT_SUPPORT' | translate }}
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary me-2" (click)="copyErrorDetails()">
+                            <i class="fas fa-copy me-2"></i>{{ 'COMMON.COPY_ERROR' | translate }}
+                        </button>
+                        <button type="button" class="btn btn-secondary" (click)="goBack()">
+                            <i class="fas fa-arrow-left me-2"></i>{{ 'COMMON.BACK' | translate }}
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Main Content -->
@@ -63,9 +102,9 @@
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" (click)="goToTab(2)" [class.text-primary]="isTabActive(2)">
-                                    {{ 'VIEW_FASTING_TENT.BASIC_INFORMATION' | translate }}
+                                    {{ 'SHARED.TABS.BASIC_INFORMATION' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'VIEW_FASTING_TENT.BASIC_INFO_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'SHARED.TABS.BASIC_INFO_DESC' | translate }}</small>
                             </div>
                         </div>
 
@@ -80,9 +119,9 @@
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" (click)="goToTab(3)" [class.text-primary]="isTabActive(3)">
-                                    {{ 'VIEW_FASTING_TENT.LOCATION_DETAILS' | translate }}
+                                    {{ 'SHARED.LOCATION.DETAILS' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'VIEW_FASTING_TENT.LOCATION_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'SHARED.LOCATION.DESC' | translate }}</small>
                             </div>
                         </div>
 
@@ -97,9 +136,9 @@
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" (click)="goToTab(4)" [class.text-primary]="isTabActive(4)">
-                                    {{ 'VIEW_FASTING_TENT.DATE_DETAILS_TITLE' | translate }}
+                                    {{ 'SHARED.TABS.DATE_DETAILS' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'VIEW_FASTING_TENT.DATE_DETAILS_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'SHARED.TABS.DATE_DETAILS_DESC' | translate }}</small>
                             </div>
                         </div>
 
@@ -114,9 +153,9 @@
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" (click)="goToTab(5)" [class.text-primary]="isTabActive(5)">
-                                    {{ 'VIEW_FASTING_TENT.PARTNERS' | translate }}
+                                    {{ 'SHARED.PARTNERS.TITLE' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'VIEW_FASTING_TENT.PARTNERS_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'SHARED.PARTNERS.TITLE' | translate }}</small>
                             </div>
                         </div>
 
@@ -131,9 +170,9 @@
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" (click)="goToTab(6)" [class.text-primary]="isTabActive(6)">
-                                    {{ 'VIEW_FASTING_TENT.ATTACHMENTS' | translate }}
+                                    {{ 'SHARED.ATTACHMENTS.TITLE' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'VIEW_FASTING_TENT.ATTACHMENTS_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'SHARED.ATTACHMENTS.VIEW_DESC' | translate }}</small>
                             </div>
                         </div>
 
@@ -147,7 +186,7 @@
                             </div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" (click)="goToTab(7)" [class.text-primary]="isTabActive(7)">
-                                    {{ 'VIEW_FASTING_TENT.WORKFLOW_COMMENTS' | translate }}
+                                    {{ 'COMMON.WORKFLOW_COMMENTS' | translate }}
                                 </span>
                                 <small class="d-block text-muted step-description">{{ 'COMMON.WORKFLOW_COMMENTS_DESC' | translate }}</small>
                             </div>
@@ -213,32 +252,32 @@
 
                         <!-- Tab 2: Basic Information -->
                         <div *ngIf="currentTab === 2" class="step-content">
-                            <h5 class="mb-4">{{ 'VIEW_FASTING_TENT.BASIC_INFORMATION' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'SHARED.TABS.BASIC_INFORMATION' | translate }}</h5>
                             
-                            <div class="row" *ngIf="fastingTentService">
+                            <div class="row" *ngIf="distributionSiteService">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.LOCATION_TYPE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{fastingTentService.locationType || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.LOCATION_TYPE' | translate }}</label>
+                                    <div class="form-control-plaintext">{{distributionSiteService.locationType || '-'}}</div>
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.SUPERVISOR_NAME' | translate }}</label>
-                                    <div class="form-control-plaintext">{{fastingTentService.supervisorName || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.SUPERVISOR_NAME' | translate }}</label>
+                                    <div class="form-control-plaintext">{{distributionSiteService.supervisorName || '-'}}</div>
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.JOB_TITLE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{fastingTentService.jopTitle || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.JOB_TITLE' | translate }}</label>
+                                    <div class="form-control-plaintext">{{distributionSiteService.jopTitle || '-'}}</div>
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.SUPERVISOR_MOBILE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{fastingTentService.supervisorMobile || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.SUPERVISOR_MOBILE' | translate }}</label>
+                                    <div class="form-control-plaintext">{{distributionSiteService.supervisorMobile || '-'}}</div>
                                 </div>
                                 
                                 <div class="col-md-12 mb-3">
-                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.NOTES' | translate }}</label>
-                                    <div class="form-control-plaintext">{{fastingTentService.notes || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.NOTES' | translate }}</label>
+                                    <div class="form-control-plaintext">{{distributionSiteService.notes || '-'}}</div>
                                 </div>
                             </div>
 
@@ -247,45 +286,40 @@
 
                         <!-- Tab 3: Location Details -->
                         <div *ngIf="currentTab === 3" class="step-content">
-                            <h5 class="mb-4">{{ 'VIEW_FASTING_TENT.LOCATION_DETAILS' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'SHARED.LOCATION.DETAILS' | translate }}</h5>
                             
-                            <div *ngIf="fastingTentService?.location">
+                            <div *ngIf="distributionSiteService">
                                 <div class="row mb-4">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.LOCATION_NAME' | translate }}</label>
-                                        <div class="form-control-plaintext">{{fastingTentService?.location?.locationName || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.OWNER_NAME' | translate }}</label>
+                                        <div class="form-control-plaintext">{{distributionSiteService.ownerName || '-'}}</div>
                                     </div>
                                     
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.LOCATION_OWNER' | translate }}</label>
-                                        <div class="form-control-plaintext">{{fastingTentService?.location?.locationOwner || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.REGION_NAME' | translate }}</label>
+                                        <div class="form-control-plaintext">{{distributionSiteService.regionName || '-'}}</div>
                                     </div>
                                     
                                     <div class="col-md-12 mb-3">
-                                        <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.LOCATION_ADDRESS' | translate }}</label>
-                                        <div class="form-control-plaintext">{{fastingTentService?.location?.address || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.ADDRESS' | translate }}</label>
+                                        <div class="form-control-plaintext">{{distributionSiteService.address || '-'}}</div>
                                     </div>
                                     
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.REGION_NAME' | translate }}</label>
-                                        <div class="form-control-plaintext">{{fastingTentService?.regionName || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.STREET_NAME' | translate }}</label>
+                                        <div class="form-control-plaintext">{{distributionSiteService.streetName || '-'}}</div>
                                     </div>
                                     
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.STREET_NAME' | translate }}</label>
-                                        <div class="form-control-plaintext">{{fastingTentService?.streetName || '-'}}</div>
-                                    </div>
-                                    
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.GROUND_NO' | translate }}</label>
-                                        <div class="form-control-plaintext">{{fastingTentService?.groundNo || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.GROUND_NO' | translate }}</label>
+                                        <div class="form-control-plaintext">{{distributionSiteService.groundNo || '-'}}</div>
                                     </div>
                                 </div>
 
                                 <!-- Map Display -->
-                                <div *ngIf="fastingTentService?.location?.locationCoordinates" class="mb-4">
+                                <div *ngIf="distributionSiteService.distributionSiteCoordinators" class="mb-4">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h6 class="fw-bold mb-0">{{ 'VIEW_FASTING_TENT.LOCATION_ON_MAP' | translate }}</h6>
+                                        <h6 class="fw-bold mb-0">{{ 'SHARED.LOCATION.ON_MAP' | translate }}</h6>
                                         <div>
                                             <button type="button" class="btn btn-sm btn-outline-primary" (click)="refreshMap()" title="Refresh Map">
                                                 <i class="fas fa-sync-alt me-1"></i>
@@ -308,60 +342,44 @@
                                 </div>
                             </div>
                             
-                            <div *ngIf="!fastingTentService?.location" class="alert alert-info">
-                                {{ 'VIEW_FASTING_TENT.NO_LOCATION_INFO' | translate }}
+                            <div *ngIf="!distributionSiteService" class="alert alert-info">
+                                {{ 'SHARED.LOCATION.NO_INFO' | translate }}
                             </div>
                         </div>
 
                         <!-- Tab 4: Date Information -->
                         <div *ngIf="currentTab === 4" class="step-content">
-                            <h5 class="mb-4">{{ 'VIEW_FASTING_TENT.DATE_DETAILS_TITLE' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'SHARED.TABS.DATE_DETAILS' | translate }}</h5>
                             
-                            <div class="row" *ngIf="fastingTentService">
+                            <div class="row" *ngIf="distributionSiteService">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.START_DATE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{formatDate(fastingTentService.startDate) || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.START_DATE' | translate }}</label>
+                                    <div class="form-control-plaintext">{{formatDate(distributionSiteService.startDate ?? null) || '-'}}</div>
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.END_DATE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{formatDate(fastingTentService.endDate) || '-'}}</div>
-                                </div>
-                                
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.TENT_DATE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{formatDate(fastingTentService.tentDate) || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.END_DATE' | translate }}</label>
+                                    <div class="form-control-plaintext">{{formatDate(distributionSiteService.endDate ?? null) || '-'}}</div>
                                 </div>
                             </div>
                             
                             <!-- Toggle Switches Section -->
-                             <!-- i need to show them the 3 toggle switches evry one on a seprate row and has col-12 mb-3-->
-                           
                             <div class="row">
-                                <!-- Tent is Set Up Toggle -->
-                                <div class="col-12 mb-3">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" [checked]="fastingTentService?.tentIsSetUp" disabled id="tentIsSetUpView">
-                                        <label class="form-check-label" for="tentIsSetUpView">
-                                            {{ 'VIEW_FASTING_TENT.TENT_IS_SET_UP' | translate }}
-                                        </label>
-                                    </div>
-                                </div>
                                 <!-- Consultant approved from Police Toggle -->
                                 <div class="col-12 mb-3">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" [checked]="fastingTentService?.isConsultantApprovedFromPolice" disabled id="consultantApprovedView">
+                                        <input class="form-check-input" type="checkbox" [checked]="distributionSiteService?.isConsultantApprovedFromPolice" disabled id="consultantApprovedView">
                                         <label class="form-check-label" for="consultantApprovedView">
-                                            {{ 'VIEW_FASTING_TENT.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
+                                            {{ 'SHARED.FORMS.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
                                         </label>
                                     </div>
                                 </div>
                                 <!-- Consultant from Ajman Toggle -->
                                 <div class="col-12 mb-3">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" [checked]="fastingTentService?.isConsultantFromAjman" disabled id="consultantFromAjmanView">
+                                        <input class="form-check-input" type="checkbox" [checked]="distributionSiteService?.isConsultantFromAjman" disabled id="consultantFromAjmanView">
                                         <label class="form-check-label" for="consultantFromAjmanView">
-                                            {{ 'VIEW_FASTING_TENT.CONSULTANT_FROM_AJMAN' | translate }}
+                                            {{ 'SHARED.FORMS.CONSULTANT_FROM_AJMAN' | translate }}
                                         </label>
                                     </div>
                                 </div>
@@ -372,19 +390,19 @@
 
                         <!-- Tab 5: Partners -->
                         <div *ngIf="currentTab === 5" class="step-content">
-                            <h5 class="mb-4">{{ 'VIEW_FASTING_TENT.PARTNERS' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'SHARED.PARTNERS.TITLE' | translate }}</h5>
                             
                             <div *ngIf="partners && partners.length > 0">
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>{{ 'VIEW_FASTING_TENT.PARTNER_NAME' | translate }}</th>
-                                                <th>{{ 'VIEW_FASTING_TENT.PARTNER_TYPE' | translate }}</th>
-                                                <th>{{ 'VIEW_FASTING_TENT.LICENSE_NUMBER' | translate }}</th>
-                                                <th>{{ 'VIEW_FASTING_TENT.LICENSE_ISSUER' | translate }}</th>
-                                                <th>{{ 'VIEW_FASTING_TENT.LICENSE_EXPIRY_DATE' | translate }}</th>
-                                                <th>{{ 'VIEW_FASTING_TENT.CONTACT_DETAILS' | translate }}</th>
+                                                <th>{{ 'COMMON.NAME' | translate }}</th>
+                                                <th>{{ 'COMMON.TYPE' | translate }}</th>
+                                                <th>{{ 'COMMON.LICENSE_NUMBER' | translate }}</th>
+                                                <th>{{ 'COMMON.LICENSE_ISSUER' | translate }}</th>
+                                                <th>{{ 'COMMON.LICENSE_EXPIRY' | translate }}</th>
+                                                <th>{{ 'COMMON.CONTACT_DETAILS' | translate }}</th>
                                                 <th>{{ 'COMMON.ATTACHMENTS' | translate }}</th>
                                             </tr>
                                         </thead>
@@ -421,19 +439,19 @@
                             </div>
                             
                             <div *ngIf="!partners || partners.length === 0" class="alert alert-info">
-                                {{ 'VIEW_FASTING_TENT.NO_PARTNERS' | translate }}
+                                {{ 'SHARED.PARTNERS.NO_PARTNERS' | translate }}
                             </div>
                         </div>
 
                         <!-- Tab 6: Attachments -->
                         <div *ngIf="currentTab === 6" class="step-content">
-                            <h5 class="mb-4">{{ 'VIEW_FASTING_TENT.ATTACHMENTS' | translate }}</h5>
+                            <h5 class="mb-4">{{ 'SHARED.ATTACHMENTS.TITLE' | translate }}</h5>
                             
                             <div *ngIf="attachments && attachments.length > 0">
                                 <div class="row">
                                     <div class="col-xl-4 col-lg-6 mb-4" *ngFor="let attachment of attachments">
                                         <div class="attachment-box">
-                                            <h6 class="card-title">{{attachment.attachmentTitle || ('COMMON.ATTACHMENT' | translate)}}</h6>
+                                            <h6 class="card-title">{{attachment.attachmentTitle || ('SHARED.ATTACHMENTS.ATTACHMENT' | translate)}}</h6>
                                             <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}: {{formatDateTime(attachment.lastModified)}}</p>
                                             <div class="d-flex justify-content-end">
                                                 <button class="btn btn-next-style me-2" (click)="viewAttachment(attachment)">
@@ -451,7 +469,7 @@
                             </div>
                             
                             <div *ngIf="!attachments || attachments.length === 0" class="alert alert-info">
-                                {{ 'VIEW_FASTING_TENT.NO_ATTACHMENTS' | translate }}
+                                {{ 'SHARED.ATTACHMENTS.NO_ATTACHMENTS' | translate }}
                             </div>
                         </div>
 
@@ -604,7 +622,7 @@
                                             <div *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]" class="uploaded-file">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-file me-2 text-success"></i>
-                                                    <span class="file-name">{{ commentAttachments[config.id!].fileName || ('FASTING_TENT.FILE' | translate) }}</span>
+                                                    <span class="file-name">{{ commentAttachments[config.id!].fileName || ('SHARED.ATTACHMENTS.FILE' | translate) }}</span>
                                                 </div>
                                                 <div *ngIf="commentFilePreviews[config.id!]" class="mt-2">
                                                     <img [src]="commentFilePreviews[config.id!]" 
@@ -700,7 +718,7 @@
                                 <div class="mb-3">
                                     <i class="fas fa-file-alt fa-2x text-primary"></i>
                                 </div>
-                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('FASTING_TENT.ATTACHMENT' | translate) }}</h6>
+                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('SHARED.ATTACHMENTS.ATTACHMENT' | translate) }}</h6>
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-download-style" 
                                             (click)="downloadAttachment(attachment)">
@@ -734,7 +752,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="partnerAttachmentModalLabel">
                     <i class="fas fa-user-tie me-2"></i>
-                    {{ 'FASTING_TENT.PARTNER_ATTACHMENTS' | translate }}
+                    {{ 'SHARED.PARTNERS.PARTNER_ATTACHMENTS' | translate }}
                     <span *ngIf="selectedPartner" class="fw-normal"> - {{selectedPartner.name}}</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -762,7 +780,7 @@
                                 <div class="mb-3">
                                     <i class="fas fa-file-alt fa-2x text-success"></i>
                                 </div>
-                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('FASTING_TENT.ATTACHMENT' | translate) }}</h6>
+                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('SHARED.ATTACHMENTS.ATTACHMENT' | translate) }}</h6>
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-download-style" 
                                             (click)="downloadAttachment(attachment)">
@@ -788,3 +806,5 @@
         </div>
     </div>
 </div>
+
+

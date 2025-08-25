@@ -145,7 +145,7 @@ export class MainApplyServiceComponent {
     const params: FiltermainApplyServiceByIdDto = {
       id: id
     };
-    this.spinnerService.show();;
+    this.spinnerService.show();
     forkJoin({
       mischeaderdata: this.mainApplyService.getDetailById(params) as Observable<mainApplyServiceDto | mainApplyServiceDto[]>,
     }).pipe(takeUntil(this.destroy$)).subscribe({
@@ -165,7 +165,7 @@ export class MainApplyServiceComponent {
           this.router.navigate(['/request-complaint'], {
             state: { loadformData: this.loadformData }
           });
-        }
+        }  
          if (serviceId == this.appEnum.serviceId2) {
           this.router.navigate([`/view-services-requests/charity-event-permit/${params.id}`], {
             state: { loadformData: this.loadformData }
@@ -210,16 +210,25 @@ export class MainApplyServiceComponent {
       if (event.row.serviceId === 1) {
         // Route to the new view component
         this.router.navigate(['/view-fasting-tent-request', event.row.id]);
-      } else {
-        // Show modal for other service types
-        this.getFormDatabyId(event.row.id, event.row.serviceId);
       }
-
-
-
-      if (event.row.serviceId == this.appEnum.serviceId7) {
-        this.getFormDatabyId(event.row.id, event.row.serviceId);
+      // Check if serviceId is 1001 (Distribution Site Permit Application)
+      else if (event.row.serviceId === 1001) {
+        // Route to the new view distribution site permit component
+        this.router.navigate(['/view-distribution-site-permit', event.row.id]);
       }
+      else if (event.row.serviceId == this.appEnum.serviceId7) {
+        this.getFormDatabyId(event.row.id, event.row.serviceId);
+      }else if (event.row.serviceId  == this.appEnum.serviceId2) {
+          
+          this.router.navigate([`/view-services-requests/charity-event-permit/${event.row.id}`], {
+            state: { loadformData: this.loadformData }
+          });
+        }else if (event.row.serviceId  == this.appEnum.serviceId6) {
+          
+          this.router.navigate([`/view-services-requests/request-event-permit/${event.row.id}`], {
+            state: { loadformData: this.loadformData }
+          });
+        }
       else {
         this.translate
           .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])

@@ -93,6 +93,14 @@ export const routes: Routes = [
             './features/home/distribution-site-permit/distribution-site-permit.component'
           ).then((m) => m.DistributionSitePermitComponent),
       },
+      {
+        path: 'view-distribution-site-permit/:id',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import(
+            './features/home/view-distribution-site-permit/view-distribution-site-permit.component'
+          ).then((m) => m.ViewDistributionSitePermitComponent),
+      },
 
       // Contact Us route - accessible without authentication
       {
