@@ -195,31 +195,7 @@
 
 
 
-<!-- Campaigns Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h4 class="title mb-4">{{ 'HOME.CAMPAIGNS.TITLE' | translate }}</h4>
-        <div class="row">
-            <div *ngFor="let campaign of campaigns1" class="col-lg-3 col-md-6 mb-4">
-                <div class="card h-100">
-                    <img [src]="campaign.filePath" class="card-img-top" [alt]="campaign.projectCampainName | translate">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ campaign.projectCampainName | translate }}</h5>
-                        <p class="card-text">
-                            <strong>{{ 'HOME.CAMPAIGNS.REQUIRED_AMOUNT' | translate }}:</strong> {{ campaign.requiredAmount }}<br>
-                            <strong>{{ 'HOME.CAMPAIGNS.COLLECTED_AMOUNT' | translate }}:</strong> {{ campaign.collectedAmount }}
-                        </p>
-                        <div class="progress mb-3">
-                            <div class="progress-bar" [style.width.%]="campaign.progress" role="progressbar" [attr.aria-valuenow]="campaign.progress" aria-valuemin="0" aria-valuemax="100">
-                                {{ campaign.progress }}%
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+ 
 
 <!-- Initiatives Section -->
 <section>
