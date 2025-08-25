@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { TranslationService } from '../../core/services/translation.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-navbar',
@@ -7,5 +9,20 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
+  currentLang: string = 'en';
+
+  constructor(public translation: TranslationService, private translate: TranslateService) {
+    this.currentLang = this.translate.currentLang || this.translate.getDefaultLang() || 'ar';
+
+    this.translate.onLangChange.subscribe(lang => {
+      this.currentLang = lang.lang;
+    });
+
+  }
+
+  toggleLang() {
+    this.translation.toggleLanguage();  
+  } 
+
 
 }

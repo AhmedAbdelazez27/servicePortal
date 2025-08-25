@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,13 +14,19 @@ import { RouterModule } from '@angular/router';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-
+  currentLang: string = 'en';
   constructor(
     private authService: AuthService,
     private toastr: ToastrService,
-    private translate: TranslateService,
+    public translation: TranslationService, private translate: TranslateService,
     private router: Router
-  ) {}
+  ) {
+    this.currentLang = this.translate.currentLang || this.translate.getDefaultLang() || 'ar';
+
+    this.translate.onLangChange.subscribe(lang => {
+      this.currentLang = lang.lang;
+    });
+  }
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
@@ -45,13 +52,17 @@ export class NavbarComponent {
   onLogout(): void {
     this.authService.logout();
     this.toastr.success(
-      this.translate.instant('AUTH.MESSAGES.LOGOUT_SUCCESS'), 
+      this.translate.instant('AUTH.MESSAGES.LOGOUT_SUCCESS'),
       this.translate.instant('TOAST.TITLE.SUCCESS')
     );
   }
 
   onLogin(): void {
     this.router.navigate(['/login']);
+  }
+
+  toggleLang() {
+    this.translation.toggleLanguage();
   }
 
 }

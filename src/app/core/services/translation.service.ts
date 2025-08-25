@@ -1,26 +1,41 @@
-// src/app/core/services/translation.service.ts
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TranslationService {
+  private langChangeSubject = new BehaviorSubject<'en' | 'ar'>(this.getSavedLang());
+  langChange$: Observable<'en' | 'ar'> = this.langChangeSubject.asObservable();
+
   constructor(private translate: TranslateService) {
     this.translate.addLangs(['en', 'ar']);
-    const savedLang = localStorage.getItem('lang') as 'en' | 'ar' || 'en';
+    const savedLang = this.getSavedLang();
     this.setLanguage(savedLang);
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.langChangeSubject.next(event.lang as 'en' | 'ar');
+      this.setDocumentDirection(event.lang as 'en' | 'ar');
+    });
+  }
+
+  private getSavedLang(): 'en' | 'ar' {
+    return (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
   }
 
   setLanguage(lang: 'en' | 'ar') {
     this.translate.use(lang);
     localStorage.setItem('lang', lang);
+    this.setDocumentDirection(lang);
+  }
+
+  private setDocumentDirection(lang: 'en' | 'ar') {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.body.classList.toggle('rtl', lang === 'ar');
-    document.body.classList.toggle('ltr', lang === 'en');
+    document.body.classList.remove('rtl', 'ltr');
+    document.body.classList.add(lang === 'ar' ? 'rtl' : 'ltr');
   }
 
   get currentLang(): string {
-    return this.translate.currentLang;
+    return this.translate.currentLang || this.getSavedLang();
   }
 
   toggleLanguage() {
