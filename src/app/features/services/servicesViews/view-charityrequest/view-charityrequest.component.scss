@@ -26,25 +26,14 @@ $brown-light: #A68B6B;
   }
 }
 
-.view-fasting-tent-request-container {
+.view-distribution-site-permit-container {
 
   .services {
     padding: 2rem 0;
   }
 
-  .title {
-    color: #2c3e50;
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
 
-  .main-container {
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    position: relative;
-  }
+
 
   // Service Info Card
   .service-info-card {
@@ -87,134 +76,147 @@ $brown-light: #A68B6B;
     }
   }
 
-  // Step Navigation Styles
+  // Step Navigation Layout
   .step-navigation-item {
     display: flex;
-    align-items: flex-start;
-    margin-bottom: 2rem;
+    position: relative;
+    margin-bottom: 40px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .step-container {
     position: relative;
     cursor: pointer;
-    transition: all 0.3s ease;
-
-    .step-container {
-      flex-shrink: 0;
-      position: relative;
-      z-index: 2;
-      margin-right: 1rem;
-
-      .step-bg {
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
-        z-index: -1;
-        transition: all 0.3s ease;
-      }
-
-      .step {
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background: $brown-primary;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.875rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        z-index: 1;
-        position: relative;
-
-        span, i {
-          transition: all 0.3s ease;
-        }
-      }
-
-      &.active {
-        .step-bg {
-          background: linear-gradient(135deg, $brown-primary 0%, $brown-dark 100%);
-          transform: scale(1.1);
-        }
-
-        .step {
-          background: $brown-primary;
-          color: white;
-          transform: scale(1.1);
-        }
-      }
-
-      &.completed {
-        .step-bg {
-          background: linear-gradient(135deg, $brown-primary 0%, $brown-dark 100%);
-        }
-
-        .step {
-          background: $brown-primary;
-          color: white;
-        }
-      }
-
-      &.invalid {
-        .step-bg {
-          background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-        }
-
-        .step {
-          background: #dc3545;
-          color: white;
-        }
-      }
-    }
-
-    .connecting-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    transition: $trans;
+    
+    .step-bg {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #CCCCCC;
+      border: 1px solid #CCCCCC;
       position: absolute;
-      left: 12px;
-      top: 25px;
-      width: 2px;
-      height: calc(100% + 0.5rem);
-      background: #e9ecef;
+      top: 0;
+      left: 0;
+      transition: $trans;
       z-index: 1;
     }
-
-    &:last-child .connecting-line {
-      display: none;
+    
+    .step {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      font-weight: 600;
+      font-size: 16px;
+      background: #fff;
+      color: #999999;
+      border: 1px solid #fff;
+      margin-top: 4px;
+      transition: $trans;
     }
-
-    .step-content-wrapper {
-      flex: 1;
-      padding-top: 2px;
-
-      .step-title {
-        font-weight: 600;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: block;
-        margin-bottom: 0.25rem;
-
-        &:hover {
-          text-decoration: underline;
-        }
+    
+    // Active state - golden/brown circle with white number
+    &.active {
+      .step-bg {
+        background: $brown-primary;
+        border-color: $brown-primary;
       }
-
-      .step-description {
-        font-size: 0.8rem;
-        line-height: 1.4;
+      
+      .step {
+        background: $brown-primary;
+        color: white;
+        border-color: $brown-primary;
       }
     }
-
-    &:hover {
-      .step-container:not(.active) .step-bg {
-        transform: scale(1.05);
+    
+    // Completed state - golden/brown circle with white checkmark
+    &.completed {
+      .step-bg {
+        background: $brown-primary;
+        border-color: $brown-primary;
       }
+      
+      .step {
+        background: $brown-primary;
+        color: white;
+        border-color: $brown-primary;
+      }
+    }
+    
+    // Invalid state - red circle
+    &.invalid {
+      .step-bg {
+        background: $danger;
+        border-color: $danger;
+      }
+      
+      .step {
+        background: $danger;
+        color: white;
+        border-color: $danger;
+      }
+    }
+  }
+  
+  .connecting-line {
+    position: absolute;
+    left: 19.5px; // Center of the circle (40px / 2 - 0.5px for line width)
+    top: 40px; // Start from bottom of circle
+    width: 1px;
+    height: 40px; // Height to reach next circle
+    background: $brown-primary;
+    z-index: 0;
+  }
+  
+  .step-content-wrapper {
+    margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
-      .step-title {
+    .step-title {
+      font-weight: 500;
+      color: #333;
+      cursor: pointer;
+      transition: $trans;
+      font-size: 16px;
+      line-height: 1.2;
+      margin-bottom: 4px;
+      
+      &:hover { color: $brown-primary; }
+      
+      &.text-primary {
         color: $brown-primary !important;
+        font-weight: 600;
       }
+      
+      &.text-success {
+        font-weight: 600;
+      }
+      
+      &.text-danger {
+        font-weight: 600;
+      }
+    }
+
+    .step-description {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      color: #6c757d;
+      line-height: 1.3;
     }
   }
 
@@ -222,53 +224,9 @@ $brown-light: #A68B6B;
   .step-content {
     animation: fadeInUp 0.5s ease-out;
 
-    h5 {
-      color: #2c3e50;
-      font-weight: 600;
-      border-bottom: 2px solid $brown-primary;
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-      color: #495057;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-
-    .form-control-plaintext {
-      background: #f8f9fa;
-      border: 1px solid #e9ecef;
-      border-radius: 0.375rem;
-      padding: 0.75rem;
-      color: #495057;
-      min-height: 38px;
-      display: flex;
-      align-items: center;
-    }
 
 
 
-
-
-    //to do delete
-    // .form-check {
-    //   .form-check-input {
-    //     &:checked {
-    //       background-color: $primary !important;
-    //       border-color: $primary !important;
-    //     }
-        
-    //     &:focus {
-    //       box-shadow: 0 0 0 0.2rem rgba(141,115,77,0.25);
-    //     }
-    //   }
-      
-    //   .form-check-label {
-    //     font-weight: 500;
-    //     color: #333;
-    //   }
-    // }
 
     // Status check specific styling
     .status-check {
@@ -317,12 +275,6 @@ $brown-light: #A68B6B;
       }
 
       .form-check-label {
-        // margin-left: 0.75rem;
-        // font-weight: 600;
-        // color: #495057;
-        // font-size: 0.95rem;
-        // line-height: 1.5;
-        // cursor: default;
         font-weight: 500;
         color: #333;
       }
@@ -331,30 +283,7 @@ $brown-light: #A68B6B;
       }
     }
 
-    // Table Styles
-    .table {
-      border: 1px solid #dee2e6;
-      border-radius: 0.5rem;
-      overflow: hidden;
 
-      th {
-        background: #f8f9fa;
-        color: #495057;
-        font-weight: 600;
-        border-bottom: 2px solid #dee2e6;
-        padding: 1rem 0.75rem;
-      }
-
-      td {
-        padding: 0.75rem;
-        vertical-align: middle;
-        border-bottom: 1px solid #dee2e6;
-      }
-
-      tbody tr:hover {
-        background: #f8f9fa;
-      }
-    }
 
     // Card Styles
     .card {
@@ -381,17 +310,15 @@ $brown-light: #A68B6B;
 
     // Attachment Box Styles (matching services-list service-box but without icons)
     .attachment-box {
-      border-radius: 12px;
+      border-radius: 10px;
       border: 2px solid var(--Color-20, #EDEDED);
       background: #FFF;
-      padding: 30px 40px;
+      padding: 16px;
       transition: ease 0.5s;
       color: var(--Color-16, #000);
-      font-family: "Expo Arabic";
-      font-size: 16px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: normal;
+      display: flex;
+      flex-direction: column;
+
       height: 100%;
 
       .card-title {
@@ -435,13 +362,7 @@ $brown-light: #A68B6B;
       }
     }
 
-    // Map Styles
-    #viewMap {
-      border: 2px solid #e9ecef;
-      border-radius: 0.5rem;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+
 
     // Badge Styles
     .badge {
@@ -476,138 +397,7 @@ $brown-light: #A68B6B;
       }
     }
 
-    // Button Styles
-    .btn {
-      border-radius: 0.375rem;
-      padding: 0.75rem 1.5rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-
-      &.btn-primary {
-        background: linear-gradient(135deg, $brown-primary 0%, $brown-dark 100%);
-        border: none;
-
-        &:hover:not(:disabled) {
-          background: linear-gradient(135deg, $brown-dark 0%, #5A4A30 100%);
-          transform: translateY(-1px);
-        }
-      }
-
-      &.btn-secondary {
-        background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
-        border: none;
-
-        &:hover:not(:disabled) {
-          background: linear-gradient(135deg, #545b62 0%, #3d4142 100%);
-          transform: translateY(-1px);
-        }
-      }
-
-      &.btn-outline-primary {
-        border: 1px solid $brown-primary;
-        color: $brown-primary;
-
-        &:hover:not(:disabled) {
-          background: $brown-primary;
-          color: white;
-          transform: translateY(-1px);
-        }
-      }
-
-      &.btn-sm {
-        padding: 0.5rem 1rem;
-        font-size: 0.875rem;
-      }
-
-      &.btn-next-style {
-        background: #8D734D;
-        border: none;
-        color: white;
-        border-radius: 20px;
-        padding: 0.5rem 1rem;
-        font-weight: 500;
-        font-size: 0.875rem;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.375rem;
-
-        &:hover:not(:disabled) {
-          background: #7A6340;
-          transform: translateY(-1px);
-          box-shadow: 0 4px 8px rgba(141, 115, 77, 0.3);
-        }
-
-        &:focus {
-          box-shadow: 0 0 0 0.2rem rgba(141, 115, 77, 0.25);
-        }
-
-        i {
-          font-size: 0.75rem;
-        }
-      }
-
-      &.btn-download-style {
-        background: #8D734D;
-        border: none;
-        color: white;
-        border-radius: 20px;
-        padding: 0.5rem 1rem;
-        font-weight: 500;
-        font-size: 0.875rem;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.375rem;
-
-        &:hover:not(:disabled) {
-          background: #7A6340;
-          transform: translateY(-1px);
-          box-shadow: 0 4px 8px rgba(141, 115, 77, 0.3);
-        }
-
-        &:focus {
-          box-shadow: 0 0 0 0.2rem rgba(141, 115, 77, 0.25);
-        }
-
-        i {
-          font-size: 0.75rem;
-        }
-      }
-
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-
-      // Button Link Styles (matching services-list)
-      &.btn-link {
-        color: var(--Color-16, #000);
-        font-family: "Expo Arabic";
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-        text-decoration: none;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        padding: 0;
-        background: none;
-        border: none;
-        transition: all 0.3s ease;
-
-        &:hover {
-          color: var(--Color-25, #8D734D);
-          transform: translateX(5px);
-          
-          svg {
-            transform: translateX(3px);
-          }
-        }
-      }
-    }
-
+   
     // Spinner
     .spinner-border-sm {
       width: 1rem;
@@ -639,33 +429,50 @@ $brown-light: #A68B6B;
     &:nth-child(6) { animation-delay: 0.6s; }
   }
 
-
-
-
-
   // Responsive Design
   @media (max-width: 768px) {
     .main-container {
       padding: 1rem;
     }
-
+    
     .step-navigation-item {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-
-      .step-container {
-        margin-right: 0;
-        margin-bottom: 1rem;
+      margin-bottom: 30px;
+    }
+    
+    .step-container {
+      .step-bg, .step {
+        width: 32px;
+        height: 32px;
       }
-
-      .connecting-line {
-        display: none;
+      
+      .step {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+        margin-top: 2px;
       }
+    }
+    
+    .connecting-line {
+      left: 15.5px; // Adjust for smaller circles
+      height: 30px;
+      top: 32px;
+    }
+    
+    .step-content-wrapper {
+      margin-left: 12px;
+    }
+    
+    .step-title {
+      font-size: 14px;
+    }
+    
+    .step-description {
+      font-size: 0.7rem;
     }
   }
 
-  // Attachment Upload Area Styles - Matching fasting-tent-request partner tab
+  // Attachment Upload Area Styles - Matching distribution-site-permit partner tab
   .upload-area {
     border: 2px dashed #d1d5db;
     border-radius: 8px;
@@ -736,23 +543,11 @@ $brown-light: #A68B6B;
     }
   }
 
-  // Table styles for attachments
-  .table {
-    th {
-      background-color: #8D734D;
-      color: white;
-      border-color: #8D734D;
-      font-weight: 600;
-    }
-    
-    td {
-      vertical-align: middle;
-    }
-  }
+
 
 
 @media (max-width: 576px) {
-  .view-fasting-tent-request-container {
+  .view-distribution-site-permit-container {
     .services {
       padding: 1rem 0;
     }
@@ -891,10 +686,9 @@ $brown-light: #A68B6B;
         flex: 1;
         background: #ffffff;
         border: 1px solid #dee2e6;
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        margin-left: 1rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-radius: 10px;
+        padding: 16px;
+        margin-left: 0;
         transition: all 0.3s ease;
         
         &:hover {
@@ -906,7 +700,7 @@ $brown-light: #A68B6B;
           display: flex;
           justify-content: between;
           align-items: center;
-          margin-bottom: 1rem;
+          margin-bottom: 8px;
           flex-wrap: wrap;
           gap: 1rem;
           
@@ -931,13 +725,8 @@ $brown-light: #A68B6B;
         }
         
         .department-name {
-          color: #2c3e50;
-          font-weight: 700;
-          font-size: 1.1rem;
-          margin-bottom: 1rem;
-          line-height: 1.4;
-          border-bottom: 2px solid #e9ecef;
-          padding-bottom: 0.5rem;
+          color: #1f1f1f;
+          font-size: 16px;
         }
         
         .step-details {
@@ -1207,7 +996,6 @@ $brown-light: #A68B6B;
     animation-delay: 0s !important; // Remove staggered animation on mobile
   }
   
-
   
   // Optimize attachment buttons for mobile
   :global(.ag-cell) {
@@ -1277,3 +1065,64 @@ $brown-light: #A68B6B;
     transition: none;
   }
 }
+
+// Error state styling
+.error-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  
+  .fas.fa-exclamation-triangle {
+    animation: pulse 2s infinite;
+    color: #dc3545;
+  }
+  
+  .alert {
+    text-align: left;
+    max-width: 100%;
+    word-break: break-word;
+    border-left: 4px solid #dc3545;
+    
+    &.alert-info {
+      border-left-color: #17a2b8;
+      background-color: #f8f9fa;
+      border-color: #bee5eb;
+      color: #0c5460;
+    }
+    
+    code {
+      background-color: #f8f9fa;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+  }
+  
+
+  
+  // Error message styling
+  h4 {
+    color: #dc3545;
+    font-weight: 600;
+  }
+  
+  p.text-muted {
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+}
+
+// @keyframes pulse {
+//   0% {
+//     transform: scale(1);
+//   }
+//   50% {
+//     transform: scale(1.1);
+//   }
+//   100% {
+//     transform: scale(1);
+//   }
+// }
+
+

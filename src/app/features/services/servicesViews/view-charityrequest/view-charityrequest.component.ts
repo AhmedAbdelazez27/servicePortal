@@ -17,6 +17,7 @@ import { WorkFlowCommentsService } from '../../../../core/services/workFlowComme
 import { AttachmentService } from '../../../../core/services/attachments/attachment.service';
 import { AttachmentsConfigDto } from '../../../../core/dtos/mainApplyService/mainApplyService.dto';
 import { AttachmentBase64Dto, CreateWorkFlowCommentDto, WorkflowCommentsType } from '../../../../core/dtos/workFlowComments/workFlowComments.dto';
+import { AttachmentsConfigType } from '../../../../core/dtos/attachments/attachments-config.dto';
 
 type AttachmentDto = {
   id?: number;
@@ -228,6 +229,7 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadMainApplyServiceData();
+    this.loadCommentAttachmentConfigs()
   }
   ngOnDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
@@ -534,6 +536,23 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
 
   // start comment attachment
+    loadCommentAttachmentConfigs(): void {
+      const sub = this.attachmentService.getAttachmentsConfigByType(
+        AttachmentsConfigType.Comment,
+        true,
+        null
+      ).subscribe({
+        next: (configs:any) => {
+          this.commentAttachmentConfigs = configs || [];
+          this.initializeCommentAttachments();
+        },
+        error: (error) => {
+          // Handle error silently
+        }
+      });
+      this.subscriptions.push(sub);
+    }
+
   // Comment management methods
   addWorkFlowComment(): void {
     if (!this.newCommentText.trim() || !this.targetWorkFlowStep?.id) {

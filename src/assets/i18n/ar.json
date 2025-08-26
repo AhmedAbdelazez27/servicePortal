@@ -644,7 +644,7 @@
     "VIEW_ATTACHMENT": "عرض المرفق",
     "WORKFLOW_COMMENTS": "تعليقات سير العمل",
     "WORKFLOW_COMMENTS_DESC": "عرض وإضافة تعليقات سير العمل",
-    "ADD_COMMENT": "إضافة تعليق",
+    "ADD_COMMENT": "إعادة ارسال الطلب",
     "NO_WORKFLOW_STEP_FOUND": "لم يتم العثور على خطوة سير عمل لإضافة التعليقات",
     "ENTER_COMMENT": "أدخل تعليق",
     "ATTACHMENTS": "المرفقات",

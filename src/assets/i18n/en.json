@@ -607,7 +607,7 @@
     "VIEW_ATTACHMENT": "View Attachment",
     "WORKFLOW_COMMENTS": "Workflow Comments",
     "WORKFLOW_COMMENTS_DESC": "View and add workflow comments",
-    "ADD_COMMENT": "Add Comment",
+    "ADD_COMMENT": "Resend request",
     "NO_WORKFLOW_STEP_FOUND": "No workflow step found for adding comments",
     "ENTER_COMMENT": "Enter comment",
     "ATTACHMENTS": "Attachments",
