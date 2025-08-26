@@ -77,29 +77,6 @@
             <!-- Section: Basic -->
             <div class="main-container mb-4">
               <div class="step-content">
-                <h5 class="mb-4">{{ 'CHARITY_EVENT_PERMIT.BASIC' | translate }}</h5>
-
-                <div class="row" *ngIf="charityEventPermit">
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">{{ 'CHARITY_EVENT_PERMIT.REQUEST_DATE' | translate }}</label>
-                    <div class="form-control-plaintext">{{ formatDateTime(charityEventPermit.requestDate) }}</div>
-                  </div>
-
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">{{ 'CHARITY_EVENT_PERMIT.ADVERTISEMENT_TYPE' | translate
-                      }}</label>
-                    <div class="form-control-plaintext">
-                      {{ charityEventPermit.advertisementTypeName || charityEventPermit.advertisementType || '-' }}
-                    </div>
-                  </div>
-
-                  <div class="col-12 mb-3">
-                    <label class="form-label fw-bold">{{ 'COMMON.STATUS' | translate }}</label>
-                    <div class="form-control-plaintext">
-                      {{ mainApplyService.lastStatus }}
-                    </div>
-                  </div>
-                </div>
                 <!-- Service Information Card (moved here from left) -->
                 <div class="service-info-card mb-4 p-3 bg-light rounded">
                   <h6 class="fw-bold">{{ 'COMMON.SERVICE_INFO' | translate }}</h6>
@@ -124,6 +101,30 @@
                     </div>
                   </div>
                 </div>
+                <h5 class="mb-4">{{ 'CHARITY_EVENT_PERMIT.BASIC' | translate }}</h5>
+
+                <div class="row" *ngIf="charityEventPermit">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">{{ 'CHARITY_EVENT_PERMIT.REQUEST_DATE' | translate }}</label>
+                    <div class="form-control-plaintext">{{ formatDateTime(charityEventPermit.requestDate) }}</div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">{{ 'CHARITY_EVENT_PERMIT.ADVERTISEMENT_TYPE' | translate
+                      }}</label>
+                    <div class="form-control-plaintext">
+                      {{ charityEventPermit.advertisementTypeName || charityEventPermit.advertisementType || '-' }}
+                    </div>
+                  </div>
+
+                  <div class="col-12 mb-3">
+                    <label class="form-label fw-bold">{{ 'COMMON.STATUS' | translate }}</label>
+                    <div class="form-control-plaintext">
+                      {{ mainApplyService.lastStatus }}
+                    </div>
+                  </div>
+                </div>
+                
               </div>
             </div>
 
@@ -219,11 +220,11 @@
                 <div class="accordion-item">
                   <h2 class="accordion-header" id="adsHeader">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                      data-bs-target="#adsSection" aria-expanded="true" aria-controls="adsSection">
+                      data-bs-target="#adsSection" aria-expanded="false" aria-controls="adsSection">
                       {{ 'CHARITY_EVENT_PERMIT.ADVERTISEMENTS' | translate }}
                     </button>
                   </h2>
-                  <div id="adsSection" class="accordion-collapse collapse show" aria-labelledby="adsHeader"
+                  <div id="adsSection" class="accordion-collapse collapse" aria-labelledby="adsHeader"
                     data-bs-parent="#charitySectionsAccordion">
                     <div class="accordion-body">
                       <!-- Section: Advertisements (original content preserved) -->
@@ -448,13 +449,14 @@
                 </div>
 
                 <div class="accordion-item">
-                  <h2 class="accordion-header">
+                  <h2 class="accordion-header" id="wfHeader">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                      data-bs-target="#wfComments" aria-expanded="true" aria-controls="wfComments">
+                      data-bs-target="#wfComments" aria-expanded="false" aria-controls="wfComments">
                       {{ 'COMMON.WORKFLOW_COMMENTS' | translate }}
                     </button>
                   </h2>
-                  <div id="wfComments" class="accordion-collapse collapse" data-bs-parent="#workflowAccordion">
+                  <div id="wfComments" class="accordion-collapse collapse" data-bs-parent="#charitySectionsAccordion"
+                    aria-labelledby="wfHeader">
                     <div class="accordion-body">
                       <div class="step-content">
 
