@@ -1,9 +1,9 @@
 <div class="view-distribution-site-permit-container">
     <section>
-        <div class="container services">
+        <div class="container ">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="title">{{ 'VIEW_DISTRIBUTION_SITE.TITLE' | translate }}</h4>
-                <button type="button" class="btn btn-secondary" (click)="goBack()">
+                <h4 class="title mb-0">{{ 'VIEW_DISTRIBUTION_SITE.TITLE' | translate }}</h4>
+                <button type="button" class="btn btn-gray" (click)="goBack()">
                     <i class="fas fa-arrow-left me-2"></i>
                     {{ 'COMMON.BACK' | translate }}
                 </button>
@@ -61,134 +61,49 @@
                 <!-- Tabs Navigation -->
                 <div class="col-lg-3 mb-4">
                     <div class="main-container h-100">
-                        <!-- Service Information Card -->
-                        <div class="service-info-card mb-3 p-3 bg-light rounded">
-                            <h6 class="fw-bold">{{ 'COMMON.SERVICE_INFO' | translate }}</h6>
-                            <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong> {{mainApplyService.applyNo}}</p>
-                            <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong> {{formatDate(mainApplyService.applyDate)}}</p>
-                            <p class="mb-1"><strong>{{ 'COMMON.STATUS' | translate }}:</strong> 
-                                <span class="badge bg-primary">{{mainApplyService.lastStatus}}</span>
-                            </p>
-                            <p class="mb-0" *ngIf="mainApplyService.permitNumber">
-                                <strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}:</strong> {{mainApplyService.permitNumber}}
-                            </p>
-                        </div>
 
-                        <!-- Tab 1: Workflow Process Steps -->
-                        <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(1)">
-                                <div class="step-bg"></div>
-                                <div class="step">
-                                    <span>1</span>
-                                </div>
-                            </div>
-                            <div class="connecting-line"></div>
-                            <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(1)" [class.text-primary]="isTabActive(1)">
-                                    {{ 'WORKFLOW.PROCESS_STEPS' | translate }}
-                                </span>
-                                <small class="d-block text-muted step-description">{{ 'WORKFLOW.PROCESS_STEPS_DESC' | translate }}</small>
-                            </div>
-                        </div>
+                        <div class="">
+                            <h6 class="fw-bold mb-3 text-primary">
+                                <i class="fas fa-route me-2"></i>
+                                {{ 'WORKFLOW.PROCESS_STEPS' | translate }}
+                            </h6>
 
-                        <!-- Tab 2: Basic Information -->
-                        <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(2)">
-                                <div class="step-bg"></div>
-                                <div class="step">
-                                    <span>2</span>
-                                </div>
-                            </div>
-                            <div class="connecting-line"></div>
-                            <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(2)" [class.text-primary]="isTabActive(2)">
-                                    {{ 'SHARED.TABS.BASIC_INFORMATION' | translate }}
-                                </span>
-                                <small class="d-block text-muted step-description">{{ 'SHARED.TABS.BASIC_INFO_DESC' | translate }}</small>
-                            </div>
-                        </div>
+                            <!-- Workflow Steps Timeline -->
+                            <div class="workflow-timeline">
+                                <div *ngFor="let step of workFlowSteps; let i = index; trackBy: trackByStepId"
+                                    class="workflow-step-item" [class.completed]="isStepCompleted(step.serviceStatus)"
+                                    [class.rejected]="isStepRejected(step.serviceStatus)"
+                                    [class.pending]="isStepPending(step.serviceStatus)"
+                                    [class.last-step]="i === workFlowSteps.length - 1">
 
-                        <!-- Tab 3: Location Details -->
-                        <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(3)">
-                                <div class="step-bg"></div>
-                                <div class="step">
-                                    <span>3</span>
-                                </div>
-                            </div>
-                            <div class="connecting-line"></div>
-                            <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(3)" [class.text-primary]="isTabActive(3)">
-                                    {{ 'SHARED.LOCATION.DETAILS' | translate }}
-                                </span>
-                                <small class="d-block text-muted step-description">{{ 'SHARED.LOCATION.DESC' | translate }}</small>
-                            </div>
-                        </div>
+                                    <!-- Step Circle with Icon -->
+                                    <div class="step-circle"
+                                        [style.background-color]="getStatusColor(step.serviceStatus)"
+                                        [style.border-color]="getStatusColor(step.serviceStatus)">
+                                        <i [class]="getStatusIcon(step.serviceStatus)"></i>
+                                    </div>
 
-                        <!-- Tab 4: Date Information -->
-                        <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(4)">
-                                <div class="step-bg"></div>
-                                <div class="step">
-                                    <span>4</span>
-                                </div>
-                            </div>
-                            <div class="connecting-line"></div>
-                            <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(4)" [class.text-primary]="isTabActive(4)">
-                                    {{ 'SHARED.TABS.DATE_DETAILS' | translate }}
-                                </span>
-                                <small class="d-block text-muted step-description">{{ 'SHARED.TABS.DATE_DETAILS_DESC' | translate }}</small>
-                            </div>
-                        </div>
+                                    <!-- Connecting Line -->
+                                    <div class="step-line" *ngIf="i < workFlowSteps.length - 1"
+                                        [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
 
-                        <!-- Tab 5: Partners -->
-                        <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(5)">
-                                <div class="step-bg"></div>
-                                <div class="step">
-                                    <span>5</span>
-                                </div>
-                            </div>
-                            <div class="connecting-line"></div>
-                            <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(5)" [class.text-primary]="isTabActive(5)">
-                                    {{ 'SHARED.PARTNERS.TITLE' | translate }}
-                                </span>
-                                <small class="d-block text-muted step-description">{{ 'SHARED.PARTNERS.TITLE' | translate }}</small>
-                            </div>
-                        </div>
+                                    <!-- Step Content -->
+                                    <div class="step-content">
+                                        <!-- Step Header -->
+                                        <div class="step-header">
+                                            <div class="step-number">{{ 'WORKFLOW.STEP' | translate }}
+                                                {{step.stepOrder}}</div>
+                                            <div class="step-status" [style.color]="getStatusColor(step.serviceStatus)">
+                                                <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
+                                                {{step.serviceStatusName || (getStatusLabel(step.serviceStatus) |
+                                                translate)}}
+                                            </div>
+                                        </div>
 
-                        <!-- Tab 6: Attachments -->
-                        <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(6)">
-                                <div class="step-bg"></div>
-                                <div class="step">
-                                    <span>6</span>
+                                        <!-- Department Name -->
+                                        <h6 class="department-name">{{step.departmentName}}</h6>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="connecting-line"></div>
-                            <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(6)" [class.text-primary]="isTabActive(6)">
-                                    {{ 'SHARED.ATTACHMENTS.TITLE' | translate }}
-                                </span>
-                                <small class="d-block text-muted step-description">{{ 'SHARED.ATTACHMENTS.VIEW_DESC' | translate }}</small>
-                            </div>
-                        </div>
-
-                        <!-- Tab 7: WorkFlow Comments -->
-                        <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(7)">
-                                <div class="step-bg"></div>
-                                <div class="step">
-                                    <span>7</span>
-                                </div>
-                            </div>
-                            <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(7)" [class.text-primary]="isTabActive(7)">
-                                    {{ 'COMMON.WORKFLOW_COMMENTS' | translate }}
-                                </span>
-                                <small class="d-block text-muted step-description">{{ 'COMMON.WORKFLOW_COMMENTS_DESC' | translate }}</small>
                             </div>
                         </div>
                     </div>
@@ -196,179 +111,178 @@
 
                 <!-- Content Area -->
                 <div class="col-lg-9 mb-4">
-                    <div class="main-container h-100">
-                        
-                        <!-- Tab 1: Workflow Process Steps -->
-                        <div *ngIf="currentTab === 1" class="step-content">
-                            <h5 class="mb-4">{{ 'WORKFLOW.PROCESS_STEPS' | translate }}</h5>
-                            
-                            <div class="row mt-4" *ngIf="workFlowSteps && workFlowSteps.length > 0">
-                                <div class="col-12">
-                                    <h6 class="fw-bold mb-3 text-primary">
-                                        <i class="fas fa-route me-2"></i>
-                                        {{ 'WORKFLOW.PROCESS_STEPS' | translate }}
-                                    </h6>
-                                    
-                                    <!-- Workflow Steps Timeline -->
-                                    <div class="workflow-timeline">
-                                        <div *ngFor="let step of workFlowSteps; let i = index; trackBy: trackByStepId" 
-                                             class="workflow-step-item"
-                                             [class.completed]="isStepCompleted(step.serviceStatus)"
-                                             [class.rejected]="isStepRejected(step.serviceStatus)"
-                                             [class.pending]="isStepPending(step.serviceStatus)"
-                                             [class.last-step]="i === workFlowSteps.length - 1">
-                                            
-                                            <!-- Step Circle with Icon -->
-                                            <div class="step-circle" 
-                                                 [style.background-color]="getStatusColor(step.serviceStatus)"
-                                                 [style.border-color]="getStatusColor(step.serviceStatus)">
-                                                <i [class]="getStatusIcon(step.serviceStatus)"></i>
-                                            </div>
-                                            
-                                            <!-- Connecting Line -->
-                                            <div class="step-line" *ngIf="i < workFlowSteps.length - 1"
-                                                 [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
-                                            
-                                            <!-- Step Content -->
-                                            <div class="step-content">
-                                                <!-- Step Header -->
-                                                <div class="step-header">
-                                                    <div class="step-number">{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}</div>
-                                                    <div class="step-status" 
-                                                         [style.color]="getStatusColor(step.serviceStatus)">
-                                                        <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
-                                                        {{step.serviceStatusName || (getStatusLabel(step.serviceStatus) | translate)}}
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Department Name -->
-                                                <h6 class="department-name">{{step.departmentName}}</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Tab 2: Basic Information -->
-                        <div *ngIf="currentTab === 2" class="step-content">
-                            <h5 class="mb-4">{{ 'SHARED.TABS.BASIC_INFORMATION' | translate }}</h5>
-                            
+
+                    <!-- Tab 2: Basic Information -->
+
+                    <div class="main-container mb-4">
+                        <div class="step-content">
+                            <h5 class="mb-4 gold">{{ 'SHARED.TABS.BASIC_INFORMATION' | translate }}</h5>
+
                             <div class="row" *ngIf="distributionSiteService">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.LOCATION_TYPE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{distributionSiteService.locationType || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.LOCATION_TYPE' | translate
+                                        }}</label>
+                                    <p class="mb-0">{{distributionSiteService.locationType || '-'}}</p>
                                 </div>
-                                
+
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.SUPERVISOR_NAME' | translate }}</label>
-                                    <div class="form-control-plaintext">{{distributionSiteService.supervisorName || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.SUPERVISOR_NAME' | translate
+                                        }}</label>
+                                    <p class="mb-0">{{distributionSiteService.supervisorName || '-'}}</p>
                                 </div>
-                                
+
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">{{ 'SHARED.FORMS.JOB_TITLE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{distributionSiteService.jopTitle || '-'}}</div>
+                                    <p class="mb-0">{{distributionSiteService.jopTitle || '-'}}</p>
                                 </div>
-                                
+
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.SUPERVISOR_MOBILE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{distributionSiteService.supervisorMobile || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.SUPERVISOR_MOBILE' | translate
+                                        }}</label>
+                                    <p class="mb-0">{{distributionSiteService.supervisorMobile || '-'}}</p>
                                 </div>
-                                
+
                                 <div class="col-md-12 mb-3">
                                     <label class="form-label fw-bold">{{ 'SHARED.FORMS.NOTES' | translate }}</label>
-                                    <div class="form-control-plaintext">{{distributionSiteService.notes || '-'}}</div>
+                                    <p class="mb-0">{{distributionSiteService.notes || '-'}}</p>
                                 </div>
                             </div>
 
 
                         </div>
 
-                        <!-- Tab 3: Location Details -->
-                        <div *ngIf="currentTab === 3" class="step-content">
-                            <h5 class="mb-4">{{ 'SHARED.LOCATION.DETAILS' | translate }}</h5>
-                            
+                        <!-- Service Information Card -->
+                        <div class="service-info-card  p-3 bg-light rounded">
+                            <h6 class="fw-bold">{{ 'COMMON.SERVICE_INFO' | translate }}</h6>
+                            <div class="row">
+                                <div class="col-xl-6">
+                                    <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong>
+                                        {{mainApplyService.applyNo}}</p>
+                                </div>
+                                <div class="col-xl-6">
+                                    <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong>
+                                        {{formatDate(mainApplyService.applyDate)}}</p>
+                                </div>
+                                <div class="col-xl-6">
+                                    <p class="mb-0" *ngIf="mainApplyService.permitNumber">
+                                        <strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}: </strong>
+                                        {{mainApplyService.permitNumber}}
+                                    </p>
+                                </div>
+                                <div class="col-xl-6">
+                                    <span class="badge bg-primary">{{mainApplyService.lastStatus}}</span>
+                                </div>
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Location Details -->
+
+                    <div class="main-container mb-4">
+                        <div class="step-content">
+                            <h5 class="mb-4 gold">{{ 'SHARED.LOCATION.DETAILS' | translate }}</h5>
+
                             <div *ngIf="distributionSiteService">
                                 <div class="row mb-4">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.OWNER_NAME' | translate }}</label>
-                                        <div class="form-control-plaintext">{{distributionSiteService.ownerName || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.OWNER_NAME' | translate
+                                            }}</label>
+                                        <p class="mb-0">{{distributionSiteService.ownerName || '-'}}</p>
                                     </div>
-                                    
+
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.REGION_NAME' | translate }}</label>
-                                        <div class="form-control-plaintext">{{distributionSiteService.regionName || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.REGION_NAME' | translate
+                                            }}</label>
+                                        <p class="mb-0">{{distributionSiteService.regionName || '-'}}</p>
                                     </div>
-                                    
+
                                     <div class="col-md-12 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.ADDRESS' | translate }}</label>
-                                        <div class="form-control-plaintext">{{distributionSiteService.address || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.ADDRESS' | translate
+                                            }}</label>
+                                        <p class="mb-0">{{distributionSiteService.address || '-'}}</p>
                                     </div>
-                                    
+
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.STREET_NAME' | translate }}</label>
-                                        <div class="form-control-plaintext">{{distributionSiteService.streetName || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.STREET_NAME' | translate
+                                            }}</label>
+                                        <p class="mb-0">{{distributionSiteService.streetName || '-'}}</p>
                                     </div>
-                                    
+
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.GROUND_NO' | translate }}</label>
-                                        <div class="form-control-plaintext">{{distributionSiteService.groundNo || '-'}}</div>
+                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.GROUND_NO' | translate
+                                            }}</label>
+                                        <p class="mb-0">{{distributionSiteService.groundNo || '-'}}</p>
                                     </div>
                                 </div>
 
                                 <!-- Map Display -->
-                                <div *ngIf="distributionSiteService.distributionSiteCoordinators" class="mb-4">
+                                <div *ngIf="distributionSiteService.distributionSiteCoordinators">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h6 class="fw-bold mb-0">{{ 'SHARED.LOCATION.ON_MAP' | translate }}</h6>
                                         <div>
-                                            <button type="button" class="btn btn-sm btn-outline-primary" (click)="refreshMap()" title="Refresh Map">
+                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                (click)="refreshMap()" title="Refresh Map">
                                                 <i class="fas fa-sync-alt me-1"></i>
                                                 {{ 'COMMON.REFRESH' | translate }}
                                             </button>
                                         </div>
                                     </div>
-                                    
+
                                     <div id="viewMap" style="height: 400px; width: 100%;" class="border rounded"></div>
-                                    
+
                                     <!-- Fallback when map fails to load -->
                                     <div *ngIf="mapLoadError" class="alert alert-warning mt-3">
                                         <i class="fas fa-exclamation-triangle me-2"></i>
-                                        <strong>{{ 'SHARED.MAP.LOADING_ISSUE' | translate }}:</strong> {{ 'SHARED.MAP.LOADING_ERROR' | translate }} 
-                                        <button type="button" class="btn btn-sm btn-outline-warning ms-2" (click)="refreshMap()">
+                                        <strong>{{ 'SHARED.MAP.LOADING_ISSUE' | translate }}:</strong> {{
+                                        'SHARED.MAP.LOADING_ERROR' | translate }}
+                                        <button type="button" class="btn btn-sm btn-outline-warning ms-2"
+                                            (click)="refreshMap()">
                                             <i class="fas fa-redo me-1"></i>
                                             {{ 'SHARED.MAP.TRY_AGAIN' | translate }}
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div *ngIf="!distributionSiteService" class="alert alert-info">
                                 {{ 'SHARED.LOCATION.NO_INFO' | translate }}
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Tab 4: Date Information -->
-                        <div *ngIf="currentTab === 4" class="step-content">
-                            <h5 class="mb-4">{{ 'SHARED.TABS.DATE_DETAILS' | translate }}</h5>
-                            
+                    <!-- Tab 4: Date Information -->
+
+                    <div class="main-container mb-4">
+                        <div class="step-content">
+                            <h5 class="mb-4 gold">{{ 'SHARED.TABS.DATE_DETAILS' | translate }}</h5>
+
                             <div class="row" *ngIf="distributionSiteService">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.START_DATE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{formatDate(distributionSiteService.startDate ?? null) || '-'}}</div>
+                                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.START_DATE' | translate
+                                        }}</label>
+                                    <p class="mb-0">{{formatDate(distributionSiteService.startDate ?? null) || '-'}}</p>
                                 </div>
-                                
+
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">{{ 'SHARED.FORMS.END_DATE' | translate }}</label>
-                                    <div class="form-control-plaintext">{{formatDate(distributionSiteService.endDate ?? null) || '-'}}</div>
+                                    <p class="mb-0">{{formatDate(distributionSiteService.endDate ?? null) || '-'}}</p>
                                 </div>
                             </div>
-                            
+
                             <!-- Toggle Switches Section -->
                             <div class="row">
                                 <!-- Consultant approved from Police Toggle -->
                                 <div class="col-12 mb-3">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" [checked]="distributionSiteService?.isConsultantApprovedFromPolice" disabled id="consultantApprovedView">
+                                        <input class="form-check-input" type="checkbox"
+                                            [checked]="distributionSiteService?.isConsultantApprovedFromPolice" disabled
+                                            id="consultantApprovedView">
                                         <label class="form-check-label" for="consultantApprovedView">
                                             {{ 'SHARED.FORMS.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
                                         </label>
@@ -377,172 +291,196 @@
                                 <!-- Consultant from Ajman Toggle -->
                                 <div class="col-12 mb-3">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" [checked]="distributionSiteService?.isConsultantFromAjman" disabled id="consultantFromAjmanView">
+                                        <input class="form-check-input" type="checkbox"
+                                            [checked]="distributionSiteService?.isConsultantFromAjman" disabled
+                                            id="consultantFromAjmanView">
                                         <label class="form-check-label" for="consultantFromAjmanView">
                                             {{ 'SHARED.FORMS.CONSULTANT_FROM_AJMAN' | translate }}
                                         </label>
                                     </div>
                                 </div>
                             </div>
-                                
-                            
-                        </div>
 
-                        <!-- Tab 5: Partners -->
-                        <div *ngIf="currentTab === 5" class="step-content">
-                            <h5 class="mb-4">{{ 'SHARED.PARTNERS.TITLE' | translate }}</h5>
-                            
-                            <div *ngIf="partners && partners.length > 0">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>{{ 'COMMON.NAME' | translate }}</th>
-                                                <th>{{ 'COMMON.TYPE' | translate }}</th>
-                                                <th>{{ 'COMMON.LICENSE_NUMBER' | translate }}</th>
-                                                <th>{{ 'COMMON.LICENSE_ISSUER' | translate }}</th>
-                                                <th>{{ 'COMMON.LICENSE_EXPIRY' | translate }}</th>
-                                                <th>{{ 'COMMON.CONTACT_DETAILS' | translate }}</th>
-                                                <th>{{ 'COMMON.ATTACHMENTS' | translate }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr *ngFor="let partner of partners">
-                                                <td>{{partner.name || '-'}}</td>
-                                                <td>{{partner.typeName || getPartnerTypeName(partner.type)}}</td>
-                                                <td>{{partner.licenseNumber || '-'}}</td>
-                                                <td>{{partner.licenseIssuer || '-'}}</td>
-                                                <td>{{formatDate(partner.licenseExpiryDate) || '-'}}</td>
-                                                <td>{{partner.contactDetails || '-'}}</td>
-                                                <td class="text-center">
-                                                    <button *ngIf="partner.attachments && partner.attachments.length > 0" 
-                                                            class="btn btn-next-style"
-                                                            data-bs-toggle="modal" 
-                                                            data-bs-target="#partnerAttachmentModal"
-                                                            (click)="viewPartnerAttachments(partner)">
-                                                        <i class="fas fa-eye me-1"></i>
-                                                        {{ 'COMMON.VIEW' | translate }} ({{partner.attachments.length}})
-                                                    </button>
-                                                    <button *ngIf="!partner.attachments || partner.attachments.length === 0" 
-                                                            class="btn btn-next-style"
-                                                            data-bs-toggle="modal" 
-                                                            data-bs-target="#partnerAttachmentModal"
-                                                            (click)="fetchPartnerAttachments(partner)">
-                                                        <i class="fas fa-eye me-1"></i>
-                                                        {{ 'COMMON.VIEW' | translate }}
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            
-                            <div *ngIf="!partners || partners.length === 0" class="alert alert-info">
-                                {{ 'SHARED.PARTNERS.NO_PARTNERS' | translate }}
-                            </div>
-                        </div>
 
-                        <!-- Tab 6: Attachments -->
-                        <div *ngIf="currentTab === 6" class="step-content">
-                            <h5 class="mb-4">{{ 'SHARED.ATTACHMENTS.TITLE' | translate }}</h5>
-                            
-                            <div *ngIf="attachments && attachments.length > 0">
-                                <div class="row">
-                                    <div class="col-xl-4 col-lg-6 mb-4" *ngFor="let attachment of attachments">
-                                        <div class="attachment-box">
-                                            <h6 class="card-title">{{attachment.attachmentTitle || ('SHARED.ATTACHMENTS.ATTACHMENT' | translate)}}</h6>
-                                            <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}: {{formatDateTime(attachment.lastModified)}}</p>
-                                            <div class="d-flex justify-content-end">
-                                                <button class="btn btn-next-style me-2" (click)="viewAttachment(attachment)">
-                                                    <i class="fas fa-eye me-1"></i>
-                                                    {{ 'COMMON.VIEW' | translate }}
-                                                </button>
-                                                <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
-                                                    <i class="fas fa-download me-1"></i>
-                                                    {{ 'COMMON.DOWNLOAD' | translate }}
-                                                </button>
+                        </div>
+                    </div>
+
+                   
+                    <div class="main-container p-0">
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button " type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                       {{ 'SHARED.PARTNERS.TITLE' | translate }}
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show"
+                                    data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <div class="step-content">
+
+                                            <div *ngIf="partners && partners.length > 0">
+                                                <div class="table-responsive">
+                                                    <table class="table new-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>{{ 'COMMON.NAME' | translate }}</th>
+                                                                <th>{{ 'COMMON.TYPE' | translate }}</th>
+                                                                <th>{{ 'COMMON.LICENSE_NUMBER' | translate }}</th>
+                                                                <th>{{ 'COMMON.LICENSE_ISSUER' | translate }}</th>
+                                                                <th>{{ 'COMMON.LICENSE_EXPIRY' | translate }}</th>
+                                                                <th>{{ 'COMMON.CONTACT_DETAILS' | translate }}</th>
+                                                                <th>{{ 'COMMON.ATTACHMENTS' | translate }}</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let partner of partners">
+                                                                <td>{{partner.name || '-'}}</td>
+                                                                <td>{{partner.typeName ||
+                                                                    getPartnerTypeName(partner.type)}}
+                                                                </td>
+                                                                <td>{{partner.licenseNumber || '-'}}</td>
+                                                                <td>{{partner.licenseIssuer || '-'}}</td>
+                                                                <td>{{formatDate(partner.licenseExpiryDate) || '-'}}
+                                                                </td>
+                                                                <td>{{partner.contactDetails || '-'}}</td>
+                                                                <td class="text-center">
+                                                                    <button
+                                                                        *ngIf="partner.attachments && partner.attachments.length > 0"
+                                                                        class="btn btn-next-style"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#partnerAttachmentModal"
+                                                                        (click)="viewPartnerAttachments(partner)">
+                                                                        <i class="fas fa-eye me-1"></i>
+                                                                        {{ 'COMMON.VIEW' | translate }}
+                                                                        ({{partner.attachments.length}})
+                                                                    </button>
+                                                                    <button
+                                                                        *ngIf="!partner.attachments || partner.attachments.length === 0"
+                                                                        class="btn btn-next-style"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#partnerAttachmentModal"
+                                                                        (click)="fetchPartnerAttachments(partner)">
+                                                                        <i class="fas fa-eye me-1"></i>
+                                                                        {{ 'COMMON.VIEW' | translate }}
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div *ngIf="!partners || partners.length === 0" class="alert alert-info">
+                                                {{ 'SHARED.PARTNERS.NO_PARTNERS' | translate }}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div *ngIf="!attachments || attachments.length === 0" class="alert alert-info">
-                                {{ 'SHARED.ATTACHMENTS.NO_ATTACHMENTS' | translate }}
-                            </div>
-                        </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        {{ 'SHARED.ATTACHMENTS.TITLE' | translate }}
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <div class="step-content">
 
-                        <!-- Tab 7: WorkFlow Comments -->
-                        <div *ngIf="currentTab === 7" class="step-content">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="mb-0">{{ 'COMMON.WORKFLOW_COMMENTS' | translate }}</h5>
-                                <button *ngIf="targetWorkFlowStep" 
-                                        type="button" 
-                                        class="btn btn-gold"
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#commentModal">
-                                    <i class="fas fa-plus me-2"></i>
-                                    {{ 'COMMON.ADD_COMMENT' | translate }}
-                                </button>
-                            </div>
-                            
-                            <!-- Loading state -->
-                            <div *ngIf="isLoadingComments" class="text-center py-5">
-                                <div class="spinner-border spinner-border-sm" role="status">
-                                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+                                            <div *ngIf="attachments && attachments.length > 0">
+                                                <div class="row">
+                                                    <div class="col-xl-4 col-lg-6 mb-4"
+                                                        *ngFor="let attachment of attachments">
+                                                        <div class="attachment-box">
+                                                            <h6 class="card-title">{{attachment.attachmentTitle ||
+                                                                ('SHARED.ATTACHMENTS.ATTACHMENT' | translate)}}</h6>
+                                                            <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}:
+                                                                {{formatDateTime(attachment.lastModified)}}</p>
+                                                            <div class="d-flex justify-content-between mt-auto">
+                                                                <button class="btn btn-next-style me-2"
+                                                                    (click)="viewAttachment(attachment)">
+                                                                    <i class="fas fa-eye me-1"></i>
+                                                                    {{ 'COMMON.VIEW' | translate }}
+                                                                </button>
+                                                                <button class="btn btn-download-style"
+                                                                    (click)="downloadAttachment(attachment)">
+                                                                    <i class="fas fa-download me-1"></i>
+                                                                    {{ 'COMMON.DOWNLOAD' | translate }}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div *ngIf="!attachments || attachments.length === 0"
+                                                class="alert alert-info">
+                                                {{ 'SHARED.ATTACHMENTS.NO_ATTACHMENTS' | translate }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <span class="ms-2">{{ 'COMMON.LOADING_COMMENTS' | translate }}</span>
                             </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseThree" aria-expanded="false"
+                                        aria-controls="collapseThree">
+                                        {{ 'COMMON.WORKFLOW_COMMENTS' | translate }}
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse"
+                                    data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <div class="step-content">
+                                            <div class="d-flex justify-content-end align-items-center mb-4">
+                                                <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold"
+                                                    data-bs-toggle="modal" data-bs-target="#commentModal">
+                                                    <i class="fas fa-plus me-2"></i>
+                                                    {{ 'COMMON.ADD_COMMENT' | translate }}
+                                                </button>
+                                            </div>
 
-                            <!-- Comments Data Table -->
-                            <div *ngIf="!isLoadingComments">
-                                <app-generic-data-table
-                                    [columnDefs]="commentsColumnDefs"
-                                    [rowData]="allWorkFlowComments"
-                                    [totalCount]="allWorkFlowComments.length"
-                                    [pageSize]="10"
-                                    [currentPage]="0"
-                                    [showActionColumn]="false"
-                                    [columnHeaderMap]="commentsColumnHeaderMap"
-                                    (actionClick)="onCommentsTableAction($event)"
-                                    (cellClicked)="onTableCellClick($event)">
-                                </app-generic-data-table>
+                                            <!-- Loading state -->
+                                            <div *ngIf="isLoadingComments" class="text-center py-5">
+                                                <div class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate
+                                                        }}</span>
+                                                </div>
+                                                <span class="ms-2">{{ 'COMMON.LOADING_COMMENTS' | translate }}</span>
+                                            </div>
+
+                                            <!-- Comments Data Table -->
+                                            <div *ngIf="!isLoadingComments">
+                                                <app-generic-data-table [columnDefs]="commentsColumnDefs"
+                                                    [rowData]="allWorkFlowComments"
+                                                    [totalCount]="allWorkFlowComments.length" [pageSize]="10"
+                                                    [currentPage]="0" [showActionColumn]="false"
+                                                    [columnHeaderMap]="commentsColumnHeaderMap"
+                                                    (actionClick)="onCommentsTableAction($event)"
+                                                    (cellClicked)="onTableCellClick($event)">
+                                                </app-generic-data-table>
+                                            </div>
+
+                                            <!-- No workflow step warning -->
+                                            <div *ngIf="!targetWorkFlowStep" class="alert alert-warning">
+                                                {{ 'COMMON.NO_WORKFLOW_STEP_FOUND' | translate }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
-                            <!-- No workflow step warning -->
-                            <div *ngIf="!targetWorkFlowStep" class="alert alert-warning">
-                                {{ 'COMMON.NO_WORKFLOW_STEP_FOUND' | translate }}
-                            </div>
-                        </div>
-
-
-
-                        <!-- Navigation Buttons -->
-                        <div class="d-flex justify-content-between mt-4">
-                            <button type="button" 
-                                    class="btn btn-secondary" 
-                                    (click)="previousTab()"
-                                    [disabled]="currentTab === 1">
-                                <i class="fas fa-chevron-left me-2"></i>
-                                {{ 'COMMON.PREVIOUS' | translate }}
-                            </button>
-                            
-                            <div class="text-center">
-                                <small class="text-muted">
-                                    {{ 'COMMON.TAB' | translate }} {{currentTab}} {{ 'COMMON.OF' | translate }} {{totalTabs}}
-                                </small>
-                            </div>
-                            
-                            <button type="button" 
-                                    class="btn btn-primary" 
-                                    (click)="nextTab()"
-                                    [disabled]="currentTab === totalTabs">
-                                {{ 'COMMON.NEXT' | translate }}
-                                <i class="fas fa-chevron-right ms-2"></i>
-                            </button>
                         </div>
                     </div>
+
+
+
+
+
                 </div>
             </div>
 
@@ -570,17 +508,14 @@
                 <form [formGroup]="commentForm" (ngSubmit)="addWorkFlowComment()">
                     <div class="mb-3">
                         <label for="commentText" class="form-label">{{ 'COMMON.COMMENT' | translate }}</label>
-                        <textarea class="form-control" 
-                                  id="commentText" 
-                                  rows="4"
-                                  [(ngModel)]="newCommentText"
-                                  [ngModelOptions]="{standalone: true}"
-                                  placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
-                                  required></textarea>
+                        <textarea class="form-control" id="commentText" rows="4" [(ngModel)]="newCommentText"
+                            [ngModelOptions]="{standalone: true}" placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
+                            required></textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">{{ 'COMMON.ATTACHMENTS' | translate }} ({{ 'COMMON.OPTIONAL' | translate }})</label>
+                        <label class="form-label">{{ 'COMMON.ATTACHMENTS' | translate }} ({{ 'COMMON.OPTIONAL' |
+                            translate }})</label>
 
                         <!-- Comment Attachment Configurations -->
                         <div *ngIf="commentAttachmentConfigs.length > 0" class="table-responsive">
@@ -596,48 +531,48 @@
                                     <tr *ngFor="let config of commentAttachmentConfigs">
                                         <td>
                                             {{ getCommentAttachmentName(config) }}
-                                            <span *ngIf="isCommentAttachmentMandatory(config.id!)" class="text-danger ms-1">*</span>
+                                            <span *ngIf="isCommentAttachmentMandatory(config.id!)"
+                                                class="text-danger ms-1">*</span>
                                         </td>
                                         <td>
-                                            <div *ngIf="!commentSelectedFiles[config.id!] && !commentFilePreviews[config.id!]" 
-                                                 class="upload-area"
-                                                 (dragover)="onCommentDragOver($event)"
-                                                 (dragleave)="onCommentDragLeave($event)"
-                                                 (drop)="onCommentDrop($event, config.id!)"
-                                                 [class.drag-over]="isCommentDragOver"
-                                                 [class.border-danger]="isCommentAttachmentMandatory(config.id!) && !commentSelectedFiles[config.id!] && !commentFilePreviews[config.id!] && commentValidationSubmitted"
-                                                 [class.border-success]="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]">
-                                                <input type="file" 
-                                                       class="d-none" 
-                                                       [id]="'comment-file-' + config.id"
-                                                       (change)="onCommentFileSelected($event, config.id!)"
-                                                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                            <div *ngIf="!commentSelectedFiles[config.id!] && !commentFilePreviews[config.id!]"
+                                                class="upload-area" (dragover)="onCommentDragOver($event)"
+                                                (dragleave)="onCommentDragLeave($event)"
+                                                (drop)="onCommentDrop($event, config.id!)"
+                                                [class.drag-over]="isCommentDragOver"
+                                                [class.border-danger]="isCommentAttachmentMandatory(config.id!) && !commentSelectedFiles[config.id!] && !commentFilePreviews[config.id!] && commentValidationSubmitted"
+                                                [class.border-success]="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]">
+                                                <input type="file" class="d-none" [id]="'comment-file-' + config.id"
+                                                    (change)="onCommentFileSelected($event, config.id!)"
+                                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                                                 <label [for]="'comment-file-' + config.id" class="upload-label">
                                                     <i class="fas fa-cloud-upload-alt mb-2"></i>
                                                     <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
-                                                    <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
+                                                    <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' |
+                                                        translate }}</small>
                                                 </label>
                                             </div>
-                                            
-                                            <div *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]" class="uploaded-file">
+
+                                            <div *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]"
+                                                class="uploaded-file">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-file me-2 text-success"></i>
-                                                    <span class="file-name">{{ commentAttachments[config.id!].fileName || ('SHARED.ATTACHMENTS.FILE' | translate) }}</span>
+                                                    <span class="file-name">{{ commentAttachments[config.id!].fileName
+                                                        || ('SHARED.ATTACHMENTS.FILE' | translate) }}</span>
                                                 </div>
                                                 <div *ngIf="commentFilePreviews[config.id!]" class="mt-2">
-                                                    <img [src]="commentFilePreviews[config.id!]" 
-                                                         class="img-thumbnail" 
-                                                         style="max-height: 100px; max-width: 100px;"
-                                                         *ngIf="commentSelectedFiles[config.id!].type?.startsWith('image/')"
-                                                         [alt]="commentAttachments[config.id!].fileName || 'File'">
+                                                    <img [src]="commentFilePreviews[config.id!]" class="img-thumbnail"
+                                                        style="max-height: 100px; max-width: 100px;"
+                                                        *ngIf="commentSelectedFiles[config.id!].type?.startsWith('image/')"
+                                                        [alt]="commentAttachments[config.id!].fileName || 'File'">
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <button *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]" 
-                                                    type="button" 
-                                                    class="btn btn-sm btn-danger" 
-                                                    (click)="removeCommentFile(config.id!)">
+                                            <button
+                                                *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]"
+                                                type="button" class="btn btn-sm btn-danger"
+                                                (click)="removeCommentFile(config.id!)">
                                                 <i class="fas fa-trash"></i> {{ 'COMMON.REMOVE' | translate }}
                                             </button>
                                         </td>
@@ -645,22 +580,19 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <!-- Legacy file input (keeping for backward compatibility) -->
                         <div *ngIf="commentAttachmentConfigs.length === 0" class="mb-3">
-                            <input type="file" 
-                                   class="form-control" 
-                                   id="commentFiles" 
-                                   multiple
-                                   (change)="onFileSelected($event)">
-                            
+                            <input type="file" class="form-control" id="commentFiles" multiple
+                                (change)="onFileSelected($event)">
+
                             <div *ngIf="selectedFiles.length > 0" class="mt-2">
                                 <div class="d-flex flex-wrap gap-2">
-                                    <span *ngFor="let file of selectedFiles; let i = index" 
-                                          class="badge bg-light text-dark border">
+                                    <span *ngFor="let file of selectedFiles; let i = index"
+                                        class="badge bg-light text-dark border">
                                         {{file.name}}
-                                        <button type="button" class="btn-close btn-close-sm ms-2" 
-                                                (click)="removeSelectedFile(i)"></button>
+                                        <button type="button" class="btn-close btn-close-sm ms-2"
+                                            (click)="removeSelectedFile(i)"></button>
                                     </span>
                                 </div>
                             </div>
@@ -672,10 +604,8 @@
                 <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
                     {{ 'COMMON.CANCEL' | translate }}
                 </button>
-                <button type="button" 
-                        class="btn btn-gold"
-                        (click)="addWorkFlowComment()"
-                        [disabled]="!newCommentText.trim() || isSavingComment">
+                <button type="button" class="btn btn-gold" (click)="addWorkFlowComment()"
+                    [disabled]="!newCommentText.trim() || isSavingComment">
                     <span *ngIf="isSavingComment" class="spinner-border spinner-border-sm me-2" role="status"></span>
                     {{ 'COMMON.ADD_COMMENT' | translate }}
                 </button>
@@ -703,13 +633,14 @@
                     </div>
                     <p class="mt-3 text-muted">{{ 'COMMON.LOADING_ATTACHMENTS' | translate }}</p>
                 </div>
-                
+
                 <!-- No Attachments State -->
-                <div *ngIf="!isLoadingAttachments && selectedCommentAttachments.length === 0" class="text-center text-muted py-4">
+                <div *ngIf="!isLoadingAttachments && selectedCommentAttachments.length === 0"
+                    class="text-center text-muted py-4">
                     <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
                     <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
                 </div>
-                
+
                 <!-- Attachments List -->
                 <div *ngIf="!isLoadingAttachments && selectedCommentAttachments.length > 0" class="row g-3">
                     <div *ngFor="let attachment of selectedCommentAttachments" class="col-md-6 col-lg-4">
@@ -718,15 +649,14 @@
                                 <div class="mb-3">
                                     <i class="fas fa-file-alt fa-2x text-primary"></i>
                                 </div>
-                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('SHARED.ATTACHMENTS.ATTACHMENT' | translate) }}</h6>
+                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle ||
+                                    ('SHARED.ATTACHMENTS.ATTACHMENT' | translate) }}</h6>
                                 <div class="d-grid gap-2">
-                                    <button class="btn btn-download-style" 
-                                            (click)="downloadAttachment(attachment)">
+                                    <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
                                         <i class="fas fa-download me-1"></i>
                                         {{ 'COMMON.DOWNLOAD' | translate }}
                                     </button>
-                                    <button class="btn btn-next-style" 
-                                            (click)="viewAttachment(attachment)">
+                                    <button class="btn btn-next-style" (click)="viewAttachment(attachment)">
                                         <i class="fas fa-eye me-1"></i>
                                         {{ 'COMMON.VIEW' | translate }}
                                     </button>
@@ -746,7 +676,8 @@
 </div>
 
 <!-- Partner Attachment Preview Modal -->
-<div class="modal fade" id="partnerAttachmentModal" tabindex="-1" aria-labelledby="partnerAttachmentModalLabel" aria-hidden="true">
+<div class="modal fade" id="partnerAttachmentModal" tabindex="-1" aria-labelledby="partnerAttachmentModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -765,13 +696,14 @@
                     </div>
                     <p class="mt-3 text-muted">{{ 'COMMON.LOADING_ATTACHMENTS' | translate }}</p>
                 </div>
-                
+
                 <!-- No Attachments State -->
-                <div *ngIf="!isLoadingPartnerAttachments && selectedPartnerAttachments.length === 0" class="text-center text-muted py-4">
+                <div *ngIf="!isLoadingPartnerAttachments && selectedPartnerAttachments.length === 0"
+                    class="text-center text-muted py-4">
                     <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
                     <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
                 </div>
-                
+
                 <!-- Attachments List -->
                 <div *ngIf="!isLoadingPartnerAttachments && selectedPartnerAttachments.length > 0" class="row g-3">
                     <div *ngFor="let attachment of selectedPartnerAttachments" class="col-md-6 col-lg-4">
@@ -780,15 +712,14 @@
                                 <div class="mb-3">
                                     <i class="fas fa-file-alt fa-2x text-success"></i>
                                 </div>
-                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('SHARED.ATTACHMENTS.ATTACHMENT' | translate) }}</h6>
+                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle ||
+                                    ('SHARED.ATTACHMENTS.ATTACHMENT' | translate) }}</h6>
                                 <div class="d-grid gap-2">
-                                    <button class="btn btn-download-style" 
-                                            (click)="downloadAttachment(attachment)">
+                                    <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
                                         <i class="fas fa-download me-1"></i>
                                         {{ 'COMMON.DOWNLOAD' | translate }}
                                     </button>
-                                    <button class="btn btn-next-style" 
-                                            (click)="viewAttachment(attachment)">
+                                    <button class="btn btn-next-style" (click)="viewAttachment(attachment)">
                                         <i class="fas fa-eye me-1"></i>
                                         {{ 'COMMON.VIEW' | translate }}
                                     </button>
@@ -806,5 +737,3 @@
         </div>
     </div>
 </div>
-
-

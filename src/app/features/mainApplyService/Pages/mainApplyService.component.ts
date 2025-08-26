@@ -76,7 +76,7 @@ export class MainApplyServiceComponent {
     this.buildColumnDefs();
     this.rowActions = [
       { label: this.translate.instant('Common.ViewInfo'), icon: 'icon-frame-view', action: 'onViewInfo' },
-      { label: this.translate.instant('Common.ViewInfo'), icon: 'icon-frame-view', action: 'onRequestComplaint' },
+      { label: this.translate.instant('Common.requestComplaint'), icon: 'icon-frame-view', action: 'onRequestComplaint' },
     ];
    
     this.getLoadDataGrid({ pageNumber: 1, pageSize: this.pagination.take });
