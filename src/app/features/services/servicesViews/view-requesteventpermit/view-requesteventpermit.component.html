@@ -477,7 +477,14 @@
               <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
                 <h6 class="mb-0">{{ 'COMMON.WORKFLOW_COMMENTS' | translate }}</h6>
               </div>
-
+              <button *ngIf="targetWorkFlowStep" 
+                                        type="button" 
+                                        class="btn btn-gold"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#commentModal">
+                                    <i class="fas fa-plus me-2"></i>
+                                    {{ 'COMMON.ADD_COMMENT' | translate }}
+                                </button>
               <app-generic-data-table
                 [columnDefs]="commentsColumnDefs"
                 [rowData]="allWorkFlowComments"
@@ -626,4 +633,130 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Add Comment Modal -->
+<div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commentModalLabel">{{ 'COMMON.ADD_COMMENT' | translate }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form [formGroup]="commentForm" (ngSubmit)="addWorkFlowComment()">
+                    <div class="mb-3">
+                        <label for="commentText" class="form-label">{{ 'COMMON.COMMENT' | translate }}</label>
+                        <textarea class="form-control" 
+                                  id="commentText" 
+                                  rows="4"
+                                  [(ngModel)]="newCommentText"
+                                  [ngModelOptions]="{standalone: true}"
+                                  placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
+                                  required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ 'COMMON.ATTACHMENTS' | translate }} ({{ 'COMMON.OPTIONAL' | translate }})</label>
+
+                        <!-- Comment Attachment Configurations -->
+                        <div *ngIf="commentAttachmentConfigs.length > 0" class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
+                                        <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                        <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let config of commentAttachmentConfigs">
+                                        <td>
+                                            {{ getCommentAttachmentName(config) }}
+                                            <span *ngIf="isCommentAttachmentMandatory(config.id!)" class="text-danger ms-1">*</span>
+                                        </td>
+                                        <td>
+                                            <div *ngIf="!commentSelectedFiles[config.id!] && !commentFilePreviews[config.id!]" 
+                                                 class="upload-area"
+                                                 (dragover)="onCommentDragOver($event)"
+                                                 (dragleave)="onCommentDragLeave($event)"
+                                                 (drop)="onCommentDrop($event, config.id!)"
+                                                 [class.drag-over]="isCommentDragOver"
+                                                 [class.border-danger]="isCommentAttachmentMandatory(config.id!) && !commentSelectedFiles[config.id!] && !commentFilePreviews[config.id!] && commentValidationSubmitted"
+                                                 [class.border-success]="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]">
+                                                <input type="file" 
+                                                       class="d-none" 
+                                                       [id]="'comment-file-' + config.id"
+                                                       (change)="onCommentFileSelected($event, config.id!)"
+                                                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                <label [for]="'comment-file-' + config.id" class="upload-label">
+                                                    <i class="fas fa-cloud-upload-alt mb-2"></i>
+                                                    <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
+                                                    <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
+                                                </label>
+                                            </div>
+                                            
+                                            <div *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]" class="uploaded-file">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-file me-2 text-success"></i>
+                                                    <span class="file-name">{{ commentAttachments[config.id!].fileName || ('SHARED.ATTACHMENTS.FILE' | translate) }}</span>
+                                                </div>
+                                                <div *ngIf="commentFilePreviews[config.id!]" class="mt-2">
+                                                    <img [src]="commentFilePreviews[config.id!]" 
+                                                         class="img-thumbnail" 
+                                                         style="max-height: 100px; max-width: 100px;"
+                                                         *ngIf="commentSelectedFiles[config.id!].type?.startsWith('image/')"
+                                                         [alt]="commentAttachments[config.id!].fileName || 'File'">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]" 
+                                                    type="button" 
+                                                    class="btn btn-sm btn-danger" 
+                                                    (click)="removeCommentFile(config.id!)">
+                                                <i class="fas fa-trash"></i> {{ 'COMMON.REMOVE' | translate }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Legacy file input (keeping for backward compatibility) -->
+                        <div *ngIf="commentAttachmentConfigs.length === 0" class="mb-3">
+                            <input type="file" 
+                                   class="form-control" 
+                                   id="commentFiles" 
+                                   multiple
+                                   (change)="onFileSelected($event)">
+                            
+                            <div *ngIf="selectedFiles.length > 0" class="mt-2">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span *ngFor="let file of selectedFiles; let i = index" 
+                                          class="badge bg-light text-dark border">
+                                        {{file.name}}
+                                        <button type="button" class="btn-close btn-close-sm ms-2" 
+                                                (click)="removeSelectedFile(i)"></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
+                    {{ 'COMMON.CANCEL' | translate }}
+                </button>
+                <button type="button" 
+                        class="btn btn-gold"
+                        (click)="addWorkFlowComment()"
+                        [disabled]="!newCommentText.trim() || isSavingComment">
+                    <span *ngIf="isSavingComment" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    {{ 'COMMON.ADD_COMMENT' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

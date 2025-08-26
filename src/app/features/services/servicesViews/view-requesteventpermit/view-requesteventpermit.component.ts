@@ -165,6 +165,8 @@ export enum ServiceStatus {
 import { MainApplyService } from '../../../../core/services/mainApplyService/mainApplyService.service';
 import { WorkFlowCommentsService } from '../../../../core/services/workFlowComments/workFlowComments.service';
 import { AttachmentService } from '../../../../core/services/attachments/attachment.service';
+import { AttachmentsConfigDto } from '../../../../core/dtos/mainApplyService/mainApplyService.dto';
+import { AttachmentBase64Dto, CreateWorkFlowCommentDto, WorkflowCommentsType } from '../../../../core/dtos/workFlowComments/workFlowComments.dto';
 
 @Component({
   selector: 'app-view-requesteventpermit',
@@ -210,6 +212,15 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   commentForm!: FormGroup;
   newCommentText = '';
   isSavingComment = false;
+
+  // Comment attachment properties
+  commentAttachmentConfigs: AttachmentsConfigDto[] = [];
+  commentAttachments: { [key: number]: { fileBase64: string; fileName: string; attConfigID: number } } = {};
+  commentSelectedFiles: { [key: number]: File } = {};
+  commentFilePreviews: { [key: number]: string } = {};
+  isCommentDragOver = false;
+  commentValidationSubmitted = false;
+  selectedFiles: File[] = [];
 
   private subscriptions: Subscription[] = [];
 
@@ -487,12 +498,12 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   getRequestTypeName(): string {
     if (!this.requestEventPermit) return '-';
     return this.requestEventPermit.lkpRequestTypeName ||
-           (this.requestEventPermit.lkpRequestTypeId != null ? String(this.requestEventPermit.lkpRequestTypeId) : '-') ;
+      (this.requestEventPermit.lkpRequestTypeId != null ? String(this.requestEventPermit.lkpRequestTypeId) : '-');
   }
   getPermitTypeName(): string {
     if (!this.requestEventPermit) return '-';
     return this.requestEventPermit.lkpPermitTypeName ||
-           (this.requestEventPermit.lkpPermitTypeId != null ? String(this.requestEventPermit.lkpPermitTypeId) : '-') ;
+      (this.requestEventPermit.lkpPermitTypeId != null ? String(this.requestEventPermit.lkpPermitTypeId) : '-');
   }
 
   getStatusColor(statusId: number | null): string {
@@ -537,4 +548,230 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   trackByStepId(i: number, step: WorkFlowStepDto) { return step.id ?? i; }
 
   goBack() { this.router.navigate(['/mainApplyService']); }
+
+
+
+
+
+
+
+
+
+  // start comment attachment
+  // Comment management methods
+  addWorkFlowComment(): void {
+    if (!this.newCommentText.trim() || !this.targetWorkFlowStep?.id) {
+      this.toastr.warning(this.translate.instant('COMMENTS.ENTER_COMMENT'));
+      return;
+    }
+
+    // Set validation flag to show validation errors
+    this.commentValidationSubmitted = true;
+
+    // Check if required attachments are uploaded
+    const requiredAttachments = this.commentAttachmentConfigs.filter(config => config.mendatory);
+    const missingRequiredAttachments = requiredAttachments.filter(config =>
+      !this.commentSelectedFiles[config.id!] && !this.commentFilePreviews[config.id!]
+    );
+
+    if (missingRequiredAttachments.length > 0) {
+      this.toastr.warning(this.translate.instant('VALIDATION.PLEASE_UPLOAD_REQUIRED_ATTACHMENTS'));
+      return;
+    }
+
+    this.isSavingComment = true;
+
+    // Prepare attachments for the comment
+    const attachments: AttachmentBase64Dto[] = [];
+
+    // Process attachments from attachment configs
+    Object.values(this.commentAttachments).forEach(attachment => {
+      if (attachment.fileBase64 && attachment.fileName) {
+        attachments.push({
+          fileName: attachment.fileName,
+          fileBase64: attachment.fileBase64,
+          attConfigID: attachment.attConfigID
+        });
+      }
+    });
+
+    const createDto: CreateWorkFlowCommentDto = {
+      empId: null,
+      workFlowStepsId: this.targetWorkFlowStep.id,
+      comment: this.newCommentText.trim(),
+      lastModified: new Date(),
+      commentTypeId: WorkflowCommentsType.External,
+      attachments: attachments
+    };
+
+    const subscription = this.workFlowCommentsService.create(createDto).subscribe({
+      next: (response) => {
+        this.toastr.success(this.translate.instant('COMMENTS.COMMENT_ADDED'));
+        this.newCommentText = '';
+        this.selectedFiles = [];
+        // Clear comment attachments
+        this.clearCommentAttachments();
+        this.closeCommentModal(); // Close the modal
+        // Reload main data to get updated comments
+        this.loadMainApplyServiceData();
+        this.isSavingComment = false;
+      },
+      error: (error) => {
+        this.toastr.error(this.translate.instant('COMMENTS.ERROR_ADDING_COMMENT'));
+        this.isSavingComment = false;
+      }
+    });
+    this.subscriptions.push(subscription);
+  }
+
+  clearCommentAttachments(): void {
+    this.commentSelectedFiles = {};
+    this.commentFilePreviews = {};
+    this.commentAttachments = {};
+    this.commentValidationSubmitted = false;
+    // Reinitialize comment attachments structure
+    this.initializeCommentAttachments();
+  }
+
+  getCommentAttachmentName(config: AttachmentsConfigDto): string {
+    return config.nameEn || config.name || this.translate.instant('COMMON.ATTACHMENT');
+  }
+
+  isCommentAttachmentMandatory(configId: number): boolean {
+    const config = this.commentAttachmentConfigs.find(c => c.id === configId);
+    return config?.mendatory || false;
+  }
+
+  // File handling methods for comment attachments
+  onCommentFileSelected(event: Event, configId: number): void {
+    const target = event.target as HTMLInputElement;
+    if (target?.files?.[0]) {
+      this.handleCommentFileUpload(target.files[0], configId);
+    }
+  }
+
+  onCommentDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isCommentDragOver = true;
+  }
+
+  onCommentDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.isCommentDragOver = false;
+  }
+
+  onCommentDrop(event: DragEvent, configId: number): void {
+    event.preventDefault();
+    this.isCommentDragOver = false;
+
+    const files = event.dataTransfer?.files;
+    if (files?.[0]) {
+      this.handleCommentFileUpload(files[0], configId);
+    }
+  }
+
+  handleCommentFileUpload(file: File, configId: number): void {
+    if (!this.validateCommentFile(file)) {
+      return;
+    }
+
+    this.commentSelectedFiles[configId] = file;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.commentFilePreviews[configId] = e.target?.result as string;
+
+      // Ensure the attachment object exists
+      if (!this.commentAttachments[configId]) {
+        this.commentAttachments[configId] = {
+          fileBase64: '',
+          fileName: '',
+          attConfigID: configId
+        };
+      }
+
+      const base64String = (e.target?.result as string).split(',')[1];
+      this.commentAttachments[configId] = {
+        ...this.commentAttachments[configId],
+        fileBase64: base64String,
+        fileName: file.name
+      };
+
+      this.cdr.detectChanges();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  validateCommentFile(file: File): boolean {
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+
+    if (file.size > maxSize) {
+      this.toastr.error(this.translate.instant('VALIDATION.FILE_TOO_LARGE'));
+      return false;
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+      this.toastr.error(this.translate.instant('VALIDATION.INVALID_FILE_TYPE'));
+      return false;
+    }
+
+    return true;
+  }
+
+  removeCommentFile(configId: number): void {
+    delete this.commentSelectedFiles[configId];
+    delete this.commentFilePreviews[configId];
+
+    if (this.commentAttachments[configId]) {
+      this.commentAttachments[configId] = {
+        ...this.commentAttachments[configId],
+        fileBase64: '',
+        fileName: ''
+      };
+    }
+
+    this.cdr.detectChanges();
+  }
+
+  closeCommentModal(): void {
+    const modal = document.getElementById('commentModal');
+    if (modal) {
+      const bootstrapModal = (window as any).bootstrap.Modal.getInstance(modal);
+      if (bootstrapModal) {
+        bootstrapModal.hide();
+      }
+    }
+  }
+
+  initializeCommentAttachments(): void {
+    this.commentAttachments = {};
+    this.commentSelectedFiles = {};
+    this.commentFilePreviews = {};
+
+    this.commentAttachmentConfigs.forEach(config => {
+      if (config.id) {
+        this.commentAttachments[config.id] = {
+          fileBase64: '',
+          fileName: '',
+          attConfigID: config.id
+        };
+      }
+    });
+  }
+
+  // Legacy file handling methods (keeping for backward compatibility)
+  onFileSelected(event: any): void {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      this.selectedFiles = Array.from(files);
+    }
+  }
+
+  removeSelectedFile(index: number): void {
+    this.selectedFiles.splice(index, 1);
+  }
+
+
+
 }

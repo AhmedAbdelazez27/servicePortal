@@ -1,8 +1,11 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, Output, EventEmitter, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, Output, EventEmitter, ElementRef, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import { ColDef, GridReadyEvent, GridApi, GridOptions } from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AgGridModule } from 'ag-grid-angular';
+import { TranslationService } from '../../app/core/services/translation.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-generic-data-table',
@@ -11,7 +14,7 @@ import { AgGridModule } from 'ag-grid-angular';
   standalone: true,
   imports: [CommonModule, FormsModule, AgGridModule]
 })
-export class GenericDataTableComponent implements OnChanges, OnInit {
+export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
   @Input() columnDefs: ColDef[] = [];
   @Input() rowData: any[] = [];
   @Input() totalCount: number = 0;
@@ -21,10 +24,10 @@ export class GenericDataTableComponent implements OnChanges, OnInit {
   @Input() columnHeaderMap: { [key: string]: string } = {};
   @Input() rowActions: Array<{ label: string, icon?: string, action: string }> = [];
   @Output() actionClick = new EventEmitter<{ action: string, row: any }>();
-  @Output() cellClicked = new EventEmitter<any>();
   @Input() gridOptions: GridOptions = {};
   @Output() pageChange = new EventEmitter<{ pageNumber: number; pageSize: number }>();
   @Output() search = new EventEmitter<string>();
+  @Output() languageChanged = new EventEmitter<void>();
 
   searchText: string = '';
   totalPages: number = 0;
@@ -50,6 +53,10 @@ export class GenericDataTableComponent implements OnChanges, OnInit {
     minWidth: 10
   };
 
+  private destroy$ = new Subject<void>();
+
+  constructor(private translationService: TranslationService) {}
+
   ngOnInit() {
     document.addEventListener('click', (event: any) => {
       const btn = event.target.closest('.action-kebab-btn');
@@ -64,6 +71,21 @@ export class GenericDataTableComponent implements OnChanges, OnInit {
         this.openMenuRowId = null;
       }
     });
+
+    this.translationService.langChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.onLanguageChange();
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onLanguageChange() {
+    this.languageChanged.emit();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -104,11 +126,6 @@ export class GenericDataTableComponent implements OnChanges, OnInit {
 
   onGridReady(params: any) {
     params.api.addEventListener('cellClicked', (event: any) => {
-        // Emit the cell click event to parent component
-        this.cellClicked.emit(event);
-      
-        // Handle action column clicks
-
       if (event.colDef.colId === 'action' && event.event.target) {
         const action = event.event.target.getAttribute('data-action');
         if (action) {

@@ -16,7 +16,7 @@ export const servicesViewsRoutes: Routes = [
         path: 'charity-event-permit/:id',
          canActivate: [authGuard],
         loadComponent: () =>
-          import('../view-charityrequest/view-charityrequest.component')
+          import('./view-charityrequest/view-charityrequest.component')
             .then(m => m.ViewCharityEventPermitComponent),
       },
     ],
