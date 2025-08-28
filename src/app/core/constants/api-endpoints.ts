@@ -380,5 +380,18 @@ export class ApiEndpoints {
     Create: '/Create'
   };
 
+  static readonly Notifications = {
+    Base: '/Notifications',
+    GetAll: '/Notifications/GetAll',
+    GetById: (id: string) => `/Notifications/Get/${id}`,
+    Create: '/Notifications/Create',
+    MarkAsSeen: (id: string) => `/Notifications/MarkAsSeen/${id}`,
+    GetUnseenCount: (userId: string) => `/Notifications/GetUnseenCount/${userId}`,
+    SendToDepartment: '/Notifications/SendToDepartment'
+  };
+
+  static readonly FCMToken = {
+    Update: '/User/UpdateFCMToken'
+  };
 
 }

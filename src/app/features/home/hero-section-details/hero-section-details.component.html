@@ -1,0 +1,64 @@
+<div class="container mt-4">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+    </div>
+    <p class="mt-2">{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="text-center py-5">
+    <div class="alert alert-danger" role="alert">
+      {{ error | translate }}
+    </div>
+    <button class="btn btn-gold" (click)="onBackToHome()">
+      {{ 'COMMON.BACK_TO_HOME' | translate }}
+    </button>
+  </div>
+
+  <!-- Hero Section Details -->
+  <div *ngIf="heroSection && !loading" class="hero-section-details">
+    <!-- Back Button -->
+    <div class="mb-4">
+      <button class="btn btn-outline-secondary" (click)="onBackToHome()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-2">
+          <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ 'COMMON.BACK_TO_HOME' | translate }}
+      </button>
+    </div>
+
+    <!-- Hero Section Content -->
+    <div class="row">
+      <!-- Image Column -->
+      <div class="col-lg-6 mb-4">
+        <div class="hero-image-container">
+          <img 
+            [src]="getHeroSectionImage(heroSection)" 
+            [alt]="getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.IMAGE_ALT' | translate)"
+            class="img-fluid rounded shadow"
+            (error)="onImageError($event)"
+          />
+        </div>
+      </div>
+
+      <!-- Content Column -->
+      <div class="col-lg-6">
+        <div class="hero-content">
+          <h1 class="hero-title mb-3">
+            {{ getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.NO_DESCRIPTION' | translate) }}
+          </h1>
+          
+          <div class="hero-description mb-4">
+            <p class="lead">
+              {{ getHeroSectionDescription(heroSection) || ('HOME.HERO_SECTION.NO_DESCRIPTION' | translate) }}
+            </p>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

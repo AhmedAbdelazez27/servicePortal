@@ -111,6 +111,16 @@ export const routes: Routes = [
           ),
       },
 
+      // Notification Management - requires authentication
+      {
+        path: 'notifications',
+        canActivate: [authGuard],
+        loadChildren: () =>
+          import('./features/notifications/notification-management/notification-management.routes').then(
+            (m) => m.notificationManagementRoutes
+          ),
+      },
+
       // Authentication routes
       {
         path: 'login',
@@ -191,6 +201,41 @@ export const routes: Routes = [
         path: 'view-services-requests',
         //  canActivate: [authGuard],
         loadChildren: () => import('./features/services/servicesViews/servicesView.routes').then((m) => m.servicesViewsRoutes)
+      },
+      {
+        path: 'charity-organizations',
+        loadComponent: () =>
+          import('./features/charity-organizations/charity-organizations.component').then(
+            (m) => m.CharityOrganizationsComponent
+          ),
+      },
+      {
+        path: 'polls',
+        loadComponent: () =>
+          import('./features/polls/polls.component').then(
+            (m) => m.PollsComponent
+          ),
+      },
+      {
+        path: 'initiatives',
+        loadComponent: () =>
+          import('./features/initiatives/initiatives.component').then(
+            (m) => m.InitiativesComponent
+          ),
+      },
+      {
+        path: 'initiative-details/:id',
+        loadComponent: () =>
+          import('./features/initiatives/initiative-details/initiative-details.component').then(
+            (m) => m.InitiativeDetailsComponent
+          ),
+      },
+      {
+        path: 'hero-section-details/:id',
+        loadComponent: () =>
+          import('./features/home/hero-section-details/hero-section-details.component').then(
+            (m) => m.HeroSectionDetailsComponent
+          ),
       }
       // Add other authenticated routes here as children with authGuard
       // Example:

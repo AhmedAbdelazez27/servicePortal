@@ -6,6 +6,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ServiceSettingService } from '../../../core/services/serviceSetting.service';
 import { ServiceDto, GetAllServicesParameters } from '../../../core/dtos/serviceSetting/serviceSetting.dto';
 import { ContactUsComponent } from '../contact-us/contact-us.component';
+import { InitiativeService } from '../../../core/services/initiative.service';
+import { InitiativeDto, GetAllInitiativeParameter } from '../../../core/dtos/UserSetting/initiatives/initiative.dto';
+import { HeroSectionSettingService } from '../../../core/services/UserSetting/hero-section-setting.service';
+import { HeroSectionSettingDto, GetAllHeroSectionSettingRequestDto } from '../../../core/dtos/UserSetting/hero-section-setting.dto';
+import { TranslationService } from '../../../core/services/translation.service';
 
 declare var bootstrap: any;
 declare var $: any;
@@ -19,9 +24,16 @@ declare var $: any;
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   customOptions?: OwlOptions;
+  initiativesOptions?: OwlOptions;
   services: ServiceDto[] = [];
+  initiatives: InitiativeDto[] = [];
+  heroSections: HeroSectionSettingDto[] = [];
   loading = false;
+  initiativesLoading = false;
+  heroSectionsLoading = false;
   error = '';
+  initiativesError = '';
+  heroSectionsError = '';
 
   // Array to track which icon should be used (this creates a cycle through available icons)
   serviceIcons = [
@@ -71,38 +83,33 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 ];
 
-  initiatives = [
-    {
-      boxes: [
-        {
-          image: 'assets/img/initiative-1.png',
-          title: 'HOME.INITIATIVES.INITIATIVE_1',
-          description: 'HOME.INITIATIVES.DESCRIPTION_1',
-        },
-      ]
-    },
-    {
-      boxes: [
-        {
-          title: 'HOME.INITIATIVES.INITIATIVE_2',
-          description: 'HOME.INITIATIVES.DESCRIPTION_2',
-        },
-        {
-          image: 'assets/img/initiative-2.png',
-          title: 'HOME.INITIATIVES.INITIATIVE_3',
-          description: 'HOME.INITIATIVES.DESCRIPTION_3',
-        },
-      ]
-    }
-  ];
-
   constructor(
     private serviceSettingService: ServiceSettingService,
+    private initiativeService: InitiativeService,
+    private heroSectionService: HeroSectionSettingService,
+    private translationService: TranslationService,
     private router: Router
   ) {
-    const currentLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = this.translationService.currentLang;
     if (currentLanguage == 'ar') {
       this.customOptions = {
+        rtl: true, // Enable RTL for Owl Carousel
+        loop: true, // Carousel will loop after last item
+        margin: 10, // Margin between items
+        nav: true, // Enable navigation arrows
+        dots: true, // Enable dots for navigation
+        autoplay: false, // Disable autoplay
+        responsive: {
+          0: { items: 1 }, // 1 item for small screens
+          600: { items: 2 }, // 2 items for medium screens
+          1000: { items: 3 }, // 3 items for large screens
+        },
+        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+        ], // Custom navigation text
+      };
+      
+      this.initiativesOptions = {
         rtl: true, // Enable RTL for Owl Carousel
         loop: true, // Carousel will loop after last item
         margin: 10, // Margin between items
@@ -134,12 +141,30 @@ export class HomeComponent implements OnInit, AfterViewInit {
           '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
         ], // Custom navigation text
       };
+      
+      this.initiativesOptions = {
+        loop: true, // Carousel will loop after last item
+        margin: 10, // Margin between items
+        nav: true, // Enable navigation arrows
+        dots: true, // Enable dots for navigation
+        autoplay: false, // Disable autoplay
+        responsive: {
+          0: { items: 1 }, // 1 item for small screens
+          600: { items: 2 }, // 2 items for medium screens
+          1000: { items: 3 }, // 3 items for large screens
+        },
+        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+        ], // Custom navigation text
+      };
     }
 
   }
 
   ngOnInit(): void {
     this.loadServices();
+    this.loadInitiatives();
+    this.loadHeroSections();
   }
 
   ngAfterViewInit(): void {
@@ -150,29 +175,29 @@ export class HomeComponent implements OnInit, AfterViewInit {
         ride: 'carousel'
       });
     }
+  }
 
-    // Initialize jQuery Owl Carousel for the initiatives section (uses .owl-carousel class)
-    // The .owl-carousel CSS hides content until initialized, so ensure this runs after view init
-    const currentLanguage = localStorage.getItem('language') || 'en';
-    setTimeout(() => {
-      try {
-        if ($ && typeof $('.owl-carousel-initiatives')?.owlCarousel === 'function') {
-          $('.owl-carousel-initiatives').owlCarousel({
-            rtl: currentLanguage === 'ar',
-            loop: true,
-            margin: 10,
-            nav: true,
-            dots: true,
-            autoplay: false,
-            responsive: {
-              0: { items: 1 },
-              600: { items: 2 },
-              1000: { items: 3 }
-            }
-          });
-        }
-      } catch {
-        // No-op if jQuery/owl is not available
+  loadHeroSections(): void {
+    this.heroSectionsLoading = true;
+    this.heroSectionsError = '';
+
+    const request: GetAllHeroSectionSettingRequestDto = {
+      skip: 0,
+      take: 100,
+      isActive: true // Only get active hero sections
+    };
+
+    this.heroSectionService.getAll(request).subscribe({
+      next: (response: any) => {
+        // Sort by viewOrder and filter active items
+        this.heroSections = (response.data || [])
+          .filter((item: HeroSectionSettingDto) => item.isActive)
+          .sort((a: HeroSectionSettingDto, b: HeroSectionSettingDto) => a.viewOrder - b.viewOrder);
+        this.heroSectionsLoading = false;
+      },
+      error: (error: any) => {
+        this.heroSectionsError = 'ERRORS.FAILED_LOAD_HERO_SECTIONS';
+        this.heroSectionsLoading = false;
       }
     });
   }
@@ -183,8 +208,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     const parameters: GetAllServicesParameters = {
       skip: 0,
-      take: 100, // Load first 100 services for the carousel
-      active: true
+      take: 100,  
+      isActive: true
     };
 
     this.serviceSettingService.getAll(parameters).subscribe({
@@ -199,6 +224,27 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
   }
 
+  loadInitiatives(): void {
+    this.initiativesLoading = true;
+    this.initiativesError = '';
+
+    const parameters: GetAllInitiativeParameter = {
+      skip: 0,
+      take: 50 // Load first 50 initiatives for the carousel
+    };
+
+    this.initiativeService.getAllAsync(parameters).subscribe({
+      next: (response: any) => {
+        this.initiatives = response.data || [];
+        this.initiativesLoading = false;
+      },
+      error: (error: any) => {
+        this.initiativesError = 'ERRORS.FAILED_LOAD_INITIATIVES';
+        this.initiativesLoading = false;
+      }
+    });
+  }
+
   onShowAllServices(): void {
     this.router.navigate(['/services']);
   }
@@ -207,14 +253,59 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/service-details', service.serviceId]);
   }
 
+  onShowAllInitiatives(): void {
+    this.router.navigate(['/initiatives']);
+  }
+
+  onInitiativeDetails(initiative: InitiativeDto): void {
+    this.router.navigate(['/initiative-details', initiative.id]);
+  }
+
+  onHeroSectionDetails(heroSection: HeroSectionSettingDto): void {
+    // Navigate to hero section details page
+    this.router.navigate(['/hero-section-details', heroSection.id]);
+  }
+
   getServiceName(service: ServiceDto): string {
-    const currentLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = this.translationService.currentLang;
     return currentLanguage === 'ar' ? (service.serviceName || '') : (service.serviceNameEn || service.serviceName || '');
   }
 
   getServiceDescription(service: ServiceDto): string {
-    const currentLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = this.translationService.currentLang;
     return currentLanguage === 'ar' ? (service.descriptionAr || '') : (service.descriptionEn || service.descriptionAr || '');
+  }
+
+  getInitiativeName(initiative: InitiativeDto): string {
+    const currentLanguage = this.translationService.currentLang;
+    return currentLanguage === 'ar' ? (initiative.nameAr || '') : (initiative.nameEn || initiative.nameAr || '');
+  }
+
+  getInitiativeDescription(initiative: InitiativeDto): string {
+    const currentLanguage = this.translationService.currentLang;
+    return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '');
+  }
+
+  getInitiativeImage(initiative: InitiativeDto): string {
+    return initiative.attachment?.imgPath || 'assets/images/initiative-1.png';
+  }
+
+  getHeroSectionTitle(heroSection: HeroSectionSettingDto): string {
+    const currentLanguage = this.translationService.currentLang;
+    return currentLanguage === 'ar' ? heroSection.titleAr : heroSection.titleEn;
+  }
+
+  getHeroSectionDescription(heroSection: HeroSectionSettingDto): string {
+    const currentLanguage = this.translationService.currentLang;
+    return currentLanguage === 'ar' ? heroSection.descriptionAr : heroSection.descriptionEn;
+  }
+
+  getHeroSectionImage(heroSection: HeroSectionSettingDto): string {
+    return heroSection.attachment?.imgPath || 'assets/images/slider-1.png';
+  }
+
+  onImageError(event: any): void {
+    event.target.src = 'assets/images/slider-1.png';
   }
 
   // Helper method to get icon index for cycling

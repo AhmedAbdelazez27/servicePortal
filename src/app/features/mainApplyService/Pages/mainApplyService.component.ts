@@ -16,7 +16,7 @@ import { Pagination, FndLookUpValuesSelect2RequestDto, SelectdropdownResultResul
 import { MainApplyService } from '../../../core/services/mainApplyService/mainApplyService.service';
 import { Router } from '@angular/router';
 import { AppEnum } from '../../../core/dtos/appEnum.dto';
-
+ 
 
 declare var bootstrap: any;
 
@@ -65,8 +65,7 @@ export class MainApplyServiceComponent {
     private router: Router
   )
   {
-    this.translate.setDefaultLang('en');
-    this.translate.use('en');
+    
     this.userserviceForm = this.fb.group({
       serviceIds: [[], Validators.required]
     });
@@ -165,7 +164,7 @@ export class MainApplyServiceComponent {
           this.router.navigate([`/view-services-requests/complaint-request/${params.id}`], {
             state: { loadformData: this.loadformData }
           });
-        }  
+        }   
          if (serviceId == this.appEnum.serviceId2) {
           this.router.navigate([`/view-services-requests/charity-event-permit/${params.id}`], {
             state: { loadformData: this.loadformData }

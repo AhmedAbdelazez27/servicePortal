@@ -55,7 +55,7 @@ export interface GetAllServicesParameters {
   searchValue?: string;
   serviceRefrenceNo?: string;
   serviceType?: number;
-  active?: boolean;
+  isActive?: boolean;
 }
 
 export interface PagedResultDto<T> {

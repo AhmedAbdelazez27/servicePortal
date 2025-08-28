@@ -45,6 +45,7 @@ export class ServicesListComponent implements OnInit {
     const params: GetAllServicesParameters = {
       skip: 0,
       take: 100,
+       isActive: true,
       searchValue: this.searchTerm
     };
 
@@ -77,12 +78,12 @@ export class ServicesListComponent implements OnInit {
   }
 
   getServiceName(service: ServiceDto): string {
-    const currentLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = localStorage.getItem('lang') || 'en';
     return currentLanguage === 'ar' ? (service.serviceName || '') : (service.serviceNameEn || service.serviceName || '');
   }
 
   getServiceDescription(service: ServiceDto): string {
-    const currentLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = localStorage.getItem('lang') || 'en';
     return currentLanguage === 'ar' ? (service.descriptionAr || '') : (service.descriptionEn || service.descriptionAr || '');
   }
 

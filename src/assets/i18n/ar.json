@@ -25,6 +25,79 @@
       "OPERATION_ERROR": "حدث خطأ أثناء العملية"
     }
   },
+  "NOTIFICATIONS": {
+    "TITLE": "الإشعارات",
+    "NO_NOTIFICATIONS": "لا توجد إشعارات",
+    "LOADING": "جاري تحميل الإشعارات...",
+    "MARK_ALL_READ": "تحديد الكل كمقروء",
+    "VIEW_ALL": "عرض جميع الإشعارات",
+    "VIEW_ALL_MESSAGE": "ميزة عرض جميع الإشعارات قريباً!",
+    "REFRESH": "تحديث الإشعارات",
+    "NEW_NOTIFICATION": "إشعار جديد",
+    "MANAGEMENT": {
+      "TITLE": "إدارة الإشعارات",
+      "SUBTITLE": "إدارة وعرض جميع إشعاراتك"
+    },
+    "FIELDS": {
+      "TITLE": "العنوان",
+      "TITLE_AR": "العنوان (عربي)",
+      "MESSAGE": "الرسالة",
+      "MESSAGE_AR": "الرسالة (عربي)",
+      "DATE": "التاريخ",
+      "STATUS": "الحالة",
+      "SERVICE_STATUS": "حالة الخدمة",
+      "EMPLOYEE_ID": "رقم الموظف",
+      "WORKFLOW_STEP": "خطوة سير العمل",
+      "REGISTER_ID": "رقم التسجيل",
+      "LINK": "الرابط",
+      "LAST_MODIFIED": "آخر تعديل"
+    },
+    "STATUS": {
+      "SEEN": "مشاهد",
+      "UNSEEN": "غير مشاهد"
+    },
+    "STATS": {
+      "TOTAL": "المجموع",
+      "UNSEEN": "غير مشاهد",
+      "SEEN": "مشاهد",
+      "THIS_PAGE": "هذه الصفحة",
+      "PAGE": "صفحة"
+    },
+    "TABLE": {
+      "TITLE": "قائمة الإشعارات"
+    },
+    "ACTIONS": {
+      "VIEW": "عرض التفاصيل",
+      "MARK_AS_SEEN": "تحديد كمشاهد",
+      "DELETE": "حذف",
+      "REFRESH": "تحديث",
+      "OPEN_LINK": "فتح الرابط"
+    },
+    "MODAL": {
+      "TITLE": "تفاصيل الإشعار"
+    },
+    "EMPTY": {
+      "TITLE": "لم يتم العثور على إشعارات",
+      "DESCRIPTION": "ليس لديك أي إشعارات في الوقت الحالي. راجع لاحقاً للحصول على التحديثات."
+    },
+    "MESSAGES": {
+      "MARKED_AS_SEEN": "تم تحديد الإشعار كمشاهد",
+      "ALREADY_SEEN": "تم تحديد الإشعار كمشاهد مسبقاً",
+      "DELETED_SUCCESSFULLY": "تم حذف الإشعار بنجاح",
+      "CONFIRM_DELETE": "هل أنت متأكد من حذف هذا الإشعار؟ لا يمكن التراجع عن هذا الإجراء.",
+      "DELETE_NOT_IMPLEMENTED": "وظيفة الحذف غير مطبقة بعد على الخادم"
+    },
+    "ERRORS": {
+      "LOAD_FAILED": "فشل في تحميل الإشعارات",
+      "MARK_SEEN_FAILED": "فشل في تحديد الإشعار كمشاهد",
+      "DELETE_FAILED": "فشل في حذف الإشعار",
+      "USER_NOT_FOUND": "لم يتم العثور على المستخدم. يرجى تسجيل الدخول مرة أخرى."
+    },
+    "FILTERS": {
+      "SEARCH_PLACEHOLDER": "البحث في الإشعارات...",
+      "PAGE_SIZE": "عنصر في الصفحة"
+    }
+  },
   "AUTH": {
     "LOGIN": {
       "TITLE": "تسجيل الدخول",
@@ -449,7 +522,19 @@
       "INITIATIVE_3": "المبادرة الثالثة",
       "DESCRIPTION_1": "لوريم إيبسوم هو نص شكلي يستخدم في صناعة الطباعة والتنضيد.",
       "DESCRIPTION_2": "صندوق بدون صورة.",
-      "DESCRIPTION_3": "مثال آخر مع صورة ومحتوى."
+      "DESCRIPTION_3": "مثال آخر مع صورة ومحتوى.",
+      "NO_INITIATIVES": "لا توجد مبادرات متاحة",
+      "NO_INITIATIVES_DESCRIPTION": "لا توجد مبادرات متاحة حالياً. يرجى التحقق مرة أخرى لاحقاً."
+    },
+    "NO_HERO_SECTIONS": "لا توجد أقسام رئيسية متاحة في الوقت الحالي.",
+    "HERO_SECTION": {
+      "TITLE": "تفاصيل القسم الرئيسي",
+      "DESCRIPTION": "عرض معلومات مفصلة حول هذا القسم الرئيسي",
+      "NO_IMAGE": "لا توجد صورة متاحة",
+      "NO_DESCRIPTION": "لا يوجد وصف متاح",
+      "EXTERNAL_LINK": "رابط خارجي",
+      "ADDITIONAL_INFO": "معلومات إضافية",
+      "IMAGE_ALT": "صورة القسم الرئيسي"
     }
   },
   "REQUEST_PLAINT": {
@@ -566,10 +651,18 @@
     "FAILED_CREATE_FASTING_TENT_REQUEST": "فشل في إنشاء طلب خيمة الإفطار. يرجى المحاولة مرة أخرى.",
     "FAILED_CREATE_DISTRIBUTION_SITE_REQUEST": "فشل في إنشاء طلب تصريح موقع التوزيع. يرجى المحاولة مرة أخرى.",
     "FAILED_LOAD_LOCATIONS": "فشل في تحميل المواقع. يرجى المحاولة مرة أخرى.",
+    "FAILED_LOAD_INITIATIVES": "فشل في تحميل المبادرات. يرجى المحاولة مرة أخرى.",
+    "INITIATIVE_ID_NOT_FOUND": "معرف المبادرة غير موجود.",
+    "FAILED_LOAD_INITIATIVE_DETAILS": "فشل في تحميل تفاصيل المبادرة. يرجى المحاولة مرة أخرى.",
     "FAILED_LOAD_MAP": "فشل في تحميل الخريطة التفاعلية. يرجى المحاولة مرة أخرى.",
     "FAILED_CHECK_AVAILABILITY": "فشل في فحص توفر الموقع. يرجى المحاولة مرة أخرى.",
     "FAILED_LOAD_LOCATION_DETAILS": "فشل في تحميل تفاصيل الموقع. يرجى المحاولة مرة أخرى.",
-    "LOCATION_NOT_AVAILABLE": "هذا الموقع غير متاح."
+    "LOCATION_NOT_AVAILABLE": "هذا الموقع غير متاح.",
+    "FAILED_LOAD_CHARITY_ORGANIZATIONS": "فشل في تحميل المنظمات الخيرية. يرجى المحاولة مرة أخرى.",
+    "FAILED_LOAD_POLLS": "فشل في تحميل الاستطلاعات. يرجى المحاولة مرة أخرى.",
+    "FAILED_LOAD_HERO_SECTIONS": "فشل في تحميل الأقسام الرئيسية. يرجى المحاولة مرة أخرى.",
+    "FAILED_LOAD_HERO_SECTION": "فشل في تحميل تفاصيل القسم الرئيسي. يرجى المحاولة مرة أخرى.",
+    "INVALID_ID": "معرف غير صالح."
   },
   "WARNINGS": {
     "REASON_ALREADY_ADDED": "تم إضافة هذا السبب مسبقاً."
@@ -672,7 +765,7 @@
     "COPY_ERROR": "نسخ تفاصيل الخطأ",
     "NETWORK_ERROR": "حدث خطأ في الشبكة",
     "UNAUTHORIZED_ACCESS": "وصول غير مصرح",
-    "ENTER_COMMENT": "يرجى إدخال تعليق",
+     "ENTER_COMMENT": "يرجى إدخال تعليق",
     "NO_ATTACHMENTS_FOUND": "لم يتم العثور على مرفقات",
     "ERROR_LOADING_ATTACHMENTS": "خطأ في تحميل المرفقات",
     "GO_BACK": "العودة",
@@ -700,14 +793,10 @@
     "UNABLE_CONNECT_SERVER": "غير قادر على الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت وحاول مرة أخرى.",
     "SERVER_ISSUES_TRY_LATER": "الخادم يواجه مشاكل. يرجى المحاولة مرة أخرى لاحقاً أو الاتصال بالدعم إذا استمرت المشكلة.",
     "UNEXPECTED_ERROR_TRY_AGAIN": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى أو الاتصال بالدعم إذا استمرت المشكلة.",
-    "COMMENT_TYPE": "نوع التعليق",
-    "DOCUMENT_TYPE": "نوع الوثيقة",
-    "FILE": "الملف",
-    "TARGET_TYPE": "نوع الهدف",
-    "LOCATION": "الموقع",
-    "METHOD": "الطريقة",
-    "NO_ADS": "لا توجد إعلانات",
-    "NO_PARTNERS": "لا توجد شركاء"
+    "BACK_TO_INITIATIVES": "العودة إلى المبادرات",
+    "BACK_TO_HOME": "العودة إلى الرئيسية",
+    "OPEN_IN_GOOGLE_MAPS": "فتح في خرائط جوجل"
+    
   },
   "SHARED": {
     "FORMS": {
@@ -1131,6 +1220,58 @@
     "MOBILE": "رقم الجوال",
     "FAX": "رقم الفاكس"
   },
+           "CHARITY_ORGANIZATIONS": {
+    "TITLE": "المنظمات الخيرية",
+    "DESCRIPTION": "اكتشف وتواصل مع المنظمات الخيرية",
+    "NO_ORGANIZATIONS": "لم يتم العثور على منظمات",
+    "NO_ORGANIZATIONS_DESCRIPTION": "لا توجد منظمات خيرية متاحة في الوقت الحالي.",
+    "VIEW_DETAILS": "عرض التفاصيل",
+    "CONTACT_INFO": "معلومات الاتصال",
+    "LOCATION": "الموقع",
+    "PHONE": "الهاتف",
+    "EMAIL": "البريد الإلكتروني",
+    "WEBSITE": "الموقع الإلكتروني",
+    "LOADING": "جاري تحميل المنظمات الخيرية...",
+    "ERROR_LOADING": "فشل في تحميل المنظمات الخيرية",
+    "RETRY": "حاول مرة أخرى"
+  },
+  "POLLS": {
+    "TITLE": "الاستبيانات",
+    "DESCRIPTION": "شارك في استطلاعات الرأي والمسوحات المجتمعية",
+    "NO_POLLS": "لم يتم العثور على استطلاعات",
+    "NO_POLLS_DESCRIPTION": "لا توجد استطلاعات متاحة في الوقت الحالي.",
+    "DATE": "التاريخ",
+    "LOADING": "جاري تحميل الاستطلاعات...",
+    "ERROR_LOADING": "فشل في تحميل الاستطلاعات",
+    "RETRY": "حاول مرة أخرى"
+  },
+       "NAVIGATION": {
+         "HOME": "الرئيسية",
+         "ABOUT_US": "من نحن",
+         "SERVICES": "الخدمات",
+         "REQUEST": "طلب",
+         "INITIATIVES": "المبادرات",
+         "CHARITY_ORGANIZATIONS": "المنظمات الخيرية",
+         "CONTACT_US": "اتصل بنا"
+       },
+       "INITIATIVES": {
+         "TITLE": "المبادرات",
+         "NO_INITIATIVES": "لا توجد مبادرات متاحة",
+         "NO_INITIATIVES_DESCRIPTION": "لا توجد مبادرات متاحة حالياً. يرجى التحقق مرة أخرى لاحقاً.",
+         "INITIATIVE_DETAILS": "تفاصيل المبادرة",
+         "DATE": "التاريخ",
+         "TARGET_GROUP": "الفئة المستهدفة",
+         "LOCATIONS": "المواقع",
+         "LOCATION": "الموقع",
+         "LOCATION_DETAILS": "تفاصيل الموقع",
+         "REQUEST_SERVICE": "طلب الخدمة",
+         "REQUEST_SERVICE_DESCRIPTION": "مهتم بهذه المبادرة؟ اطلب خدماتنا للمشاركة.",
+         "LOADING": "جاري تحميل المبادرات...",
+         "ERROR_LOADING": "فشل في تحميل المبادرات",
+         "RETRY": "حاول مرة أخرى",
+         "BACK_TO_INITIATIVES": "العودة إلى المبادرات",
+         "BACK_TO_HOME": "العودة إلى الرئيسية"
+       },
     "event": {
     "PmStartTime": "وقت البدء مساء",
     "PmEndTime": "وقت الانتهاء مساء",

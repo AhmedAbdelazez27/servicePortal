@@ -10,47 +10,133 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav m-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link" aria-current="page" routerLink="/home">Home</a>
+                  <a class="nav-link" routerLink="/home" routerLinkActive="active">{{ 'NAVIGATION.HOME' | translate }}</a>
+                </li>
+                <li class="nav-item dropdown dropdown-hover">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ 'NAVIGATION.ABOUT_US' | translate }}
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">About the council</a></li>
+                    <li><a class="dropdown-item" href="#">General Manager's Message</a></li>
+                  </ul>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" routerLink="/services">Services</a>
+                  <a class="nav-link" routerLink="/services" routerLinkActive="active">{{ 'NAVIGATION.SERVICES' | translate }}</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" routerLink="/request">Request</a>
+                  <a class="nav-link" routerLink="/request">{{ 'NAVIGATION.REQUEST' | translate }}</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Initiatives</a>
+                  <a class="nav-link" routerLink="/initiatives" routerLinkActive="active">{{ 'NAVIGATION.INITIATIVES' | translate }}</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Charity Organizations</a>
+                  <a class="nav-link" routerLink="/charity-organizations" routerLinkActive="active">{{ 'NAVIGATION.CHARITY_ORGANIZATIONS' | translate }}</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" routerLink="/contact-us" routerLinkActive="active">Contact Us</a>
+                  <a class="nav-link" routerLink="/polls" routerLinkActive="active">{{ 'POLLS.TITLE' | translate }}</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/contact-us" routerLinkActive="active">{{ 'NAVIGATION.CONTACT_US' | translate }}</a>
                 </li>
               </ul>
                 <div class="navbar-right-section d-flex align-items-center gap-3">
                     <!-- Show notification button and profile only when logged in -->
                     <div *ngIf="isLoggedIn()" class="d-flex align-items-center gap-3">
-                        <button class="btn-notification position-relative">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <g clip-path="url(#clip0_206_15250)">
-                                    <path d="M18.7956 11.3851L17.2122 5.6884C16.7481 4.01951 15.7395 2.55364 14.3467 1.52379C12.9539 0.493945 11.2567 -0.0407771 9.52513 0.00462298C7.79351 0.0500231 6.12675 0.67294 4.78979 1.77436C3.45284 2.87578 2.52241 4.39249 2.14641 6.0834L0.920574 11.5959C0.78517 12.205 0.788301 12.8368 0.929735 13.4445C1.07117 14.0522 1.34729 14.6205 1.73773 15.1072C2.12816 15.5939 2.62292 15.9868 3.1855 16.2567C3.74808 16.5266 4.36409 16.6668 4.98807 16.6667H5.91641C6.10767 17.6086 6.61868 18.4555 7.36286 19.0637C8.10704 19.672 9.03861 20.0042 9.99974 20.0042C10.9609 20.0042 11.8924 19.672 12.6366 19.0637C13.3808 18.4555 13.8918 17.6086 14.0831 16.6667H14.7814C15.4237 16.6668 16.0574 16.5183 16.6329 16.2329C17.2083 15.9476 17.71 15.533 18.0988 15.0216C18.4875 14.5103 18.7527 13.9159 18.8737 13.2851C18.9948 12.6543 18.9683 12.004 18.7964 11.3851H18.7956ZM9.99974 18.3334C9.48452 18.3313 8.98255 18.17 8.56249 17.8717C8.14243 17.5733 7.82481 17.1525 7.65307 16.6667H12.3464C12.1747 17.1525 11.857 17.5733 11.437 17.8717C11.0169 18.17 10.515 18.3313 9.99974 18.3334ZM16.7714 14.0126C16.5392 14.3206 16.2383 14.5703 15.8927 14.7417C15.5472 14.9131 15.1663 15.0016 14.7806 15.0001H4.98807C4.61373 15 4.24417 14.9159 3.90669 14.7539C3.56921 14.5919 3.27241 14.3562 3.03821 14.0641C2.80401 13.7721 2.63837 13.4312 2.55354 13.0666C2.46871 12.702 2.46684 12.323 2.54807 11.9576L3.77307 6.44423C4.06837 5.11607 4.79916 3.92474 5.84929 3.05961C6.89941 2.19448 8.20859 1.70521 9.56872 1.66958C10.9288 1.63395 12.2618 2.054 13.3558 2.86296C14.4498 3.67192 15.242 4.82336 15.6064 6.13423L17.1897 11.8309C17.2944 12.202 17.311 12.5925 17.2384 12.9712C17.1658 13.3499 17.0059 13.7064 16.7714 14.0126Z" fill="white" />
-                                </g>
-                                <defs>
-                                    <clipPath id="clip0_206_15250">
-                                        <rect width="20" height="20" fill="white" />
-                                    </clipPath>
-                                </defs>
-                            </svg>
+                        
+                        <!-- Notification Button with dropdown container -->
+                        <div class="notification-container position-relative">
+                            <button class="btn-notification" (click)="toggleNotificationDropdown()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <g clip-path="url(#clip0_206_15250)">
+                                        <path d="M18.7956 11.3851L17.2122 5.6884C16.7481 4.01951 15.7395 2.55364 14.3467 1.52379C12.9539 0.493945 11.2567 -0.0407771 9.52513 0.00462298C7.79351 0.0500231 6.12675 0.67294 4.78979 1.77436C3.45284 2.87578 2.52241 4.39249 2.14641 6.0834L0.920574 11.5959C0.78517 12.205 0.788301 12.8368 0.929735 13.4445C1.07117 14.0522 1.34729 14.6205 1.73773 15.1072C2.12816 15.5939 2.62292 15.9868 3.1855 16.2567C3.74808 16.5266 4.36409 16.6668 4.98807 16.6667H5.91641C6.10767 17.6086 6.61868 18.4555 7.36286 19.0637C8.10704 19.672 9.03861 20.0042 9.99974 20.0042C10.9609 20.0042 11.8924 19.672 12.6366 19.0637C13.3808 18.4555 13.8918 17.6086 14.0831 16.6667H14.7814C15.4237 16.6668 16.0574 16.5183 16.6329 16.2329C17.2083 15.9476 17.71 15.533 18.0988 15.0216C18.4875 14.5103 18.7527 13.9159 18.8737 13.2851C18.9948 12.6543 18.9683 12.004 18.7964 11.3851H18.7956ZM9.99974 18.3334C9.48452 18.3313 8.98255 18.17 8.56249 17.8717C8.14243 17.5733 7.82481 17.1525 7.65307 16.6667H12.3464C12.1747 17.1525 11.857 17.5733 11.437 17.8717C11.0169 18.17 10.515 18.3313 9.99974 18.3334ZM16.7714 14.0126C16.5392 14.3206 16.2383 14.5703 15.8927 14.7417C15.5472 14.9131 15.1663 15.0016 14.7806 15.0001H4.98807C4.61373 15 4.24417 14.9159 3.90669 14.7539C3.56921 14.5919 3.27241 14.3562 3.03821 14.0641C2.80401 13.7721 2.63837 13.4312 2.55354 13.0666C2.46871 12.702 2.46684 12.323 2.54807 11.9576L3.77307 6.44423C4.06837 5.11607 4.79916 3.92474 5.84929 3.05961C6.89941 2.19448 8.20859 1.70521 9.56872 1.66958C10.9288 1.63395 12.2618 2.054 13.3558 2.86296C14.4498 3.67192 15.242 4.82336 15.6064 6.13423L17.1897 11.8309C17.2944 12.202 17.311 12.5925 17.2384 12.9712C17.1658 13.3499 17.0059 13.7064 16.7714 14.0126Z" fill="white" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_206_15250">
+                                            <rect width="20" height="20" fill="white" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                                <span class="badge-round" *ngIf="unseenCount > 0">{{ unseenCount > 99 ? '99+' : unseenCount }}</span>
+                            </button>
 
-                            <span class="badge-round"></span>
+                            <!-- Notification Dropdown -->
+                            <div class="notification-dropdown-menu" [class.show]="isNotificationDropdownOpen" *ngIf="isNotificationDropdownOpen"
+                                 (document:click)="onDocumentClick($event)">
+                            <!-- Header -->
+                            <div class="dropdown-header">
+                                <h6 class="mb-0">{{ 'NOTIFICATIONS.TITLE' | translate }}</h6>
+                                <div class="header-actions">
+                                    <button 
+                                        class="btn btn-sm btn-link p-0 me-2" 
+                                        (click)="refreshNotifications()"
+                                        [disabled]="loading"
+                                        title="{{ 'NOTIFICATIONS.REFRESH' | translate }}">
+                                        <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+                                    </button>
+                                    <button 
+                                        class="btn btn-sm btn-link p-0" 
+                                        (click)="markAllAsSeen()"
+                                        *ngIf="unseenCount > 0"
+                                        title="{{ 'NOTIFICATIONS.MARK_ALL_READ' | translate }}">
+                                        <i class="fas fa-check-double"></i>
+                                    </button>
+                                </div>
+                            </div>
 
-                        </button>
+                            <!-- Loading State -->
+                            <div class="dropdown-loading" *ngIf="loading">
+                                <div class="d-flex align-items-center justify-content-center py-3">
+                                    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                                    <span>{{ 'NOTIFICATIONS.LOADING' | translate }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Notifications List -->
+                            <div class="notifications-list" *ngIf="!loading">
+                                <div 
+                                    class="notification-item" 
+                                    *ngFor="let notification of (notifications || []); trackBy: trackByNotificationId"
+                                    [class.unread]="!notification.isSeen"
+                                    (click)="markAsSeen(notification)">
+                                    
+                                    <div class="notification-content">
+                                        <div class="notification-title">
+                                            {{ getNotificationTitle(notification) }}
+                                        </div>
+                                        <div class="notification-message">
+                                            {{ getNotificationMessage(notification) }}
+                                        </div>
+                                        <div class="notification-time">
+                                            {{ formatDate(notification.notificationDate) }}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="notification-indicator" *ngIf="!notification.isSeen">
+                                        <div class="unread-dot"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Empty State -->
+                                <div class="empty-state" *ngIf="!notifications || notifications.length === 0">
+                                    <i class="fas fa-bell-slash fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted mb-0">{{ 'NOTIFICATIONS.NO_NOTIFICATIONS' | translate }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="dropdown-footer" *ngIf="notifications && notifications.length > 0">
+                                <button class="btn btn-sm btn-outline-primary w-100" (click)="onViewAllNotifications()">
+                                    {{ 'NOTIFICATIONS.VIEW_ALL' | translate }}
+                                </button>
+                            </div>
+                        </div>
+                        </div>
 
                         <div class="dropdown">
                             <button class="btn-profile dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="./../../../assets/images/profile-img.png" class="profile-img" />
-                                <span>Mohamed Ahmed</span>
+                                <span>Mohamed anas</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>

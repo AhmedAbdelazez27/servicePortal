@@ -1,0 +1,56 @@
+<section>
+  <div class="container services">
+    <h4 class="title">{{ 'CHARITY_ORGANIZATIONS.TITLE' | translate }}</h4>
+    
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+      </div>
+      <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="text-center py-5">
+      <div class="alert alert-danger" role="alert">
+        <h5>{{ 'COMMON.ERROR' | translate }}</h5>
+        <p>{{ error | translate }}</p>
+        <button class="btn btn-primary" (click)="retryLoad()">
+          {{ 'COMMON.REFRESH' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="!loading && !error" class="row">
+      <div *ngFor="let entity of entities" class="col-xl-4 col-lg-6 mb-4">
+        <div class="service-box" (click)="onEntityClick(entity)">
+          <div class="mb-3">
+            <img [src]="getEntityImage(entity)" 
+                 [alt]="getEntityName(entity)"
+                 class="w-100 entity-image"
+                 (error)="onImageError($event)">
+          </div>
+          <span class="mb-3 d-block entity-title">{{ getEntityName(entity) }}</span>
+          <p class="mb-4 entity-description">{{ getEntityDescription(entity) }}</p>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-link">
+              {{ 'COMMON.VIEW' | translate }}
+              <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
+                <path d="M1.1665 11L6.1665 6L1.1665 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Data State -->
+    <div *ngIf="!loading && !error && entities.length === 0" class="text-center py-5">
+      <div class="alert alert-info" role="alert">
+        <h5>{{ 'CHARITY_ORGANIZATIONS.NO_ORGANIZATIONS' | translate }}</h5>
+        <p>{{ 'CHARITY_ORGANIZATIONS.NO_ORGANIZATIONS_DESCRIPTION' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</section>

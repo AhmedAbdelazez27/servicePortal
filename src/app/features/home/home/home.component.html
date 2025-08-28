@@ -1,50 +1,18 @@
-<div id="carouselExampleCaptions" class="carousel slide">
+<div id="carouselExampleCaptions" class="carousel slide" *ngIf="!heroSectionsLoading && heroSections.length > 0">
 
     <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="./../../../../assets/images/slider-1.png" class="d-block w-100" />
+        <div class="carousel-item" 
+             *ngFor="let heroSection of heroSections; let i = index" 
+             [class.active]="i === 0">
+            <img [src]="getHeroSectionImage(heroSection)" 
+                 class="d-block w-100" 
+                 (error)="onImageError($event)"
+                 [alt]="getHeroSectionTitle(heroSection)" />
             <div class="carousel-caption d-none d-md-block">
-                <h5>{{ 'HOME.CAROUSEL.SLIDE_1_TITLE' | translate }}</h5>
+                <h5>{{ getHeroSectionTitle(heroSection) }}</h5>
+                <p *ngIf="getHeroSectionDescription(heroSection)">{{ getHeroSectionDescription(heroSection) }}</p>
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-gold">
-                        {{ 'HOME.READ_MORE' | translate }}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M13.5201 18.9998C13.7825 18.9987 14.0339 18.8946 14.2201 18.7098L18.8101 14.1198C19.3719 13.5573 19.6875 12.7948 19.6875 11.9998C19.6875 11.2048 19.3719 10.4423 18.8101 9.87982L14.2201 5.28982C14.0328 5.10356 13.7793 4.99902 13.5151 4.99902C13.251 4.99902 12.9975 5.10356 12.8101 5.28982C12.7164 5.38278 12.642 5.49338 12.5912 5.61524C12.5405 5.7371 12.5143 5.8678 12.5143 5.99982C12.5143 6.13183 12.5405 6.26253 12.5912 6.38439C12.642 6.50625 12.7164 6.61685 12.8101 6.70982L17.4001 11.2898C17.4939 11.3828 17.5683 11.4934 17.619 11.6152C17.6698 11.7371 17.6959 11.8678 17.6959 11.9998C17.6959 12.1318 17.6698 12.2625 17.619 12.3844C17.5683 12.5063 17.4939 12.6169 17.4001 12.7098L12.8101 17.2898C12.7164 17.3828 12.642 17.4934 12.5912 17.6152C12.5405 17.7371 12.5143 17.8678 12.5143 17.9998C12.5143 18.1318 12.5405 18.2625 12.5912 18.3844C12.642 18.5063 12.7164 18.6169 12.8101 18.7098C12.9036 18.8025 13.0144 18.8758 13.1362 18.9256C13.2581 18.9754 13.3885 19.0006 13.5201 18.9998Z"
-                                fill="white" />
-                            <path
-                                d="M6.52033 18.9998C6.78267 18.9987 7.03406 18.8946 7.22032 18.7098L13.2203 12.7098C13.314 12.6169 13.3884 12.5063 13.4392 12.3844C13.49 12.2625 13.5161 12.1318 13.5161 11.9998C13.5161 11.8678 13.49 11.7371 13.4392 11.6152C13.3884 11.4934 13.314 11.3828 13.2203 11.2898L7.22032 5.28982C7.03296 5.10356 6.77951 4.99902 6.51533 4.99902C6.25114 4.99902 5.99769 5.10356 5.81033 5.28982C5.7166 5.38278 5.6422 5.49338 5.59144 5.61524C5.54067 5.7371 5.51453 5.8678 5.51453 5.99982C5.51453 6.13183 5.54067 6.26253 5.59144 6.38439C5.6422 6.50625 5.7166 6.61685 5.81033 6.70982L11.1003 11.9998L5.81033 17.2898C5.7166 17.3828 5.6422 17.4934 5.59144 17.6152C5.54067 17.7371 5.51453 17.8678 5.51453 17.9998C5.51453 18.1318 5.54067 18.2625 5.59144 18.3844C5.6422 18.5063 5.7166 18.6169 5.81033 18.7098C5.90377 18.8025 6.01458 18.8758 6.13642 18.9256C6.25826 18.9754 6.38872 19.0006 6.52033 18.9998Z"
-                                fill="white" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item">
-            <img src="./../../../../assets/images/slider-1.png" class="d-block w-100" />
-            <div class="carousel-caption d-none d-md-block">
-                <h5>{{ 'HOME.CAROUSEL.SLIDE_2_TITLE' | translate }}</h5>
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-gold">
-                        {{ 'HOME.READ_MORE' | translate }}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M13.5201 18.9998C13.7825 18.9987 14.0339 18.8946 14.2201 18.7098L18.8101 14.1198C19.3719 13.5573 19.6875 12.7948 19.6875 11.9998C19.6875 11.2048 19.3719 10.4423 18.8101 9.87982L14.2201 5.28982C14.0328 5.10356 13.7793 4.99902 13.5151 4.99902C13.251 4.99902 12.9975 5.10356 12.8101 5.28982C12.7164 5.38278 12.642 5.49338 12.5912 5.61524C12.5405 5.7371 12.5143 5.8678 12.5143 5.99982C12.5143 6.13183 12.5405 6.26253 12.5912 6.38439C12.642 6.50625 12.7164 6.61685 12.8101 6.70982L17.4001 11.2898C17.4939 11.3828 17.5683 11.4934 17.619 11.6152C17.6698 11.7371 17.6959 11.8678 17.6959 11.9998C17.6959 12.1318 17.6698 12.2625 17.619 12.3844C17.5683 12.5063 17.4939 12.6169 17.4001 12.7098L12.8101 17.2898C12.7164 17.3828 12.642 17.4934 12.5912 17.6152C12.5405 17.7371 12.5143 17.8678 12.5143 17.9998C12.5143 18.1318 12.5405 18.2625 12.5912 18.3844C12.642 18.5063 12.7164 18.6169 12.8101 18.7098C12.9036 18.8025 13.0144 18.8758 13.1362 18.9256C13.2581 18.9754 13.3885 19.0006 13.5201 18.9998Z"
-                                fill="white" />
-                            <path
-                                d="M6.52033 18.9998C6.78267 18.9987 7.03406 18.8946 7.22032 18.7098L13.2203 12.7098C13.314 12.6169 13.3884 12.5063 13.4392 12.3844C13.49 12.2625 13.5161 12.1318 13.5161 11.9998C13.5161 11.8678 13.49 11.7371 13.4392 11.6152C13.3884 11.4934 13.314 11.3828 13.2203 11.2898L7.22032 5.28982C7.03296 5.10356 6.77951 4.99902 6.51533 4.99902C6.25114 4.99902 5.99769 5.10356 5.81033 5.28982C5.7166 5.38278 5.6422 5.49338 5.59144 5.61524C5.54067 5.7371 5.51453 5.8678 5.51453 5.99982C5.51453 6.13183 5.54067 6.26253 5.59144 6.38439C5.6422 6.50625 5.7166 6.61685 5.81033 6.70982L11.1003 11.9998L5.81033 17.2898C5.7166 17.3828 5.6422 17.4934 5.59144 17.6152C5.54067 17.7371 5.51453 17.8678 5.51453 17.9998C5.51453 18.1318 5.54067 18.2625 5.59144 18.3844C5.6422 18.5063 5.7166 18.6169 5.81033 18.7098C5.90377 18.8025 6.01458 18.8758 6.13642 18.9256C6.25826 18.9754 6.38872 19.0006 6.52033 18.9998Z"
-                                fill="white" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item">
-            <img src="./../../../../assets/images/slider-1.png" class="d-block w-100" />
-            <div class="carousel-caption d-none d-md-block">
-                <h5>{{ 'HOME.CAROUSEL.SLIDE_3_TITLE' | translate }}</h5>
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-gold">
+                    <button class="btn btn-gold" (click)="onHeroSectionDetails(heroSection)">
                         {{ 'HOME.READ_MORE' | translate }}
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path
@@ -59,15 +27,41 @@
             </div>
         </div>
     </div>
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-            aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-            aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-            aria-label="Slide 3"></button>
+    
+    <!-- Carousel Indicators -->
+    <div class="carousel-indicators" *ngIf="heroSections.length > 1">
+        <button type="button" 
+                *ngFor="let heroSection of heroSections; let i = index"
+                data-bs-target="#carouselExampleCaptions" 
+                [attr.data-bs-slide-to]="i" 
+                [class.active]="i === 0"
+                [attr.aria-current]="i === 0 ? 'true' : null"
+                [attr.aria-label]="'Slide ' + (i + 1)">
+        </button>
     </div>
 
+</div>
+
+<!-- Loading State -->
+<div *ngIf="heroSectionsLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+    </div>
+    <p class="mt-2">{{ 'COMMON.LOADING' | translate }}</p>
+</div>
+
+<!-- Error State -->
+<div *ngIf="heroSectionsError && !heroSectionsLoading" class="text-center py-5">
+    <div class="alert alert-warning" role="alert">
+        {{ heroSectionsError | translate }}
+    </div>
+</div>
+
+<!-- Fallback when no hero sections -->
+<div *ngIf="!heroSectionsLoading && heroSections.length === 0 && !heroSectionsError" class="text-center py-5">
+    <div class="alert alert-info" role="alert">
+        {{ 'HOME.NO_HERO_SECTIONS' | translate }}
+    </div>
 </div>
 
 <section>
@@ -201,89 +195,70 @@
 <section>
     <div class="container">
         <h3 class="title">{{ 'HOME.INITIATIVES.TITLE' | translate }}</h3>
-        <div class="owl-carousel owl-theme owl-carousel-initiatives">
-            <div class="item">
-                <div class="service-box">
-                    <div class="mb-3">
-                        <img src="assets/images/initiative-1 copy.png" />
-                    </div>
-                    <span>{{ 'HOME.INITIATIVES.INITIATIVE' | translate }}</span>
-                    <p class="mb-4">{{ 'HOME.INITIATIVES.DESCRIPTION_1' | translate }}</p>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-link">
-                            {{ 'HOME.MORE' | translate }}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
-                                <path d="M1.1665 11L6.1665 6L1.1665 1" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+        
+        <!-- Loading State -->
+        <div *ngIf="initiativesLoading" class="text-center py-5">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
             </div>
+            <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+        </div>
 
-            <div class="item">
-                <div class="service-box mb-4">
-                    <span>{{ 'HOME.INITIATIVES.INITIATIVE' | translate }}</span>
-                    <p class="mb-4">{{ 'HOME.INITIATIVES.DESCRIPTION_2' | translate }}</p>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-link">
-                            {{ 'HOME.MORE' | translate }}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
-                                <path d="M1.1665 11L6.1665 6L1.1665 1" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="service-box">
-                    <span>{{ 'HOME.INITIATIVES.INITIATIVE' | translate }}</span>
-                    <p class="mb-4">{{ 'HOME.INITIATIVES.DESCRIPTION_3' | translate }}</p>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-link">
-                            {{ 'HOME.MORE' | translate }}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
-                                <path d="M1.1665 11L6.1665 6L1.1665 1" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+        <!-- Error State -->
+        <div *ngIf="initiativesError && !initiativesLoading" class="text-center py-5">
+            <div class="alert alert-danger" role="alert">
+                <h5>{{ 'COMMON.ERROR' | translate }}</h5>
+                <p>{{ initiativesError | translate }}</p>
+                <button class="btn btn-primary" (click)="loadInitiatives()">
+                    {{ 'COMMON.REFRESH' | translate }}
+                </button>
             </div>
-            <div class="item">
-                <div class="service-box mb-4">
-                    <span>{{ 'HOME.INITIATIVES.INITIATIVE' | translate }}</span>
-                    <p class="mb-4">{{ 'HOME.INITIATIVES.DESCRIPTION_1' | translate }}</p>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-link">
-                            {{ 'HOME.MORE' | translate }}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
-                                <path d="M1.1665 11L6.1665 6L1.1665 1" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+        </div>
 
-                <div class="service-box">
-                    <span>{{ 'HOME.INITIATIVES.INITIATIVE' | translate }}</span>
-                    <p class="mb-4">{{ 'HOME.INITIATIVES.DESCRIPTION_2' | translate }}</p>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-link">
-                            {{ 'HOME.MORE' | translate }}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
-                                <path d="M1.1665 11L6.1665 6L1.1665 1" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+        <!-- Content -->
+        <div *ngIf="!initiativesLoading && !initiativesError" class="owl-theme">
+            <ng-container *ngIf="initiativesOptions && initiatives.length > 0">
+                <owl-carousel-o #owlCarouselInitiatives [options]="initiativesOptions">
+                    <ng-container *ngFor="let initiative of initiatives; let i = index">
+                        <ng-template carouselSlide>
+                            <div class="item">
+                                <div class="service-box" (click)="onInitiativeDetails(initiative)">
+                                    <div class="mb-3">
+                                        <img [src]="getInitiativeImage(initiative)" 
+                                             [alt]="getInitiativeName(initiative)"
+                                             class="w-100"
+                                             (error)="onImageError($event)">
+                                    </div>
+                                    <span class="mb-3 d-block">{{ getInitiativeName(initiative) }}</span>
+                                    <p class="mb-4">{{ getInitiativeDescription(initiative) }}</p>
+                                    <div class="d-flex justify-content-end">
+                                        <button class="btn btn-link">
+                                            {{ 'HOME.MORE' | translate }}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
+                                                <path d="M1.1665 11L6.1665 6L1.1665 1" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                </owl-carousel-o>
+            </ng-container>
+        </div>
+
+        <!-- No Data State -->
+        <div *ngIf="!initiativesLoading && !initiativesError && initiatives.length === 0" class="text-center py-5">
+            <div class="alert alert-info" role="alert">
+                <h5>{{ 'HOME.INITIATIVES.NO_INITIATIVES' | translate }}</h5>
+                <p>{{ 'HOME.INITIATIVES.NO_INITIATIVES_DESCRIPTION' | translate }}</p>
             </div>
-            
-
-
-
-
         </div>
 
 
+
         <div class="position-relative">
-            <button class="show-all">
+            <button class="show-all" (click)="onShowAllInitiatives()">
                 {{ 'HOME.SHOW_ALL_INITIATIVES' | translate }}
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M13.5201 18.9998C13.7825 18.9987 14.0339 18.8946 14.2201 18.7098L18.8101 14.1198C19.3719 13.5573 19.6875 12.7948 19.6875 11.9998C19.6875 11.2048 19.3719 10.4423 18.8101 9.87982L14.2201 5.28982C14.0328 5.10356 13.7793 4.99902 13.5151 4.99902C13.251 4.99902 12.9975 5.10356 12.8101 5.28982C12.7164 5.38278 12.642 5.49338 12.5912 5.61524C12.5405 5.7371 12.5143 5.8678 12.5143 5.99982C12.5143 6.13183 12.5405 6.26253 12.5912 6.38439C12.642 6.50625 12.7164 6.61685 12.8101 6.70982L17.4001 11.2898C17.4939 11.3828 17.5683 11.4934 17.619 11.6152C17.6698 11.7371 17.6959 11.8678 17.6959 11.9998C17.6959 12.1318 17.6698 12.2625 17.619 12.3844C17.5683 12.5063 17.4939 12.6169 17.4001 12.7098L12.8101 17.2898C12.7164 17.3828 12.642 17.4934 12.5912 17.6152C12.5405 17.7371 12.5143 17.8678 12.5143 17.9998C12.5143 18.1318 12.5405 18.2625 12.5912 18.3844C12.642 18.5063 12.7164 18.6169 12.8101 18.7098C12.9036 18.8025 13.0144 18.8758 13.1362 18.9256C13.2581 18.9754 13.3885 19.0006 13.5201 18.9998Z" fill="#374957" />
@@ -291,11 +266,7 @@
                 </svg>
             </button>
         </div>
-
     </div>
-
-
-
 </section>
 
 <!-- Contact Us Section -->

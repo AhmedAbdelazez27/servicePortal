@@ -6,23 +6,36 @@ import { AgGridModule } from 'ag-grid-angular';
 import { TranslationService } from '../../app/core/services/translation.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TranslateModule ,TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-generic-data-table',
   templateUrl: './generic-data-table.component.html',
   styleUrls: ['./generic-data-table.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, AgGridModule]
+  imports: [CommonModule, FormsModule, AgGridModule ,TranslateModule]
 })
 export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
-  @Input() columnDefs: ColDef[] = [];
+  private _columnDefs: ColDef[] = [];
+  @Input() set columnDefs(value: ColDef[]) {
+    this._columnDefs = value || [];
+    this.ensureActionPin();
+  }
+  get columnDefs(): ColDef[] {
+    return this._columnDefs;
+  }
   @Input() rowData: any[] = [];
   @Input() totalCount: number = 0;
   @Input() pageSize: number = 10;
   @Input() currentPage: number = 0;  
   @Input() showActionColumn: boolean = false;
   @Input() columnHeaderMap: { [key: string]: string } = {};
-  @Input() rowActions: Array<{ label: string, icon?: string, action: string }> = [];
+  @Input() rowActions: Array<{ label?: string; labelKey?: string; icon?: string; action: string }> = [];
+
+  @Input() set actions(value: Array<{ label?: string; labelKey?: string; icon?: string; action: string }>) {
+    this.rowActions = value || [];
+    this.translateActionLabels();
+  }
   @Output() actionClick = new EventEmitter<{ action: string, row: any }>();
   @Input() gridOptions: GridOptions = {};
   @Output() pageChange = new EventEmitter<{ pageNumber: number; pageSize: number }>();
@@ -36,6 +49,8 @@ export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
   showInfoModal: boolean = false;
   selectedRowData: any = null;
   public selectedRowKeysArr: string[] = [];
+
+  showGrid: boolean = true;
 
   openMenuRowId: string | null = null;
   menuX: number = 0;
@@ -54,10 +69,16 @@ export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
   };
 
   private destroy$ = new Subject<void>();
+  public api!: GridApi;
+  public isRtl = false;
 
-  constructor(private translationService: TranslationService) {}
+  constructor(private translationService: TranslationService ,private translate: TranslateService) {
+    const lang = (localStorage.getItem('lang') as string) || this.translationService?.currentLang || 'en';
+    this.isRtl = lang.startsWith('ar');
+  }
 
   ngOnInit() {
+   
     document.addEventListener('click', (event: any) => {
       const btn = event.target.closest('.action-kebab-btn');
       if (btn && btn.dataset.rowId !== undefined) {
@@ -85,10 +106,41 @@ export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   onLanguageChange() {
+    this.applyRtl();
+    this.updateHeaderTranslations();
+    this.translateActionLabels();
+    this.showGrid = false;
+    setTimeout(() => {
+      this.showGrid = true;
+    });
     this.languageChanged.emit();
   }
 
+  private updateHeaderTranslations() {
+    if (!this.columnDefs) return;
+    this.columnDefs.forEach(col => {
+      if (col.colId === 'action') {
+        col.headerName = this.translate.instant('COMMON.ACTIONS');
+      }
+    });
+  }
+
+  private translateActionLabels() {
+    if (!this.rowActions) return;
+    this.rowActions.forEach(a => {
+      const key = a.labelKey || a.label;
+      a.label = this.translate.instant(key as string);
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges) {
+    if (this.columnDefs && this.columnDefs.length) {
+      this.columnDefs.forEach(col => {
+        if (col.colId === 'action') {
+          col.pinned = this.isRtl ? 'left' : 'right';
+        }
+      });
+    }
     if (changes['rowData'] || changes['totalCount'] || changes['pageSize']) {
       this.totalPages = Math.ceil(this.totalCount / this.pageSize);
     }
@@ -97,17 +149,24 @@ export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
     if (this.showActionColumn && this.columnDefs && !this.columnDefs.some(col => col.colId === 'action')) {
       const newColumnDefs = [...this.columnDefs];
       newColumnDefs.push({
-        headerName: 'Actions',
+        headerName: this.translate.instant('COMMON.ACTIONS'),
         colId: 'action',
         cellRenderer: this.actionCellRenderer,
         width: 100,
-        pinned: 'right',
+        pinned: this.isRtl ? 'left' : 'right',
         suppressMenu: true,
         suppressMovable: true,
         filter: false,
         sortable: false
       });
       this.columnDefs = newColumnDefs;
+    }
+    const actionCol = this.columnDefs.find(col => col.colId === 'action');
+    if (actionCol) {
+      actionCol.pinned = this.isRtl ? 'left' : 'right';
+    }
+    if (this.api) {
+      this.api.applyColumnState({ state: [{ colId: 'action', pinned: this.isRtl ? 'left' : 'right' }], applyOrder: true });
     }
   }
 
@@ -124,8 +183,20 @@ export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
     `;
   };
 
-  onGridReady(params: any) {
-    params.api.addEventListener('cellClicked', (event: any) => {
+  onGridReady(event: GridReadyEvent) {
+    this.api = event.api;
+    this.applyRtl();
+    if (this.api) {
+      const pinSide = this.isRtl ? 'left' : 'right';
+      this.api.setColumnPinned('action', pinSide as any);
+      if ((this.api as any).setEnableRtl) {
+        (this.api as any).setEnableRtl(this.isRtl);
+      }
+      this.ensureActionPin();
+      this.api.setColumnDefs([...this.columnDefs]);
+      this.api.refreshHeader();
+    }
+    this.api.addEventListener('cellClicked', (event: any) => {
       if (event.colDef.colId === 'action' && event.event.target) {
         const action = event.event.target.getAttribute('data-action');
         if (action) {
@@ -133,6 +204,20 @@ export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  private applyRtl() {
+    const lang = this.translationService?.currentLang || 'en';
+    this.isRtl = lang.startsWith('ar');
+    if (this.api) {
+      const pinSide = this.isRtl ? 'left' : 'right';
+      this.api.setColumnPinned('action', pinSide as any);
+      if ((this.api as any).setEnableRtl) {
+        (this.api as any).setEnableRtl(this.isRtl);
+      }
+      this.api.refreshHeader();
+    }
+    
   }
 
   onViewInfo(row: any) {
@@ -196,5 +281,14 @@ export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
         !(event.target as HTMLElement).closest('.context-menu')) {
       this.openMenuRowId = null;
     }
+  }
+
+  private ensureActionPin() {
+    if (!this._columnDefs) return;
+    this._columnDefs.forEach(col => {
+      if (col.colId === 'action') {
+        col.pinned = this.isRtl ? 'left' : 'right';
+      }
+    });
   }
 }

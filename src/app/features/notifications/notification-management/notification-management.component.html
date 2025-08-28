@@ -1,0 +1,310 @@
+<div class="container-fluid">
+  <!-- Header Section -->
+  <div class="notification-management-header mb-4">
+    <div class="row align-items-center">
+      <div class="col-12">
+        <h1 class="title mb-0">
+          <i class="fas fa-bell me-2 text-primary"></i>
+          {{ 'NOTIFICATIONS.MANAGEMENT.TITLE' | translate }}
+        </h1>
+        <p class="text-muted mb-0">{{ 'NOTIFICATIONS.MANAGEMENT.SUBTITLE' | translate }}</p>
+      </div>
+    </div>
+  </div>
+
+<!-- Statistics Cards -->
+<div class="statistics-cards-container mb-4">
+  <div class="statistics-cards-row">
+    <div class="stat-card stat-card-total">
+      <div class="stat-card-body">
+        <div class="stat-card-content">
+          <div class="stat-card-number">{{ totalCount | number }}</div>
+          <div class="stat-card-title">{{ 'NOTIFICATIONS.STATS.TOTAL' | translate }}</div>
+        </div>
+        <div class="stat-card-icon">
+          <i class="fas fa-chart-bar"></i>
+        </div>
+      </div>
+    </div>
+    
+    <div class="stat-card stat-card-unseen">
+      <div class="stat-card-body">
+        <div class="stat-card-content">
+          <div class="stat-card-number">{{ getUnseenCount() | number }}</div>
+          <div class="stat-card-title">{{ 'NOTIFICATIONS.STATS.UNSEEN' | translate }}</div>
+        </div>
+        <div class="stat-card-icon">
+          <i class="fas fa-bell"></i>
+        </div>
+      </div>
+    </div>
+    
+    <div class="stat-card stat-card-seen">
+      <div class="stat-card-body">
+        <div class="stat-card-content">
+          <div class="stat-card-number">{{ getSeenCount() | number }}</div>
+          <div class="stat-card-title">{{ 'NOTIFICATIONS.STATS.SEEN' | translate }}</div>
+        </div>
+        <div class="stat-card-icon">
+          <i class="fas fa-check"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Data Table Section -->
+<div class="notification-table-container">
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom-0 py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-table me-2 text-secondary"></i>
+          {{ 'NOTIFICATIONS.TABLE.TITLE' | translate }}
+        </h5>
+        <button 
+          type="button" 
+          class="btn btn-gold"
+          (click)="refreshNotifications()"
+          [disabled]="loading">
+          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+          {{ 'NOTIFICATIONS.ACTIONS.REFRESH' | translate }}
+        </button>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">{{ 'NOTIFICATIONS.LOADING' | translate }}</span>
+        </div>
+        <p class="mt-2 text-muted">{{ 'NOTIFICATIONS.LOADING' | translate }}</p>
+      </div>
+
+      <!-- Data Table -->
+      <div *ngIf="!loading" class="table-container">
+        <!-- Simple debug info -->
+        <div class="mb-2" *ngIf="onTableDataChanged()">
+          <small class="text-muted">
+            Debug: {{notifications.length}} notifications loaded | Page {{currentPage + 1}}/{{Math.ceil(totalCount/pageSize)}} | Total: {{totalCount}}
+          </small>
+        </div>
+        
+        <app-generic-data-table
+          [columnDefs]="columnDefs"
+          [rowData]="notifications"
+          [totalCount]="totalCount"
+          [pageSize]="pageSize"
+          [currentPage]="currentPage"
+          [showActionColumn]="true"
+          [columnHeaderMap]="columnHeaderMap"
+          [rowActions]="rowActions"
+          (actionClick)="onActionClick($event)"
+          (pageChange)="onPageChange($event)">
+        </app-generic-data-table>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && notifications.length === 0" class="empty-state text-center py-5">
+        <div class="empty-state-icon mb-3">
+          <i class="fas fa-bell-slash text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h4 class="empty-state-title text-muted">{{ 'NOTIFICATIONS.EMPTY.TITLE' | translate }}</h4>
+        <p class="empty-state-description text-muted">{{ 'NOTIFICATIONS.EMPTY.DESCRIPTION' | translate }}</p>
+        <button 
+          type="button" 
+          class="btn btn-gold"
+          (click)="refreshNotifications()">
+          <i class="fas fa-sync-alt me-2"></i>
+          {{ 'NOTIFICATIONS.ACTIONS.REFRESH' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification Details Modal -->
+<div class="modal fade show" 
+     tabindex="-1" 
+     [ngStyle]="{ display: showDetailsModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)' }" 
+     *ngIf="showDetailsModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-eye me-2"></i>
+          {{ 'NOTIFICATIONS.MODAL.TITLE' | translate }}
+        </h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          aria-label="Close" 
+          (click)="closeDetailsModal()">
+        </button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body" *ngIf="selectedNotification">
+        <div class="notification-details">
+          <!-- Status Badge -->
+          <div class="mb-4">
+            <span class="badge fs-6 px-3 py-2" 
+                  [class.bg-success]="selectedNotification.isSeen"
+                  [class.bg-warning]="!selectedNotification.isSeen"
+                  [class.text-dark]="!selectedNotification.isSeen">
+              <i class="fas" 
+                 [class.fa-check-circle]="selectedNotification.isSeen"
+                 [class.fa-exclamation-circle]="!selectedNotification.isSeen"></i>
+              {{ selectedNotification.isSeen ? ('NOTIFICATIONS.STATUS.SEEN' | translate) : ('NOTIFICATIONS.STATUS.UNSEEN' | translate) }}
+            </span>
+          </div>
+
+          <!-- Title Section -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="detail-section">
+                <label class="form-label">{{ 'NOTIFICATIONS.FIELDS.TITLE' | translate }} (English)</label>
+                <div class="detail-value">
+                  <div class="content-box p-3 bg-white rounded-3 shadow-sm border-start border-4" style="border-left-color: #8D734D;">
+                    <strong>{{ selectedNotification.titleEn || 'No English title' }}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-section">
+                <label class="form-label">{{ 'NOTIFICATIONS.FIELDS.TITLE' | translate }} (Arabic)</label>
+                <div class="detail-value">
+                  <div class="content-box p-3 bg-white rounded-3 shadow-sm border-start border-4" style="border-left-color: #8D734D;" dir="rtl">
+                    <strong>{{ selectedNotification.titleAr || 'لا يوجد عنوان بالعربية' }}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message Section -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="detail-section">
+                <label class="form-label">{{ 'NOTIFICATIONS.FIELDS.MESSAGE' | translate }} (English)</label>
+                <div class="detail-value">
+                  <div class="content-box p-3 bg-white rounded-3 shadow-sm border-start border-4" style="border-left-color: #8D734D;">
+                    {{ selectedNotification.messageEn || 'No English message' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="detail-section">
+                <label class="form-label">{{ 'NOTIFICATIONS.FIELDS.MESSAGE' | translate }} (Arabic)</label>
+                <div class="detail-value">
+                  <div class="content-box p-3 bg-white rounded-3 shadow-sm border-start border-4" style="border-left-color: #8D734D;" dir="rtl">
+                    {{ selectedNotification.messageAr || 'لا توجد رسالة بالعربية' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Date and Time -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="detail-section">
+                <label class="form-label">{{ 'NOTIFICATIONS.FIELDS.DATE' | translate }}</label>
+                <div class="detail-value">
+                  <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                    <i class="fas fa-calendar-alt me-3" style="color: #8D734D;"></i>
+                    <span class="fw-medium">{{ selectedNotification.notificationDate | date:'medium' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="selectedNotification.lastModify">
+              <div class="detail-section">
+                <label class="form-label">{{ 'NOTIFICATIONS.FIELDS.LAST_MODIFIED' | translate }}</label>
+                <div class="detail-value">
+                  <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                    <i class="fas fa-clock me-3 text-secondary"></i>
+                    <span class="fw-medium">{{ selectedNotification.lastModify | date:'medium' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Status -->
+          <div class="row mb-4" *ngIf="selectedNotification.serviceStatusName || selectedNotification.serviceStatus">
+            <div class="col-md-6" *ngIf="selectedNotification.serviceStatusName">
+              <div class="detail-section">
+                <label class="form-label">Service Status Name</label>
+                <div class="detail-value">
+                  <span class="badge fs-6 px-3 py-2 bg-secondary">
+                    <i class="fas fa-tag me-2"></i>
+                    {{ selectedNotification.serviceStatusName }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="selectedNotification.serviceStatus">
+              <div class="detail-section">
+                <label class="form-label">Service Status ID</label>
+                <div class="detail-value">
+                  <div class="p-3 bg-light rounded-3">
+                    <code class="text-muted">{{ selectedNotification.serviceStatus }}</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Link -->
+          <div class="detail-section mt-4" *ngIf="selectedNotification.link">
+            <label class="form-label">{{ 'NOTIFICATIONS.FIELDS.LINK' | translate }}</label>
+            <div class="detail-value">
+              <a [href]="selectedNotification.link" 
+                 target="_blank" 
+                 class="btn btn-outline-primary btn-lg px-4 rounded-pill shadow-sm">
+                <i class="fas fa-external-link-alt me-2"></i>
+                {{ 'NOTIFICATIONS.ACTIONS.OPEN_LINK' | translate }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <div>
+          <button 
+            type="button" 
+            class="btn btn-outline"
+            *ngIf="selectedNotification && !selectedNotification.isSeen"
+            (click)="markNotificationAsSeen(selectedNotification)">
+            <i class="fas fa-check me-2"></i>
+            {{ 'NOTIFICATIONS.ACTIONS.MARK_AS_SEEN' | translate }}
+          </button>
+        </div>
+        <div>
+          <button 
+            type="button" 
+            class="btn btn-gold"
+            (click)="closeDetailsModal()">
+            {{ 'COMMON.CLOSE' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Spinner for table operations -->
+<ngx-spinner 
+  bdColor="rgba(0, 0, 0, 0.8)" 
+  size="medium" 
+  color="#fff" 
+  type="ball-scale-multiple"
+  name="notificationTableSpinner">
+</ngx-spinner>
+</div>

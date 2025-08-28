@@ -1,3 +1,13 @@
+export interface AttachmentDto {
+  id: number;
+  masterId: number;
+  imgPath: string;
+  masterType: number;
+  attachmentTitle: string;
+  lastModified: string;
+  attConfigID: number;
+}
+
 export interface EntityDto {
   entitY_ID: string;
   entitY_NAME: string;
@@ -7,6 +17,11 @@ export interface EntityDto {
   entitY_WEBSITE: string;
   entitY_MAIL: string;
   acC_DETAILS_ID: string;
+  descriptionAr: string;
+  descriptionEn: string;
+  isShowInPortal: boolean;
+  masterId: number;
+  attachment: AttachmentDto;
 }
 
 export interface CreateEntityDto {

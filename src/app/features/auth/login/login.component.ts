@@ -7,6 +7,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -18,12 +19,19 @@ export class LoginComponent {
   form !: FormGroup;
   submitted: boolean = false;
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, private spinnerService: SpinnerService, private toastr: ToastrService, private translate: TranslateService) {
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router,
+    private spinnerService: SpinnerService,
+    private toastr: ToastrService,
+    private translate: TranslateService,
+    private notificationService: NotificationService
+  ) {
     this.form = this.fb.group({
       userName: ['', Validators.required],
       password: ['', Validators.required],
     });
-
   }
 
   submit(): void {
@@ -71,6 +79,10 @@ export class LoginComponent {
 
         this.toastr.success(this.translate.instant('AUTH.MESSAGES.LOGIN_SUCCESS'), this.translate.instant('TOAST.TITLE.SUCCESS'));
         this.spinnerService.hide();
+        
+        // 🔔 Initialize notification session after successful login
+        this.initializeNotificationSession();
+        
         this.router.navigate(['/home']);
       },
       error: () => {
@@ -81,6 +93,23 @@ export class LoginComponent {
         this.spinnerService.hide();
       }
     });
+  }
+
+  /**
+   * Initialize notification session after successful login
+   */
+  private async initializeNotificationSession(): Promise<void> {
+    try {
+      console.log('🔔 Login: Initializing notification session after login...');
+      
+      // Initialize user notification session (this will only run once per session)
+      await this.notificationService.initializeUserSession();
+      
+      console.log('🔔 Login: Notification session initialized successfully');
+    } catch (error) {
+      console.error('🔔 Login: Error initializing notification session:', error);
+      // Don't show error to user as this shouldn't block the login flow
+    }
   }
 
   private extractUserIdFromToken(decodedData: any): string | null {

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { TranslationService } from '../../core/services/translation.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-navbar',
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
