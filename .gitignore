@@ -9,6 +9,11 @@
 
 # dependencies
 /node_modules
+/Portal
+
+
+# Ignore all markdown files
+*.md
 
 # Angular cache
 .angular/cache
@@ -52,3 +57,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Markdown files
+*.md

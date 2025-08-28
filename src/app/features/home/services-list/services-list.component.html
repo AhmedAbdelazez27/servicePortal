@@ -29,8 +29,8 @@
                     
                     <div class="row">
                         <div *ngFor="let service of filteredServices; let i = index" class="col-xl-4 col-lg-6 mb-4">
-                            <div class="service-box" (click)="onServiceDetails(service)">
-                                <div class="d-flex gap-3 align-items-center mb-4">
+                            <div class="service-box h-100" (click)="onServiceDetails(service)">
+                                <div class="d-flex gap-3 align-items-start" style="height: 100px; overflow: hidden;">
                                     <div class="service-icon">
                                         <!-- Dynamic icons using ngSwitch with cycling -->
                                         <ng-container [ngSwitch]="getIconIndex(i)">
@@ -87,7 +87,7 @@
                                     </div>
                                     <span>{{ getServiceName(service) }}</span>
                                 </div>
-                                <p class="mb-4">{{ getServiceDescription(service) || ('SERVICES.NO_DESCRIPTION' | translate) }}</p>
+                                <p class="mb-4" style="height: 48px;  overflow: hidden;">{{ getServiceDescription(service) || ('SERVICES.NO_DESCRIPTION' | translate) }}</p>
                                 <div class="d-flex justify-content-end">
                                     <button class="btn btn-link">
                                         {{ 'SERVICES.VIEW_DETAILS' | translate }}
