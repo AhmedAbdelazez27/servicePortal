@@ -30,7 +30,7 @@ type MainApplyServiceView = {
 };
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, GenericDataTableComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule],
   selector: 'app-view-requestplaint',
   templateUrl: './view-requestplaint.component.html',
   styleUrls: ['./view-requestplaint.component.scss']

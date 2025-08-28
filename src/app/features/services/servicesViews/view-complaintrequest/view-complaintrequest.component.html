@@ -1,0 +1,77 @@
+<div class="view-complaintrequest-container">
+    <section>
+        <div class="container services">
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="title">{{ 'VIEW_COMPLAINTREQUEST.TITLE' | translate }}</h4>
+                <button type="button" class="btn btn-secondary" (click)="goBack()">
+                    <i class="fas fa-arrow-left me-2"></i>{{ 'COMMON.BACK' | translate }}
+                </button>
+            </div>
+
+            <!-- Loading state -->
+            <div *ngIf="!mainApplyService" class="text-center py-5">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+                </div>
+                <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+            </div>
+
+            <!-- Main Content -->
+            <div *ngIf="mainApplyService" class="row">
+
+                <!-- Complaint Request Info -->
+                <div class="col-lg-12 mb-4">
+                    <div class="main-container">
+                        <h6 class="fw-bold mb-3">{{ 'COMMON.SERVICE_INFO' | translate }}</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ 'COMMON.APPLICATION_NO' | translate }}</label>
+                                <p>{{ mainApplyService.applyNo }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ 'COMMON.APPLICATION_DATE' | translate }}</label>
+                                <p>{{ formatDate(mainApplyService.applyDate) }}</p>
+                            </div>
+                            <div class="col-xl-6">
+                                <p class="mb-1"><strong>{{ 'COMMON.STATUS' | translate }}:</strong>
+                                    <span class="badge bg-primary">{{ mainApplyService.lastStatus }}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complaint Request Details -->
+                <div class="col-lg-12 mb-4">
+                    <div class="main-container">
+                        <h6 class="fw-bold mb-3">{{ 'REQUEST_COMPLAINT.DETAILS' | translate }}</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.APPLICANT_NAME' | translate
+                                    }}</label>
+                                <p>{{ mainApplyService.requestComplaint?.applicantName || '-' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.EMAIL' | translate }}</label>
+                                <p>{{ mainApplyService.requestComplaint?.email || '-' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.NOTES' | translate }}</label>
+                                <p>{{ mainApplyService.requestComplaint?.notes || '-' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.REQUEST_DATE' | translate
+                                    }}</label>
+                                <p>{{ formatDateTime(mainApplyService.requestComplaint?.requestDate) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+</div>

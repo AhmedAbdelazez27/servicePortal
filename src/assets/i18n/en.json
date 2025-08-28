@@ -1741,5 +1741,8 @@
     "WORKFLOW_STEPS": "Workflow Steps",
     "EVIDENCE": "Evidence",
     "JUSTIFICATIONS": "Justifications"
+  },
+  "VIEW_COMPLAINTREQUEST": {
+    "TITLE": "View Complaint Request"
   }
 }

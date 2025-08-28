@@ -25,6 +25,13 @@ export const servicesViewsRoutes: Routes = [
         loadComponent: () =>
           import('./view-requestplaint/view-requestplaint.component')
             .then(m => m.ViewRequestplaintComponent),
+      },
+      {
+        path: 'complaint-request/:id',
+         canActivate: [authGuard],
+        loadComponent: () =>
+          import('./view-complaintrequest/view-complaintrequest.component')
+            .then(m => m.ViewComplaintrequestComponent),
       }
     ],
   },

@@ -1462,5 +1462,8 @@
     "WORKFLOW_STEPS": "خطوات سير العمل",
     "EVIDENCE": "الأدلة",
     "JUSTIFICATIONS": "التبريرات"
+  },
+   "VIEW_COMPLAINTREQUEST": {
+    "TITLE": "عرض طلب الشكوى"
   }
 }

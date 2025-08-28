@@ -161,8 +161,8 @@ export class MainApplyServiceComponent {
             state: { loadformData: this.loadformData }
           });
         }
-        if (serviceId == this.appEnum.serviceId1002) {
-          this.router.navigate(['/request-complaint'], {
+        if (serviceId == this.appEnum.serviceId1002) { 
+          this.router.navigate([`/view-services-requests/complaint-request/${params.id}`], {
             state: { loadformData: this.loadformData }
           });
         }  
@@ -216,9 +216,10 @@ export class MainApplyServiceComponent {
         // Route to the new view distribution site permit component
         this.router.navigate(['/view-distribution-site-permit', event.row.id]);
       }
-      else if (event.row.serviceId == this.appEnum.serviceId7) {
-        this.getFormDatabyId(event.row.id, event.row.serviceId);
-      }else if (event.row.serviceId  == this.appEnum.serviceId2) {
+      // else if (event.row.serviceId == this.appEnum.serviceId7) {
+      //   this.getFormDatabyId(event.row.id, event.row.serviceId);
+      // }
+      else if (event.row.serviceId  == this.appEnum.serviceId2) {
           
           this.router.navigate([`/view-services-requests/charity-event-permit/${event.row.id}`], {
             state: { loadformData: this.loadformData }
@@ -226,6 +227,11 @@ export class MainApplyServiceComponent {
         }else if (event.row.serviceId  == this.appEnum.serviceId6) {
           
           this.router.navigate([`/view-services-requests/request-event-permit/${event.row.id}`], {
+            state: { loadformData: this.loadformData }
+          });
+        }else if (event.row.serviceId  == this.appEnum.serviceId7) {
+          
+          this.router.navigate([`/view-services-requests/plaint-request/${event.row.id}`], {
             state: { loadformData: this.loadformData }
           });
         }
