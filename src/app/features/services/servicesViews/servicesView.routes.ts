@@ -19,6 +19,13 @@ export const servicesViewsRoutes: Routes = [
           import('./view-charityrequest/view-charityrequest.component')
             .then(m => m.ViewCharityEventPermitComponent),
       },
+      {
+        path: 'plaint-request/:id',
+         canActivate: [authGuard],
+        loadComponent: () =>
+          import('./view-requestplaint/view-requestplaint.component')
+            .then(m => m.ViewRequestplaintComponent),
+      }
     ],
   },
 ]; 

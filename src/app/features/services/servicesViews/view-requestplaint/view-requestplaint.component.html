@@ -1,0 +1,212 @@
+<div class="view-requestplaint-container">
+    <section>
+        <div class="container services">
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="title">{{ 'VIEW_REQUESTPLAINT.TITLE' | translate }}</h4>
+                <!-- <div>
+                    <div class="d-flex justify-content-end align-items-center mb-4">
+                        <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
+                            data-bs-target="#commentModal">
+                            <i class="fas fa-plus me-2"></i>
+                            {{ 'COMMON.ADD_COMMENT' | translate }}
+                        </button>
+                    </div>
+                </div> -->
+            </div>
+
+            <!-- Loading (kept as in original) -->
+            <div *ngIf="!mainApplyService" class="text-center py-5">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+                </div>
+                <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+            </div>
+
+            <!-- Main Content -->
+            <div *ngIf="mainApplyService" class="row">
+
+                <!-- Sidebar: Workflow Timeline -->
+                <div class="col-lg-3 mb-4">
+                    <div class="main-container h-100">
+                        <h6 class="fw-bold mb-3 text-primary">
+                            <i class="fas fa-route me-2"></i>
+                            {{ 'WORKFLOW.PROCESS_STEPS' | translate }}
+                        </h6>
+
+                        <div class="workflow-timeline" *ngIf="workFlowSteps?.length">
+                            <div *ngFor="let step of workFlowSteps; let i = index; trackBy: trackByStepId"
+                                class="workflow-step-item" [class.completed]="isStepCompleted(step.serviceStatus)"
+                                [class.rejected]="isStepRejected(step.serviceStatus)"
+                                [class.pending]="isStepPending(step.serviceStatus)"
+                                [class.last-step]="i === workFlowSteps.length - 1">
+
+                                <div class="step-circle" [style.background-color]="getStatusColor(step.serviceStatus)"
+                                    [style.border-color]="getStatusColor(step.serviceStatus)">
+                                    <i [class]="getStatusIcon(step.serviceStatus)"></i>
+                                </div>
+
+                                <div class="step-line" *ngIf="i < workFlowSteps.length - 1"
+                                    [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
+
+                                <div>
+                                    <div class="step-header">
+                                        <div class="step-number">{{ 'WORKFLOW.STEP' | translate }} {{ step.stepOrder }}
+                                        </div>
+                                        <div class="step-status" [style.color]="getStatusColor(step.serviceStatus)">
+                                            <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
+                                            {{ step.serviceStatusName || (getStatusLabel(step.serviceStatus) |
+                                            translate) }}
+                                        </div>
+                                    </div>
+                                    <h6 class="department-name">{{ step.departmentName }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="col-lg-9 mb-4">
+                    <div class="main-container h-100">
+
+                        <!-- Section: Basic -->
+                        <div class="main-container mb-4">
+                            <div class="step-content">
+                                <!-- Service Information Card -->
+                                <div class="service-info-card mb-4 p-3 bg-light rounded">
+                                    <h6 class="fw-bold">{{ 'COMMON.SERVICE_INFO' | translate }}</h6>
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong>
+                                                {{
+                                                mainApplyService.applyNo }}</p>
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_DATE' | translate
+                                                    }}:</strong> {{
+                                                formatDate(mainApplyService.applyDate) }}</p>
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <p class="mb-1"><strong>{{ 'COMMON.STATUS' | translate }}:</strong>
+                                                <span class="badge bg-primary">{{ mainApplyService.lastStatus }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="col-xl-6" *ngIf="mainApplyService.permitNumber">
+                                            <p class="mb-0"><strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}:</strong>
+                                                {{
+                                                mainApplyService.permitNumber }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5 class="mb-4">{{ 'CHARITY_EVENT_PERMIT.BASIC' | translate }}</h5>
+
+                                <!-- Service Details -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">{{ 'CHARITY_EVENT_PERMIT.SERVICE_NAME' |
+                                            translate }}</label>
+                                        <div class="form-control-plaintext">{{ mainApplyService?.service?.serviceName ||
+                                            '-' }}</div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">{{ 'CHARITY_EVENT_PERMIT.SERVICE_REFERENCE_NO'
+                                            | translate }}</label>
+                                        <div class="form-control-plaintext">{{
+                                            mainApplyService?.service?.serviceRefrenceNo || '-' }}</div>
+                                    </div>
+
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label fw-bold">{{ 'CHARITY_EVENT_PERMIT.SERVICE_DESCRIPTION'
+                                            | translate }}</label>
+                                        <div class="form-control-plaintext">{{ mainApplyService?.service?.descriptionAr
+                                            || '-' }}</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Section: Attachments -->
+                        <!-- <div class="main-container mb-4" *ngIf="mainApplyService.attachments?.length">
+              <div class="step-content">
+                <h5 class="mb-4">{{ 'COMMON.ATTACHMENTS' | translate }}</h5>
+                <ul>
+                  <li *ngFor="let attachment of mainApplyService.attachments">
+                    <a [href]="attachment.imgPath" target="_blank">{{ attachment.attachmentTitle }}</a>
+                  </li>
+                </ul>
+              </div>
+            </div> -->
+                        <div class="main-container mb-4" *ngIf="mainApplyService?.attachments?.length">
+                            <div class="step-content">
+                                <h5 class="mb-4">{{ 'COMMON.ATTACHMENTS' | translate }}</h5>
+
+                                <div *ngIf="mainApplyService.attachments?.length; else noAtts">
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-6 mb-4"
+                                            *ngFor="let attachment of mainApplyService.attachments">
+                                            <div class="attachment-box">
+                                                <h6 class="card-title">
+                                                    {{ attachment.attachmentTitle || ('CHARITY_EVENT_PERMIT.ATTACHMENT'
+                                                    | translate) }}
+                                                </h6>
+                                                <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}: {{
+                                                    formatDateTime(attachment.lastModified) }}</p>
+                                                <div class="d-flex justify-content-between mt-auto">
+                                                    <button class="btn btn-next-style me-2"
+                                                        (click)="viewAttachment(attachment)">
+                                                        <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }}
+                                                    </button>
+                                                    <button class="btn btn-download-style"
+                                                        (click)="downloadAttachment(attachment)">
+                                                        <i class="fas fa-download me-1"></i>{{ 'COMMON.DOWNLOAD' |
+                                                        translate }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <ng-template #noAtts>
+                                    <div class="alert alert-info">{{ 'CHARITY_EVENT_PERMIT.NO_ATTACHMENTS' | translate
+                                        }}</div>
+                                </ng-template>
+                            </div>
+                        </div>
+
+                        <!-- Section: Evidence -->
+                        <div class="main-container mb-4" *ngIf="mainApplyService?.requestPlaintEvidences?.length">
+                            <div class="step-content">
+                                <h5 class="mb-4">{{ 'REQUEST_INFO.EVIDENCE' | translate }}</h5>
+                                <ul>
+                                    <li *ngFor="let evidence of mainApplyService.requestPlaintEvidences">
+                                        <p>{{ evidence.evidence }}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Section: Justifications -->
+                        <div class="main-container mb-4" *ngIf="mainApplyService.requestPlaintJustifications?.length">
+                            <div class="step-content">
+                                <h5 class="mb-4">{{ 'REQUEST_INFO.JUSTIFICATIONS' | translate }}</h5>
+                                <ul>
+                                    <li *ngFor="let justification of mainApplyService.requestPlaintJustifications">
+                                        <p>{{ justification.justification }}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>

@@ -700,7 +700,14 @@
     "UNABLE_CONNECT_SERVER": "غير قادر على الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت وحاول مرة أخرى.",
     "SERVER_ISSUES_TRY_LATER": "الخادم يواجه مشاكل. يرجى المحاولة مرة أخرى لاحقاً أو الاتصال بالدعم إذا استمرت المشكلة.",
     "UNEXPECTED_ERROR_TRY_AGAIN": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى أو الاتصال بالدعم إذا استمرت المشكلة.",
-    "CLOSE": "إغلاق"
+    "COMMENT_TYPE": "نوع التعليق",
+    "DOCUMENT_TYPE": "نوع الوثيقة",
+    "FILE": "الملف",
+    "TARGET_TYPE": "نوع الهدف",
+    "LOCATION": "الموقع",
+    "METHOD": "الطريقة",
+    "NO_ADS": "لا توجد إعلانات",
+    "NO_PARTNERS": "لا توجد شركاء"
   },
   "SHARED": {
     "FORMS": {
@@ -1442,6 +1449,18 @@
     "TARGET_TYPE": "نوع الاستهداف",
     "AD_LOCATIONS": "أماكن العرض",
     "AD_METHODS": "وسائل الإعلان",
-    "METHOD": "الوسيلة"
+    "METHOD": "الوسيلة",
+    "SERVICE_NAME": "اسم الخدمة",
+    "SERVICE_REFERENCE_NO": "رقم مرجع الخدمة",
+    "SERVICE_DESCRIPTION": "وصف الخدمة",
+    "SERVICE_INFO": "معلومات الخدمة"
+  },
+  "VIEW_REQUESTPLAINT": {
+    "TITLE": "عرض طلب التظلم"
+  },
+  "REQUEST_INFO": {
+    "WORKFLOW_STEPS": "خطوات سير العمل",
+    "EVIDENCE": "الأدلة",
+    "JUSTIFICATIONS": "التبريرات"
   }
 }

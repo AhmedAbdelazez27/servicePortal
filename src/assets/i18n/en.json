@@ -535,9 +535,9 @@
   "WARNINGS": {
     "REASON_ALREADY_ADDED": "This reason has already been added."
   },
-"VALIDATION": {
+  "VALIDATION": {
     "PHONE_PATTERN":"Please enter a valid phone number.",
-"PHONE_LENGTH": "Please enter a valid phone number with 7 to 20 digits.",
+    "PHONE_LENGTH": "Please enter a valid phone number with 7 to 20 digits.",
     "REQUIRED_FIELD": "This field is required",
     "FORM_INVALID": "Please fill in all required fields correctly",
     "FILE_TOO_LARGE": "File size must not exceed 5MB",
@@ -635,10 +635,6 @@
     "COPY_ERROR": "Copy Error Details",
     "NETWORK_ERROR": "Network error occurred",
     "UNAUTHORIZED_ACCESS": "Unauthorized access",
-    "ENTER_COMMENT": "Please enter a comment",
-    "NO_ATTACHMENTS_FOUND": "No attachments found",
-    "ERROR_LOADING_ATTACHMENTS": "Error loading attachments",
-    "GO_BACK": "Go Back",
     "NO_VALID_ID_URL": "No valid ID provided in the URL",
     "ERROR_DETAILS_COPIED": "Error details copied to clipboard",
     "FAILED_COPY_ERROR": "Failed to copy error details",
@@ -663,7 +659,14 @@
     "UNABLE_CONNECT_SERVER": "Unable to connect to the server. Please check your internet connection and try again.",
     "SERVER_ISSUES_TRY_LATER": "The server is experiencing issues. Please try again later or contact support if the problem persists.",
     "UNEXPECTED_ERROR_TRY_AGAIN": "An unexpected error occurred. Please try again or contact support if the problem persists.",
-    "CLOSE": "Close"
+    "COMMENT_TYPE": "Comment Type",
+    "DOCUMENT_TYPE": "Document Type",
+    "FILE": "File",
+    "TARGET_TYPE": "Target Type",
+    "LOCATION": "Location",
+    "METHOD": "Method",
+    "NO_ADS": "No Ads",
+    "NO_PARTNERS": "No Partners"
   },
   "SHARED": {
     "FORMS": {
@@ -772,7 +775,7 @@
     "DESCRIPTION": "View and manage distribution site permit details",
     "TABS": {
       "BASIC_INFO": "Basic Information",
-      "LOCATION_INFO": "Location Information", 
+      "LOCATION_INFO": "Location Information",
       "DATE_INFO": "Date Information",
       "SUPERVISOR_INFO": "Supervisor Information",
       "PARTNERS_INFO": "Partners Information",
@@ -791,7 +794,6 @@
       "REJECTED": "Rejected"
     }
   },
-
   "Common": {
     "Action": "Action",
     "ViewInfo": "Show Details",
@@ -824,9 +826,8 @@
     "dept": "Department",
     "userdept": "Users in Department",
     "deleteWarning": "Are you sure you want delete",
-      "requestComplaint": "Request Complaint"
+    "requestComplaint": "Request Complaint"
   },
-
   "REGIONS": {
     "TITLE": "Regions Management",
     "ADD_NEW": "Add New Region",
@@ -928,7 +929,6 @@
     "PARTNER_ADDED": "Partner added successfully",
     "PARTNER_REMOVED": "Partner removed successfully"
   },
-
   "mainApplyServiceResourceName": {
     "title": "Request",
     "accep": "Approve",
@@ -1444,7 +1444,7 @@
     "COMMENTS": "Comments",
     "MORE_COMMENTS": "more comments",
     "STATUS_ACCEPT": "Accepted",
-    "STATUS_REJECT": "Rejected", 
+    "STATUS_REJECT": "Rejected",
     "STATUS_REJECT_FOR_REASON": "Rejected with Reason",
     "STATUS_WAITING": "Waiting",
     "STATUS_RECEIVED": "Received",
@@ -1669,7 +1669,7 @@
     "NO_ATTACHMENTS": "No attachments",
     "ATTACHMENT": "Attachment",
     "PARTNER_ATTACHMENTS": "Partner Attachments",
-     "ADVERTISEMENTS": "Advertisements",
+    "ADVERTISEMENTS": "Advertisements",
     "AD": "Ad",
     "AD_START": "Ad Start",
     "AD_END": "Ad End",
@@ -1696,28 +1696,23 @@
     "ADVERTISEMENTS": "Advertisements",
     "PARTNERS": "Partners",
     "ATTACHMENTS": "Attachments",
-
     "REQUEST_DATE": "Request Date",
     "ADVERTISEMENT_TYPE": "Advertisement Type",
     "EVENT_NAME": "Event Name",
     "EVENT_LOCATION": "Event Location",
     "NOTES": "Notes",
-
     "START_DATE": "Start Date/Time",
     "END_DATE": "End Date/Time",
-
     "SUPERVISOR_NAME": "Supervisor Name",
     "JOB_TITLE": "Job Title",
     "EMAIL": "Email",
     "TELEPHONE1": "Telephone 1",
     "TELEPHONE2": "Telephone 2",
     "DONATION_CHANNELS": "Donation Channels",
-
     "ATTACHMENT": "Attachment",
     "NO_ATTACHMENTS": "No attachments",
     "NO_PARTNERS": "No partners",
     "PARTNER_ATTACHMENTS": "Partner Attachments",
-
     "AD": "Ad",
     "NO_ADS": "No advertisements",
     "AD_START": "Ad Start",
@@ -1729,11 +1724,22 @@
     "AD_FLAGS": "Ad Flags",
     "NEW_AD": "New Ad",
     "RENEW_AD": "Renewal",
-
     "AD_TARGETS": "Ad Targets",
     "TARGET_TYPE": "Target Type",
     "AD_LOCATIONS": "Ad Locations",
     "AD_METHODS": "Ad Methods",
-    "METHOD": "Method"
+    "METHOD": "Method",
+    "SERVICE_NAME": "Service Name",
+    "SERVICE_REFERENCE_NO": "Service Reference No",
+    "SERVICE_DESCRIPTION": "Service Description",
+    "SERVICE_INFO": "Service Information"
+  },
+  "VIEW_REQUESTPLAINT": {
+    "TITLE": "View Grievance Request"
+  },
+  "REQUEST_INFO": {
+    "WORKFLOW_STEPS": "Workflow Steps",
+    "EVIDENCE": "Evidence",
+    "JUSTIFICATIONS": "Justifications"
   }
 }
