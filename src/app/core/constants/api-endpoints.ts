@@ -394,4 +394,7 @@ export class ApiEndpoints {
     Update: '/User/UpdateFCMToken'
   };
 
+    static readonly Advertisement = {
+    Create: '/Advertisement/Create'
+  };
 }

@@ -1,11 +1,11 @@
 
 import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { GenericDataTableComponent } from '../../../../../shared/generic-data-table/generic-data-table.component';
 
 import { ColDef } from 'ag-grid-community';
@@ -18,6 +18,22 @@ import { AttachmentService } from '../../../../core/services/attachments/attachm
 import { AttachmentsConfigDto } from '../../../../core/dtos/mainApplyService/mainApplyService.dto';
 import { AttachmentBase64Dto, CreateWorkFlowCommentDto, WorkflowCommentsType } from '../../../../core/dtos/workFlowComments/workFlowComments.dto';
 import { AttachmentsConfigType } from '../../../../core/dtos/attachments/attachments-config.dto';
+import { RequestPlaintAttachmentDto } from '../../../../core/dtos/RequestPlaint/request-plaint.dto';
+import { arrayMinLength, dateRangeValidator } from '../../../../shared/customValidators';
+import { AuthService } from '../../../../core/services/auth.service';
+import { TranslationService } from '../../../../core/services/translation.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { CharityEventPermitRequestService } from '../../../../core/services/charity-event-permit-request.service';
+import { AdvertisementsService } from '../../../../core/services/advertisement.service';
+
+type AttachmentState = {
+  configs: AttachmentsConfigDto[];
+  items: RequestPlaintAttachmentDto[];
+  selected: Record<number, File>;
+  previews: Record<number, string>;
+  sub?: Subscription;
+};
+
 
 type AttachmentDto = {
   id?: number;
@@ -164,11 +180,42 @@ export enum ServiceStatus {
 @Component({
   selector: 'app-view-charityrequest',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, GenericDataTableComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, GenericDataTableComponent, NgSelectModule],
   templateUrl: './view-charityrequest.component.html',
   styleUrl: './view-charityrequest.component.scss'
 })
 export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
+  len = (a: readonly unknown[] | null | undefined) => a?.length ?? 0;
+  private attachmentStates = new Map<AttachmentsConfigType, AttachmentState>();
+
+  // ============== helpers ==============
+  private ensureState(type: AttachmentsConfigType): AttachmentState {
+    if (!this.attachmentStates.has(type)) {
+      this.attachmentStates.set(type, {
+        configs: [],
+        items: [],
+        selected: {},
+        previews: {},
+        sub: undefined
+      });
+    }
+    return this.attachmentStates.get(type)!;
+  }
+
+  public AttachmentsConfigType = AttachmentsConfigType;
+
+  public state(type: AttachmentsConfigType): AttachmentState {
+    return this.ensureState(type);
+  }
+
+  public hasSelected(type: AttachmentsConfigType, id: number): boolean {
+    return !!this.ensureState(type).selected[id];
+  }
+
+  public selectedFileName(type: AttachmentsConfigType, id: number): string | null {
+    return this.ensureState(type).selected[id]?.name ?? null;
+  }
+
   // Tabs: 1 Basic, 2 Event, 3 Dates, 4 Contacts, 5 Advertisements, 6 Partners, 7 Attachments, 8 Workflow
   currentTab = 1;
   totalTabs = 8;
@@ -213,6 +260,17 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
+  // ad add
+  advertForm!: FormGroup;
+  isDragOver = false;
+  advertisementType: any[] = [];
+  advertisementTargetType: any[] = [];
+  advertisementMethodType: any[] = [];
+  submitted = false;
+  isLoading = false;
+  isSaving = false;
+  isFormInitialized = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -222,14 +280,20 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private translate: TranslateService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    public translationService: TranslationService,
+    private _CharityEventPermitRequestService: CharityEventPermitRequestService,
+    private _AdvertisementsService: AdvertisementsService
   ) {
     this.commentForm = this.fb.group({ comment: [''] });
+    this.initAdvertisementForm();
   }
 
   ngOnInit(): void {
     this.loadMainApplyServiceData();
-    this.loadCommentAttachmentConfigs()
+    this.loadCommentAttachmentConfigs();
+    this.loadInitialData();
   }
   ngOnDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
@@ -248,6 +312,8 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
       next: (resp: any) => {
 
         this.mainApplyService = resp;
+        console.log(this.mainApplyService);
+
         this.charityEventPermit = resp.charityEventPermit || null;
         this.workFlowSteps = resp.workFlowSteps || [];
         this.partners = resp.partners || [];
@@ -536,22 +602,22 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
 
   // start comment attachment
-    loadCommentAttachmentConfigs(): void {
-      const sub = this.attachmentService.getAttachmentsConfigByType(
-        AttachmentsConfigType.Comment,
-        true,
-        null
-      ).subscribe({
-        next: (configs:any) => {
-          this.commentAttachmentConfigs = configs || [];
-          this.initializeCommentAttachments();
-        },
-        error: (error) => {
-          // Handle error silently
-        }
-      });
-      this.subscriptions.push(sub);
-    }
+  loadCommentAttachmentConfigs(): void {
+    const sub = this.attachmentService.getAttachmentsConfigByType(
+      AttachmentsConfigType.Comment,
+      true,
+      null
+    ).subscribe({
+      next: (configs: any) => {
+        this.commentAttachmentConfigs = configs || [];
+        this.initializeCommentAttachments();
+      },
+      error: (error) => {
+        // Handle error silently
+      }
+    });
+    this.subscriptions.push(sub);
+  }
 
   // Comment management methods
   addWorkFlowComment(): void {
@@ -739,11 +805,11 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     }
   }
 
-    initializeCommentAttachments(): void {
+  initializeCommentAttachments(): void {
     this.commentAttachments = {};
     this.commentSelectedFiles = {};
     this.commentFilePreviews = {};
-    
+
     this.commentAttachmentConfigs.forEach(config => {
       if (config.id) {
         this.commentAttachments[config.id] = {
@@ -754,8 +820,8 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
-    // Legacy file handling methods (keeping for backward compatibility)
+
+  // Legacy file handling methods (keeping for backward compatibility)
   onFileSelected(event: any): void {
     const files = event.target.files;
     if (files && files.length > 0) {
@@ -766,5 +832,334 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
   removeSelectedFile(index: number): void {
     this.selectedFiles.splice(index, 1);
   }
-  
+
+  ////////////////////////////// new attachment //////////////////////////////
+  initAdvertisementForm(): void {
+    const currentUser = this.authService.getCurrentUser();
+    this.advertForm = this.fb.group(
+      {
+
+        parentId: this.fb.control<number | null>(0),
+        mainApplyServiceId: this.fb.control<number | null>(0),
+        requestNo: this.fb.control<number | null>(0),
+
+        serviceType: this.fb.control<number | null>(1, { validators: [Validators.required] }),
+        workFlowServiceType: this.fb.control<number | null>(1, { validators: [Validators.required] }),
+
+        requestDate: this.fb.control(new Date().toISOString(), { validators: [Validators.required], nonNullable: true }),
+        userId: this.fb.control(currentUser?.id ?? '', { validators: [Validators.required], nonNullable: true }),
+
+        // provider: this.fb.control<string | null>(null),
+
+        adTitle: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+        // adLang: this.fb.control<'ar' | 'en'>('ar', { validators: [Validators.required], nonNullable: true }),
+
+        startDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+        endDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+
+        // mobile: this.fb.control<string | null>(null),
+        // supervisorName: this.fb.control<string | null>(null),
+        // fax: this.fb.control<string | null>(null),
+        // eMail: this.fb.control<string | null>(null, [Validators.email]),
+
+        // targetedAmount: this.fb.control<number | null>(null),
+
+
+        // newAd: this.fb.control<boolean | null>(true),
+        // reNewAd: this.fb.control<boolean | null>(false),
+        // oldPermNumber: this.fb.control<string | null>(null),
+
+        requestEventPermitId: this.fb.control<number | null>(null),
+
+
+        targetTypeIds: this.fb.control<number[]>([], { validators: [arrayMinLength(1)], nonNullable: true }),
+        adMethodIds: this.fb.control<number[]>([], { validators: [arrayMinLength(1)], nonNullable: true }),
+      },
+      {
+        validators: [dateRangeValidator]
+      }
+    );
+  }
+  // ============== 
+  getAttachmentName(type: AttachmentsConfigType, configId: number): string {
+    const s = this.ensureState(type);
+    const cfg = s.configs.find(c => c.id === configId);
+    if (!cfg) return '';
+    return this.translationService.currentLang === 'ar'
+      ? (cfg.name || '')
+      : (cfg.nameEn || cfg.name || '');
+  }
+  onFileSelectednew(event: Event, type: AttachmentsConfigType, configId: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0];
+    if (file) this.handleFileUpload(type, configId, file);
+  }
+
+  onDragOver(event: DragEvent): void { event.preventDefault(); this.isDragOver = true; }
+  onDragLeave(event: DragEvent): void { event.preventDefault(); this.isDragOver = false; }
+  onDrop(event: DragEvent, type: AttachmentsConfigType, configId: number): void {
+    event.preventDefault();
+    this.isDragOver = false;
+    const file = event.dataTransfer?.files?.[0];
+    if (file) this.handleFileUpload(type, configId, file);
+  }
+
+
+  handleFileUpload(type: AttachmentsConfigType, configId: number, file: File): void {
+    if (!this.validateFile(file)) return;
+
+    const s = this.ensureState(type);
+    s.selected[configId] = file;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      s.previews[configId] = dataUrl;
+
+      const i = s.items.findIndex(a => a.attConfigID === configId);
+      if (i !== -1) {
+        s.items[i] = {
+          ...s.items[i],
+          fileBase64: (dataUrl.split(',')[1] ?? ''),
+          fileName: file.name
+        };
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  validateFile(file: File): boolean {
+    const MAX = 5 * 1024 * 1024;
+    const ALLOWED = new Set<string>([
+      'image/jpeg', 'image/png', 'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ]);
+
+    if (file.size > MAX) { this.toastr.error(this.translate.instant('VALIDATION.FILE_TOO_LARGE')); return false; }
+
+    const typeOk = ALLOWED.has(file.type);
+    const extOk = /\.(jpe?g|png|pdf|docx?|DOCX?)$/i.test(file.name);
+    if (!typeOk && !extOk) { this.toastr.error(this.translate.instant('VALIDATION.INVALID_FILE_TYPE')); return false; }
+
+    return true;
+  }
+
+  removeFile(type: AttachmentsConfigType, configId: number): void {
+    const s = this.ensureState(type);
+    delete s.selected[configId];
+    delete s.previews[configId];
+
+    const i = s.items.findIndex(a => a.attConfigID === configId);
+    if (i !== -1) {
+      s.items[i] = { ...s.items[i], fileBase64: '', fileName: '' };
+    }
+  }
+  getPreview(type: AttachmentsConfigType, configId: number): string | undefined {
+    return this.ensureState(type).previews[configId];
+  }
+  //=================
+
+  getValidAttachments(type: AttachmentsConfigType): RequestPlaintAttachmentDto[] {
+    const s = this.ensureState(type);
+    return s.items.filter(a => a.fileBase64 && a.fileName);
+  }
+
+
+  getAllValidAttachments(types: AttachmentsConfigType[]): Record<AttachmentsConfigType, RequestPlaintAttachmentDto[]> {
+    const result = {} as Record<AttachmentsConfigType, RequestPlaintAttachmentDto[]>;
+    types.forEach(t => result[t] = this.getValidAttachments(t));
+    return result;
+  }
+
+
+  hasMissingRequiredAttachments(type: AttachmentsConfigType): boolean {
+    const s = this.ensureState(type);
+    return (s.configs || [])
+      .filter(c => (c as any).required === true)
+      .some(c => {
+        const a = s.items.find(x => x.attConfigID === c.id);
+        return !a || !a.fileBase64 || !a.fileName;
+      });
+  }
+
+
+  validateRequiredForAll(types: AttachmentsConfigType[]): boolean {
+    return types.every(t => !this.hasMissingRequiredAttachments(t));
+  }
+
+  addAdvertisement(): void {
+    this.advertForm.markAllAsTouched();
+    if (
+      !this.advertForm.valid ||
+      this.advertForm.hasError('dateRange')
+    ) {
+      this.toastr.error(this.translate.instant('VALIDATION.FORM_INVALID'));
+      return;
+    }
+
+    const adAttachType = AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
+    if (this.hasMissingRequiredAttachments(adAttachType)) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
+      return;
+    }
+
+    const v = this.advertForm.getRawValue();
+    const toRFC3339 = (x: string) => (x ? new Date(x).toISOString() : x);
+
+    const mainId = Number(v.mainApplyServiceId ?? 0);
+
+    const adAttachments = this.getValidAttachments(adAttachType).map(a => ({
+      ...a,
+      masterId: a.masterId || mainId
+    }));
+
+    const ad: any = {
+      parentId: Number(this.mainApplyService?.id),
+      mainApplyServiceId: 0,
+      requestNo: 0,
+
+      serviceType: Number(this.mainApplyService?.serviceId) as any,
+      workFlowServiceType: Number(this.mainApplyService?.serviceId) as any,
+
+      requestDate: toRFC3339(v.requestDate)!,
+      userId: v.userId,
+
+      // provider: v.provider ?? null,
+      adTitle: v.adTitle,
+      // adLang: v.adLang,
+
+      startDate: toRFC3339(v.startDate)!,
+      endDate: toRFC3339(v.endDate)!,
+
+      // mobile: v.mobile ?? null,
+      // supervisorName: v.supervisorName ?? null,
+      // fax: v.fax ?? null,
+      // eMail: v.eMail ?? null,
+
+      // targetedAmount: v.targetedAmount != null ? Number(v.targetedAmount) : null,
+
+      // newAd: v.newAd === true ? true : (v.reNewAd ? false : true),
+      // reNewAd: v.reNewAd === true ? true : false,
+      // oldPermNumber: v.oldPermNumber ?? null,
+
+      requestEventPermitId: null,
+      CharityEventPermitId: this.mainApplyService?.charityEventPermit?.id,
+
+      attachments: adAttachments,
+
+      requestAdvertisementTargets: (v.targetTypeIds || []).map((id: any) => ({
+        mainApplyServiceId: mainId,
+        lkpTargetTypeId: Number(id),
+        othertxt: null
+      })),
+
+      requestAdvertisementAdMethods: (v.adMethodIds || []).map((id: any) => ({
+        mainApplyServiceId: mainId,
+        lkpAdMethodId: Number(id),
+        othertxt: null
+      })),
+
+
+    };
+
+
+    console.log('requestAdvertisements', ad);
+    this._AdvertisementsService.createDepartment(ad).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.resetAttachments(adAttachType);
+
+        this.advertForm.reset({
+          serviceType: 1,
+          workFlowServiceType: 1,
+          requestDate: new Date().toISOString(),
+          userId: v.userId,
+          // adLang: 'ar',
+          // newAd: true,
+          // reNewAd: false,
+          targetTypeIds: [],
+          adMethodIds: []
+        });
+
+        this.toastr.success(this.translate.instant('SUCCESS.AD_ADDED'));
+        const modalEl = document.getElementById('addAdvertisementModal');
+        if (modalEl) {
+          const modalInstance = (window as any).bootstrap.Modal.getInstance(modalEl);
+          if (modalInstance) {
+            modalInstance.hide();
+          }
+        }
+
+      },
+      error: (err) => {
+        console.log(err);
+
+      }
+    })
+
+  }
+
+  // ============== reset/clear ==============
+  resetAttachments(type: AttachmentsConfigType): void {
+    const s = this.ensureState(type);
+    s.items.forEach(it => { it.fileBase64 = ''; it.fileName = ''; });
+    s.selected = {};
+    s.previews = {};
+  }
+  loadAttachmentConfigs(type: AttachmentsConfigType): void {
+    const s = this.ensureState(type);
+    s.sub?.unsubscribe();
+
+    s.sub = this.attachmentService.getAttachmentsConfigByType(type).subscribe({
+      next: (configs: any) => {
+        s.configs = configs || [];
+        s.items = s.configs.map(cfg => ({
+          fileBase64: '',
+          fileName: '',
+          masterId: 0,
+          attConfigID: cfg.id!
+        }));
+        s.selected = {};
+        s.previews = {};
+      },
+      error: (e) => console.error('Error loading attachment configs for type', type, e)
+    });
+  }
+
+  loadInitialData(): void {
+    this.isLoading = true;
+
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser?.id) {
+
+      forkJoin({
+        advertisementMethodType: this._CharityEventPermitRequestService.getAdvertisementMethodType({}),
+        advertisementTargetType: this._CharityEventPermitRequestService.getAdvertisementTargetType({}),
+        advertisementType: this._CharityEventPermitRequestService.getAdvertisementType()
+      }).subscribe({
+        next: (res: any) => {
+          this.advertisementType = res.advertisementType;
+          this.advertisementMethodType = res.advertisementMethodType?.results;
+          this.advertisementTargetType = res.advertisementTargetType?.results;
+
+          this.isLoading = false;
+          this.isFormInitialized = true; // Mark form as fully initialized
+
+
+          this.loadAttachmentConfigs(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign);
+
+        },
+        error: (error: any) => {
+          console.error('Error loading essential data:', error);
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_LOAD_DATA'));
+          this.isLoading = false;
+          this.isFormInitialized = true;
+        }
+      });
+    } else {
+      this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
+      this.router.navigate(['/login']);
+    }
+  }
 }

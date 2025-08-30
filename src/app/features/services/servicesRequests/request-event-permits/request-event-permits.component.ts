@@ -317,25 +317,25 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         requestDate: this.fb.control(new Date().toISOString(), { validators: [Validators.required], nonNullable: true }),
         userId: this.fb.control(currentUser?.id ?? '', { validators: [Validators.required], nonNullable: true }),
 
-        provider: this.fb.control<string | null>(null),
+        // provider: this.fb.control<string | null>(null),
 
         adTitle: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        adLang: this.fb.control<'ar' | 'en'>('ar', { validators: [Validators.required], nonNullable: true }),
+        // adLang: this.fb.control<'ar' | 'en'>('ar', { validators: [Validators.required], nonNullable: true }),
 
         startDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
         endDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
-        mobile: this.fb.control<string | null>(null),
-        supervisorName: this.fb.control<string | null>(null),
-        fax: this.fb.control<string | null>(null),
-        eMail: this.fb.control<string | null>(null, [Validators.email]),
+        // mobile: this.fb.control<string | null>(null),
+        // supervisorName: this.fb.control<string | null>(null),
+        // fax: this.fb.control<string | null>(null),
+        // eMail: this.fb.control<string | null>(null, [Validators.email]),
 
-        targetedAmount: this.fb.control<number | null>(null),
+        // targetedAmount: this.fb.control<number | null>(null),
 
 
-        newAd: this.fb.control<boolean | null>(true),
-        reNewAd: this.fb.control<boolean | null>(false),
-        oldPermNumber: this.fb.control<string | null>(null),
+        // newAd: this.fb.control<boolean | null>(true),
+        // reNewAd: this.fb.control<boolean | null>(false),
+        // oldPermNumber: this.fb.control<string | null>(null),
 
         requestEventPermitId: this.fb.control<number | null>(null),
 
@@ -1030,7 +1030,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       masterId: a.masterId || mainId
     }));
 
-    const ad: RequestAdvertisement = {
+    const ad: any = {
       parentId: Number(v.parentId ?? 0),
       mainApplyServiceId: mainId,
       requestNo: Number(v.requestNo ?? 0),
@@ -1041,23 +1041,23 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       requestDate: toRFC3339(v.requestDate)!,
       userId: v.userId,
 
-      provider: v.provider ?? null,
+      // provider: v.provider ?? null,
       adTitle: v.adTitle,
-      adLang: v.adLang,
+      // adLang: v.adLang,
 
       startDate: toRFC3339(v.startDate)!,
       endDate: toRFC3339(v.endDate)!,
 
-      mobile: v.mobile ?? null,
-      supervisorName: v.supervisorName ?? null,
-      fax: v.fax ?? null,
-      eMail: v.eMail ?? null,
+      // mobile: v.mobile ?? null,
+      // supervisorName: v.supervisorName ?? null,
+      // fax: v.fax ?? null,
+      // eMail: v.eMail ?? null,
 
-      targetedAmount: v.targetedAmount != null ? Number(v.targetedAmount) : null,
+      // targetedAmount: v.targetedAmount != null ? Number(v.targetedAmount) : null,
 
-      newAd: v.newAd === true ? true : (v.reNewAd ? false : true),
-      reNewAd: v.reNewAd === true ? true : false,
-      oldPermNumber: v.oldPermNumber ?? null,
+      // newAd: v.newAd === true ? true : (v.reNewAd ? false : true),
+      // reNewAd: v.reNewAd === true ? true : false,
+      // oldPermNumber: v.oldPermNumber ?? null,
 
       requestEventPermitId: v.requestEventPermitId != null ? Number(v.requestEventPermitId) : null,
 
@@ -1091,9 +1091,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       workFlowServiceType: 1,
       requestDate: new Date().toISOString(),
       userId: v.userId,
-      adLang: 'ar',
-      newAd: true,
-      reNewAd: false,
+      // adLang: 'ar',
+      // newAd: true,
+      // reNewAd: false,
       targetTypeIds: [],
       adMethodIds: []
     });

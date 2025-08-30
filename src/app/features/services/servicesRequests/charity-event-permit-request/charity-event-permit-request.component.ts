@@ -214,25 +214,25 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         requestDate: this.fb.control(new Date().toISOString(), { validators: [Validators.required], nonNullable: true }),
         userId: this.fb.control(currentUser?.id ?? '', { validators: [Validators.required], nonNullable: true }),
 
-        provider: this.fb.control<string | null>(null),
+        // provider: this.fb.control<string | null>(null),
 
         adTitle: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        adLang: this.fb.control<'ar' | 'en'>('ar', { validators: [Validators.required], nonNullable: true }),
+        // adLang: this.fb.control<'ar' | 'en'>('ar', { validators: [Validators.required], nonNullable: true }),
 
         startDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
         endDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
-        mobile: this.fb.control<string | null>(null),
-        supervisorName: this.fb.control<string | null>(null),
-        fax: this.fb.control<string | null>(null),
-        eMail: this.fb.control<string | null>(null, [Validators.email]),
+        // mobile: this.fb.control<string | null>(null),
+        // supervisorName: this.fb.control<string | null>(null),
+        // fax: this.fb.control<string | null>(null),
+        // eMail: this.fb.control<string | null>(null, [Validators.email]),
 
         targetedAmount: this.fb.control<number | null>(null),
 
 
-        newAd: this.fb.control<boolean | null>(true),
-        reNewAd: this.fb.control<boolean | null>(false),
-        oldPermNumber: this.fb.control<string | null>(null),
+        // newAd: this.fb.control<boolean | null>(true),
+        // reNewAd: this.fb.control<boolean | null>(false),
+        // oldPermNumber: this.fb.control<string | null>(null),
 
         requestEventPermitId: this.fb.control<number | null>(null),
 

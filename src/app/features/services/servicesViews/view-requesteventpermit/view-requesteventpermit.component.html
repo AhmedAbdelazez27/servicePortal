@@ -33,6 +33,11 @@
                 <i class="fas fa-plus me-2"></i>
                 {{ 'COMMON.ADD_COMMENT' | translate }}
               </button>
+              <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
+                data-bs-target="#addAdvertisementModal">
+                <i class="fas fa-plus me-2"></i>
+                Add  Advertisement
+              </button>
             </div>
 
             <div class="row">
@@ -878,6 +883,149 @@
           <span *ngIf="isSavingComment" class="spinner-border spinner-border-sm me-2" role="status"></span>
           {{ 'COMMON.ADD_COMMENT' | translate }}
         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============== modal add advertisement ============== -->
+<!-- Modal for Add Advertisement -->
+<div class="modal fade" id="addAdvertisementModal" tabindex="-1" aria-labelledby="addAdvertisementModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAdvertisementModalLabel">{{ 'CHARITY_EVENT.ADD_ADVERTISEMENT' | translate }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="advertForm">
+          <input type="hidden" formControlName="parentId">
+          <input type="hidden" formControlName="mainApplyServiceId">
+          <input type="hidden" formControlName="requestNo">
+          <input type="hidden" formControlName="userId">
+          <input type="hidden" formControlName="requestEventPermitId">
+
+          <!-- Request Date (readonly visual) -->
+          <div class="col-xl-6 mb-4">
+            <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_DATE' | translate }}</label>
+            <div class="form-control" readonly>
+              {{ advertForm.value.requestDate | date:'medium' }}
+            </div>
+          </div>
+
+          <!-- Ad Title -->
+          <div class="mb-3">
+            <label for="adTitle" class="form-label">{{ 'CHARITY_EVENT.AD_TITLE' | translate }} <span
+                class="text-danger">*</span></label>
+            <input type="text" id="adTitle" class="form-control" formControlName="adTitle" required>
+            <div class="invalid-feedback"
+              *ngIf="advertForm.get('adTitle')?.touched && advertForm.get('adTitle')?.invalid">
+              {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+            </div>
+          </div>
+
+          <!-- Range Date -->
+          <div class="col-xl-6 mb-4">
+            <label class="form-label">
+              {{ 'CHARITY_EVENT.START_DATE' | translate }} <span class="text-danger">*</span>
+            </label>
+            <input type="datetime-local" class="form-control" formControlName="startDate"
+              [class.is-invalid]="(advertForm.get('startDate')?.touched && advertForm.get('startDate')?.invalid) || advertForm.hasError('dateRange')">
+            <div class="invalid-feedback"
+              *ngIf="advertForm.get('startDate')?.touched && advertForm.get('startDate')?.errors">
+              {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+            </div>
+          </div>
+
+          <div class="col-xl-6 mb-1">
+            <label class="form-label">
+              {{ 'CHARITY_EVENT.END_DATE' | translate }} <span class="text-danger">*</span>
+            </label>
+            <input type="datetime-local" class="form-control" formControlName="endDate"
+              [class.is-invalid]="(advertForm.get('endDate')?.touched && advertForm.get('endDate')?.invalid) || advertForm.hasError('dateRange')">
+            <div class="invalid-feedback"
+              *ngIf="advertForm.get('endDate')?.touched && advertForm.get('endDate')?.errors">
+              {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+            </div>
+          </div>
+
+          <div class="col-12 mb-4" *ngIf="advertForm.hasError('dateRange')">
+            <div class="text-danger small">{{ 'VALIDATION.DATE_RANGE' | translate }}</div>
+          </div>
+
+          <!-- Targets (multi) -> requestAdvertisementTargets -->
+          <div class="col-xl-6 mb-4">
+            <label class="form-label">
+              {{ 'CHARITY_EVENT.TARGET_TYPES' | translate }} <span class="text-danger">*</span>
+            </label>
+            <ng-select formControlName="targetTypeIds" [items]="advertisementTargetType" bindLabel="text" bindValue="id"
+              [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
+              [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
+              [ngClass]="{'is-invalid': advertForm.get('targetTypeIds')?.touched && advertForm.get('targetTypeIds')?.invalid}">
+            </ng-select>
+            <div class="invalid-feedback d-block" *ngIf="advertForm.get('targetTypeIds')?.hasError('minArrayLength')">
+              {{ 'VALIDATION.MIN_ONE_TARGET' | translate }}
+            </div>
+          </div>
+
+          <!-- Methods (multi) -> requestAdvertisementAdMethods -->
+          <div class="col-xl-6 mb-4">
+            <label class="form-label">
+              {{ 'CHARITY_EVENT.AD_METHODS' | translate }} <span class="text-danger">*</span>
+            </label>
+            <ng-select formControlName="adMethodIds" [items]="advertisementMethodType" bindLabel="text" bindValue="id"
+              [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
+              [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
+              [ngClass]="{'is-invalid': advertForm.get('adMethodIds')?.touched && advertForm.get('adMethodIds')?.invalid}">
+            </ng-select>
+            <div class="invalid-feedback d-block" *ngIf="advertForm.get('adMethodIds')?.hasError('minArrayLength')">
+              {{ 'VALIDATION.MIN_ONE_METHOD' | translate }}
+            </div>
+          </div>
+
+          <!-- Ad Attachments (RequestAnEventAnnouncementOrDonationCampaign) -->
+          <div class="mt-4">
+            <h6 class="mb-3">{{ 'CHARITY_EVENT.AD_ATTACHMENTS' | translate }}</h6>
+
+            <div *ngFor="let cfg of state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).configs"
+              class="mb-3">
+              <label>{{ getAttachmentName(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
+                }}</label>
+              <div *ngIf="!hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                (drop)="onDrop($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                [class.drag-over]="isDragOver">
+                <input type="file" class="d-none" [id]="'file-reqAd-' + cfg.id"
+                  (change)="onFileSelectednew($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                <label [for]="'file-reqAd-' + cfg.id" class="upload-label">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
+                </label>
+              </div>
+
+              <div *ngIf="hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                class="file-preview">
+                <span class="file-name">
+                  {{ selectedFileName(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!) }}
+                </span>
+                <img
+                  *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!) &&
+                           state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).selected[cfg.id!].type.startsWith('image/')"
+                  [src]="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                  class="preview-image">
+              </div>
+            </div>
+          </div>
+
+          <!-- Add button -->
+          <div class="d-flex justify-content-end mt-3">
+            <button type="button" class="btn btn-primary" (click)="addAdvertisement()">{{ 'COMMON.ADD' | translate
+              }}</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
