@@ -29,6 +29,7 @@ export class NotificationService {
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   private currentUserId: string | null = null;
   private isSystemInitialized = false;
+  private isFirstLoad = true; // Track if this is the first load of the session
 
   public notifications$ = this.notificationsSubject.asObservable();
   public unseenCount$ = this.unseenCountSubject.asObservable();
@@ -206,7 +207,8 @@ export class NotificationService {
       // Update unseen count
       this.incrementUnseenCount();
       
-      // Show toast notification
+      // Always show toast notification for real-time Firebase messages
+      // (regardless of first load status)
       this.showNotificationToast(newNotification);
     }
   }
@@ -218,8 +220,8 @@ export class NotificationService {
     const currentNotifications = this.notificationsSubject.value || [];
     const updatedNotifications = [notification, ...currentNotifications];
     
-    // Keep only the latest 5 notifications for navbar
-    const limitedNotifications = updatedNotifications.slice(0, 5);
+    // Keep only the latest 30 notifications for navbar
+    const limitedNotifications = updatedNotifications.slice(0, 30);
     
     this.notificationsSubject.next(limitedNotifications);
   }
@@ -257,13 +259,14 @@ export class NotificationService {
     }
 
     try {
-      // Load navbar notifications (limited to 5) and unseen count in parallel
+      // Load navbar notifications (limited to 30) and unseen count in parallel
       await Promise.all([
         this.loadNavbarNotifications(userId).toPromise(),
         this.loadUnseenCount(userId).toPromise()
       ]);
 
       this.lastRefreshTime = Date.now();
+      this.isFirstLoad = false; // Mark that initial load is complete
     } catch (error) {
       // Initial notifications loading error
     }
@@ -287,6 +290,7 @@ export class NotificationService {
     this.sessionInitializedSubject.next(false);
     this.currentUserId = null;
     this.lastRefreshTime = 0;
+    this.isFirstLoad = true; // Reset first load flag for next session
     // Note: Keep initializationCompleteSubject as true since Firebase is still initialized
   }
 
@@ -335,11 +339,17 @@ export class NotificationService {
       this.loadingSubject.next(true);
       
       try {
+        // Temporarily disable toast notifications for refresh
+        const wasFirstLoad = this.isFirstLoad;
+        this.isFirstLoad = true;
+        
         await Promise.all([
           this.loadNavbarNotifications(userId).toPromise(),
           this.loadUnseenCount(userId).toPromise()
         ]);
         
+        // Restore the original first load status
+        this.isFirstLoad = wasFirstLoad;
         this.lastRefreshTime = Date.now();
       } catch (error) {
         // Refresh notifications error
@@ -351,8 +361,14 @@ export class NotificationService {
 
   /**
    * Check for new notifications and show toast if any
+   * Only shows toast for truly new notifications, not on page refresh
    */
   private checkForNewNotifications(currentNotifications: NotificationDto[]): void {
+    // Don't show toast notifications on first load (page refresh/initial load)
+    if (this.isFirstLoad) {
+      return;
+    }
+    
     const previousNotifications = this.notificationsSubject.value || [];
     
     // Find new notifications (not in previous list)
@@ -417,7 +433,7 @@ export class NotificationService {
   /**
    * Load notifications from API
    */
-  private loadNotifications(userId: string, skip: number = 0, take: number = 5): Observable<PagedResultDto<NotificationDto>> {
+  private loadNotifications(userId: string, skip: number = 0, take: number = 30): Observable<PagedResultDto<NotificationDto>> {
     this.loadingSubject.next(true);
     
     const request: GetAllNotificationRequestDto = {
@@ -462,7 +478,7 @@ export class NotificationService {
           .slice(0, take);
         
         // Check for new notifications and show toast (only for navbar notifications)
-        if (take <= 5) {
+        if (take <= 30) {
           this.checkForNewNotifications(sortedNotifications);
         }
         
@@ -512,10 +528,10 @@ export class NotificationService {
   }
 
   /**
-   * Load navbar notifications (limited to 5 for dropdown)
+   * Load navbar notifications (limited to 30 for dropdown)
    */
   private loadNavbarNotifications(userId: string): Observable<PagedResultDto<NotificationDto>> {
-    return this.loadNotifications(userId, 0, 5);
+    return this.loadNotifications(userId, 0, 30);
   }
 
   /**
@@ -618,7 +634,7 @@ export class NotificationService {
   }
 
   /**
-   * Get current notifications (last 5) - with debugging
+   * Get current notifications (last 30) - with debugging
    */
   getCurrentNotifications(): NotificationDto[] {
     const current = this.notificationsSubject.value;
@@ -846,5 +862,27 @@ export class NotificationService {
     } catch (error) {
       throw error;
     }
+  }
+
+  /**
+   * Enable toast notifications for testing purposes
+   * This method can be called to re-enable toast notifications after first load
+   */
+  enableToastNotifications(): void {
+    this.isFirstLoad = false;
+  }
+
+  /**
+   * Disable toast notifications (for testing purposes)
+   */
+  disableToastNotifications(): void {
+    this.isFirstLoad = true;
+  }
+
+  /**
+   * Check if toast notifications are currently enabled
+   */
+  areToastNotificationsEnabled(): boolean {
+    return !this.isFirstLoad;
   }
 }

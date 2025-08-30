@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { UserService } from '../../../core/services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
@@ -24,6 +25,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   unseenCount = 0;
   loading = false;
   isNotificationDropdownOpen = false;
+  currentUserName: string = '';
+  private userData: any = null;
   private destroy$ = new Subject<void>();
     private isSubscribed = false; // Prevent duplicate subscriptions
 
@@ -31,6 +34,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
+    private userService: UserService,
     private toastr: ToastrService,
     private translate: TranslateService,
     private router: Router,
@@ -41,11 +45,57 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     this.translate.onLangChange.subscribe(lang => {
       this.currentLang = lang.lang;
+      // Reload user name when language changes
+      if (this.isLoggedIn()) {
+        this.loadCurrentUserName();
+      }
     });
   }
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
+  }
+
+  loadCurrentUserName(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser && currentUser.id) {
+      // If we already have user data, just update the name based on current language
+      if (this.userData) {
+        this.updateUserNameBasedOnLanguage(this.userData);
+        return;
+      }
+
+      // Fetch complete user data to get both Arabic and English names
+      this.userService.getUserById(currentUser.id).subscribe({
+        next: (userData) => {
+          if (userData) {
+            this.userData = userData; // Cache the user data
+            this.updateUserNameBasedOnLanguage(userData);
+          } else {
+            this.currentUserName = 'User';
+          }
+        },
+        error: (error) => {
+          console.error('Error loading user data:', error);
+          // Fallback to basic user info from token
+          this.currentUserName = currentUser.name || 'User';
+        }
+      });
+    } else {
+      this.currentUserName = 'User';
+    }
+  }
+
+  private updateUserNameBasedOnLanguage(userData: any): void {
+    const currentLang = this.currentLang || 'en';
+    if (currentLang === 'ar' && userData.name) {
+      this.currentUserName = userData.name; // Arabic name
+    } else if (currentLang === 'en' && userData.nameEn) {
+      this.currentUserName = userData.nameEn; // English name
+    } else {
+      // Fallback to available name
+      this.currentUserName = userData.nameEn || userData.name || 'User';
+    }
   }
 
   isLoginPage(): boolean {
@@ -70,6 +120,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isNotificationDropdownOpen = false;
     this.isSubscribed = false; // Reset subscription flag
     
+    // Clear cached user data
+    this.userData = null;
+    this.currentUserName = '';
+    
     this.authService.logout();
     this.toastr.success(
       this.translate.instant('AUTH.MESSAGES.LOGOUT_SUCCESS'),
@@ -83,6 +137,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.isLoggedIn()) {
+      // Get current user's name
+      this.loadCurrentUserName();
+      
       // Only subscribe to notifications if not already subscribed
       if (!this.isSubscribed) {
         this.subscribeToNotifications();

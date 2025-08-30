@@ -1570,6 +1570,8 @@
          "NAVIGATION": {
     "HOME": "Home",
     "ABOUT_US": "About Us",
+    "ABOUT_COUNCIL": "About the council",
+    "GENERAL_MANAGER_MESSAGE": "General Manager's Message",
     "SERVICES": "Services",
     "REQUEST": "Request",
     "INITIATIVES": "Initiatives",
@@ -1932,5 +1934,11 @@
   },
   "VIEW_COMPLAINTREQUEST": {
     "TITLE": "View Complaint Request"
+  },
+  "NAVBAR": {
+    "LOGIN": "Login",
+    "CHANGE_PASSWORD": "Change Password",
+    "PROFILE": "Profile",
+    "LOGOUT": "Logout"
   }
 }

@@ -1248,6 +1248,8 @@
        "NAVIGATION": {
          "HOME": "الرئيسية",
          "ABOUT_US": "من نحن",
+         "ABOUT_COUNCIL": "عن المجلس",
+         "GENERAL_MANAGER_MESSAGE": "رسالة المدير العام",
          "SERVICES": "الخدمات",
          "REQUEST": "طلب",
          "INITIATIVES": "المبادرات",
@@ -1606,5 +1608,11 @@
   },
    "VIEW_COMPLAINTREQUEST": {
     "TITLE": "عرض طلب الشكوى"
+  },
+  "NAVBAR": {
+    "LOGIN": "تسجيل الدخول",
+    "CHANGE_PASSWORD": "تغيير كلمة المرور",
+    "PROFILE": "الملف الشخصي",
+    "LOGOUT": "تسجيل الخروج"
   }
 }
