@@ -1940,5 +1940,6 @@
     "CHANGE_PASSWORD": "Change Password",
     "PROFILE": "Profile",
     "LOGOUT": "Logout"
-  }
+  },
+  "ADD_ADVERTISEMENT": "Add Advertisement"
 }

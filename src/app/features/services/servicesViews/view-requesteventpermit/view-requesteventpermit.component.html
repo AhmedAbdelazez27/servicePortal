@@ -37,7 +37,7 @@
                <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
                 data-bs-target="#addAdvertisementModal">
                 <i class="fas fa-plus me-2"></i>
-                Add  Advertisement
+                {{'ADD_ADVERTISEMENT' | translate}}
               </button>
             </div>
 
@@ -661,6 +661,7 @@
 
                           <!-- Comment Text -->
                           <div class="comment-area">
+                            {{comment |json}} 
                             {{ comment.comment }}
                           </div>
 
@@ -670,7 +671,7 @@
                  <i class="fas fa-eye me-1"></i><span>   view</span>
                </button> -->
 
-                            <button class="btn btn-view-attachment mt-2">
+                            <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"  data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)"> 
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
                                 fill="none">
                                 <g clip-path="url(#clip0_560_1674)">

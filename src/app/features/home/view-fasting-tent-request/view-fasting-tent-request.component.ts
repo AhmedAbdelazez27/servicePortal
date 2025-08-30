@@ -1027,22 +1027,13 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   // Handle table cell clicks for attachment viewing
-  onTableCellClick(event: any): void {
-    // Check if the click is on an attachment button
-    if (event.event && event.event.target) {
-      const target = event.event.target;
-      
-      // Check if the clicked element is an attachment button or contains one
-      const attachmentBtn = target.closest('.attachment-btn');
-      
-      if (attachmentBtn) {
-        const commentId = parseInt(attachmentBtn.getAttribute('data-comment-id'));
-        
-        if (commentId) {
-          this.fetchAndViewCommentAttachments(commentId);
-        }
-      }
-    }
+  onTableCellClick(event: any,id:any) {
+    // const btn = event.event?.target?.closest?.('.attachment-btn');
+    // if (btn) {
+    //   const id = parseInt(btn.getAttribute('data-comment-id'), 10);
+    //   if (id) this.fetchAndViewCommentAttachments(id);
+    // }
+     if (id) this.fetchAndViewCommentAttachments(id);
   }
 
   // Legacy file handling methods (keeping for backward compatibility)

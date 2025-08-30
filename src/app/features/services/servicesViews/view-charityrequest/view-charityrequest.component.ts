@@ -515,12 +515,13 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
   }
 
   // Workflow comment attachments
-  onTableCellClick(event: any) {
-    const btn = event.event?.target?.closest?.('.attachment-btn');
-    if (btn) {
-      const id = parseInt(btn.getAttribute('data-comment-id'), 10);
-      if (id) this.fetchAndViewCommentAttachments(id);
-    }
+  onTableCellClick(event: any,id:any) {
+    // const btn = event.event?.target?.closest?.('.attachment-btn');
+    // if (btn) {
+    //   const id = parseInt(btn.getAttribute('data-comment-id'), 10);
+    //   if (id) this.fetchAndViewCommentAttachments(id);
+    // }
+     if (id) this.fetchAndViewCommentAttachments(id);
   }
   onCommentsTableAction(_: { action: string; row: any }) { /* hook جاهز */ }
 

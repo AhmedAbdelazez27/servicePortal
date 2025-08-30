@@ -33,10 +33,10 @@
                 <i class="fas fa-plus me-2"></i>
                 {{ 'COMMON.ADD_COMMENT' | translate }}
               </button>
-               <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
+              <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
                 data-bs-target="#addAdvertisementModal">
                 <i class="fas fa-plus me-2"></i>
-                Add  Advertisement
+                {{'ADD_ADVERTISEMENT' | translate}}
               </button>
             </div>
             <div class="row">
@@ -240,8 +240,8 @@
               <!-- ACCORDION ITEM 1: Advertisements -->
               <div class="accordion-item">
                 <h2 class="accordion-header" id="adsHeader">
-                  <button class="accordion-button" type="button" data-bs-toggle="collapse" 
-                  data-bs-target="#adsSection" aria-expanded="false" aria-controls="adsSection">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#adsSection"
+                    aria-expanded="false" aria-controls="adsSection">
                     {{ 'CHARITY_EVENT_PERMIT.ADVERTISEMENTS' | translate }}
                   </button>
                 </h2>
@@ -580,11 +580,11 @@
                               </small>
                             </div>
                           </div>
-                           <div class="comment-area">
+                          <div class="comment-area">
                             {{ comment.comment }}
                           </div>
-                           <div>
-                                                      <button class="btn btn-view-attachment mt-2">
+                          <div>
+                            <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"  data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
                                 fill="none">
                                 <g clip-path="url(#clip0_560_1674)">
@@ -793,10 +793,8 @@
                         translate) }}</span>
                     </div>
 
-                    <button 
-                    *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]" type="button"
-                      class="btn-remove-uploaded-file"
-                       (click)="removeCommentFile(config.id!)">
+                    <button *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]" type="button"
+                      class="btn-remove-uploaded-file" (click)="removeCommentFile(config.id!)">
 
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path
