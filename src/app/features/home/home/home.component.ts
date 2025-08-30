@@ -118,8 +118,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
         autoplay: false, // Disable autoplay
         responsive: {
           0: { items: 1 }, // 1 item for small screens
-          600: { items: 2 }, // 2 items for medium screens
-          1000: { items: 3 }, // 3 items for large screens
+          600: { items: 1 }, // 2 items for medium screens
+          1000: { items: 2 }, // 3 items for large screens
         },
         navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
           '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
@@ -150,8 +150,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
         autoplay: false, // Disable autoplay
         responsive: {
           0: { items: 1 }, // 1 item for small screens
-          600: { items: 2 }, // 2 items for medium screens
-          1000: { items: 3 }, // 3 items for large screens
+          600: { items: 1 }, // 2 items for medium screens
+          1000: { items: 2 }, // 3 items for large screens
         },
         navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
           '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
@@ -282,7 +282,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   getInitiativeDescription(initiative: InitiativeDto): string {
-    const currentLanguage = this.translationService.currentLang;
+    const currentLanguage = localStorage.getItem('language') || 'en';
     return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '');
   }
 

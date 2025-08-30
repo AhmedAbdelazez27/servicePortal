@@ -85,7 +85,7 @@ export class ApiEndpoints {
   static readonly UserStatus = {
     Base: '/Lookup/UserStatus',
   };
-  
+
 
   static readonly ApMiscPaymentHeader = {
     Base: '/ApMiscPaymentHeader',
@@ -375,7 +375,7 @@ export class ApiEndpoints {
     Base: '/RequestEventPermits',
     Create: '/Create'
   };
-    static readonly CharityEventPermit = {
+  static readonly CharityEventPermit = {
     Base: '/CharityEventPermit',
     Create: '/Create'
   };
@@ -393,8 +393,8 @@ export class ApiEndpoints {
   static readonly FCMToken = {
     Update: '/User/UpdateFCMToken'
   };
-
-    static readonly Advertisement = {
+  
+  static readonly Advertisement = {
     Create: '/Advertisement/Create'
   };
 }

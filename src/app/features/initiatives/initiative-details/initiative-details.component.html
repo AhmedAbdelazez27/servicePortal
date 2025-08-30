@@ -1,5 +1,6 @@
 <section>
   <div class="container services">
+   
     <!-- Loading State -->
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border" role="status">
@@ -19,8 +20,16 @@
       </div>
     </div>
 
-    <!-- Content -->
-    <div *ngIf="!loading && !error && initiative" class="row">
+    <div *ngIf="!loading && !error && initiative">
+
+       <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Services</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ getInitiativeName(initiative) }}</li>
+          </ol>
+        </nav>
+      <!-- Content -->
+    <div  class="row">
       <!-- Initiative Image -->
       <div class="col-12 mb-5">
         <h4 class="gold">{{ getInitiativeName(initiative) }}</h4>
@@ -103,28 +112,12 @@
         </div>
       </div>
     </div>
-
-    <!-- Request Service Section -->
-    <div *ngIf="!loading && !error && initiative" class="request-service">
-      <p class="mb-0">
-        {{ 'INITIATIVES.REQUEST_SERVICE_DESCRIPTION' | translate }}
-      </p>
-
-      <button class="btn btn-gold" (click)="onRequestService()">
-        {{ 'INITIATIVES.REQUEST_SERVICE' | translate }}
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M13.5201 18.9998C13.7825 18.9987 14.0339 18.8946 14.2201 18.7098L18.8101 14.1198C19.3719 13.5573 19.6875 12.7948 19.6875 11.9998C19.6875 11.2048 19.3719 10.4423 18.8101 9.87982L14.2201 5.28982C14.0328 5.10356 13.7793 4.99902 13.5151 4.99902C13.251 4.99902 12.9975 5.10356 12.8101 5.28982C12.7164 5.38278 12.642 5.49338 12.5912 5.61524C12.5405 5.7371 12.5143 5.8678 12.5143 5.99982C12.5143 6.13183 12.5405 6.26253 12.5912 6.38439C12.642 6.50625 12.7164 6.61685 12.8101 6.70982L17.4001 11.2898C17.4939 11.3828 17.5683 11.4934 17.619 11.6152C17.6698 11.7371 17.6959 11.8678 17.6959 11.9998C17.6959 12.1318 17.6698 12.2625 17.619 12.3844C17.5683 12.5063 17.4939 12.6169 17.4001 12.7098L12.8101 17.2898C12.7164 17.3828 12.642 17.4934 12.5912 17.6152C12.5405 17.7371 12.5143 17.8678 12.5143 17.9998C12.5143 18.1318 12.5405 18.2625 12.5912 18.3844C12.642 18.5063 12.7164 18.6169 12.8101 18.7098C12.9036 18.8025 13.0144 18.8758 13.1362 18.9256C13.2581 18.9754 13.3885 19.0006 13.5201 18.9998Z"
-            fill="white"></path>
-          <path
-            d="M6.52033 18.9998C6.78267 18.9987 7.03406 18.8946 7.22032 18.7098L13.2203 12.7098C13.314 12.6169 13.3884 12.5063 13.4392 12.3844C13.49 12.2625 13.5161 12.1318 13.5161 11.9998C13.5161 11.8678 13.49 11.7371 13.4392 11.6152C13.3884 11.4934 13.314 11.3828 13.2203 11.2898L7.22032 5.28982C7.03296 5.10356 6.77951 4.99902 6.51533 4.99902C6.25114 4.99902 5.99769 5.10356 5.81033 5.28982C5.7166 5.38278 5.6422 5.49338 5.59144 5.61524C5.54067 5.7371 5.51453 5.8678 5.51453 5.99982C5.51453 6.13183 5.54067 6.26253 5.59144 6.38439C5.6422 6.50625 5.7166 6.61685 5.81033 6.70982L11.1003 11.9998L5.81033 17.2898C5.7166 17.3828 5.6422 17.4934 5.59144 17.6152C5.54067 17.7371 5.51453 17.8678 5.51453 17.9998C5.51453 18.1318 5.54067 18.2625 5.59144 18.3844C5.6422 18.5063 5.7166 18.6169 5.81033 18.7098C5.90377 18.8025 6.01458 18.8758 6.13642 18.9256C6.25826 18.9754 6.38872 19.0006 6.52033 18.9998Z"
-            fill="white"></path>
-        </svg>
-      </button>
     </div>
 
+    
+
     <!-- Navigation Buttons -->
-    <div *ngIf="!loading && !error" class="mt-4 d-flex gap-3">
+    <!-- <div *ngIf="!loading && !error" class="mt-4 d-flex gap-3">
       <button class="btn btn-outline-secondary" (click)="onBackToInitiatives()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-2">
           <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -143,6 +136,6 @@
         </svg>
         {{ 'COMMON.BACK_TO_HOME' | translate }}
       </button>
-    </div>
+    </div> -->
   </div>
 </section>

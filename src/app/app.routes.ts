@@ -110,6 +110,7 @@ export const routes: Routes = [
             (m) => m.ContactUsComponent
           ),
       },
+      
 
       // Notification Management - requires authentication
       {
@@ -196,6 +197,13 @@ export const routes: Routes = [
         path: 'services-requests',
          canActivate: [authGuard],
         loadChildren: () => import('./features/services/servicesRequests/servicesRequests.routes').then((m) => m.servicesRequestsRoutes)
+      },
+      {
+        path:'about',
+        loadChildren: ()=>import('./features/about/about.routes').then(
+            (m)=> m.aboutRoutes
+          )
+        
       },
       {
         path: 'view-services-requests',

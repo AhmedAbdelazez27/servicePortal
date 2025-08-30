@@ -260,7 +260,7 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  // ad add
+    // ad add
   advertForm!: FormGroup;
   isDragOver = false;
   advertisementType: any[] = [];
@@ -312,8 +312,6 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
       next: (resp: any) => {
 
         this.mainApplyService = resp;
-        console.log(this.mainApplyService);
-
         this.charityEventPermit = resp.charityEventPermit || null;
         this.workFlowSteps = resp.workFlowSteps || [];
         this.partners = resp.partners || [];
@@ -602,22 +600,22 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
 
   // start comment attachment
-  loadCommentAttachmentConfigs(): void {
-    const sub = this.attachmentService.getAttachmentsConfigByType(
-      AttachmentsConfigType.Comment,
-      true,
-      null
-    ).subscribe({
-      next: (configs: any) => {
-        this.commentAttachmentConfigs = configs || [];
-        this.initializeCommentAttachments();
-      },
-      error: (error) => {
-        // Handle error silently
-      }
-    });
-    this.subscriptions.push(sub);
-  }
+    loadCommentAttachmentConfigs(): void {
+      const sub = this.attachmentService.getAttachmentsConfigByType(
+        AttachmentsConfigType.Comment,
+        true,
+        null
+      ).subscribe({
+        next: (configs: any) => {
+          this.commentAttachmentConfigs = configs || [];
+          this.initializeCommentAttachments();
+        },
+        error: (error) => {
+          // Handle error silently
+        }
+      });
+      this.subscriptions.push(sub);
+    }
 
   // Comment management methods
   addWorkFlowComment(): void {
@@ -805,11 +803,11 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     }
   }
 
-  initializeCommentAttachments(): void {
+    initializeCommentAttachments(): void {
     this.commentAttachments = {};
     this.commentSelectedFiles = {};
     this.commentFilePreviews = {};
-
+    
     this.commentAttachmentConfigs.forEach(config => {
       if (config.id) {
         this.commentAttachments[config.id] = {
@@ -820,8 +818,8 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  // Legacy file handling methods (keeping for backward compatibility)
+  
+    // Legacy file handling methods (keeping for backward compatibility)
   onFileSelected(event: any): void {
     const files = event.target.files;
     if (files && files.length > 0) {

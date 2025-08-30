@@ -4,7 +4,7 @@
   "TOGGLE_LANG": "Switch to Arabic",
   "PAGE_NOT_FOUND": "Oops! Page not found.",
   "BACK_HOME": "Back to Home",
-  "COMMON": {
+    "COMMON": {
     "LOADING": "Loading...",
     "LOADING_DATA": "Loading data, please wait...",
     "ERROR": "Error",
@@ -686,10 +686,18 @@
     "PASSWORDS_DONT_MATCH": "Passwords do not match"
   },
    "COMMON": {
+        "REQUEST_SERVICE": "Request Service",
+     "LOADING": "Loading...",
+    "LOADING_DATA": "Loading data, please wait...",
+        "OPEN_IN_GOOGLE_MAPS": "Open in Google Maps",
+    "BACK_TO_INITIATIVES": "Back to Initiatives",
+    "BACK_TO_HOME": "Back to Home",
+    "VISIT_LINK": "Visit Link",
+    "VIEW_ORDER": "View Order",
+     "ACTIVE": "Active",
+    "INACTIVE": "Inactive" ,
     "REQUEST_SERVICE": "Request Service",
-    "LOADING": "Loading...",
-    "LOADING_DATA": "Loading data...",
-    "LOADING_COMMENTS": "Loading comments...",
+      "LOADING_COMMENTS": "Loading comments...",
     "LOADING_ATTACHMENTS": "Loading attachments...",
     "AUTO_GENERATED": "Auto Generated",
     "SELECT_OPTION": "Select an option",

@@ -185,7 +185,14 @@ import { AdvertisementsService } from '../../../../core/services/advertisement.s
 @Component({
   selector: 'app-view-requesteventpermit',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, GenericDataTableComponent, NgSelectModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    GenericDataTableComponent,
+    NgSelectModule
+  ],
   templateUrl: './view-requesteventpermit.component.html',
   styleUrls: ['./view-requesteventpermit.component.scss']
 })
@@ -262,7 +269,7 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   selectedFiles: File[] = [];
 
   private subscriptions: Subscription[] = [];
-  // ===== Advertisements: form & lookups & attachment UI =====
+    // ===== Advertisements: form & lookups & attachment UI =====
   advertForm!: FormGroup;
   isDragOver = false;
   advertisementType: any[] = [];
@@ -613,22 +620,22 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
 
 
   // start comment attachment
-  loadCommentAttachmentConfigs(): void {
-    const sub = this.attachmentService.getAttachmentsConfigByType(
-      AttachmentsConfigType.Comment,
-      true,
-      null
-    ).subscribe({
-      next: (configs: any) => {
-        this.commentAttachmentConfigs = configs || [];
-        this.initializeCommentAttachments();
-      },
-      error: (error) => {
-        // Handle error silently
+      loadCommentAttachmentConfigs(): void {
+        const sub = this.attachmentService.getAttachmentsConfigByType(
+          AttachmentsConfigType.Comment,
+          true,
+          null
+        ).subscribe({
+          next: (configs: any) => {
+            this.commentAttachmentConfigs = configs || [];
+            this.initializeCommentAttachments();
+          },
+          error: (error) => {
+            // Handle error silently
+          }
+        });
+        this.subscriptions.push(sub);
       }
-    });
-    this.subscriptions.push(sub);
-  }
   // Comment management methods
   addWorkFlowComment(): void {
     if (!this.newCommentText.trim() || !this.targetWorkFlowStep?.id) {

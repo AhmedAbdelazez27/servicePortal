@@ -18,12 +18,13 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Requests</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'REQUEST_EVENT_PERMIT.VIEW_TITLE' | translate }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'REQUEST_EVENT_PERMIT.VIEW_TITLE' | translate }}
+            </li>
           </ol>
         </nav>
 
         <div class="service-info-card mb-4">
-        
+
 
           <div class="w-100">
             <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
@@ -33,7 +34,7 @@
                 <i class="fas fa-plus me-2"></i>
                 {{ 'COMMON.ADD_COMMENT' | translate }}
               </button>
-              <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
+               <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
                 data-bs-target="#addAdvertisementModal">
                 <i class="fas fa-plus me-2"></i>
                 Add  Advertisement
@@ -564,11 +565,10 @@
                           {{ 'COMMON.ADD_COMMENT' | translate }}
                         </button>
                       </div>
-
+                      <!-- 
                       <div class="comments-container">
                         <div class="comment-item">
-                          <div 
-                          class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                          <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
                             <h5>Department Name</h5>
                             <div class="status-waiting">
                               Waiting
@@ -583,7 +583,8 @@
                             electronic typesetting, remaining essentially unchanged.
                           </div>
                           <button class="btn btn-view-attachment mt-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                              fill="none">
                               <g clip-path="url(#clip0_560_1674)">
                                 <path
                                   d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
@@ -640,7 +641,63 @@
                         [totalCount]="allWorkFlowComments.length" [pageSize]="10" [currentPage]="0"
                         [showActionColumn]="false" [columnHeaderMap]="commentsColumnHeaderMap"
                         (actionClick)="onCommentsTableAction($event)" (cellClicked)="onTableCellClick($event)">
-                      </app-generic-data-table>
+                      </app-generic-data-table> -->
+
+
+
+                      <div class="comments-container">
+                        <div class="comment-item" *ngFor="let comment of allWorkFlowComments">
+                          <!-- Header: Department + Status -->
+                          <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                            <div>
+                              <h5 class="mb-0">{{ comment.employeeDepartmentName || 'N/A' }}</h5>
+                              <small class="text-muted">
+                                {{ comment.lastModified | date:'dd/MM/yyyy' }}
+                              </small>
+                            </div>
+
+
+                          </div>
+
+                          <!-- Comment Text -->
+                          <div class="comment-area">
+                            {{ comment.comment }}
+                          </div>
+
+                          <!-- Attachments -->
+                          <div>
+                            <!-- <button class="btn btn-next-style attachment-btn" data-comment-id="${id}" data-row-index="${p.node.rowIndex}">
+                 <i class="fas fa-eye me-1"></i><span>   view</span>
+               </button> -->
+
+                            <button class="btn btn-view-attachment mt-2">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                                fill="none">
+                                <g clip-path="url(#clip0_560_1674)">
+                                  <path
+                                    d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
+                                    fill="#374957" />
+                                  <path
+                                    d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
+                                    fill="#374957" />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_560_1674">
+                                    <rect width="20" height="20" fill="white" />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                              {{ 'COMMON.VIEW' | translate}}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+
+
 
                     </div>
                   </div>

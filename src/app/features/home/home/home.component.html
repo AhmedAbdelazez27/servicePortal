@@ -75,7 +75,7 @@
                         <ng-template carouselSlide>
                             <div class="item">
                                 <div class="service-box">
-                                    <div class="d-flex gap-3 align-items-center mb-4">
+                                    <div class="d-flex gap-3 align-items-start mb-4" style="height: 73px; overflow: hidden;">
                                         <div class="service-icon">
                                             <!-- Dynamic icons using ngSwitch with cycling -->
                                             <ng-container [ngSwitch]="getIconIndex(i)">
@@ -132,7 +132,7 @@
                                         </div>
                                         <span>{{ getServiceName(service) }}</span>
                                     </div>
-                                    <p class="mb-4">{{ getServiceDescription(service) || ('HOME.SERVICE_CARDS.NO_DESCRIPTION' | translate) }}</p>
+                                    <p class="mb-4" style="height: 48px; overflow: hidden;">{{ getServiceDescription(service) || ('HOME.SERVICE_CARDS.NO_DESCRIPTION' | translate) }}</p>
                                     <div class="d-flex justify-content-end">
                                         <button class="btn btn-link" (click)="onServiceDetails(service)">
                                             {{ 'HOME.MORE' | translate }}
@@ -270,4 +270,4 @@
 </section>
 
 <!-- Contact Us Section -->
-<app-contact-us></app-contact-us>
+<!-- <app-contact-us></app-contact-us> -->

@@ -2,12 +2,44 @@
     <section>
         <div class="container services">
 
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="title">{{ 'VIEW_COMPLAINTREQUEST.TITLE' | translate }}</h4>
-                <button type="button" class="btn btn-secondary" (click)="goBack()">
-                    <i class="fas fa-arrow-left me-2"></i>{{ 'COMMON.BACK' | translate }}
-                </button>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Requests</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ 'VIEW_COMPLAINTREQUEST.TITLE' | translate }}</li>
+                </ol>
+            </nav>
+
+            <div class="service-info-card mb-4">
+               
+                <div class="w-100">
+                    <h4 class="title">{{ 'VIEW_COMPLAINTREQUEST.TITLE' | translate }}</h4>
+
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong>
+                                {{mainApplyService.applyNo}}</p>
+                        </div>
+                        <div class="col-xl-6">
+                            <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong>
+                                {{formatDate(mainApplyService.applyDate)}}</p>
+                        </div>
+                        <div class="col-xl-6">
+                            <p class="mb-0" *ngIf="mainApplyService.permitNumber">
+                                <strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}: </strong>
+                                {{mainApplyService.permitNumber}}
+                            </p>
+                        </div>
+                        <div class="col-xl-6">
+                            <span class="badge bg-primary">{{mainApplyService.lastStatus}}</span>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
             </div>
 
             <!-- Loading state -->
@@ -21,32 +53,12 @@
             <!-- Main Content -->
             <div *ngIf="mainApplyService" class="row">
 
-                <!-- Complaint Request Info -->
-                <div class="col-lg-12 mb-4">
-                    <div class="main-container">
-                        <h6 class="fw-bold mb-3">{{ 'COMMON.SERVICE_INFO' | translate }}</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ 'COMMON.APPLICATION_NO' | translate }}</label>
-                                <p>{{ mainApplyService.applyNo }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ 'COMMON.APPLICATION_DATE' | translate }}</label>
-                                <p>{{ formatDate(mainApplyService.applyDate) }}</p>
-                            </div>
-                            <div class="col-xl-6">
-                                <p class="mb-1"><strong>{{ 'COMMON.STATUS' | translate }}:</strong>
-                                    <span class="badge bg-primary">{{ mainApplyService.lastStatus }}</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
 
                 <!-- Complaint Request Details -->
                 <div class="col-lg-12 mb-4">
                     <div class="main-container">
-                        <h6 class="fw-bold mb-3">{{ 'REQUEST_COMPLAINT.DETAILS' | translate }}</h6>
+                        <h4 class="gold mb-3">{{ 'REQUEST_COMPLAINT.DETAILS' | translate }}</h4>
                         <div class="row">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.APPLICANT_NAME' | translate
