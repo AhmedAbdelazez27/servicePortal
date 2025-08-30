@@ -4,11 +4,10 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { ColDef } from 'ag-grid-community';
-import { GenericDataTableComponent } from '../../../../shared/generic-data-table/generic-data-table.component';
 import { environment } from '../../../../environments/environment';
 
 import { MainApplyService } from '../../../core/services/mainApplyService/mainApplyService.service';
@@ -56,7 +55,8 @@ export enum ServiceStatus {
     ReactiveFormsModule,
     TranslateModule,
     NgSelectModule,
-    GenericDataTableComponent,
+    RouterLink
+    
   ],
   templateUrl: './view-fasting-tent-request.component.html',
   styleUrl: './view-fasting-tent-request.component.scss',

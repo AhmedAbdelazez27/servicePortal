@@ -10,7 +10,7 @@ import { TranslationService } from '../../../../core/services/translation.servic
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CharityEventPermitRequestService } from '../../../../core/services/charity-event-permit-request.service';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GenericDataTableComponent } from '../../../../../shared/generic-data-table/generic-data-table.component';
 import { ColDef } from 'ag-grid-community';
 import { environment } from '../../../../../environments/environment';
@@ -190,7 +190,7 @@ import { AdvertisementsService } from '../../../../core/services/advertisement.s
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    GenericDataTableComponent,
+    RouterLink,
     NgSelectModule
   ],
   templateUrl: './view-requesteventpermit.component.html',

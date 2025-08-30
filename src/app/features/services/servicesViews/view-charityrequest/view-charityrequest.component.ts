@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
 import { GenericDataTableComponent } from '../../../../../shared/generic-data-table/generic-data-table.component';
 
@@ -180,7 +180,7 @@ export enum ServiceStatus {
 @Component({
   selector: 'app-view-charityrequest',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, GenericDataTableComponent, NgSelectModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, RouterLink, NgSelectModule],
   templateUrl: './view-charityrequest.component.html',
   styleUrl: './view-charityrequest.component.scss'
 })

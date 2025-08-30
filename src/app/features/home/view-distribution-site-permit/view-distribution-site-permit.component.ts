@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { ColDef } from 'ag-grid-community';
@@ -57,6 +57,7 @@ export enum ServiceStatus {
     TranslateModule,
     NgSelectModule,
     GenericDataTableComponent,
+    RouterModule
   ],
   templateUrl: './view-distribution-site-permit.component.html',
   styleUrl: './view-distribution-site-permit.component.scss',

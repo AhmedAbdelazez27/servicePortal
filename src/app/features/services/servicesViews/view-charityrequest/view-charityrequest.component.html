@@ -14,7 +14,7 @@
 
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Requests</a></li>
+          <li class="breadcrumb-item"><a routerLink="/request">Requests</a></li>
           <li class="breadcrumb-item active" aria-current="page">{{ 'CHARITY_EVENT_PERMIT.VIEW_TITLE' | translate }}
           </li>
         </ol>
@@ -584,7 +584,8 @@
                             {{ comment.comment }}
                           </div>
                           <div>
-                            <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"  data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
+                            <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"
+                              data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
                                 fill="none">
                                 <g clip-path="url(#clip0_560_1674)">

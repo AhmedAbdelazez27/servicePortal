@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ServiceSettingService } from '../../../core/services/serviceSetting.service';
 import {
@@ -15,7 +15,7 @@ import { TranslationService } from '../../../core/services/translation.service';
 @Component({
   selector: 'app-service-details',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, RouterLink],
   templateUrl: './service-details.component.html',
   styleUrls: ['./service-details.component.scss'],
 })

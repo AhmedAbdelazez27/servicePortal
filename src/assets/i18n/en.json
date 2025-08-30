@@ -1818,6 +1818,7 @@
     "NO_ATTACHMENTS": "No attachments found"
   },
   "REQUEST_EVENT_PERMIT": {
+    "TITLE":"Project/Campaign Donation Statement",
     "VIEW_TITLE": "View Event/Donation Campaign Permit Request",
     "BASIC": "Basic Information",
     "REQUEST_DETAILS": "Request Details",
@@ -1872,6 +1873,7 @@
     "NO_ADS": "No advertisements"
   },
   "CHARITY_EVENT_PERMIT": {
+    "TITLE":"Declaration of charity effectiveness",
     "VIEW_TITLE": "View Charity Event Permit",
     "BASIC": "Basic Information",
     "EVENT_DETAILS": "Event Details",

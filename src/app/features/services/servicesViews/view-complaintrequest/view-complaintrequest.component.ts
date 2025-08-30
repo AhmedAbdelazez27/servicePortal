@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MainApplyService } from '../../../../core/services/mainApplyService/mainApplyService.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-view-complaintrequest',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule,TranslateModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,TranslateModule,RouterLink],
   templateUrl: './view-complaintrequest.component.html',
   styleUrls: ['./view-complaintrequest.component.scss']
 })

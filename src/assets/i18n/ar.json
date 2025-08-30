@@ -695,7 +695,6 @@
     "CONFIRM_PASSWORD_REQUIRED": "تأكيد كلمة المرور مطلوب",
     "PASSWORDS_DONT_MATCH": "كلمات المرور غير متطابقة"
   },
-
   "COMMON": {
     "REQUEST_SERVICE": "طلب الخدمة",
     "LOADING": "جاري التحميل...",
@@ -765,7 +764,7 @@
     "COPY_ERROR": "نسخ تفاصيل الخطأ",
     "NETWORK_ERROR": "حدث خطأ في الشبكة",
     "UNAUTHORIZED_ACCESS": "وصول غير مصرح",
-     "ENTER_COMMENT": "يرجى إدخال تعليق",
+    "ENTER_COMMENT": "يرجى إدخال تعليق",
     "NO_ATTACHMENTS_FOUND": "لم يتم العثور على مرفقات",
     "ERROR_LOADING_ATTACHMENTS": "خطأ في تحميل المرفقات",
     "GO_BACK": "العودة",
@@ -796,7 +795,6 @@
     "BACK_TO_INITIATIVES": "العودة إلى المبادرات",
     "BACK_TO_HOME": "العودة إلى الرئيسية",
     "OPEN_IN_GOOGLE_MAPS": "فتح في خرائط جوجل"
-    
   },
   "SHARED": {
     "FORMS": {
@@ -924,7 +922,6 @@
       "REJECTED": "مرفوض"
     }
   },
-
   "Common": {
     "Action": "العمليات",
     "ViewInfo": "عرض التفاصيل",
@@ -1016,7 +1013,6 @@
   "ERROR": {
     "FETCH_REGIONS": "فشل في جلب المناطق"
   },
-
   "mainApplyServiceResourceName": {
     "title": "الطلبات المقدمة",
     "menuTitle": "الشاشة الرئيسية",
@@ -1220,7 +1216,7 @@
     "MOBILE": "رقم الجوال",
     "FAX": "رقم الفاكس"
   },
-           "CHARITY_ORGANIZATIONS": {
+  "CHARITY_ORGANIZATIONS": {
     "TITLE": "المنظمات الخيرية",
     "DESCRIPTION": "اكتشف وتواصل مع المنظمات الخيرية",
     "NO_ORGANIZATIONS": "لم يتم العثور على منظمات",
@@ -1245,36 +1241,36 @@
     "ERROR_LOADING": "فشل في تحميل الاستطلاعات",
     "RETRY": "حاول مرة أخرى"
   },
-       "NAVIGATION": {
-         "HOME": "الرئيسية",
-         "ABOUT_US": "من نحن",
-         "ABOUT_COUNCIL": "عن المجلس",
-         "GENERAL_MANAGER_MESSAGE": "رسالة المدير العام",
-         "SERVICES": "الخدمات",
-         "REQUEST": "طلب",
-         "INITIATIVES": "المبادرات",
-         "CHARITY_ORGANIZATIONS": "المنظمات الخيرية",
-         "CONTACT_US": "اتصل بنا"
-       },
-       "INITIATIVES": {
-         "TITLE": "المبادرات",
-         "NO_INITIATIVES": "لا توجد مبادرات متاحة",
-         "NO_INITIATIVES_DESCRIPTION": "لا توجد مبادرات متاحة حالياً. يرجى التحقق مرة أخرى لاحقاً.",
-         "INITIATIVE_DETAILS": "تفاصيل المبادرة",
-         "DATE": "التاريخ",
-         "TARGET_GROUP": "الفئة المستهدفة",
-         "LOCATIONS": "المواقع",
-         "LOCATION": "الموقع",
-         "LOCATION_DETAILS": "تفاصيل الموقع",
-         "REQUEST_SERVICE": "طلب الخدمة",
-         "REQUEST_SERVICE_DESCRIPTION": "مهتم بهذه المبادرة؟ اطلب خدماتنا للمشاركة.",
-         "LOADING": "جاري تحميل المبادرات...",
-         "ERROR_LOADING": "فشل في تحميل المبادرات",
-         "RETRY": "حاول مرة أخرى",
-         "BACK_TO_INITIATIVES": "العودة إلى المبادرات",
-         "BACK_TO_HOME": "العودة إلى الرئيسية"
-       },
-    "event": {
+  "NAVIGATION": {
+    "HOME": "الرئيسية",
+    "ABOUT_US": "من نحن",
+    "ABOUT_COUNCIL": "عن المجلس",
+    "GENERAL_MANAGER_MESSAGE": "رسالة المدير العام",
+    "SERVICES": "الخدمات",
+    "REQUEST": "طلب",
+    "INITIATIVES": "المبادرات",
+    "CHARITY_ORGANIZATIONS": "المنظمات الخيرية",
+    "CONTACT_US": "اتصل بنا"
+  },
+  "INITIATIVES": {
+    "TITLE": "المبادرات",
+    "NO_INITIATIVES": "لا توجد مبادرات متاحة",
+    "NO_INITIATIVES_DESCRIPTION": "لا توجد مبادرات متاحة حالياً. يرجى التحقق مرة أخرى لاحقاً.",
+    "INITIATIVE_DETAILS": "تفاصيل المبادرة",
+    "DATE": "التاريخ",
+    "TARGET_GROUP": "الفئة المستهدفة",
+    "LOCATIONS": "المواقع",
+    "LOCATION": "الموقع",
+    "LOCATION_DETAILS": "تفاصيل الموقع",
+    "REQUEST_SERVICE": "طلب الخدمة",
+    "REQUEST_SERVICE_DESCRIPTION": "مهتم بهذه المبادرة؟ اطلب خدماتنا للمشاركة.",
+    "LOADING": "جاري تحميل المبادرات...",
+    "ERROR_LOADING": "فشل في تحميل المبادرات",
+    "RETRY": "حاول مرة أخرى",
+    "BACK_TO_INITIATIVES": "العودة إلى المبادرات",
+    "BACK_TO_HOME": "العودة إلى الرئيسية"
+  },
+  "event": {
     "PmStartTime": "وقت البدء مساء",
     "PmEndTime": "وقت الانتهاء مساء",
     "AmStartTime": "وقت البدء صباحا",
@@ -1287,8 +1283,8 @@
     "LkpRequestTypeId": "نوع الطلب",
     "RequestSide": "الجهة الطالبة للتصريح",
     "SupervisingSide": "الجهة المشرفة على الفعالية",
-    "TELEPHONE":"الهاتف",
-    "beneficiaryIdNumber":"رقم هوية المستفيد"
+    "TELEPHONE": "الهاتف",
+    "beneficiaryIdNumber": "رقم هوية المستفيد"
   },
   "PARTNERS": {
     "NAME": "اسم الشريك",
@@ -1491,7 +1487,8 @@
   },
   "START_DATE_PAST": "لا يمكن أن يكون تاريخ البداية قبل اليوم.",
   "END_DATE_BEFORE_START": "يجب أن يكون تاريخ النهاية مساوياً أو بعد تاريخ البداية.",
-"REQUEST_EVENT_PERMIT": {
+  "REQUEST_EVENT_PERMIT": {
+    "TITLE": "تصريح مشروع / حملة تبرع",
     "VIEW_TITLE": "عرض طلب تصريح فعالية / حملة تبرع",
     "BASIC": "المعلومات الأساسية",
     "REQUEST_DETAILS": "تفاصيل الطلب",
@@ -1546,6 +1543,7 @@
     "NO_ADS": "لا توجد إعلانات"
   },
   "CHARITY_EVENT_PERMIT": {
+    "TITLE": "تصريح فعالية خيرية",
     "VIEW_TITLE": "عرض طلب تصريح فعالية خيرية",
     "BASIC": "المعلومات الأساسية",
     "EVENT_DETAILS": "تفاصيل الفعالية",
@@ -1554,28 +1552,23 @@
     "ADVERTISEMENTS": "الإعلانات",
     "PARTNERS": "الشركاء",
     "ATTACHMENTS": "المرفقات",
-
     "REQUEST_DATE": "تاريخ الطلب",
     "ADVERTISEMENT_TYPE": "نوع الإعلان",
     "EVENT_NAME": "اسم الفعالية",
     "EVENT_LOCATION": "موقع الفعالية",
     "NOTES": "ملاحظات",
-
     "START_DATE": "تاريخ/وقت البداية",
     "END_DATE": "تاريخ/وقت النهاية",
-
     "SUPERVISOR_NAME": "اسم المشرف",
     "JOB_TITLE": "المسمّى الوظيفي",
     "EMAIL": "البريد الإلكتروني",
     "TELEPHONE1": "الهاتف 1",
     "TELEPHONE2": "الهاتف 2",
     "DONATION_CHANNELS": "قنوات جمع التبرعات",
-
     "ATTACHMENT": "مرفق",
     "NO_ATTACHMENTS": "لا توجد مرفقات",
     "NO_PARTNERS": "لا توجد بيانات شركاء",
     "PARTNER_ATTACHMENTS": "مرفقات الشريك",
-
     "AD": "إعلان",
     "NO_ADS": "لا توجد إعلانات",
     "AD_START": "بداية الإعلان",
@@ -1587,7 +1580,6 @@
     "AD_FLAGS": "خصائص الإعلان",
     "NEW_AD": "إعلان جديد",
     "RENEW_AD": "تجديد إعلان",
-
     "AD_TARGETS": "الفئات المستهدفة",
     "TARGET_TYPE": "نوع الاستهداف",
     "AD_LOCATIONS": "أماكن العرض",
@@ -1606,7 +1598,7 @@
     "EVIDENCE": "الأدلة",
     "JUSTIFICATIONS": "التبريرات"
   },
-   "VIEW_COMPLAINTREQUEST": {
+  "VIEW_COMPLAINTREQUEST": {
     "TITLE": "عرض طلب الشكوى"
   },
   "NAVBAR": {

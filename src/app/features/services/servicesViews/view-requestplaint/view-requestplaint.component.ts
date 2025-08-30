@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MainApplyService } from '../../../../core/services/mainApplyService/mainApplyService.service';
 import { WorkFlowCommentsService } from '../../../../core/services/workFlowComments/workFlowComments.service';
 import { AttachmentService } from '../../../../core/services/attachments/attachment.service';
@@ -30,7 +30,7 @@ type MainApplyServiceView = {
 };
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule,RouterLink],
   selector: 'app-view-requestplaint',
   templateUrl: './view-requestplaint.component.html',
   styleUrls: ['./view-requestplaint.component.scss']
