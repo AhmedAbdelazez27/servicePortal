@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router ,RouterLink} from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
@@ -11,7 +11,7 @@ import { TranslationService } from '../../../core/services/translation.service';
 @Component({
   selector: 'app-initiative-details',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, RouterLink],
   templateUrl: './initiative-details.component.html',
   styleUrls: ['./initiative-details.component.scss']
 })
