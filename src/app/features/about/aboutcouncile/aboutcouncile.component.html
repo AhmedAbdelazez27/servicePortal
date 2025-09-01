@@ -1,110 +1,81 @@
+<!-- <section >
+  <div class="container service">
+    <div class="row">
+      <div class="col-xl-6 mb-5">
+        <img src="./../../../../assets/images/about-council.png" class="w-100 rounded-3"/>
+      </div>
 
+      <div class="col-xl-6 mb-5">
+        <h4 class="gold">{{ 'COUNCIL.TITLE' | translate }}</h4>
+        <p>{{ 'COUNCIL.P1' | translate }}</p>
+        <p>{{ 'COUNCIL.P2' | translate }}</p>
+      </div>
 
-<section>
-     <div class="container service">
+      <div class="col-xl-12 mb-5">
+        <p *ngFor="let item of ('COUNCIL.ITEMS' | translate)">{{ item }}</p>
+      </div>
+    </div>
+  </div>
+</section> -->
+<!-- <section>
+  <div class="container service py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-9">
+        <h4 class="gold mb-3">{{ 'COUNCIL.TITLE' | translate }}</h4>
 
+        <p class="mb-3">{{ 'COUNCIL.P1' | translate }}</p>
+        <p class="mb-4" style="color: #8D734D;">{{ 'COUNCIL.P2' | translate }}</p>
 
-            <div class="row">
-                <div class="col-xl-6 mb-5">
-                    <img src="./../../../../assets/images/about-council.png" class="w-100 rounded-3"/>
-                </div>
-                <div class="col-xl-6 mb-5">
-                    <h4 class="gold">About the Council</h4>
-                    <p>
-تأسس مجلس تنسيق العمل الخيري والأوقاف بموجب المرسوم الأميري رقم (9) لسنة 2012م، وشكل هذا المجلس برئاسة سمو الشيخ عمار بن حميد النعيمي ولي عهد إمارة عجمان وستة أعضاء من ذوي الخبرة والدراية بأعمال البر والإحسان والأوقاف وله شخصية اعتبارية بقدر ما هو لازم لتمكينه من القيام بإجراء التصرفات القانونية باسمه الخاص                    </p>
-                    <p>ويختص المجلس بكلا من:
-                     </p>
-                </div>
-                <div class="col-xl-12 mb-5">
-                    <p>
-1.	متابعة أعمال كل جمعية خيرية، أو صندوق وقف، في الإمارة لضمان قيام كل منها بأعمالها في حدود الاختصاصات المقررة لها وفقاً لأحكام المرسوم الأميري المنشئ لها أو أحكام نظامها الأساسي والتأكد من إنفاق أموالها فقط لغايات تحقيق الأغراض المحددة لها، ولمساعدتها في إزالة أية عقبات تعوق ممارستها لاختصاصاتها وتحقيقها لأهدافها.                    </p>
-                    <p>
-                        2.	التنسيق مع قيادات الجمعيات الخيرية وصناديق الأوقاف بشأن وضع خطة إستراتيجية في الإمارة لتعزيز جهود الجمعيات الخيرية والأوقاف في نشر قيم التكافل والتعاون وغير ذلك من القيم الاسلامية والانسانية السمحة.
-                     </p>
-<p>
-3.	تشجيع الدراسات والبحوث عن أوضاع الفئات المحتاجة للعون الإنساني في الإمارة وتوفير قاعدة بيانات مركزية ذات علاقة بالفئات الاجتماعية المستحقة للمساعدات الخيرية على مستوى الإمارة لاستخدامها لأغراض الإحصائيات والبحوث.
-</p>
-<p>
-4.	تبادل الخبرات والمعلومات فيما بين الجمعيات الخيرية وصناديق الأوقاف العاملة بالإمارة بغية رفع الآداب المؤسسي في قطاع العمل الخيري وتطوير قدرات العاملين في ذلك المجال عن طريق إيجاد المزيد من فرص العمل المشترك والتعاون فيما بينهم ودعم برامج التدريب والتأهيل لتطوير مهاراتهم
-</p>
+        <ng-container *ngFor="let item of ('COUNCIL.ITEMS' | translate)">
+          <p class="mb-3">{{ item }}</p>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</section> -->
+<section >
+  <div class="container service py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-9"
+           style="color:#1f2937; line-height:1.9; text-align:justify;">
 
+        <h4 class="mb-2"
+            style="
+              font-weight:800;
+              font-size:clamp(1.6rem,1.1rem + 1.2vw,2.2rem);
+              line-height:1.2;
+              color:#8D734D;
+              margin:0 0 .25rem 0;
+              text-shadow:
+                0 1px 0 rgba(255,255,255,.35),
+                0 2px 4px rgba(0,0,0,.14),
+                0 10px 22px rgba(0,0,0,.10);
+            ">
+          {{ 'COUNCIL.TITLE' | translate }}
+        </h4>
 
-<p>
-5.	وضع سياسة وتشريعات محلية فعالة لتنظيم مزاولة العمل الخيري في الإمارة لضمان الوفاء بمتطلبات القوانين السارية في الدولة ولمنع تضارب أعمال ونشاطات الجمعيات الخيرية مع بعضها البعض.
-</p>
-<p>
-6.	السعي لتنظيم شئون الأوقاف في الإمارة ومساعدتها عن طريق تزويدها بالخبرات الاقتصادية والفنية اللازمة المتوافرة في دوائر حكومة الإمارة، بغية تمكينها من استثمار أموالها في مشاريع التنمية بالإمارة وعلى نحو يضمن زيادة تلك الأموال الوقفية لاستغلالها في تطوير مجالات العمل الخيري المختلفة بالإمارة.
-</p>
-<p>
-7.	خلق المزيد من قنوات التعاون المثمر، والتواصل المستمر فيما بين الجمعيات الخيرية وصناديق الأوقاف العاملة في إمارة عجمان بهدف استقطاب جهودها وتنسيقها وتضافرها بصورة فعالة لتحقيق أهدافها
-</p>
-
-
-                </div>
-
-            </div>
-
+        <div
+          style="
+            width:90px;height:4px;border-radius:2px;
+            background:linear-gradient(90deg,#C6A046 0%, rgba(198,160,70,0) 100%);
+            margin:.5rem 0 1rem 0;
+            margin-inline-end:auto;
+          ">
         </div>
+
+        <p class="mb-3" style="margin-bottom:1rem;">
+          {{ 'COUNCIL.P1' | translate }}
+        </p>
+
+        <p class="mb-4" style="margin-bottom:1.25rem; color:#8D734D;">
+          {{ 'COUNCIL.P2' | translate }}
+        </p>
+
+        <ng-container *ngFor="let item of ('COUNCIL.ITEMS' | translate)">
+          <p class="mb-3" style="margin-bottom:1rem;">{{ item }}</p>
+        </ng-container>
+      </div>
+    </div>
+  </div>
 </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<section>
-     <div class="container service">
-
-
-            <div class="row">
-                <div class="col-xl-6 mb-5">
-                    <img src="./../../../../assets/images/about-council.png" class="w-100 rounded-3"/>
-                </div>
-                <div class="col-xl-6 mb-5">
-                    <h4 class="gold">About the Council</h4>
-                    <p>
-The Council for the Coordination of Charitable Activities and Awqaf was established pursuant to Emiri Decree No. (9) of 2012 AD, and this council was formed under the chairmanship of His Highness Sheikh Ammar bin Humaid Al Nuaimi, Crown Prince of the Emirate of Ajman, and six members with experience and knowledge of charitable work and Awqaf and has a legal personality to the extent necessary to enable him to do To conduct legal acts in his own name.
-                    <p>The council is concerned with both:
-                     </p>
-                </div>
-                <div class="col-xl-12 mb-5">
-                    <p>
-The council is concerned with both:                    <p>
-2.	Coordination with leaders of charitable societies and Awqaf funds on setting up a strategic plan in the emirate to enhance the efforts of charitable societies and Awqaf in spreading the values of solidarity and cooperation and other tolerant Islamic and humanitarian values                     </p>
-<p>
-3.	Encouraging studies and research on the conditions of groups in need of humanitarian aid in the emirate and providing a central database related to the social groups eligible for charitable aid at the emirate level to be used for statistical and research purposes</p>
-<p>
-3.	Encouraging studies and research on the conditions of groups in need of humanitarian aid in the emirate and providing a central database related to the social groups eligible for charitable aid at the emirate level to be used for statistical and research purposes</p>
-
-
-<p>
-5.	Establish effective local policy and legislation to regulate the practice of charitable work in the emirate to ensure that the requirements of the laws in force in the country are met and to prevent the work and activities of charitable societies from conflict with each other</p>
-<p>
-6.	Striving to organize the affairs of Awqaf in the emirate and assist it by providing it with the necessary economic and technical expertise available in the government departments of the emirate, in order to enable it to invest its money in development projects in the emirate in a manner that ensures an increase in these Awqaf funds to be used in the development of the various areas of charitable work in the emirate</p>
-<p>
-7.	Creating more fruitful cooperation channels and continuous communication between charitable societies and Awqaf funds operating in the Emirate of Ajman with the aim of attracting, coordinating, and collaborating their efforts effectively to achieve their goals</p>
-
-
-                </div>
-
-            </div>
-
-        </div>
-</section>
-
-
-
-
-
-
-
-
 

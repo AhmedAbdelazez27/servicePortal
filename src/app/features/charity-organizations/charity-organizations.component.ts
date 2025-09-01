@@ -124,5 +124,11 @@ getEntityloc(entity: EntityDto): string {
     if (img) {
       img.src = 'assets/images/initiative-1.png';
     }
-  }
+  };
+  normalizeUrl(u?: string | null): string {
+  if (!u) return '';
+  const s = u.trim();
+  return /^(https?:)?\/\//i.test(s) ? s : `https://${s}`;
+}
+
 }

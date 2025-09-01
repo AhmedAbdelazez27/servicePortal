@@ -4,7 +4,7 @@
   "TOGGLE_LANG": "Switch to Arabic",
   "PAGE_NOT_FOUND": "Oops! Page not found.",
   "BACK_HOME": "Back to Home",
-    "COMMON": {
+  "COMMON": {
     "LOADING": "Loading...",
     "LOADING_DATA": "Loading data, please wait...",
     "ERROR": "Error",
@@ -20,7 +20,6 @@
     "ACTIVE": "Active",
     "INACTIVE": "Inactive"
   },
-
   "TOAST": {
     "TITLE": {
       "SUCCESS": "Success",
@@ -610,7 +609,7 @@
     "OR": "or",
     "BROWSE_FILES": "Browse files"
   },
-    "ATTACHMENTS": {
+  "ATTACHMENTS": {
     "TITLE": "Attachments",
     "DOCUMENT_TYPE": "Document Type",
     "FILE": "File",
@@ -654,8 +653,8 @@
   "WARNINGS": {
     "REASON_ALREADY_ADDED": "This reason has already been added."
   },
-"VALIDATION": {
-    "PHONE_PATTERN":"Please enter a valid phone number.",
+  "VALIDATION": {
+    "PHONE_PATTERN": "Please enter a valid phone number.",
     "PHONE_LENGTH": "Please enter a valid phone number with 7 to 20 digits.",
     "REQUIRED_FIELD": "This field is required",
     "FORM_INVALID": "Please fill in all required fields correctly",
@@ -685,19 +684,19 @@
     "CONFIRM_PASSWORD_REQUIRED": "Confirm password is required",
     "PASSWORDS_DONT_MATCH": "Passwords do not match"
   },
-   "COMMON": {
-        "REQUEST_SERVICE": "Request Service",
-     "LOADING": "Loading...",
+  "COMMON": {
+    "REQUEST_SERVICE": "Request Service",
+    "LOADING": "Loading...",
     "LOADING_DATA": "Loading data, please wait...",
-        "OPEN_IN_GOOGLE_MAPS": "Open in Google Maps",
+    "OPEN_IN_GOOGLE_MAPS": "Open in Google Maps",
     "BACK_TO_INITIATIVES": "Back to Initiatives",
     "BACK_TO_HOME": "Back to Home",
     "VISIT_LINK": "Visit Link",
     "VIEW_ORDER": "View Order",
-     "ACTIVE": "Active",
-    "INACTIVE": "Inactive" ,
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
     "REQUEST_SERVICE": "Request Service",
-      "LOADING_COMMENTS": "Loading comments...",
+    "LOADING_COMMENTS": "Loading comments...",
     "LOADING_ATTACHMENTS": "Loading attachments...",
     "AUTO_GENERATED": "Auto Generated",
     "SELECT_OPTION": "Select an option",
@@ -902,7 +901,7 @@
     "DESCRIPTION": "View and manage distribution site permit details",
     "TABS": {
       "BASIC_INFO": "Basic Information",
-      "LOCATION_INFO": "Location Information", 
+      "LOCATION_INFO": "Location Information",
       "DATE_INFO": "Date Information",
       "SUPERVISOR_INFO": "Supervisor Information",
       "PARTNERS_INFO": "Partners Information",
@@ -921,7 +920,6 @@
       "REJECTED": "Rejected"
     }
   },
-
   "Common": {
     "Action": "Action",
     "ViewInfo": "Show Details",
@@ -954,9 +952,8 @@
     "dept": "Department",
     "userdept": "Users in Department",
     "deleteWarning": "Are you sure you want delete",
-      "requestComplaint": "Request Complaint"
+    "requestComplaint": "Request Complaint"
   },
-
   "REGIONS": {
     "TITLE": "Regions Management",
     "ADD_NEW": "Add New Region",
@@ -1058,7 +1055,6 @@
     "PARTNER_ADDED": "Partner added successfully",
     "PARTNER_REMOVED": "Partner removed successfully"
   },
-
   "mainApplyServiceResourceName": {
     "title": "Request",
     "accep": "Approve",
@@ -1542,7 +1538,7 @@
     "MOBILE": "Mobile number",
     "FAX": "Fax"
   },
-           "CHARITY_ORGANIZATIONS": {
+  "CHARITY_ORGANIZATIONS": {
     "TITLE": "Charity Organizations",
     "DESCRIPTION": "Discover and connect with charitable organizations",
     "NO_ORGANIZATIONS": "No Organizations Found",
@@ -1567,7 +1563,7 @@
     "ERROR_LOADING": "Failed to load polls",
     "RETRY": "Try Again"
   },
-         "NAVIGATION": {
+  "NAVIGATION": {
     "HOME": "Home",
     "ABOUT_US": "About Us",
     "ABOUT_COUNCIL": "About the council",
@@ -1818,7 +1814,7 @@
     "NO_ATTACHMENTS": "No attachments found"
   },
   "REQUEST_EVENT_PERMIT": {
-    "TITLE":"Project/Campaign Donation Statement",
+    "TITLE": "Project/Campaign Donation Statement",
     "VIEW_TITLE": "View Event/Donation Campaign Permit Request",
     "BASIC": "Basic Information",
     "REQUEST_DETAILS": "Request Details",
@@ -1854,7 +1850,7 @@
     "NO_ATTACHMENTS": "No attachments",
     "ATTACHMENT": "Attachment",
     "PARTNER_ATTACHMENTS": "Partner Attachments",
-     "ADVERTISEMENTS": "Advertisements",
+    "ADVERTISEMENTS": "Advertisements",
     "AD": "Ad",
     "AD_START": "Ad Start",
     "AD_END": "Ad End",
@@ -1873,7 +1869,7 @@
     "NO_ADS": "No advertisements"
   },
   "CHARITY_EVENT_PERMIT": {
-    "TITLE":"Declaration of charity effectiveness",
+    "TITLE": "Declaration of charity effectiveness",
     "VIEW_TITLE": "View Charity Event Permit",
     "BASIC": "Basic Information",
     "EVENT_DETAILS": "Event Details",
@@ -1882,28 +1878,23 @@
     "ADVERTISEMENTS": "Advertisements",
     "PARTNERS": "Partners",
     "ATTACHMENTS": "Attachments",
-
     "REQUEST_DATE": "Request Date",
     "ADVERTISEMENT_TYPE": "Advertisement Type",
     "EVENT_NAME": "Event Name",
     "EVENT_LOCATION": "Event Location",
     "NOTES": "Notes",
-
     "START_DATE": "Start Date/Time",
     "END_DATE": "End Date/Time",
-
     "SUPERVISOR_NAME": "Supervisor Name",
     "JOB_TITLE": "Job Title",
     "EMAIL": "Email",
     "TELEPHONE1": "Telephone 1",
     "TELEPHONE2": "Telephone 2",
     "DONATION_CHANNELS": "Donation Channels",
-
     "ATTACHMENT": "Attachment",
     "NO_ATTACHMENTS": "No attachments",
     "NO_PARTNERS": "No partners",
     "PARTNER_ATTACHMENTS": "Partner Attachments",
-
     "AD": "Ad",
     "NO_ADS": "No advertisements",
     "AD_START": "Ad Start",
@@ -1915,7 +1906,6 @@
     "AD_FLAGS": "Ad Flags",
     "NEW_AD": "New Ad",
     "RENEW_AD": "Renewal",
-
     "AD_TARGETS": "Ad Targets",
     "TARGET_TYPE": "Target Type",
     "AD_LOCATIONS": "Ad Locations",
@@ -1943,5 +1933,35 @@
     "PROFILE": "Profile",
     "LOGOUT": "Logout"
   },
-  "ADD_ADVERTISEMENT": "Add Advertisement"
+  "ADD_ADVERTISEMENT": "Add Advertisement",
+  "COUNCIL": {
+    "TITLE": "About the Council",
+    "P1": "The Council for the Coordination of Charitable Activities and Awqaf was established pursuant to Emiri Decree No. (9) of 2012 AD, and this council was formed under the chairmanship of His Highness Sheikh Ammar bin Humaid Al Nuaimi, Crown Prince of the Emirate of Ajman, and six members with experience and knowledge of charitable work and Awqaf and has a legal personality to the extent necessary to enable him to do To conduct legal acts in his own name.",
+    "P2": "The council is concerned with both:",
+    "ITEMS": [
+      "1. Coordination with leaders of charitable societies and Awqaf funds on setting up a strategic plan in the emirate to enhance the efforts of charitable societies and Awqaf in spreading the values of solidarity and cooperation and other tolerant Islamic and humanitarian values",
+      "2. Encouraging studies and research on the conditions of groups in need of humanitarian aid in the emirate and providing a central database related to the social groups eligible for charitable aid at the emirate level to be used for statistical and research purposes",
+      "3. Encouraging studies and research on the conditions of groups in need of humanitarian aid in the emirate and providing a central database related to the social groups eligible for charitable aid at the emirate level to be used for statistical and research purposes",
+      "4. Establish effective local policy and legislation to regulate the practice of charitable work in the emirate to ensure that the requirements of the laws in force in the country are met and to prevent the work and activities of charitable societies from conflict with each other",
+      "5. Striving to organize the affairs of Awqaf in the emirate and assist it by providing it with the necessary economic and technical expertise available in the government departments of the emirate, in order to enable it to invest its money in development projects in the emirate in a manner that ensures an increase in these Awqaf funds to be used in the development of the various areas of charitable work in the emirate",
+      "6. Creating more fruitful cooperation channels and continuous communication between charitable societies and Awqaf funds operating in the Emirate of Ajman with the aim of attracting, coordinating, and collaborating their efforts effectively to achieve their goals"
+    ]
+  },
+  "MESSAGE": {
+    "TITLE": "General Manager's Message",
+    "NAME": "H.E. / Maryam Ali Al Maamari",
+    "P1": "Charitable work is a characteristic of high-end societies, as it stems from the call of Allah’s messengers to the Solidarity and cooperation for good and righteousness, and that the United Arab Emirates has established itself the principles of charitable work have become a part of its structure and one of the means for its advancement and its renaissance, and when we mention the humanitarian march of the UAE, we cannot forget The imprint of charitable institutions operating in the emirate of Ajman and its efforts with The rest of the other work institutions spread throughout the Emirates in establishing work Charity and making the UAE the first donor of humanitarian aid globally for five Consecutive years"
+  },
+  "FOOTER": {
+    "HOME": "Home",
+    "ABOUT_US": "About Us",
+    "SERVICES": "Services",
+    "INITIATIVES": "Initiatives",
+    "CHARITY_ORGS": "Charity Organizations",
+    "CONTACT_US": "Contact Us",
+    "TERMS": "Terms & Conditions",
+    "DISCLAIMER": "Disclaimer",
+    "PRIVACY": "Privacy Policy",
+    "COPYRIGHT_NAME": "Charitable Work Coordination Council"
+  }
 }

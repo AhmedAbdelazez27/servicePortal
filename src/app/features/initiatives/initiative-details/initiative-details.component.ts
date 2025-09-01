@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router ,RouterLink} from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { map, Observable, startWith, Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { InitiativeService } from '../../../core/services/initiative.service';
 import { InitiativeDto, InitiativeDetailsDto } from '../../../core/dtos/UserSetting/initiatives/initiative.dto';
@@ -25,7 +25,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   private map: L.Map | null = null;
   private markers: L.Marker[] = [];
   private mapInitialized = false;
-  
+  lang$: Observable<any> ;
   private subscriptions = new Subscription();
 
   constructor(
@@ -35,7 +35,14 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     private translateService: TranslateService,
     private translationService: TranslationService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+      this.lang$= this.translateService.onLangChange.pipe(
+    startWith({ lang: this.translateService.currentLang || this.translateService.defaultLang || 'ar' } as LangChangeEvent),
+    map(e => (e.lang || 'ar').split('-')[0])
+  );
+  }
+
+  // 'ar', 'en'
 
   ngOnInit(): void {
     this.initiativeId = this.route.snapshot.paramMap.get('id');

@@ -3053,7 +3053,14 @@ a, .nav-item {
 }
 
 
-
+.breadcrumb-item + .breadcrumb-item::before {
+    /* float: left; */
+    float: none !important;
+    padding-right: var(--bs-breadcrumb-item-padding-x);
+    padding-left: var(--bs-breadcrumb-item-padding-x);
+    color: var(--bs-breadcrumb-divider-color);
+    content: var(--bs-breadcrumb-divider, "/");
+}
 
   // Step Navigation Layout
   .step-navigation-item {
