@@ -193,7 +193,8 @@ export class IndividualregistrationComponent implements OnInit {
     
     this.select2Service.getGenderSelect2(genderParams).subscribe({
       next: (response: any) => {
-        const newGenderOptions = response?.results || [];
+        const newGenderOptions = response || [];
+        
         this.genderOptions = [...this.genderOptions, ...newGenderOptions];
         this.genderHasMore = newGenderOptions.length === genderParams.take;
         this.genderLoading = false;

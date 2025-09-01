@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-aboutmanagermessage',
@@ -7,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './aboutmanagermessage.component.scss'
 })
 export class AboutmanagermessageComponent {
-
+constructor(    private translationService: TranslationService
+)
+{}
 }

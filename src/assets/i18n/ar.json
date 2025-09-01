@@ -658,7 +658,7 @@
     "FAILED_CHECK_AVAILABILITY": "فشل في فحص توفر الموقع. يرجى المحاولة مرة أخرى.",
     "FAILED_LOAD_LOCATION_DETAILS": "فشل في تحميل تفاصيل الموقع. يرجى المحاولة مرة أخرى.",
     "LOCATION_NOT_AVAILABLE": "هذا الموقع غير متاح.",
-    "FAILED_LOAD_CHARITY_ORGANIZATIONS": "فشل في تحميل المنظمات الخيرية. يرجى المحاولة مرة أخرى.",
+    "FAILED_LOAD_CHARITY_ORGANIZATIONS": "فشل في تحميل المؤسسات الخيرية. يرجى المحاولة مرة أخرى.",
     "FAILED_LOAD_POLLS": "فشل في تحميل الاستطلاعات. يرجى المحاولة مرة أخرى.",
     "FAILED_LOAD_HERO_SECTIONS": "فشل في تحميل الأقسام الرئيسية. يرجى المحاولة مرة أخرى.",
     "FAILED_LOAD_HERO_SECTION": "فشل في تحميل تفاصيل القسم الرئيسي. يرجى المحاولة مرة أخرى.",
@@ -838,7 +838,7 @@
     "PARTNERS": {
       "TITLE": "الشركاء",
       "OPTIONAL": "الشركاء (اختياري)",
-      "OPTIONAL_DESC": "يمكنك إضافة المنظمات الشريكة إذا كان ذلك ينطبق",
+      "OPTIONAL_DESC": "يمكنك إضافة المؤسسات الشريكة إذا كان ذلك ينطبق",
       "NO_PARTNERS_ADDED": "لم يتم إضافة أي شركاء حتى الآن",
       "NO_PARTNERS": "لا توجد شركاء متاحون",
       "ADD_PARTNER": "إضافة شريك",
@@ -1074,6 +1074,7 @@
     "Choosefile": "اخترالملف ....",
     "Choosefileup": "اختر ملف للتحميل",
     "city": "المدينه",
+    "RefNo" :"رقم المرجع" ,
     "CityNAME": "ARABIC_City_NAME",
     "permitNumber": "رقم التصريح",
     "rid": "رقم الهويه*",
@@ -1217,18 +1218,18 @@
     "FAX": "رقم الفاكس"
   },
   "CHARITY_ORGANIZATIONS": {
-    "TITLE": "المنظمات الخيرية",
-    "DESCRIPTION": "اكتشف وتواصل مع المنظمات الخيرية",
-    "NO_ORGANIZATIONS": "لم يتم العثور على منظمات",
-    "NO_ORGANIZATIONS_DESCRIPTION": "لا توجد منظمات خيرية متاحة في الوقت الحالي.",
+    "TITLE": "المؤسسات الخيرية",
+    "DESCRIPTION": "اكتشف وتواصل مع المؤسسات الخيرية",
+    "NO_ORGANIZATIONS": "لم يتم العثور على المؤسسات",
+    "NO_ORGANIZATIONS_DESCRIPTION": "لا توجد المؤسسات خيرية متاحة في الوقت الحالي.",
     "VIEW_DETAILS": "عرض التفاصيل",
     "CONTACT_INFO": "معلومات الاتصال",
     "LOCATION": "الموقع",
     "PHONE": "الهاتف",
     "EMAIL": "البريد الإلكتروني",
     "WEBSITE": "الموقع الإلكتروني",
-    "LOADING": "جاري تحميل المنظمات الخيرية...",
-    "ERROR_LOADING": "فشل في تحميل المنظمات الخيرية",
+    "LOADING": "جاري تحميل المؤسسات الخيرية...",
+    "ERROR_LOADING": "فشل في تحميل المؤسسات الخيرية",
     "RETRY": "حاول مرة أخرى"
   },
   "POLLS": {
@@ -1247,9 +1248,9 @@
     "ABOUT_COUNCIL": "عن المجلس",
     "GENERAL_MANAGER_MESSAGE": "رسالة المدير العام",
     "SERVICES": "الخدمات",
-    "REQUEST": "طلب",
+    "REQUEST": "طلباتي",
     "INITIATIVES": "المبادرات",
-    "CHARITY_ORGANIZATIONS": "المنظمات الخيرية",
+    "CHARITY_ORGANIZATIONS": "المؤسسات الخيرية",
     "CONTACT_US": "اتصل بنا"
   },
   "INITIATIVES": {
@@ -1324,7 +1325,7 @@
     "SUPERVISOR_INFO_TAB": "معلومات المشرف",
     "SUPERVISOR_INFO_DESC": "قدم تفاصيل الاتصال ومعلومات المشرف",
     "TAB2_TITLE": "الشركاء",
-    "PARTNERS_OPTIONAL_SHORT": "إضافة المنظمات الشريكة إذا كان ذلك ينطبق",
+    "PARTNERS_OPTIONAL_SHORT": "إضافة المؤسسات الشريكة إذا كان ذلك ينطبق",
     "TAB3_TITLE": "المرفقات",
     "ATTACHMENTS_DESC": "رفع الوثائق والمرفقات المطلوبة",
     "MAIN_INFO": "المعلومات الأساسية",
@@ -1380,7 +1381,7 @@
     "SUPERVISOR_INFO": "معلومات المشرف",
     "SUPERVISOR_INFO_DESC": "قدم تفاصيل الاتصال ومعلومات المشرف",
     "PARTNERS": "الشركاء",
-    "PARTNERS_OPTIONAL_SHORT": "إضافة المنظمات الشريكة إذا كان ذلك ينطبق",
+    "PARTNERS_OPTIONAL_SHORT": "إضافة المؤسسات الشريكة إذا كان ذلك ينطبق",
     "ATTACHMENTS": "المرفقات",
     "ATTACHMENTS_DESC": "رفع الوثائق والمرفقات المطلوبة",
     "MAIN_INFO": "المعلومات الأساسية",
@@ -1445,7 +1446,7 @@
     "SUPERVISOR_INFO": "معلومات المشرف",
     "SUPERVISOR_INFO_DESC": "عرض تفاصيل الاتصال بالمشرف",
     "PARTNERS": "معلومات الشركاء",
-    "PARTNERS_DESC": "عرض المنظمات الشريكة",
+    "PARTNERS_DESC": "عرض المؤسسات الشريكة",
     "ATTACHMENTS": "المرفقات",
     "ATTACHMENTS_DESC": "عرض المستندات المرفوعة",
     "WORKFLOW_STEPS": "خطوات العملية",
@@ -1591,7 +1592,7 @@
     "SERVICE_INFO": "معلومات الخدمة"
   },
   "VIEW_REQUESTPLAINT": {
-    "TITLE": "عرض طلب التظلم"
+    "TITLE": "  طلب التظلم"
   },
   "REQUEST_INFO": {
     "WORKFLOW_STEPS": "خطوات سير العمل",
@@ -1599,7 +1600,7 @@
     "JUSTIFICATIONS": "التبريرات"
   },
   "VIEW_COMPLAINTREQUEST": {
-    "TITLE": "عرض طلب الشكوى"
+    "TITLE": "  طلب الشكوى"
   },
   "NAVBAR": {
     "LOGIN": "تسجيل الدخول",

@@ -91,6 +91,18 @@ export class CharityOrganizationsComponent implements OnInit, OnDestroy {
     return this.currentLanguage === 'ar' ? entity.descriptionAr : entity.descriptionEn;
   }
 
+  getEntitymobile(entity: EntityDto): string {
+    return this.currentLanguage === 'ar' ? entity.entitY_PHONE : entity.entitY_PHONE;
+  }
+getEntityweb(entity: EntityDto): string {
+    return this.currentLanguage === 'ar' ? entity.entitY_WEBSITE : entity.entitY_WEBSITE;
+  }
+getEntityloc(entity: EntityDto): string {
+    return this.currentLanguage === 'ar' ? entity.entitY_LOCALTION : entity.entitY_LOCALTION;
+  }
+
+
+
   getEntityImage(entity: EntityDto): string {
     if (entity.attachment && entity.attachment.imgPath) {
       return entity.attachment.imgPath;

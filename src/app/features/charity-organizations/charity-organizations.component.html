@@ -33,13 +33,17 @@
           </div>
           <span class="mb-3 d-block entity-title">{{ getEntityName(entity) }}</span>
           <p class="mb-4 entity-description">{{ getEntityDescription(entity) }}</p>
+                    <p class="mb-4 entity-description">{{ getEntitymobile(entity) }}</p>
+                    <p class="mb-4 entity-description">{{ getEntityweb(entity) }}</p>
+                    <p   class="mb-4 entity-description">{{ getEntityloc(entity) }}</p>
+ 
           <div class="d-flex justify-content-end">
-            <button class="btn btn-link">
+            <!-- <button class="btn btn-link">
               {{ 'COMMON.VIEW' | translate }}
               <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
                 <path d="M1.1665 11L6.1665 6L1.1665 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-            </button>
+            </button> -->
           </div>
         </div>
       </div>

@@ -75,7 +75,7 @@ export class MainApplyServiceComponent {
     this.buildColumnDefs();
     this.rowActions = [
       { label: this.translate.instant('Common.ViewInfo'), icon: 'icon-frame-view', action: 'onViewInfo' },
-      { label: this.translate.instant('Common.requestComplaint'), icon: 'icon-frame-view', action: 'onRequestComplaint' },
+      // { label: this.translate.instant('Common.requestComplaint'), icon: 'icon-frame-view', action: 'onRequestComplaint' },
     ];
    
     this.getLoadDataGrid({ pageNumber: 1, pageSize: this.pagination.take });
@@ -184,18 +184,28 @@ export class MainApplyServiceComponent {
 
   private buildColumnDefs(): void {
     this.columnDefs = [
-      {
-        headerName: '#',
-        valueGetter: (params) =>
-          (params?.node?.rowIndex ?? 0) + 1 + ((this.pagination.currentPage - 1) * this.pagination.take),
-        width: 60,
-        colId: 'serialNumber'
-      },
+      // {
+      //   headerName: '#',
+      //   valueGetter: (params) =>
+      //     (params?.node?.rowIndex ?? 0) + 1 + ((this.pagination.currentPage - 1) * this.pagination.take),
+      //   width: 60,
+      //   colId: 'serialNumber'
+      // },
       { headerName: this.translate.instant('mainApplyServiceResourceName.Servicename'), field: 'service.serviceName', width: 200 },
       { headerName: this.translate.instant('mainApplyServiceResourceName.RefNo'), field: 'applyNo', width: 200 },
       { headerName: this.translate.instant('mainApplyServiceResourceName.EventNameAdv'), field: 'requestEventPermit.eventName', width: 200 },
-      { headerName: this.translate.instant('mainApplyServiceResourceName.applydate'), field: 'applyDate', width: 200 },
-      { headerName: this.translate.instant('mainApplyServiceResourceName.permitNumber'), field: 'permitNumber', width: 200 },
+      { 
+  headerName: this.translate.instant('mainApplyServiceResourceName.applydate'), 
+  field: 'applyDate', 
+  width: 200,
+  valueFormatter: (params) => {
+    if (!params.value) return '';
+    const date = new Date(params.value);
+    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+  }
+}
+,
+       { headerName: this.translate.instant('mainApplyServiceResourceName.permitNumber'), field: 'permitNumber', width: 200 },
       { headerName: this.translate.instant('mainApplyServiceResourceName.statues'), field: 'lastStatusEN', width: 200 },
     ];
   }
@@ -231,6 +241,12 @@ export class MainApplyServiceComponent {
         }else if (event.row.serviceId  == this.appEnum.serviceId7) {
           
           this.router.navigate([`/view-services-requests/plaint-request/${event.row.id}`], {
+            state: { loadformData: this.loadformData }
+          });
+        }
+        else if (event.row.serviceId  == this.appEnum.serviceId1002) {
+          
+          this.router.navigate([`/view-services-requests/complaint-request/${event.row.id}`], {
             state: { loadformData: this.loadformData }
           });
         }
