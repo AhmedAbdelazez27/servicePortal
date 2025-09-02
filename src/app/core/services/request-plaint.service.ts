@@ -78,9 +78,9 @@ export class RequestPlaintService {
         if (response && response.results) {
           // Convert Select2Result to PlaintReasonsDto format
           return response.results.map(item => ({
-            id: item.id,
+            id: Number(item.id) || 0,
             reasonText: item.text || '',
-            reasonTextEn: item.altText || item.text || '',
+            reasonTextEn: item.text || '',
             isActive: true
           }));
         } else {

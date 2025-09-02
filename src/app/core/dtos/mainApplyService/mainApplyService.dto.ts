@@ -35,6 +35,7 @@ export class mainApplyServiceDto {
   permitNumber: string | null = null;
   notesForApproving: string | null = null;
   reasonForModification: string | null = null;
+  serviceStatus: number | null = null;
   service: ServiceDto | null = null;
   user: AppUserDto | null = null;
   workFlowSteps: WorkFlowStepDto[] = [];

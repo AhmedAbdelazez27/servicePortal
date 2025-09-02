@@ -55,6 +55,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   // Tab management
   currentTab: number = 1;
   totalTabs: number = 5;
+  visitedTabs: Set<number> = new Set([1]); // Track visited tabs, start with tab 1
 
   // Forms
   mainInfoForm!: FormGroup;
@@ -334,6 +335,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   goToTab(tab: number): void {
     if (tab >= 1 && tab <= this.totalTabs) {
       this.currentTab = tab;
+      this.visitedTabs.add(tab);
     }
   }
 
@@ -342,6 +344,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       // Validate current tab and show error messages if validation fails
       if (this.validateCurrentTab()) {
         this.currentTab++;
+        this.visitedTabs.add(this.currentTab);
       } else {
         // Show validation errors for the current tab
         this.validateCurrentTabWithMessages();
@@ -486,6 +489,12 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   }
 
   validatePartnersTab(showToastr = false): boolean {
+    // Only consider the Partners tab completed if the user has actually visited it
+    // or if there are actual partners added
+    if (!this.visitedTabs.has(4) && this.partners.length === 0) {
+      return false;
+    }
+
     // Validate partner attachments if there are mandatory ones for the selected partner type
     if (this.showPartnerAttachments) {
       const selectedPartnerType = this.partnersForm.get('type')?.value;

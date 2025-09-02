@@ -447,7 +447,10 @@
     "START_DATE_PAST": "Start date cannot be before today.",
     "END_DATE_BEFORE_START": "End date must be the same as or after the start date.",
     "PHONE_PATTERN": "Please enter a valid phone number.",
-    "PHONE_LENGTH": "Please enter a valid phone number with 7 to 20 digits."
+    "PHONE_LENGTH": "Please enter a valid phone number with 7 to 20 digits.",
+    "MIN_ONE_CHANNEL": "Select at least one channel.",
+    "START_DATE_PAST_MESSAGE": "Start date cannot be in the past. Please select a valid future date.",
+    "END_DATE_BEFORE_START_MESSAGE": "End date must be after start date. Please select a valid end date."
   },
   "SERVICES": {
     "TITLE": "Services",
@@ -652,37 +655,6 @@
   },
   "WARNINGS": {
     "REASON_ALREADY_ADDED": "This reason has already been added."
-  },
-  "VALIDATION": {
-    "PHONE_PATTERN": "Please enter a valid phone number.",
-    "PHONE_LENGTH": "Please enter a valid phone number with 7 to 20 digits.",
-    "REQUIRED_FIELD": "This field is required",
-    "FORM_INVALID": "Please fill in all required fields correctly",
-    "FILE_TOO_LARGE": "File size must not exceed 5MB",
-    "INVALID_FILE_TYPE": "Invalid file type. Only JPEG, PNG, PDF, DOC, DOCX files are allowed",
-    "INVALID_PHONE": "Please enter a valid phone number",
-    "INVALID_EMAIL": "Please enter a valid email address",
-    "PLEASE_COMPLETE_REQUIRED_FIELDS": "Please complete all required fields",
-    "CONSECUTIVE_DOTS": "Email cannot contain consecutive dots",
-    "LEADING_TRAILING_DOTS": "Email cannot start or end with dots",
-    "INVALID_DOMAIN": "Invalid email domain format",
-    "MIN_ONE_PARTNER": "Please add at least one partner.",
-    "DATE_RANGE": "End date must be after or equal to the start date.",
-    "MIN_ONE_TARGET": "Select at least one target type.",
-    "MIN_ONE_METHOD": "Select at least one advertising method.",
-    "MIN_ONE_LOCATION": "Add at least one location.",
-    "REQUIRED": "This field is required",
-    "EMAIL": "Please enter a valid email address",
-    "MINLENGTH": "Minimum length is {{length}} characters",
-    "PATTERN": "Please enter a valid format",
-    "PASSWORD_MISMATCH": "Passwords do not match",
-    "EMAIL_REQUIRED": "Email is required",
-    "EMAIL_INVALID": "Please enter a valid email address",
-    "PASSWORD_REQUIRED": "Password is required",
-    "PASSWORD_MIN_LENGTH": "Password must be at least 8 characters",
-    "PASSWORD_PATTERN": "Password must contain uppercase, lowercase, number and special character",
-    "CONFIRM_PASSWORD_REQUIRED": "Confirm password is required",
-    "PASSWORDS_DONT_MATCH": "Passwords do not match"
   },
   "COMMON": {
     "REQUEST_SERVICE": "Request Service",
@@ -1033,11 +1005,8 @@
       "MAP_DESCRIPTION": "Choose a location directly from the map",
       "SETUP_DATE": "Setup Date",
       "TENT_SETUP_DATE": "Tent Setup Date"
-    },
-    "VALIDATION": {
-      "START_DATE_PAST_MESSAGE": "Start date cannot be in the past. Please select a valid future date.",
-      "END_DATE_BEFORE_START_MESSAGE": "End date must be after start date. Please select a valid end date."
     }
+
   },
   "ATTACHMENTS": {
     "DOCUMENT_TYPE": "Document Type",
@@ -1950,7 +1919,7 @@
   "MESSAGE": {
     "TITLE": "General Manager's Message",
     "NAME": "H.E. / Maryam Ali Al Maamari",
-    "P1": "Charitable work is a characteristic of high-end societies, as it stems from the call of Allah’s messengers to the Solidarity and cooperation for good and righteousness, and that the United Arab Emirates has established itself the principles of charitable work have become a part of its structure and one of the means for its advancement and its renaissance, and when we mention the humanitarian march of the UAE, we cannot forget The imprint of charitable institutions operating in the emirate of Ajman and its efforts with The rest of the other work institutions spread throughout the Emirates in establishing work Charity and making the UAE the first donor of humanitarian aid globally for five Consecutive years"
+    "P1": "Charitable work is a characteristic of high-end societies, as it stems from the call of Allah's messengers to the Solidarity and cooperation for good and righteousness, and that the United Arab Emirates has established itself the principles of charitable work have become a part of its structure and one of the means for its advancement and its renaissance, and when we mention the humanitarian march of the UAE, we cannot forget The imprint of charitable institutions operating in the emirate of Ajman and its efforts with The rest of the other work institutions spread throughout the Emirates in establishing work Charity and making the UAE the first donor of humanitarian aid globally for five Consecutive years"
   },
   "FOOTER": {
     "HOME": "Home",

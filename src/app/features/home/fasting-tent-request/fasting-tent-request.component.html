@@ -100,14 +100,15 @@
                                  [class.invalid]="currentTab > 4 && !isTabCompleted(4)">
                                 <div class="step-bg"></div>
                                 <div class="step">
-                                    <span>4</span>
+                                    <span *ngIf="!isTabCompleted(4)">4</span>
+                                    <i *ngIf="isTabCompleted(4)" class="fas fa-check"></i>
                                 </div>
                             </div>
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" 
                                       (click)="goToTab(4)"
-                                     
+                                      [class.text-success]="isTabCompleted(4)"
                                       [class.text-danger]="currentTab > 4 && !isTabCompleted(4)"
                                       [class.text-primary]="isTabActive(4)">
                                     {{ 'FASTING_TENT_REQ.PARTNERS' | translate }}

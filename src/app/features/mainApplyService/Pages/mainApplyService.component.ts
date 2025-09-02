@@ -206,7 +206,15 @@ export class MainApplyServiceComponent {
 }
 ,
        { headerName: this.translate.instant('mainApplyServiceResourceName.permitNumber'), field: 'permitNumber', width: 200 },
-      { headerName: this.translate.instant('mainApplyServiceResourceName.statues'), field: 'lastStatusEN', width: 200 },
+      { 
+        headerName: this.translate.instant('mainApplyServiceResourceName.statues'), 
+        field: 'lastStatusEN', 
+        width: 200,
+        cellRenderer: (params: any) => {
+          const statusClass = this.getStatusClass(params.data.serviceStatus);
+          return `<div class="${statusClass}">${params.value || ''}</div>`;
+        }
+      },
     ];
   }
 
@@ -278,6 +286,24 @@ export class MainApplyServiceComponent {
     }
   }
 
+  private getStatusClass(serviceStatus: number): string {
+    switch (serviceStatus) {
+      case 1: // Accept
+        return 'status-approved';
+      case 2: // Reject
+        return 'status-rejected';
+      case 3: // Reject For Reason
+        return 'status-reject-for-reason';
+      case 4: // Waiting
+        return 'status-waiting';
+      case 5: // Received
+        return 'status-received';
+      case 7: // Return For Modifications
+        return 'status-return-for-modification';
+      default:
+        return 'status-waiting';
+    }
+  }
 
 
   printExcel(): void {
