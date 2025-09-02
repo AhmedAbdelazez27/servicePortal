@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ServiceSettingService } from '../../../core/services/serviceSetting.service';
 import { ServiceDto, GetAllServicesParameters } from '../../../core/dtos/serviceSetting/serviceSetting.dto';
 import { ContactUsComponent } from '../contact-us/contact-us.component';
@@ -45,119 +45,58 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ];
 
   campaigns1 = [
-  {
-    id: 1,
-    filePath: 'assets/img/campaign1.jpg',
-    projectCampainName: 'HOME.CAMPAIGNS.FOOD_AID',
-    projectCampainNameEn: 'HOME.CAMPAIGNS.FOOD_AID',
-    requiredAmount: '10,000 AED',
-    collectedAmount: '6,500 AED',
-    progress: 65,
-  },
-  {
-    id: 2,
-    filePath: 'assets/img/campaign2.jpg',
-    projectCampainName: 'HOME.CAMPAIGNS.ORPHAN_SUPPORT',
-    projectCampainNameEn: 'HOME.CAMPAIGNS.ORPHAN_SUPPORT',
-    requiredAmount: '8,000 AED',
-    collectedAmount: '5,200 AED',
-    progress: 65,
-  },
-  {
-    id: 3,
-    filePath: 'assets/img/campaign3.jpg',
-    projectCampainName: 'HOME.CAMPAIGNS.EMERGENCY_HEALTHCARE',
-    projectCampainNameEn: 'HOME.CAMPAIGNS.EMERGENCY_HEALTHCARE',
-    requiredAmount: '15,000 AED',
-    collectedAmount: '9,000 AED',
-    progress: 60,
-  },
-  {
-    id: 4,
-    filePath: '../../../../assets/images/initiative-1.png',
-    projectCampainName: 'HOME.CAMPAIGNS.SHELTER_SUPPORT',
-    projectCampainNameEn: 'HOME.CAMPAIGNS.SHELTER_SUPPORT',
-    requiredAmount: '12,000 AED',
-    collectedAmount: '8,500 AED',
-    progress: 70,
-  }
-];
+    {
+      id: 1,
+      filePath: 'assets/img/campaign1.jpg',
+      projectCampainName: 'HOME.CAMPAIGNS.FOOD_AID',
+      projectCampainNameEn: 'HOME.CAMPAIGNS.FOOD_AID',
+      requiredAmount: '10,000 AED',
+      collectedAmount: '6,500 AED',
+      progress: 65,
+    },
+    {
+      id: 2,
+      filePath: 'assets/img/campaign2.jpg',
+      projectCampainName: 'HOME.CAMPAIGNS.ORPHAN_SUPPORT',
+      projectCampainNameEn: 'HOME.CAMPAIGNS.ORPHAN_SUPPORT',
+      requiredAmount: '8,000 AED',
+      collectedAmount: '5,200 AED',
+      progress: 65,
+    },
+    {
+      id: 3,
+      filePath: 'assets/img/campaign3.jpg',
+      projectCampainName: 'HOME.CAMPAIGNS.EMERGENCY_HEALTHCARE',
+      projectCampainNameEn: 'HOME.CAMPAIGNS.EMERGENCY_HEALTHCARE',
+      requiredAmount: '15,000 AED',
+      collectedAmount: '9,000 AED',
+      progress: 60,
+    },
+    {
+      id: 4,
+      filePath: '../../../../assets/images/initiative-1.png',
+      projectCampainName: 'HOME.CAMPAIGNS.SHELTER_SUPPORT',
+      projectCampainNameEn: 'HOME.CAMPAIGNS.SHELTER_SUPPORT',
+      requiredAmount: '12,000 AED',
+      collectedAmount: '8,500 AED',
+      progress: 70,
+    }
+  ];
 
   constructor(
     private serviceSettingService: ServiceSettingService,
     private initiativeService: InitiativeService,
     private heroSectionService: HeroSectionSettingService,
     private translationService: TranslationService,
+    private translateService: TranslateService,
     private router: Router
   ) {
-    const currentLanguage = this.translationService.currentLang;
-    if (currentLanguage == 'ar') {
-      this.customOptions = {
-        rtl: true, // Enable RTL for Owl Carousel
-        loop: true, // Carousel will loop after last item
-        margin: 10, // Margin between items
-        nav: true, // Enable navigation arrows
-        dots: true, // Enable dots for navigation
-        autoplay: false, // Disable autoplay
-        responsive: {
-          0: { items: 1 }, // 1 item for small screens
-          600: { items: 2 }, // 2 items for medium screens
-          1000: { items: 3 }, // 3 items for large screens
-        },
-        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
-          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
-        ], // Custom navigation text
-      };
-      
-      this.initiativesOptions = {
-        rtl: true, // Enable RTL for Owl Carousel
-        loop: true, // Carousel will loop after last item
-        margin: 10, // Margin between items
-        nav: true, // Enable navigation arrows
-        dots: true, // Enable dots for navigation
-        autoplay: false, // Disable autoplay
-        responsive: {
-          0: { items: 1 }, // 1 item for small screens
-          600: { items: 1 }, // 2 items for medium screens
-          1000: { items: 2 }, // 3 items for large screens
-        },
-        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
-          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
-        ], // Custom navigation text
-      };
-    } else {
-      this.customOptions = {
-        loop: true, // Carousel will loop after last item
-        margin: 10, // Margin between items
-        nav: true, // Enable navigation arrows
-        dots: true, // Enable dots for navigation
-        autoplay: false, // Disable autoplay
-        responsive: {
-          0: { items: 1 }, // 1 item for small screens
-          600: { items: 2 }, // 2 items for medium screens
-          1000: { items: 3 }, // 3 items for large screens
-        },
-        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
-          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
-        ], // Custom navigation text
-      };
-      
-      this.initiativesOptions = {
-        loop: true, // Carousel will loop after last item
-        margin: 10, // Margin between items
-        nav: true, // Enable navigation arrows
-        dots: true, // Enable dots for navigation
-        autoplay: false, // Disable autoplay
-        responsive: {
-          0: { items: 1 }, // 1 item for small screens
-          600: { items: 1 }, // 2 items for medium screens
-          1000: { items: 2 }, // 3 items for large screens
-        },
-        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
-          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
-        ], // Custom navigation text
-      };
-    }
+
+     this.setCarouselOptions(this.translationService.currentLang);
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.setCarouselOptions(event.lang);
+    });
+
 
   }
 
@@ -208,7 +147,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     const parameters: GetAllServicesParameters = {
       skip: 0,
-      take: 100,  
+      take: 100,
       isActive: true
     };
 
@@ -314,4 +253,73 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   // Contact form handled by ContactUsComponent
+  setCarouselOptions(lang:string){
+          if (lang == 'ar') {
+        this.customOptions = {
+          rtl: true, // Enable RTL for Owl Carousel
+          loop: true, // Carousel will loop after last item
+          margin: 10, // Margin between items
+          nav: true, // Enable navigation arrows
+          dots: true, // Enable dots for navigation
+          autoplay: false, // Disable autoplay
+          responsive: {
+            0: { items: 1 }, // 1 item for small screens
+            600: { items: 2 }, // 2 items for medium screens
+            1000: { items: 3 }, // 3 items for large screens
+          },
+          navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+            '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+          ], // Custom navigation text
+        };
+
+        this.initiativesOptions = {
+          rtl: true, // Enable RTL for Owl Carousel
+          loop: true, // Carousel will loop after last item
+          margin: 10, // Margin between items
+          nav: true, // Enable navigation arrows
+          dots: true, // Enable dots for navigation
+          autoplay: false, // Disable autoplay
+          responsive: {
+            0: { items: 1 }, // 1 item for small screens
+            600: { items: 1 }, // 2 items for medium screens
+            1000: { items: 2 }, // 3 items for large screens
+          },
+          navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+            '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+          ], // Custom navigation text
+        };
+      } else {
+        this.customOptions = {
+          loop: true, // Carousel will loop after last item
+          margin: 10, // Margin between items
+          nav: true, // Enable navigation arrows
+          dots: true, // Enable dots for navigation
+          autoplay: false, // Disable autoplay
+          responsive: {
+            0: { items: 1 }, // 1 item for small screens
+            600: { items: 2 }, // 2 items for medium screens
+            1000: { items: 3 }, // 3 items for large screens
+          },
+          navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+            '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+          ], // Custom navigation text
+        };
+
+        this.initiativesOptions = {
+          loop: true, // Carousel will loop after last item
+          margin: 10, // Margin between items
+          nav: true, // Enable navigation arrows
+          dots: true, // Enable dots for navigation
+          autoplay: false, // Disable autoplay
+          responsive: {
+            0: { items: 1 }, // 1 item for small screens
+            600: { items: 1 }, // 2 items for medium screens
+            1000: { items: 2 }, // 3 items for large screens
+          },
+          navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+            '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+          ], // Custom navigation text
+        };
+      }
+  }
 }
