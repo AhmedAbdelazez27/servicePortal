@@ -286,7 +286,7 @@ export class MainApplyServiceComponent {
     }
   }
 
-  private getStatusClass(serviceStatus: number): string {
+   getStatusClass(serviceStatus: any): string {
     switch (serviceStatus) {
       case 1: // Accept
         return 'status-approved';
@@ -365,5 +365,15 @@ export class MainApplyServiceComponent {
         }
       });
   }
+
+  trackById(index: number, item: any): string {
+  return item?.id ?? index;
+}
+
+get totalPages(): number {
+  const size = this.pagination?.take || 10;
+  const total = this.pagination?.totalCount || 0;
+  return Math.max(1, Math.ceil(total / size));
+}
 }
 

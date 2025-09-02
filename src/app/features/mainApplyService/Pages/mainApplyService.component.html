@@ -3,7 +3,7 @@
     <h1 class="title">{{ 'mainApplyServiceResourceName.title' | translate }}</h1>
   </div>
 
-  <app-generic-data-table [columnDefs]="columnDefs"
+  <!-- <app-generic-data-table [columnDefs]="columnDefs"
                           [rowData]="loadgridData"
                           [totalCount]="pagination.totalCount"
                           [pageSize]="pagination.take"
@@ -14,9 +14,9 @@
                           (pageChange)="onPageChange($event)"
                           [showActionColumn]="true"
                           (search)="onTableSearch($event)">
-  </app-generic-data-table>
+  </app-generic-data-table> -->
 
-  <div>
+  <!-- <div>
      <table class="table new-table mb-3 table-striped">
                     <thead>
                         <tr>
@@ -170,5 +170,163 @@
                 </table>
 
                 
+  </div> -->
+
+
+  <!-- Search -->
+<!-- <div class="row g-2 align-items-center mb-3">
+  <div class="col-auto">
+    <input
+      type="text"
+      class="form-control"
+      [placeholder]="'Common.Search' | translate"
+      [(ngModel)]="searchText"
+      (keyup.enter)="onTableSearch(searchText)" />
   </div>
+  <div class="col-auto">
+    <button class="btn btn-primary" (click)="onTableSearch(searchText)">
+      {{ 'Common.Search' | translate }}
+    </button>
+    <button class="btn btn-outline-secondary ms-2" (click)="clear()">
+      {{ 'Common.Clear' | translate }}
+    </button>
+  </div>
+  <div class="col-auto ms-auto">
+    <select class="form-select" [(ngModel)]="pagination.take"
+            (change)="onPageChange({ pageNumber: 1, pageSize: pagination.take })">
+      <option [ngValue]="10">10</option>
+      <option [ngValue]="25">25</option>
+      <option [ngValue]="50">50</option>
+      <option [ngValue]="100">100</option>
+    </select>
+  </div>
+</div> -->
+
+<table class="table new-table mb-3 table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>{{ 'mainApplyServiceResourceName.Servicename' | translate }}</th>
+      <th>{{ 'mainApplyServiceResourceName.RefNo' | translate }}</th>
+      <th>{{ 'mainApplyServiceResourceName.EventNameAdv' | translate }}</th>
+      <th>{{ 'mainApplyServiceResourceName.applydate' | translate }}</th>
+      <th>{{ 'mainApplyServiceResourceName.permitNumber' | translate }}</th>
+      <th>{{ 'mainApplyServiceResourceName.statues' | translate }}</th>
+      <th class="text-end">{{ 'COMMON.ACTIONS' | translate }}</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr class="table-card"
+        *ngFor="let row of loadgridData; let i = index; trackBy: trackById">
+      <td>
+        <span class="td-title">#</span>
+        {{ (pagination.currentPage - 1) * pagination.take + (i + 1) }}
+      </td>
+
+      <td>
+        <span class="td-title">{{ 'mainApplyServiceResourceName.Servicename' | translate }}</span>
+        {{ row?.service?.serviceName || '-' }}
+      </td>
+
+      <td>
+        <span class="td-title">{{ 'mainApplyServiceResourceName.RefNo' | translate }}</span>
+        {{ row?.applyNo || '-' }}
+      </td>
+
+      <td>
+        <span class="td-title">{{ 'mainApplyServiceResourceName.EventNameAdv' | translate }}</span>
+        {{ row?.requestEventPermit?.eventName || '-' }}
+      </td>
+
+      <td>
+        <span class="td-title">{{ 'mainApplyServiceResourceName.applydate' | translate }}</span>
+        <ng-container *ngIf="row?.applyDate as d; else emptyDate">
+          {{ (d | date:'dd/MM/yyyy') }}
+        </ng-container>
+        <ng-template #emptyDate>-</ng-template>
+      </td>
+
+      <td>
+        <span class="td-title">{{ 'mainApplyServiceResourceName.permitNumber' | translate }}</span>
+        {{ row?.permitNumber || '-' }}
+      </td>
+
+      <td>
+        <span class="td-title">{{ 'mainApplyServiceResourceName.statues' | translate }}</span>
+        <div [ngClass]="getStatusClass(row?.serviceStatus)">
+          {{ row?.lastStatusEN || '-' }}
+        </div>
+      </td>
+
+      <td class="text-end">
+        <div class="dropdown">
+          <button class="btn table-more dropdown-toggle" type="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                 viewBox="0 0 24 24" fill="none">
+              <g clip-path="url(#clip0_206_13784)">
+                <path d="M22 14C20.8954 14 20 13.1046 20 12C20 10.8954 20.8954 10 22 10C23.1046 10 24 10.8954 24 12C24 13.1046 23.1046 14 22 14Z" fill="#374957"/>
+                <path d="M12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14Z" fill="#374957"/>
+                <path d="M1.99999 14C0.895413 14 -2.28882e-05 13.1046 -2.28882e-05 12C-2.28882e-05 10.8954 0.895413 10 1.99999 10C3.10456 10 4 10.8954 4 12C4 13.1046 3.10456 14 1.99999 14Z" fill="#374957"/>
+              </g>
+              <defs>
+                <clipPath id="clip0_206_13784">
+                  <rect width="24" height="24" fill="white" transform="matrix(-1 0 0 1 24 0)" />
+                </clipPath>
+              </defs>
+            </svg>
+          </button>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <button class="dropdown-item"
+                      (click)="onTableAction({ action: 'onViewInfo', row })">
+                {{ 'Common.ViewInfo' | translate }}
+              </button>
+            </li>
+           
+          </ul>
+        </div>
+      </td>
+    </tr>
+
+    <tr *ngIf="!loadgridData?.length">
+      <td colspan="8" class="text-center py-4">
+        {{ 'Common.NoData' | translate }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Pagination -->
+<nav *ngIf="pagination.totalCount > 0" aria-label="Table pagination">
+  <ul class="pagination justify-content-end">
+    <li class="page-item" [class.disabled]="pagination.currentPage === 1">
+      <button class="page-link"
+              (click)="onPageChange({ pageNumber: pagination.currentPage - 1, pageSize: pagination.take })">
+        {{'‹'}}
+      </button>
+    </li>
+
+    <li class="page-item"
+        *ngFor="let p of [].constructor(totalPages); let idx = index"
+        [class.active]="(idx + 1) === pagination.currentPage">
+      <button class="page-link"
+              (click)="onPageChange({ pageNumber: idx + 1, pageSize: pagination.take })">
+        {{ idx + 1 }}
+      </button>
+    </li>
+
+    <li class="page-item"
+        [class.disabled]="pagination.currentPage >= totalPages">
+      <button class="page-link"
+              (click)="onPageChange({ pageNumber: pagination.currentPage + 1, pageSize: pagination.take })">
+        {{"›"}}
+      </button>
+    </li>
+  </ul>
+</nav>
+
+
 </div>
