@@ -3,6 +3,7 @@ export interface ContactInformationDto {
   id: number;
   name: string;
   email: string;
+  mobileNumber: string;
   title?: string | null;
   message?: string | null;
   creationDate: Date; // Date object
@@ -12,6 +13,7 @@ export interface ContactInformationDto {
 export interface CreateContactInformationDto {
   name: string;
   email: string;
+  mobileNumber: string;
   title?: string | null;
   message?: string | null;
 }
@@ -21,6 +23,7 @@ export interface UpdateContactInformationDto {
   id: number;
   name: string;
   email: string;
+  mobileNumber: string;
   title?: string | null;
   message?: string | null;
 }
@@ -29,6 +32,7 @@ export interface UpdateContactInformationDto {
 export interface GetAllContactInformationParameters {
   name?: string | null;
   email?: string | null;
+  mobileNumber?: string | null;
   title?: string | null;
   skip: number;
   take: number;

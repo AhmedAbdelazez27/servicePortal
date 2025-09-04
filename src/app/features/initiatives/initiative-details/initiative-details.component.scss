@@ -1,0 +1,40 @@
+
+        
+        .main-title {
+           color: var(--Color-25, #8D734D);
+text-align: left;
+font-size: 24px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+            gap: 15px;
+        }
+        
+        .title-icon {
+            color: #D4AF37;
+            font-size: 24px;
+        }
+        
+        .subtitle {
+            color: #6c757d;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0 20px;
+        }
+        
+        .bullet-point {
+            margin-right: 10px;
+            color: #8B7355;
+        }
+        
+        /* Alternative layout without bullet */
+        .clean-layout .subtitle {
+            margin-top: 20px;
+        }
+
+         .bullet-point {
+            margin-right: 10px;
+            color: #8B7355;
+        }

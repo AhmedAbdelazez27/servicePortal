@@ -28,6 +28,8 @@ export class mainApplyServiceDto {
   serviceId: number | null = null;
   applyDate: Date | null = null;
   applyNo: string | null = null;
+    description: string | null = null;
+
   parentId: number | null = null;
   lastStatus: string | null = null;
   lastStatusEN: string | null = null;
@@ -416,4 +418,15 @@ export class RequestComplaintDto {
   mainApplyService: mainApplyServiceDto | null = null;
   user: AppUserDto | null = null;
 }
+
+
+export enum ServiceStatus {
+  Accept = 1,
+  Reject = 2,
+  RejectForReason = 3,
+  Wait = 4,
+  Received = 5,
+  ReturnForModifications = 7
+}
+
 

@@ -17,7 +17,7 @@
 
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a routerLink="/request">Requests</a></li>
+            <li class="breadcrumb-item"><a routerLink="/request">{{ 'NAVIGATION.REQUEST' | translate }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ 'REQUEST_EVENT_PERMIT.VIEW_TITLE' | translate }}
             </li>
           </ol>
@@ -29,16 +29,18 @@
           <div class="w-100">
             <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
               <h4 class="title">{{ 'REQUEST_EVENT_PERMIT.VIEW_TITLE' | translate }}</h4>
-              <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
-                data-bs-target="#commentModal">
-                <i class="fas fa-plus me-2"></i>
-                {{ 'COMMON.ADD_COMMENT' | translate }}
+                 <div class="dropdown">
+              <button class="btn btn-gold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 12px !important;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M17 11H13V7C13 6.73478 12.8946 6.48043 12.7071 6.29289C12.5196 6.10536 12.2652 6 12 6C11.7348 6 11.4804 6.10536 11.2929 6.29289C11.1054 6.48043 11 6.73478 11 7V11H7C6.73478 11 6.48043 11.1054 6.29289 11.2929C6.10536 11.4804 6 11.7348 6 12C6 12.2652 6.10536 12.5196 6.29289 12.7071C6.48043 12.8946 6.73478 13 7 13H11V17C11 17.2652 11.1054 17.5196 11.2929 17.7071C11.4804 17.8946 11.7348 18 12 18C12.2652 18 12.5196 17.8946 12.7071 17.7071C12.8946 17.5196 13 17.2652 13 17V13H17C17.2652 13 17.5196 12.8946 17.7071 12.7071C17.8946 12.5196 18 12.2652 18 12C18 11.7348 17.8946 11.4804 17.7071 11.2929C17.5196 11.1054 17.2652 11 17 11Z" fill="white"/>
+            </svg>
               </button>
-               <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
-                data-bs-target="#addAdvertisementModal">
-                <i class="fas fa-plus me-2"></i>
-                {{'ADD_ADVERTISEMENT' | translate}}
-              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7"  data-bs-toggle="modal"  data-bs-target="#commentModal">{{ 'COMMON.ADD_COMMENT' | translate }}</a></li>
+                <li><a class="dropdown-item" href="#" *ngIf="targetWorkFlowStep" data-bs-toggle="modal"  data-bs-target="#addAdvertisementModal">{{'ADD_ADVERTISEMENT' | translate}}</a></li>
+              </ul>
+            </div>
+              
             </div>
 
             <div class="row">
@@ -315,7 +317,7 @@
                                     }}</label>
                                   <div class="form-control-plaintext">{{ formatDateTime(ad.endDate) }}</div>
                                 </div>
-                                <div class="col-md-4 mb-2">
+                                <!-- <div class="col-md-4 mb-2">
                                   <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_TARGETED_AMOUNT' |
                                     translate }}</label>
                                   <div class="form-control-plaintext">{{ ad?.targetedAmount ?? '-' }}</div>
@@ -347,7 +349,7 @@
                                       'REQUEST_EVENT_PERMIT.RENEW_AD' | translate }}</span>
                                     <span *ngIf="!ad.newAd && !ad.reNewAd">-</span>
                                   </div>
-                                </div>
+                                </div> -->
 
                                 <!-- Targets -->
                                 <div class="col-md-6 mb-2">
@@ -358,7 +360,9 @@
                                       <span class="badge bg-light text-dark border me-1"
                                         *ngFor="let t of ad.requestAdvertisementTargets">
                                         {{ t.othertxt || ('REQUEST_EVENT_PERMIT.TARGET_TYPE' | translate) + ' ' +
-                                        t.lkpTargetTypeId }}
+                                      
+                                      t.lkpTargetTypeText}} 
+
                                       </span>
                                     </ng-container>
                                     <ng-template #noTargets>-</ng-template>
@@ -389,7 +393,9 @@
                                       <span class="badge bg-light text-dark border me-1"
                                         *ngFor="let m of ad.requestAdvertisementAdMethods">
                                         {{ m.othertxt || ('REQUEST_EVENT_PERMIT.METHOD' | translate) + ' ' +
-                                        m.lkpAdMethodId }}
+                                        
+                                         m.lkpAdMethodText }}
+
                                       </span>
                                     </ng-container>
                                     <ng-template #noMethods>-</ng-template>
@@ -558,13 +564,13 @@
                   <div class="accordion-body">
                     <div class="step-content">
 
-                      <div class="d-flex justify-content-end align-items-center mb-4">
+                      <!-- <div class="d-flex justify-content-end align-items-center mb-4">
                         <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
                           data-bs-target="#commentModal">
                           <i class="fas fa-plus me-2"></i>
                           {{ 'COMMON.ADD_COMMENT' | translate }}
                         </button>
-                      </div>
+                      </div> -->
                       <!-- 
                       <div class="comments-container">
                         <div class="comment-item">
@@ -650,7 +656,7 @@
                           <!-- Header: Department + Status -->
                           <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
                             <div>
-                              <h5 class="mb-0">{{ comment.employeeDepartmentName || 'N/A' }}</h5>
+                              <h5 class="mb-0">{{ comment.employeeDepartmentName || currentUserName }}</h5>
                               <small class="text-muted">
                                 {{ comment.lastModified | date:'dd/MM/yyyy' }}
                               </small>
@@ -661,7 +667,7 @@
 
                           <!-- Comment Text -->
                           <div class="comment-area">
-                            {{comment |json}} 
+                            <!-- {{comment |json}}  -->
                             {{ comment.comment }}
                           </div>
 
@@ -862,50 +868,59 @@
               <div>
                 <div *ngFor="let config of commentAttachmentConfigs">
 
-                  <div *ngIf="!commentSelectedFiles[config.id!] && !commentFilePreviews[config.id!]" class="upload-area"
+                  <div *ngIf="!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0" class="upload-area"
                     (dragover)="onCommentDragOver($event)" (dragleave)="onCommentDragLeave($event)"
                     (drop)="onCommentDrop($event, config.id!)" [class.drag-over]="isCommentDragOver"
-                    [class.border-danger]="isCommentAttachmentMandatory(config.id!) && !commentSelectedFiles[config.id!] && !commentFilePreviews[config.id!] && commentValidationSubmitted"
-                    [class.border-success]="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]">
+                    [class.border-danger]="isCommentAttachmentMandatory(config.id!) && (!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0) && commentValidationSubmitted"
+                    [class.border-success]="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0">
                     <input type="file" class="d-none" [id]="'comment-file-' + config.id"
-                      (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                      (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
                     <label [for]="'comment-file-' + config.id" class="upload-label">
                       <i class="fas fa-cloud-upload-alt mb-2"></i>
                       <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
                       <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate
                         }}</small>
+                      <small class="text-muted d-block mt-1">{{ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate }}</small>
                     </label>
                   </div>
 
-                  <div *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]"
-                    class="uploaded-file">
-                    <div class="d-flex align-items-center gap-2">
-                      <div *ngIf="commentFilePreviews[config.id!]">
-                        <img [src]="commentFilePreviews[config.id!]" class="img-thumbnail uploaded-img"
-                          *ngIf="commentSelectedFiles[config.id!].type?.startsWith('image/')"
-                          [alt]="commentAttachments[config.id!].fileName || 'File'">
-                      </div>
-                      <span class="file-name">{{ commentAttachments[config.id!].fileName ||
-                        ('FASTING_TENT.FILE' |
-                        translate) }}</span>
+                  <!-- Multiple Files Display -->
+                  <div *ngIf="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0"
+                    class="uploaded-files-list">
+                    <!-- Hidden file input for "Add More Files" functionality -->
+                    <input type="file" class="d-none" [id]="'comment-file-more-' + config.id"
+                      (change)="onCommentFileSelected($event, config.id!)"
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+                    
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <h6 class="mb-0">{{ getCommentAttachmentName(config) }}</h6>
+                      <button type="button" class="btn btn-sm btn-gold" 
+                        (click)="addMoreFiles(config.id!)">
+                        <i class="fas fa-plus me-1"></i>{{ 'Common.MORE_FILES' | translate }}
+                      </button>
                     </div>
-
-                    <button *ngIf="commentSelectedFiles[config.id!] || commentFilePreviews[config.id!]" type="button"
-                      class="btn-remove-uploaded-file" (click)="removeCommentFile(config.id!)">
-
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0L11 0C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z"
-                          fill="#5B5B5B" />
-                        <path
-                          d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z"
-                          fill="#5B5B5B" />
-                        <path
-                          d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z"
-                          fill="#5B5B5B" />
-                      </svg>
-                    </button>
-
+                    
+                    <div class="file-list">
+                      <div *ngFor="let file of commentSelectedFiles[config.id!]; let fileIndex = index" 
+                        class="file-item d-flex align-items-center gap-2 p-2 border rounded mb-2">
+                        <div class="file-preview me-2">
+                          <img *ngIf="commentFilePreviews[config.id!]?.[fileIndex] && file.type?.startsWith('image/')" 
+                            [src]="commentFilePreviews[config.id!]?.[fileIndex]" 
+                            class="img-thumbnail uploaded-img-small"
+                            [alt]="file.name">
+                          <i *ngIf="!file.type?.startsWith('image/')" 
+                            class="fas fa-file-alt text-primary fa-lg"></i>
+                        </div>
+                        <div class="file-info flex-grow-1">
+                          <div class="file-name">{{ file.name }}</div>
+                          <small class="text-muted">{{ formatFileSize(file.size) }}</small>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                          (click)="removeCommentFile(config.id!, fileIndex)">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                 </div>
@@ -962,7 +977,7 @@
           <input type="hidden" formControlName="requestEventPermitId">
 
           <!-- Request Date (readonly visual) -->
-          <div class="col-xl-6 mb-4">
+          <div class="mb-3">
             <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_DATE' | translate }}</label>
             <div class="form-control" readonly>
               {{ advertForm.value.requestDate | date:'medium' }}
@@ -981,7 +996,7 @@
           </div>
 
           <!-- Range Date -->
-          <div class="col-xl-6 mb-4">
+          <div class="mb-3">
             <label class="form-label">
               {{ 'CHARITY_EVENT.START_DATE' | translate }} <span class="text-danger">*</span>
             </label>
@@ -993,7 +1008,7 @@
             </div>
           </div>
 
-          <div class="col-xl-6 mb-1">
+          <div class="mb-3">
             <label class="form-label">
               {{ 'CHARITY_EVENT.END_DATE' | translate }} <span class="text-danger">*</span>
             </label>
@@ -1005,12 +1020,12 @@
             </div>
           </div>
 
-          <div class="col-12 mb-4" *ngIf="advertForm.hasError('dateRange')">
+          <div class="mb-3" *ngIf="advertForm.hasError('dateRange')">
             <div class="text-danger small">{{ 'VALIDATION.DATE_RANGE' | translate }}</div>
           </div>
 
           <!-- Targets (multi) -> requestAdvertisementTargets -->
-          <div class="col-xl-6 mb-4">
+          <div class="mb-3">
             <label class="form-label">
               {{ 'CHARITY_EVENT.TARGET_TYPES' | translate }} <span class="text-danger">*</span>
             </label>
@@ -1025,7 +1040,7 @@
           </div>
 
           <!-- Methods (multi) -> requestAdvertisementAdMethods -->
-          <div class="col-xl-6 mb-4">
+          <div class="mb-3">
             <label class="form-label">
               {{ 'CHARITY_EVENT.AD_METHODS' | translate }} <span class="text-danger">*</span>
             </label>
@@ -1069,7 +1084,7 @@
                   *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!) &&
                            state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).selected[cfg.id!].type.startsWith('image/')"
                   [src]="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
-                  class="preview-image">
+                  class="preview-image w-100">
               </div>
             </div>
           </div>

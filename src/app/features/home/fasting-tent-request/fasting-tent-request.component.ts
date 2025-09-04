@@ -170,15 +170,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       startDate: ['', [Validators.required, this.startDateNotPastValidator()]],
       endDate: ['', [Validators.required, this.endDateAfterStartDateValidator()]],
       tentDate: [{ value: '', disabled: true }], // renamed and disabled
-      tentIsSetUp: [false],
-      consultantApprovedByPolice: [false],
-      consultantFromAjman: [false],
     });
 
     this.supervisorForm = this.fb.group({
       supervisorName: ['', [Validators.required, Validators.minLength(2)]],
       jopTitle: ['', [Validators.required, Validators.minLength(2)]],
-      supervisorMobile: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s]+$/), Validators.minLength(7)]],
+      supervisorMobile: ['', [Validators.required, Validators.pattern(/^(?:\+9715[0-9]{8}|05[0-9]{8})$/), Validators.minLength(7)]],
     });
 
     this.partnersForm = this.fb.group({
@@ -626,20 +623,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       return false;
     }
     
-    // Validate phone number format and minimum length
-    const phonePattern = /^[0-9+\-\s()]+$/;
-    if (!phonePattern.test(supervisorMobile)) {
+    // Validate UAE mobile number format
+    const uaeMobilePattern = /^(?:\+9715[0-9]{8}|05[0-9]{8})$/;
+    if (!uaeMobilePattern.test(supervisorMobile)) {
       if (showToastr) {
         this.toastr.error(this.translate.instant('VALIDATION.INVALID_PHONE_FORMAT'));
-      }
-      return false;
-    }
-    
-    // Remove non-numeric characters to check minimum length
-    const numericOnly = supervisorMobile.replace(/[^0-9]/g, '');
-    if (numericOnly.length < 7) {
-      if (showToastr) {
-        this.toastr.error(this.translate.instant('VALIDATION.PHONE_MIN_LENGTH'));
       }
       return false;
     }
@@ -648,10 +636,17 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   validatePartnersTab(showToastr = false): boolean {
-    // Only consider the Partners tab completed if the user has actually visited it
-    // or if there are actual partners added
-    if (!this.visitedTabs.has(4) && this.partners.length === 0) {
+    // Partners tab is optional and should be considered completed when visited
+    // This allows users to proceed without adding partners (since it's not mandatory)
+    
+    if (!this.visitedTabs.has(4)) {
       return false;
+    }
+    
+    // If user has visited the tab, consider it completed (optional tab)
+    // User can choose not to add partners, which is valid
+    if (this.partners.length === 0) {
+      return true;
     }
     
     // Validate partner attachments if there are mandatory ones for the selected partner type
@@ -1535,12 +1530,9 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         endDate: dateDetailsData.endDate,
         notes: formData.notes,
         locationId: formData.locationId,
-        isConsultantFromAjman: dateDetailsData.consultantFromAjman,
-        isConsultantApprovedFromPolice: dateDetailsData.consultantApprovedByPolice,
         supervisorName: supervisorData.supervisorName,
         jopTitle: supervisorData.jopTitle,
         supervisorMobile: supervisorData.supervisorMobile,
-        tentIsSetUp: dateDetailsData.tentIsSetUp,
         tentDate: dateDetailsData.tentDate || null,
         serviceType: ServiceType.TentPermission, // Always send as enum value
         distributionSiteCoordinators: formData.distributionSiteCoordinators,
@@ -1767,10 +1759,19 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   restrictMobileInput(event: KeyboardEvent) {
-    const allowedChars = /[0-9+\-\s]/;
+    const allowedChars = /[0-9+]/;
     const key = event.key;
     if (!allowedChars.test(key)) {
       event.preventDefault();
+    }
+  }
+
+  onSupervisorMobileBlur(): void {
+    const mobileControl = this.supervisorForm.get('supervisorMobile');
+    if (mobileControl && mobileControl.value) {
+      // Trigger validation on blur
+      mobileControl.markAsTouched();
+      this.cdr.detectChanges();
     }
   }
 }

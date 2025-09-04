@@ -310,24 +310,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Consultant from Ajman Toggle -->
-                                    <div class="col-12 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" formControlName="isConsultantFromAjman" id="consultantFromAjman">
-                                            <label class="form-check-label" for="consultantFromAjman">
-                                                {{ 'DIST_SITE.CONSULTANT_FROM_AJMAN' | translate }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <!-- Consultant Approved from Police Toggle -->
-                                    <div class="col-12 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" formControlName="isConsultantApprovedFromPolice" id="consultantApprovedFromPolice">
-                                            <label class="form-check-label" for="consultantApprovedFromPolice">
-                                                {{ 'DIST_SITE.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
-                                            </label>
-                                        </div>
-                                    </div>
+
 
                                 </div>
                             </form>
@@ -367,19 +350,16 @@
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'DIST_SITE.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
                                         <input type="tel" class="form-control" formControlName="supervisorMobile"
-                                               [placeholder]="'DIST_SITE.SUPERVISOR_MOBILE_PLACEHOLDER' | translate"
-                                               [class.is-invalid]="isFieldInvalid('supervisorMobile')"
-                                               [class.is-valid]="isFieldValid('supervisorMobile')"
-                                               (keypress)="restrictMobileInput($event)">
-                                        <div *ngIf="isFieldInvalid('supervisorMobile')" class="invalid-feedback">
+                                               [class.is-invalid]="(submitted || mainInfoForm.get('supervisorMobile')?.touched) && mainInfoForm.get('supervisorMobile')?.errors"
+                                               (keypress)="restrictMobileInput($event)"
+                                               (blur)="onSupervisorMobileBlur()"
+                                               placeholder="+9715XXXXXXXX or 05XXXXXXXX">
+                                        <div *ngIf="(submitted || mainInfoForm.get('supervisorMobile')?.touched) && mainInfoForm.get('supervisorMobile')?.errors" class="invalid-feedback">
                                             <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('required')">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                             </div>
                                             <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('pattern')">
-                                                {{ 'VALIDATION.INVALID_PHONE' | translate }}
-                                            </div>
-                                            <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('minlength')">
-                                                {{ 'VALIDATION.PHONE_MIN_LENGTH' | translate }}
+                                                {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
                                             </div>
                                         </div>
                                     </div>
@@ -547,9 +527,8 @@
                                 </table>
                             </div>
 
-                            <div *ngIf="partners.length === 0" class="text-center py-4 text-muted">
-                                <i class="fas fa-users fa-3x mb-3"></i>
-                                <p>{{ 'DIST_SITE.NO_PARTNERS_ADDED' | translate }}</p>
+                            <div *ngIf="partners.length === 0" class="alert alert-info">
+                                {{ 'DIST_SITE.NO_PARTNERS_ADDED' | translate }}
                             </div>
                         </div>
 

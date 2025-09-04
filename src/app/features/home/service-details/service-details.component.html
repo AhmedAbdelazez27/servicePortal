@@ -30,62 +30,60 @@
 
 
 
-                <div class="accordion" id="accordionExample">
+                <!-- Combined Description and Service Type Card -->
+                <div class="row mb-4">
+                    <div class="col-12 mb-3">
+                        <div class="info-card">
+                            <div class="info-card-content">
+                                <!-- Description Row -->
+                                <div class="info-row">
+                                    <span class="info-label">{{ 'SERVICES.SERVICE_DESCRIPTION' | translate }}</span>
+                                    <span class="info-value">
+                                        {{ service ? getServiceDescription(service) : ('SERVICES.NO_DESCRIPTION' | translate) }}
+                                    </span>
+                                </div>
+                                
+                                <!-- Service Type Row -->
+                                <div class="info-row" *ngIf="service.serviceTypeName">
+                                    <span class="info-label">{{ 'SERVICES.SERVICE_TYPE' | translate }}</span>
+                                    <span class="info-value">{{ service.serviceTypeName }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Steps Accordion -->
+                <div class="accordion mb-4" id="serviceStepsAccordion" *ngIf="service.serviceDepartments && service.serviceDepartments.length > 0">
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                {{ 'SERVICES.DETAILS_SECTION' | translate }}
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show"
-                            data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <p class="mb-0">
-                                    {{ service ? getServiceDescription(service) : ('SERVICES.NO_DESCRIPTION' | translate) }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item"  *ngIf="service.serviceTypeName">
-                        <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                               {{ 'SERVICES.SERVICE_TYPE' | translate }}
-                            </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                              <p class="mb-0">{{ service.serviceTypeName }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item" *ngIf="service.serviceDepartments && service.serviceDepartments.length > 0">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                data-bs-target="#collapseSteps" aria-expanded="false" aria-controls="collapseSteps">
                                {{ 'SERVICES.SERVICE_STEPS' | translate }}
                             </button>
                         </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div id="collapseSteps" class="accordion-collapse collapse" data-bs-parent="#serviceStepsAccordion">
                             <div class="accordion-body">
                                     <ol>
                                         <li *ngFor="let dept of service.serviceDepartments; let i = index">
-                                            {{ getDepartmentName(dept) }} - {{ dept.stepName || ('SERVICES.STEP' | translate) + ' '
-                                            + (i + 1) }}
+                                            {{ getDepartmentName(dept) }} - {{ dept.stepName || ('SERVICES.STEP' | translate) + ' ' + (i + 1) }}
                                         </li>
                                     </ol>
                             </div>
                         </div>
                     </div>
-                     <div class="accordion-item"  *ngIf="service.attachmentsConfigs && service.attachmentsConfigs.length > 0">
+                </div>
+
+                <!-- Required Documents Accordion -->
+                <div class="accordion mb-4" id="documentsAccordion" *ngIf="service.attachmentsConfigs && service.attachmentsConfigs.length > 0">
+                    <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                data-bs-target="#collapseDocuments" aria-expanded="false" aria-controls="collapseDocuments">
                                {{ 'SERVICES.REQUIRED_DOCUMENTS' | translate }}
                             </button>
                         </h2>
-                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div id="collapseDocuments" class="accordion-collapse collapse" data-bs-parent="#documentsAccordion">
                             <div class="accordion-body">
                                 <ul>
                                     <li *ngFor="let attachment of service.attachmentsConfigs">
@@ -95,15 +93,19 @@
                             </div>
                         </div>
                     </div>
-                    <div  *ngIf="service.attributes && service.attributes.length > 0">
-                         <div class="accordion-item" *ngFor="let attribute of service.attributes">
+                </div>
+
+                <!-- Attributes Accordion -->
+                <div class="accordion mb-4" id="attributesAccordion" *ngIf="service.attributes && service.attributes.length > 0">
+                    <div class="accordion-item" *ngFor="let attribute of service.attributes; let i = index">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                [attr.data-bs-target]="'#collapseAttribute' + i" aria-expanded="false" 
+                                [attr.aria-controls]="'collapseAttribute' + i">
                                {{ getAttributeName(attribute) }}
                             </button>
                         </h2>
-                        <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div [id]="'collapseAttribute' + i" class="accordion-collapse collapse" data-bs-parent="#attributesAccordion">
                             <div class="accordion-body">
                                <div *ngIf="hasAttributeValues(attribute)">
                                 <ul>
@@ -118,7 +120,6 @@
                             </div>
                         </div>
                     </div>
-                    </div>
                 </div>
 
 
@@ -131,6 +132,8 @@
                
 
                
+
+             
 
                 <!-- Request Service Section -->
                 <div class="request-service mt-5">

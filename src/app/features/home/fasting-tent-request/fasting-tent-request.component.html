@@ -318,33 +318,7 @@
                                         <label class="form-label">{{ 'FASTING_TENT_REQ.SETUP_DATE' | translate }}</label>
                                         <input type="date" class="form-control" formControlName="tentDate" [disabled]="true">
                                     </div>
-                                    <!-- Tent is Set Up Toggle -->
-                                    <div class="col-12 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" formControlName="tentIsSetUp" id="tentIsSetUpDetail">
-                                            <label class="form-check-label" for="tentIsSetUpDetail">
-                                                {{ 'FASTING_TENT_REQ.TENT_IS_SET_UP' | translate }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <!-- Consultant approved by Police Toggle -->
-                                    <div class="col-12 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" formControlName="consultantApprovedByPolice" id="consultantApprovedByPoliceDetail">
-                                            <label class="form-check-label" for="consultantApprovedByPoliceDetail">
-                                                {{ 'FASTING_TENT_REQ.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <!-- Consultant from Ajman Toggle -->
-                                    <div class="col-12 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" formControlName="consultantFromAjman" id="consultantFromAjmanDetail">
-                                            <label class="form-check-label" for="consultantFromAjmanDetail">
-                                                {{ 'FASTING_TENT_REQ.CONSULTANT_FROM_AJMAN' | translate }}
-                                            </label>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </form>
                         </div>
@@ -375,11 +349,18 @@
                                     
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">{{ 'FASTING_TENT_REQ.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" formControlName="supervisorMobile"
-                                               [class.is-invalid]="submitted && supervisorForm.get('supervisorMobile')?.errors"
-                                               (keypress)="restrictMobileInput($event)">
-                                        <div *ngIf="submitted && supervisorForm.get('supervisorMobile')?.errors" class="invalid-feedback">
-                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        <input type="tel" class="form-control" formControlName="supervisorMobile"
+                                               [class.is-invalid]="(submitted || supervisorForm.get('supervisorMobile')?.touched) && supervisorForm.get('supervisorMobile')?.errors"
+                                               (keypress)="restrictMobileInput($event)"
+                                               (blur)="onSupervisorMobileBlur()"
+                                               placeholder="+9715XXXXXXXX or 05XXXXXXXX">
+                                        <div *ngIf="(submitted || supervisorForm.get('supervisorMobile')?.touched) && supervisorForm.get('supervisorMobile')?.errors" class="invalid-feedback">
+                                            <div *ngIf="supervisorForm.get('supervisorMobile')?.hasError('required')">
+                                                {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                            </div>
+                                            <div *ngIf="supervisorForm.get('supervisorMobile')?.hasError('pattern')">
+                                                {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -487,7 +468,12 @@
                                                                     type="button" 
                                                                     class="btn btn-sm btn-danger" 
                                                                     (click)="removePartnerFile(config.id!, partnersForm.get('type')?.value)">
-                                                                <i class="fas fa-trash"></i> {{ 'COMMON.REMOVE' | translate }}
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                                <path d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z" fill="#5B5B5B"/>
+                                                                <path d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z" fill="#5B5B5B"/>
+                                                                <path d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z" fill="#5B5B5B"/>
+                                                                </svg>
+                                                                {{ 'COMMON.REMOVE' | translate }}
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -525,8 +511,12 @@
                                             <td>{{ partner.licenseNumber || '-' }}</td>
                                             <td>{{ partner.contactDetails || '-' }}</td>
                                             <td>
-                                                <button type="button" class="btn btn-sm btn-danger" (click)="removePartner(i)">
-                                                    {{ 'COMMON.REMOVE' | translate }}
+                                                <button type="button" class="btn btn-sm btn-danger" (click)="removePartner(i)" style="padding: 12px !important;">
+                                                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                    <path d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z" fill="white"/>
+                                                    <path d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z" fill="white"/>
+                                                    <path d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z" fill="white"/>
+                                                    </svg>
                                                 </button>
                                             </td>
                                         </tr>
@@ -546,29 +536,28 @@
                             <!-- Validation Status Indicator -->
                             <div class="alert" [class.alert-success]="isTabCompleted(5)" [class.alert-warning]="!isTabCompleted(5)" class="mb-3">
                                 <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
-                                <span *ngIf="isTabCompleted(5)" class="text-success">{{ 'VALIDATION.ALL_REQUIRED_ATTACHMENTS_UPLOADED' | translate }}</span>
-                                <span *ngIf="!isTabCompleted(5)" class="text-warning">{{ 'VALIDATION.PLEASE_UPLOAD_REQUIRED_ATTACHMENTS' | translate }}</span>
+                                <span *ngIf="isTabCompleted(5)" class="">{{ 'VALIDATION.ALL_REQUIRED_ATTACHMENTS_UPLOADED' | translate }}</span> 
+                                <span *ngIf="!isTabCompleted(5)" class="gold"> {{ 'VALIDATION.PLEASE_UPLOAD_REQUIRED_ATTACHMENTS' | translate }}</span>
                             </div>
                             
                             <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
-                                            <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
-                                            <th>{{ 'COMMON.ACTIONS' | translate }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let config of attachmentConfigs; let i = index">
-                                            <td>
+                                <div class="table table-striped">
+                                    <!-- <div>
+                                        <div>
+                                            <div>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</div>
+                                            <div>{{ 'ATTACHMENTS.FILE' | translate }}</div>
+                                        </div>
+                                    </div> -->
+                                    <div>
+                                        <div *ngFor="let config of attachmentConfigs; let i = index">
+                                            <div>
                                                 {{ config.nameEn || config.name | translate }}
                                                 <span *ngIf="isAttachmentMandatory(config.id!)" class="text-danger ms-1">*</span>
                                                 <div *ngIf="isAttachmentMandatory(config.id!) && selectedFiles[config.id!]" class="text-success small">
                                                     <i class="fas fa-check-circle"></i> {{ 'VALIDATION.UPLOADED' | translate }}
                                                 </div>
-                                            </td>
-                                            <td>
+                                            </div>
+                                            <div>
                                                 <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
                                                      (dragover)="onDragOver($event)"
                                                      (dragleave)="onDragLeave($event)"
@@ -586,34 +575,51 @@
                                                         <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
                                                     </label>
                                                 </div>
-                                                <div *ngIf="selectedFiles[config.id!]" class="file-preview">
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="fas fa-file me-2"></i>
+                                                <div *ngIf="selectedFiles[config.id!]" class="uploaded-file">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                         <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')" 
+                                                         [src]="filePreviews[config.id!]" 
+                                                         class="img-thumbnail uploaded-img"  >
+                                                         
                                                         <div>
                                                             <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
                                                             <small class="text-muted d-block">{{ (selectedFiles[config.id!].size / 1024).toFixed(1) }} KB</small>
                                                         </div>
                                                     </div>
-                                                    <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')" 
-                                                         [src]="filePreviews[config.id!]" 
-                                                         class="preview-image mt-2"
-                                                         style="max-width: 200px; max-height: 100px; border-radius: 4px;">
-                                                </div>
-                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)" class="text-danger small mt-1">
-                                                    <i class="fas fa-exclamation-triangle"></i> {{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <button *ngIf="selectedFiles[config.id!]" 
+                                                     <button *ngIf="selectedFiles[config.id!]" 
                                                         type="button" 
-                                                        class="btn btn-sm btn-danger" 
+                                                        class="btn-remove-uploaded-file" 
                                                         (click)="removeFile(config.id!)">
-                                                    <i class="fas fa-trash"></i> {{ 'COMMON.REMOVE' | translate }}
+                                                   
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                        <path d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z" fill="#5B5B5B"/>
+                                                        <path d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z" fill="#5B5B5B"/>
+                                                        <path d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z" fill="#5B5B5B"/>
+                                                        </svg>
                                                 </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                   
+                                                </div>
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)" class="mt-2">
+                                                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                    <g clip-path="url(#clip0_4_1622)">
+                                                        <path d="M12 14.9997C11.7348 14.9997 11.4804 14.8944 11.2929 14.7069C11.1054 14.5193 11 14.265 11 13.9997V5.99975C11 5.73453 11.1054 5.48018 11.2929 5.29264C11.4804 5.10511 11.7348 4.99975 12 4.99975C12.2652 4.99975 12.5196 5.10511 12.7071 5.29264C12.8946 5.48018 13 5.73453 13 5.99975V13.9997C13 14.265 12.8946 14.5193 12.7071 14.7069C12.5196 14.8944 12.2652 14.9997 12 14.9997ZM12.793 23.7598C14.953 22.8918 22 19.4787 22 12.0427V6.87175C22.0011 5.82076 21.6706 4.79622 21.0554 3.94406C20.4403 3.09191 19.5719 2.45559 18.574 2.12575L12.315 0.0507496C12.1107 -0.0182186 11.8893 -0.0182186 11.685 0.0507496L5.426 2.12575C4.42811 2.45559 3.55975 3.09191 2.9446 3.94406C2.32946 4.79622 1.99889 5.82076 2 6.87175V12.0427C2 18.6047 9.005 22.6188 11.153 23.6928C11.4247 23.8224 11.7084 23.9252 12 23.9998C12.2712 23.9443 12.5366 23.864 12.793 23.7598ZM17.944 4.02375C18.5425 4.22217 19.0633 4.60413 19.4324 5.11538C19.8015 5.62664 20.0001 6.24119 20 6.87175V12.0427C20 18.2257 13.913 21.1537 12.047 21.9037C10.159 20.9597 4 17.4587 4 12.0427V6.87175C3.99992 6.24119 4.19852 5.62664 4.56761 5.11538C4.93669 4.60413 5.45748 4.22217 6.056 4.02375L12 2.05375L17.944 4.02375ZM12 16.9998C11.8022 16.9998 11.6089 17.0584 11.4444 17.1683C11.28 17.2782 11.1518 17.4343 11.0761 17.6171C11.0004 17.7998 10.9806 18.0009 11.0192 18.1948C11.0578 18.3888 11.153 18.567 11.2929 18.7069C11.4327 18.8467 11.6109 18.9419 11.8049 18.9805C11.9989 19.0191 12.2 18.9993 12.3827 18.9236C12.5654 18.8479 12.7216 18.7198 12.8315 18.5553C12.9414 18.3909 13 18.1975 13 17.9998C13 17.7345 12.8946 17.4802 12.7071 17.2926C12.5196 17.1051 12.2652 16.9998 12 16.9998Z" fill="#374957"/>
+                                                    </g>
+                                                    <defs>
+                                                        <clipPath id="clip0_4_1622">
+                                                        <rect width="24" height="24" fill="white"/>
+                                                        </clipPath>
+                                                    </defs>
+                                                    </svg>
+                                                    {{ 'COMMON.ACTIONS' | translate }}: 
+                                                    {{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}
+                                                </div>
+                                            </div>
+                                            <div>
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

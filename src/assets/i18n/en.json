@@ -240,9 +240,12 @@
     "NAME_REQUIRED": "Name is required",
     "EMAIL_REQUIRED": "Email is required",
     "EMAIL_INVALID": "Please enter a valid email",
+    "MOBILE_REQUIRED": "Mobile number is required",
+    "MOBILE_INVALID": "Please enter a valid UAE mobile number",
     "MESSAGE_REQUIRED": "Message is required",
     "NAME_PLACEHOLDER": "Name",
     "EMAIL_PLACEHOLDER": "Email",
+    "MOBILE_PLACEHOLDER": "Mobile Number",
     "TITLE_PLACEHOLDER": "Title",
     "MESSAGE_PLACEHOLDER": "Message",
     "ADDRESS": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text.",
@@ -620,7 +623,9 @@
     "SUPPORTED_FORMATS": "Supported formats: PDF, DOC, DOCX, JPG, PNG (max 5MB)",
     "DRAG_DROP_FILES": "Drag and drop files here",
     "OR": "or",
-    "BROWSE_FILES": "Browse files"
+    "BROWSE_FILES": "Browse files",
+    "ADD_MORE": "Add More Files",
+    "MULTIPLE_FILES_ALLOWED": "Multiple files can be selected at once"
   },
   "SUCCESS": {
     "REQUEST_PLAINT_CREATED": "Your grievance request has been submitted successfully!",
@@ -924,7 +929,8 @@
     "dept": "Department",
     "userdept": "Users in Department",
     "deleteWarning": "Are you sure you want delete",
-    "requestComplaint": "Request Complaint"
+    "requestComplaint": "Request Complaint",
+    "MORE_FILES": "Add More Files"
   },
   "REGIONS": {
     "TITLE": "Regions Management",

@@ -145,11 +145,10 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       endDate: ['', [Validators.required, this.endDateAfterStartDateValidator()]],
       notes: [''],
       locationId: [null],
-      isConsultantFromAjman: [true],
-      isConsultantApprovedFromPolice: [true],
+
       supervisorName: ['', [Validators.required, Validators.minLength(2)]],
       jopTitle: [''],
-      supervisorMobile: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s]+$/), Validators.minLength(7)]],
+              supervisorMobile: ['', [Validators.required, Validators.pattern(/^(?:\+9715[0-9]{8}|05[0-9]{8})$/), Validators.minLength(7)]],
 
       serviceType: [ServiceType.DistributionSitePermitApplication],
       distributionSiteCoordinators: ['', Validators.required], // renamed and only this field
@@ -468,18 +467,13 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Validate supervisor mobile format
+    // Validate supervisor mobile format using the new UAE pattern
     const supervisorMobile = this.mainInfoForm.get('supervisorMobile')?.value;
     if (supervisorMobile) {
-      if (!/^[0-9+\-\s]+$/.test(supervisorMobile)) {
+      const uaeMobilePattern = /^(?:\+9715[0-9]{8}|05[0-9]{8})$/;
+      if (!uaeMobilePattern.test(supervisorMobile)) {
         if (showToastr) {
-          this.toastr.error(this.translate.instant('VALIDATION.INVALID_PHONE'));
-        }
-        isValid = false;
-      }
-      if (supervisorMobile.length < 7) {
-        if (showToastr) {
-          this.toastr.error(this.translate.instant('VALIDATION.PHONE_MIN_LENGTH'));
+          this.toastr.error(this.translate.instant('VALIDATION.INVALID_PHONE_FORMAT'));
         }
         isValid = false;
       }
@@ -904,8 +898,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
         endDate: formData.endDate,
         notes: formData.notes,
         locationId: formData.locationId,
-        isConsultantFromAjman: formData.isConsultantFromAjman,
-        isConsultantApprovedFromPolice: formData.isConsultantApprovedFromPolice,
+
         supervisorName: formData.supervisorName,
         jopTitle: formData.jopTitle,
         supervisorMobile: formData.supervisorMobile,
@@ -1137,10 +1130,19 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   }
 
   restrictMobileInput(event: KeyboardEvent) {
-    const allowedChars = /[0-9+\-\s]/;
+    const allowedChars = /[0-9+]/;
     const key = event.key;
     if (!allowedChars.test(key)) {
       event.preventDefault();
+    }
+  }
+
+  onSupervisorMobileBlur(): void {
+    const mobileControl = this.mainInfoForm.get('supervisorMobile');
+    if (mobileControl && mobileControl.value) {
+      // Trigger validation on blur
+      mobileControl.markAsTouched();
+      this.cdr.detectChanges();
     }
   }
 }

@@ -13,6 +13,7 @@ import { environment } from '../../../../environments/environment';
 import { MainApplyService } from '../../../core/services/mainApplyService/mainApplyService.service';
 import { WorkFlowCommentsService } from '../../../core/services/workFlowComments/workFlowComments.service';
 import { AttachmentService } from '../../../core/services/attachments/attachment.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 import { 
   mainApplyServiceDto, 
@@ -93,6 +94,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
   isLoading = false;
   isLoadingComments = false;
   isSavingComment = false;
+  currentUserName = '';
 
   // Map variables
   map: any;
@@ -107,9 +109,9 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Comment attachment properties
   commentAttachmentConfigs: AttachmentsConfigDto[] = [];
-  commentAttachments: { [key: number]: { fileBase64: string; fileName: string; attConfigID: number } } = {};
-  commentSelectedFiles: { [key: number]: File } = {};
-  commentFilePreviews: { [key: number]: string } = {};
+  commentAttachments: { [key: number]: { fileBase64: string; fileName: string; attConfigID: number }[] } = {};
+  commentSelectedFiles: { [key: number]: File[] } = {};
+  commentFilePreviews: { [key: number]: string[] } = {};
   isCommentDragOver = false;
   commentValidationSubmitted = false;
 
@@ -125,10 +127,15 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     private attachmentService: AttachmentService,
     private toastr: ToastrService,
     private translate: TranslateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {
     this.initializeCommentForm();
     this.initializeMapIcon();
+
+    // Initialize current user name
+    const currentUser = this.authService.getCurrentUser();
+    this.currentUserName = currentUser?.name || 'User';
   }
 
   ngOnInit(): void {
@@ -309,13 +316,16 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   private findTargetWorkFlowStep(): void {
     if (this.workFlowSteps && this.workFlowSteps.length > 0) {
-      // Sort by stepOrder ascending and find first with serviceStatus = 4
+
+      // Sort by stepOrder ascending and find last with serviceStatus = 7
       const sortedSteps = this.workFlowSteps
         .filter(step => step.stepOrder !== null)
         .sort((a, b) => (a.stepOrder || 0) - (b.stepOrder || 0));
-      
-      this.targetWorkFlowStep = sortedSteps.find(step => step.serviceStatus === 4) || null;
+    
+      this.targetWorkFlowStep =
+        sortedSteps.slice().reverse().find(step => step.serviceStatus === 7) || null;
     }
+    
   }
 
   private loadWorkFlowComments(): void {
@@ -619,8 +629,8 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
       // Validate coordinate ranges (roughly UAE bounds)
       if (lat < 22 || lat > 27 || lng < 51 || lng > 57) {
-       
-        this.toastr.warning(this.translate.instant('FASTING_TENT.INVALID_COORDINATES_UAE'));
+        // Removed UAE bounds validation toast to prevent unwanted error messages
+        // Coordinates outside UAE bounds will still be validated for basic validity above
       }
 
       try {
@@ -751,11 +761,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     
     this.commentAttachmentConfigs.forEach(config => {
       if (config.id) {
-        this.commentAttachments[config.id] = {
-          fileBase64: '',
-          fileName: '',
-          attConfigID: config.id
-        };
+        this.commentAttachments[config.id] = [];
       }
     });
   }
@@ -773,7 +779,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     // Check if required attachments are uploaded
     const requiredAttachments = this.commentAttachmentConfigs.filter(config => config.mendatory);
     const missingRequiredAttachments = requiredAttachments.filter(config => 
-      !this.commentSelectedFiles[config.id!] && !this.commentFilePreviews[config.id!]
+      !this.commentSelectedFiles[config.id!] || this.commentSelectedFiles[config.id!].length === 0
     );
 
     if (missingRequiredAttachments.length > 0) {
@@ -787,12 +793,16 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     const attachments: AttachmentBase64Dto[] = [];
     
     // Process attachments from attachment configs
-    Object.values(this.commentAttachments).forEach(attachment => {
-      if (attachment.fileBase64 && attachment.fileName) {
-        attachments.push({
-          fileName: attachment.fileName,
-          fileBase64: attachment.fileBase64,
-          attConfigID: attachment.attConfigID
+    Object.values(this.commentAttachments).forEach(attachmentArray => {
+      if (Array.isArray(attachmentArray)) {
+        attachmentArray.forEach(attachment => {
+          if (attachment.fileBase64 && attachment.fileName) {
+            attachments.push({
+              fileName: attachment.fileName,
+              fileBase64: attachment.fileBase64,
+              attConfigID: attachment.attConfigID
+            });
+          }
         });
       }
     });
@@ -847,8 +857,11 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
   // File handling methods for comment attachments
   onCommentFileSelected(event: Event, configId: number): void {
     const target = event.target as HTMLInputElement;
-    if (target?.files?.[0]) {
-      this.handleCommentFileUpload(target.files[0], configId);
+    if (target?.files) {
+      // Handle multiple files
+      for (let i = 0; i < target.files.length; i++) {
+        this.handleCommentFileUpload(target.files[i], configId);
+      }
     }
   }
 
@@ -862,13 +875,16 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     this.isCommentDragOver = false;
   }
 
-  onCommentDrop(event: DragEvent, configId: number): void {
+    onCommentDrop(event: DragEvent, configId: number): void {
     event.preventDefault();
     this.isCommentDragOver = false;
-    
+
     const files = event.dataTransfer?.files;
-    if (files?.[0]) {
-      this.handleCommentFileUpload(files[0], configId);
+    if (files) {
+      // Handle multiple files from drag and drop
+      for (let i = 0; i < files.length; i++) {
+        this.handleCommentFileUpload(files[i], configId);
+      }
     }
   }
 
@@ -877,27 +893,29 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.commentSelectedFiles[configId] = file;
+    if (!this.commentSelectedFiles[configId]) {
+      this.commentSelectedFiles[configId] = [];
+    }
+    this.commentSelectedFiles[configId].push(file);
     
     const reader = new FileReader();
     reader.onload = (e) => {
-      this.commentFilePreviews[configId] = e.target?.result as string;
+      if (!this.commentFilePreviews[configId]) {
+        this.commentFilePreviews[configId] = [];
+      }
+      this.commentFilePreviews[configId].push(e.target?.result as string);
       
-      // Ensure the attachment object exists
+      // Ensure the attachment array exists
       if (!this.commentAttachments[configId]) {
-        this.commentAttachments[configId] = {
-          fileBase64: '',
-          fileName: '',
-          attConfigID: configId
-        };
+        this.commentAttachments[configId] = [];
       }
       
       const base64String = (e.target?.result as string).split(',')[1];
-      this.commentAttachments[configId] = {
-        ...this.commentAttachments[configId],
+      this.commentAttachments[configId].push({
         fileBase64: base64String,
-        fileName: file.name
-      };
+        fileName: file.name,
+        attConfigID: configId
+      });
       
       this.cdr.detectChanges();
     };
@@ -921,19 +939,44 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  removeCommentFile(configId: number): void {
-    delete this.commentSelectedFiles[configId];
-    delete this.commentFilePreviews[configId];
-    
-    if (this.commentAttachments[configId]) {
-      this.commentAttachments[configId] = {
-        ...this.commentAttachments[configId],
-        fileBase64: '',
-        fileName: ''
-      };
+  removeCommentFile(configId: number, fileIndex: number = 0): void {
+    if (this.commentSelectedFiles[configId] && this.commentSelectedFiles[configId].length > fileIndex) {
+      this.commentSelectedFiles[configId].splice(fileIndex, 1);
+      this.commentFilePreviews[configId].splice(fileIndex, 1);
+      
+      if (this.commentAttachments[configId] && this.commentAttachments[configId].length > fileIndex) {
+        this.commentAttachments[configId].splice(fileIndex, 1);
+      }
     }
     
     this.cdr.detectChanges();
+  }
+
+  addMoreFiles(configId: number): void {
+    // Use setTimeout to ensure DOM is fully rendered
+    setTimeout(() => {
+      // Try to find the file input for adding more files first
+      let fileInput = document.getElementById(`comment-file-more-${configId}`) as HTMLInputElement;
+      
+      // If not found, try the original file input (for when no files are selected yet)
+      if (!fileInput) {
+        fileInput = document.getElementById(`comment-file-${configId}`) as HTMLInputElement;
+      }
+      
+      if (fileInput) {
+        fileInput.click();
+      } else {
+        this.toastr.error(this.translate.instant('COMMON.ERROR_OCCURRED') + ': File input not found');
+      }
+    }, 100);
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
   // Comments table event handlers

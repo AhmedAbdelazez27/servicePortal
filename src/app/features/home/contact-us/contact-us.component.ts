@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ContactInformationService } from '../../../core/services/UserSetting/contact-information.service';
@@ -28,10 +28,30 @@ export class ContactUsComponent implements OnInit {
     this.initializeContactForm();
   }
 
+  // Custom validator for UAE mobile number format
+  private uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // Let required validator handle empty values
+    }
+    
+    const uaeMobileRegex = /^(?:\+9715[0-9]{8}|05[0-9]{8})$/;
+    return uaeMobileRegex.test(control.value) ? null : { invalidUaeMobile: true };
+  }
+
+  // Restrict mobile input to only numbers and +
+  restrictMobileInput(event: KeyboardEvent): void {
+    const allowedChars = /[0-9+]/;
+    const key = event.key;
+    if (!allowedChars.test(key)) {
+      event.preventDefault();
+    }
+  }
+
   private initializeContactForm(): void {
     this.contactForm = this.fb.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
+      mobileNumber: ['', [Validators.required, this.uaeMobileValidator.bind(this)]],
       title: [''],
       message: ['', [Validators.required]]
     });
@@ -48,6 +68,7 @@ export class ContactUsComponent implements OnInit {
     const contactInfo: CreateContactInformationDto = {
       name: this.contactForm.value.name,
       email: this.contactForm.value.email,
+      mobileNumber: this.contactForm.value.mobileNumber,
       title: this.contactForm.value.title,
       message: this.contactForm.value.message,
     };
@@ -82,5 +103,23 @@ export class ContactUsComponent implements OnInit {
         this.markFormGroupTouched(control);
       }
     });
+  }
+
+  // Handle mobile number blur event to trigger validation
+  onMobileNumberBlur(): void {
+    const mobileControl = this.contactForm.get('mobileNumber');
+    if (mobileControl && mobileControl.value) {
+      // Trigger validation on blur
+      mobileControl.markAsTouched();
+    }
+  }
+
+  // Handle mobile number input event for real-time validation
+  onMobileNumberInput(): void {
+    const mobileControl = this.contactForm.get('mobileNumber');
+    if (mobileControl && mobileControl.value) {
+      // Trigger validation as user types
+      mobileControl.markAsTouched();
+    }
   }
 }

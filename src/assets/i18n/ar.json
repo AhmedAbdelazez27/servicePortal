@@ -233,9 +233,12 @@
     "NAME_REQUIRED": "الاسم مطلوب",
     "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
     "EMAIL_INVALID": "يرجى إدخال بريد إلكتروني صحيح",
+    "MOBILE_REQUIRED": "رقم الجوال مطلوب",
+    "MOBILE_INVALID": "يرجى إدخال رقم جوال إماراتي صحيح",
     "MESSAGE_REQUIRED": "الرسالة مطلوبة",
     "NAME_PLACEHOLDER": "الاسم",
     "EMAIL_PLACEHOLDER": "البريد الإلكتروني",
+    "MOBILE_PLACEHOLDER": "رقم الجوال",
     "TITLE_PLACEHOLDER": "العنوان",
     "MESSAGE_PLACEHOLDER": "الرسالة",
     "ADDRESS": "هذا نص تجريبي لعرض شكل النص في هذا المكان. يمكن استبداله بالنص المطلوب عند توفره.",
@@ -339,7 +342,7 @@
     }
   },
   "EDIT_PROFILE": {
-    "TITLE": "تحرير الملف الشخصي",
+    "TITLE": "  الملف الشخصي",
     "SUBTITLE": "تحديث معلومات حسابك والمستندات",
     "LOADING": "جاري التحميل...",
     "LOADING_PROFILE": "جاري تحميل معلومات ملفك الشخصي...",
@@ -574,7 +577,8 @@
     "SUPPORTED_FORMATS": "الصيغ المدعومة: PDF، DOC، DOCX، JPG، PNG (حد أقصى 5 ميجابايت)",
     "DRAG_DROP_FILES": "اسحب وأفلت الملفات هنا",
     "OR": "أو",
-    "BROWSE_FILES": "تصفح الملفات"
+    "BROWSE_FILES": "تصفح الملفات",
+    "MULTIPLE_FILES_ALLOWED": "يمكن اختيار عدة ملفات في وقت واحد"
   },
   "SUCCESS": {
     "REQUEST_PLAINT_CREATED": "تم تقديم طلب التظلم بنجاح!",
@@ -853,7 +857,9 @@
     "SUPPORTED_FORMATS": "الصيغ المدعومة: PDF، DOC، DOCX، JPG، PNG (حد أقصى 5 ميجابايت)",
     "DRAG_DROP_FILES": "اسحب وأفلت الملفات هنا",
     "OR": "أو",
-    "BROWSE_FILES": "تصفح الملفات"
+    "BROWSE_FILES": "تصفح الملفات",
+    "MORE_FILES ": "إضافة ملفات أخرى",
+    "MULTIPLE_FILES_ALLOWED": "يمكن اختيار عدة ملفات في وقت واحد"
   },
   "SUCCESS": {
     "REQUEST_PLAINT_CREATED": "تم تقديم طلب التظلم بنجاح!",
@@ -897,6 +903,7 @@
   },
 
   "COMMON": {
+    
     "REQUEST_SERVICE": "طلب الخدمة",
     "LOADING": "جاري التحميل...",
     "LOADING_DATA": "جاري تحميل البيانات...",
@@ -935,8 +942,8 @@
     "DEPARTMENT": "القسم",
     "FILES": "الملفات",
     "VIEW_ATTACHMENT": "عرض المرفق",
-    "WORKFLOW_COMMENTS": "تعليقات سير العمل",
-    "WORKFLOW_COMMENTS_DESC": "عرض وإضافة تعليقات سير العمل",
+    "WORKFLOW_COMMENTS": "تعليقات  ",
+    "WORKFLOW_COMMENTS_DESC": "عرض وإضافة تعليقات  ",
     "ADD_COMMENT": "إعادة ارسال الطلب",
     "NO_WORKFLOW_STEP_FOUND": "لم يتم العثور على خطوة سير عمل لإضافة التعليقات",
     "ENTER_COMMENT": "أدخل تعليق",
@@ -1109,7 +1116,7 @@
       "SUPERVISOR_INFO": "معلومات المشرف",
       "PARTNERS_INFO": "معلومات الشركاء",
       "WORKFLOW_STEPS": "خطوات العملية",
-      "WORKFLOW_COMMENTS": "تعليقات سير العمل"
+      "WORKFLOW_COMMENTS": "تعليقات  "
     },
     "ACTIONS": {
       "BACK": "العودة إلى القائمة",
@@ -1155,7 +1162,8 @@
     "dept": "القسم",
     "userdept": "المستخدمون في القسم",
     "deleteWarning": "هل أنت متأكد أنك تريد الحذف؟",
-    "requestComplaint": "تقديم شكوى"
+    "requestComplaint": "تقديم شكوى",
+    "MORE_FILES": "إضافة ملفات أخرى"
   },
   "REGIONS": {
     "TITLE": "إدارة المناطق",
@@ -1276,7 +1284,7 @@
     "Choosefile": "اخترالملف ....",
     "Choosefileup": "اختر ملف للتحميل",
     "city": "المدينه",
-    "RefNo": "رقم المرجع",
+    "RefNo": "رقم الطلب",
     "CityNAME": "ARABIC_City_NAME",
     "permitNumber": "رقم التصريح",
     "rid": "رقم الهويه*",
@@ -1738,9 +1746,9 @@
     "AD_FLAGS": "خصائص الإعلان",
     "NEW_AD": "إعلان جديد",
     "RENEW_AD": "تجديد إعلان",
-    "AD_TARGETS": "الفئات المستهدفة",
+    "AD_TARGETS": "الجمهور المستهدفة",
     "AD_LOCATIONS": "مواقع العرض",
-    "AD_METHODS": "وسائل الإعلان",
+    "AD_METHODS": "قنوات الإعلان",
     "METHOD": "وسيلة",
     "TARGET_TYPE": "الفئة",
     "NO_ADS": "لا توجد إعلانات"
@@ -1753,7 +1761,7 @@
     "DATES": "التواريخ",
     "CONTACTS": "بيانات التواصل والتمويل",
     "ADVERTISEMENTS": "الإعلانات",
-    "PARTNERS": "الشركاء",
+    "PARTNERS": "الجهات المشاركة /المنفذة",
     "ATTACHMENTS": "المرفقات",
     "REQUEST_DATE": "تاريخ الطلب",
     "ADVERTISEMENT_TYPE": "نوع الإعلان",
@@ -1771,7 +1779,7 @@
     "ATTACHMENT": "مرفق",
     "NO_ATTACHMENTS": "لا توجد مرفقات",
     "NO_PARTNERS": "لا توجد بيانات شركاء",
-    "PARTNER_ATTACHMENTS": "مرفقات الشريك",
+    "PARTNER_ATTACHMENTS": "مرفقات الجهات المشاركة",
     "AD": "إعلان",
     "NO_ADS": "لا توجد إعلانات",
     "AD_START": "بداية الإعلان",
@@ -1783,10 +1791,10 @@
     "AD_FLAGS": "خصائص الإعلان",
     "NEW_AD": "إعلان جديد",
     "RENEW_AD": "تجديد إعلان",
-    "AD_TARGETS": "الفئات المستهدفة",
+    "AD_TARGETS": "الجمهور المستهدفة",
     "TARGET_TYPE": "نوع الاستهداف",
     "AD_LOCATIONS": "أماكن العرض",
-    "AD_METHODS": "وسائل الإعلان",
+    "AD_METHODS": "قنوات الإعلان",
     "METHOD": "الوسيلة",
     "SERVICE_NAME": "اسم الخدمة",
     "SERVICE_REFERENCE_NO": "رقم مرجع الخدمة",
