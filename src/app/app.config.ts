@@ -26,9 +26,9 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([apiKeyInterceptor, authInterceptor])
     ),
-    provideAnimations(), // ✅ مضاف لتفعيل animation بشكل صحيح
+    provideAnimations(),
     importProvidersFrom(
-      BrowserAnimationsModule, // ⛔️ ممكن يكون غير ضروري، لكن تركناه بناءً على طلبك
+      BrowserAnimationsModule, 
       NgSelectModule,
       TranslateModule.forRoot({
         defaultLanguage: 'en',
@@ -42,7 +42,7 @@ export const appConfig: ApplicationConfig = {
         type: 'ball-spin-clockwise-fade-rotating'
       }),
       ToastrModule.forRoot({
-        positionClass: 'toast-top-right', // أو toast-bottom-left للغة العربية
+        positionClass: 'toast-top-right', 
         timeOut: 3000,
         progressBar: true,
         progressAnimation: 'increasing',

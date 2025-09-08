@@ -32,12 +32,34 @@ export class AuthService {
     localStorage.removeItem('userId');
     this.router.navigate(['/login']);
   }
-  
-  isLoggedIn(): boolean {
-    const token = localStorage.getItem('access_token');
-    return token ? true : false;
+
+  // isLoggedIn(): boolean {
+  //   const token = localStorage.getItem('access_token');
+  //   return token ? true : false;
+  // }
+  getAccessToken(): string | null {
+    return localStorage.getItem('access_token');
   }
-  
+
+  isLoggedIn(): boolean {
+    const token = this.getAccessToken();
+    if (!token) return false;
+
+    const expMs = this.getTokenExpiryMs(token);
+    if (!expMs) return false;
+
+    return Date.now() < expMs;
+  }
+
+  private getTokenExpiryMs(token: string): number | null {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload?.exp ? payload.exp * 1000 : null;
+    } catch {
+      return null;
+    }
+  }
+
   decodeToken(): any {
     const token = localStorage.getItem('access_token');
     if (!token) return null;
@@ -74,7 +96,7 @@ export class AuthService {
 
     const decodedData = this.decodeToken();
     let name = '';
-    
+
     if (decodedData) {
       // Try to extract name from token
       const possibleNameClaims = [

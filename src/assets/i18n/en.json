@@ -1965,5 +1965,13 @@
     "DISCLAIMER": "Disclaimer",
     "PRIVACY": "Privacy Policy",
     "COPYRIGHT_NAME": "Charitable Work Coordination Council"
+  },
+  "forbidden": {
+    "title": "Access Denied",
+    "message": "You don't have permission to access this page. If you believe this is a mistake, please contact support.",
+    "go_home": "Back to Home",
+    "go_back": "Go Back",
+    "contact": "Contact Us",
+    "hint": "If you just signed in, try refreshing the page or navigating from the main menu."
   }
 }
