@@ -80,8 +80,12 @@
             
           </div>
 
-           <div class="header-section clean-layout mt-5">
-            <h1 class="main-title">
+        </div>
+
+        <!-- Target Group Section -->
+        <div class="col-12 mb-5">
+          <div class="header-section clean-layout">
+            <h1 class="main-title mt-2 mb-4 d-flex gap-3 align-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none">
                   <path d="M18.0003 7.90977C17.9703 7.90977 17.9503 7.90977 17.9203 7.90977H17.8703C15.9803 7.84977 14.5703 6.38977 14.5703 4.58977C14.5703 2.74977 16.0703 1.25977 17.9003 1.25977C19.7303 1.25977 21.2303 2.75977 21.2303 4.58977C21.2203 6.39977 19.8103 7.85977 18.0103 7.91977C18.0103 7.90977 18.0103 7.90977 18.0003 7.90977ZM17.9003 2.74977C16.8903 2.74977 16.0703 3.56977 16.0703 4.57977C16.0703 5.56977 16.8403 6.36977 17.8303 6.40977C17.8403 6.39977 17.9203 6.39977 18.0103 6.40977C18.9803 6.35977 19.7303 5.55977 19.7403 4.57977C19.7403 3.56977 18.9203 2.74977 17.9003 2.74977Z" fill="#8D734D"/>
                   <path d="M18.0105 15.2797C17.6205 15.2797 17.2305 15.2497 16.8405 15.1797C16.4305 15.1097 16.1605 14.7197 16.2305 14.3097C16.3005 13.8997 16.6905 13.6297 17.1005 13.6997C18.3305 13.9097 19.6305 13.6797 20.5005 13.0997C20.9705 12.7897 21.2205 12.3997 21.2205 12.0097C21.2205 11.6197 20.9605 11.2397 20.5005 10.9297C19.6305 10.3497 18.3105 10.1197 17.0705 10.3397C16.6605 10.4197 16.2705 10.1397 16.2005 9.72966C16.1305 9.31966 16.4005 8.92966 16.8105 8.85966C18.4405 8.56966 20.1305 8.87965 21.3305 9.67965C22.2105 10.2697 22.7205 11.1097 22.7205 12.0097C22.7205 12.8997 22.2205 13.7497 21.3305 14.3497C20.4205 14.9497 19.2405 15.2797 18.0105 15.2797Z" fill="#8D734D"/>
@@ -90,20 +94,32 @@
                   <path d="M12.0003 15.3805C11.9703 15.3805 11.9503 15.3805 11.9203 15.3805H11.8703C9.98031 15.3205 8.57031 13.8605 8.57031 12.0605C8.57031 10.2205 10.0703 8.73047 11.9003 8.73047C13.7303 8.73047 15.2303 10.2305 15.2303 12.0605C15.2203 13.8705 13.8103 15.3305 12.0103 15.3905C12.0103 15.3805 12.0103 15.3805 12.0003 15.3805ZM11.9003 10.2205C10.8903 10.2205 10.0703 11.0405 10.0703 12.0505C10.0703 13.0405 10.8403 13.8405 11.8303 13.8805C11.8403 13.8705 11.9203 13.8705 12.0103 13.8805C12.9803 13.8305 13.7303 13.0305 13.7403 12.0505C13.7403 11.0505 12.9203 10.2205 11.9003 10.2205Z" fill="#8D734D"/>
                   <path d="M11.9993 22.7597C10.7993 22.7597 9.5993 22.4497 8.6693 21.8197C7.7893 21.2297 7.2793 20.3897 7.2793 19.4897C7.2793 18.5997 7.7793 17.7397 8.6693 17.1497C10.5393 15.9097 13.4693 15.9097 15.3293 17.1497C16.2093 17.7397 16.7193 18.5797 16.7193 19.4797C16.7193 20.3697 16.2193 21.2297 15.3293 21.8197C14.3993 22.4397 13.1993 22.7597 11.9993 22.7597ZM9.4993 18.4097C9.0293 18.7197 8.7793 19.1097 8.7793 19.4997C8.7793 19.8897 9.0393 20.2697 9.4993 20.5797C10.8493 21.4897 13.1393 21.4897 14.4893 20.5797C14.9593 20.2697 15.2093 19.8797 15.2093 19.4897C15.2093 19.0997 14.9493 18.7197 14.4893 18.4097C13.1493 17.4997 10.8593 17.5097 9.4993 18.4097Z" fill="#8D734D"/>
                 </svg>
-                Target group
+                {{'INITIATIVES.TARGET_GROUP' | translate}}
             </h1>
             
             <p class="subtitle">
-              <span class="bullet-point">•</span>
-                High school students who are citizens of the Emirate of Ajman
+                {{ getTargetGroup(initiative) }}
             </p>
-             <p class="subtitle">
-              <span class="bullet-point">•</span>
-                High school students who are citizens of the Emirate of Ajman
-            </p>
+          </div>
         </div>
 
-         
+        <!-- Initiative Description -->
+        <div class="col-12 mb-5">
+          <div class="header-section clean-layout">
+            <h5 class="main-title mt-2 mb-4 d-flex gap-3 align-items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" class="me-2">
+                <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 2V8H20" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 13H8" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 17H8" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 9H9H8" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {{ 'Common.DESCRIPTION' | translate }}
+            </h5>
+            <p class="subtitle">
+              {{ getInitiativeDescription(initiative) }}
+            </p>
+          </div>
         </div>
 
 
@@ -122,7 +138,7 @@
                 <div *ngIf="location.isActive" class="location-card p-3 border rounded">
                   <h6 class="location-name">{{ getLocationName(location) }}</h6>
                   <p class="mb-2">{{ 'INITIATIVES.LOCATION' | translate }} #{{ i + 1 }}</p>
-                  <button class="btn btn-sm btn-outline-primary"
+                  <button class="btn btn-sm btn-outline-brown"
                     (click)="openLocationInGoogleMaps(location.locationCoordinates)">
                     {{ 'COMMON.OPEN_IN_GOOGLE_MAPS' | translate }}
                   </button>

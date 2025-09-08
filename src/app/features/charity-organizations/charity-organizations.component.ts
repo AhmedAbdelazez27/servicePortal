@@ -91,17 +91,41 @@ export class CharityOrganizationsComponent implements OnInit, OnDestroy {
     return this.currentLanguage === 'ar' ? entity.descriptionAr : entity.descriptionEn;
   }
 
-  getEntitymobile(entity: EntityDto): string {
-    return this.currentLanguage === 'ar' ? entity.entitY_PHONE : entity.entitY_PHONE;
-  }
-getEntityweb(entity: EntityDto): string {
-    return this.currentLanguage === 'ar' ? entity.entitY_WEBSITE : entity.entitY_WEBSITE;
-  }
-getEntityloc(entity: EntityDto): string {
-    return this.currentLanguage === 'ar' ? entity.entitY_LOCALTION : entity.entitY_LOCALTION;
+  getEntityPhone(entity: EntityDto): string | null {
+    return entity.entitY_PHONE || null;
   }
 
+  getEntityWebsite(entity: EntityDto): string | null {
+    return entity.entitY_WEBSITE || null;
+  }
 
+  getEntityLocation(entity: EntityDto): string | null {
+    return entity.entitY_LOCALTION || null;
+  }
+
+  getEntityEmail(entity: EntityDto): string | null {
+    return entity.entitY_MAIL || null;
+  }
+
+  getDonationStatus(entity: EntityDto): { allowed: boolean; text: string } {
+    if (entity.isDonation === true) {
+      return {
+        allowed: true,
+        text: this.currentLanguage === 'ar' ? 'التبرعات مسموحة' : 'Donations are allowed'
+      };
+    } else if (entity.isDonation === false) {
+      return {
+        allowed: false,
+        text: this.currentLanguage === 'ar' ? 'التبرعات غير مسموحة' : 'Donations are not allowed'
+      };
+    } else {
+      // isDonation is null or undefined
+      return {
+        allowed: false,
+        text: this.currentLanguage === 'ar' ? 'التبرعات غير مسموحة' : 'Donations are not allowed'
+      };
+    }
+  }
 
   getEntityImage(entity: EntityDto): string {
     if (entity.attachment && entity.attachment.imgPath) {
@@ -124,11 +148,15 @@ getEntityloc(entity: EntityDto): string {
     if (img) {
       img.src = 'assets/images/initiative-1.png';
     }
-  };
-  normalizeUrl(u?: string | null): string {
-  if (!u) return '';
-  const s = u.trim();
-  return /^(https?:)?\/\//i.test(s) ? s : `https://${s}`;
-}
+  }
 
+  normalizeUrl(url?: string | null): string {
+    if (!url) return '';
+    const trimmedUrl = url.trim();
+    return /^(https?:)?\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
+  }
+
+  hasContactInfo(entity: EntityDto): boolean {
+    return !!(entity.entitY_PHONE || entity.entitY_WEBSITE || entity.entitY_MAIL || entity.entitY_LOCALTION);
+  }
 }

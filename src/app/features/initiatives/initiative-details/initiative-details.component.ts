@@ -273,6 +273,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     return currentLanguage === 'ar' ? (initiative.nameAr || '') : (initiative.nameEn || initiative.nameAr || '');
   }
 
+
   getInitiativeDescription(initiative: InitiativeDto): string {
     const currentLanguage = this.translationService.currentLang;
     return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '');

@@ -1,10 +1,7 @@
 <div class="registration-container">
   <section>
     <div class="container">
-      <div class="d-flex gap-4 justify-content-center mb-6">
-        <img src="assets/images/login-logo.png" [alt]="'EDIT_PROFILE.LOGO' | translate" />
-        <img src="assets/images/login-logo.png" [alt]="'EDIT_PROFILE.LOGO' | translate" />
-      </div>
+     
 
       <div class="row">
         <div class="col-xl-1"></div>
@@ -19,347 +16,345 @@
           </div>
 
           <!-- Profile Form -->
-          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" *ngIf="!isLoadingUserData">
+          <form [formGroup]="profileForm" *ngIf="!isLoadingUserData">
             
             <!-- Page Title -->
-             <h4 _ngcontent-ng-c1682967126="" class="title">Profile</h4>
+            <!-- <h4 class="title">{{ 'EDIT_PROFILE.PROFILE' | translate }}</h4> -->
 
-
-            <!-- <div class="login-box mb-4">
-              <h1 class="title gold mb-4">{{ 'Profile' | translate }}</h1>
-              <p class="text-muted">{{ 'EDIT_PROFILE.SUBTITLE' | translate }}</p>
-            </div>  -->
-
-            <!-- Basic Information -->
-            <div class="login-box mb-4">
-              <div class="card-header">
-              <h2 class="title gold mb-4">{{ 'REGISTRATION.BASIC_INFO' | translate }}</h2>
+            <!-- Change Password Button -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2 class="title">{{ 'EDIT_PROFILE.PROFILE' | translate }}</h2>
               <button 
-                style="height: 44px; width: 109px;"
-                type="submit" 
-                class="btn btn-gold" 
-                [disabled]="isLoading">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <g clip-path="url(#clip0_4_1412)">
-                    <path d="M22.853 1.14795C22.1732 0.469151 21.2517 0.0878906 20.291 0.0878906C19.3303 0.0878906 18.4089 0.469151 17.729 1.14795L1.46502 17.412C0.999266 17.8751 0.629977 18.426 0.378513 19.0327C0.127049 19.6395 -0.00159798 20.2901 1.49812e-05 20.947V23C1.49812e-05 23.2652 0.105372 23.5195 0.292908 23.7071C0.480445 23.8946 0.734799 24 1.00002 24H3.05301C3.70978 24.0018 4.36038 23.8734 4.96717 23.6221C5.57396 23.3708 6.12487 23.0016 6.58801 22.536L22.853 6.27095C23.5315 5.59115 23.9126 4.66992 23.9126 3.70945C23.9126 2.74899 23.5315 1.82776 22.853 1.14795ZM5.17401 21.122C4.61002 21.6822 3.84798 21.9977 3.05301 22H2.00002V20.947C1.999 20.5529 2.07617 20.1625 2.22705 19.7984C2.37793 19.4343 2.59953 19.1038 2.87901 18.826L15.222 6.48295L17.522 8.78295L5.17401 21.122ZM21.438 4.85695L18.932 7.36395L16.632 5.06895L19.139 2.56195C19.29 2.41126 19.4693 2.29179 19.6664 2.21036C19.8636 2.12893 20.0749 2.08714 20.2883 2.08738C20.5016 2.08761 20.7128 2.12986 20.9098 2.21172C21.1069 2.29357 21.2858 2.41343 21.4365 2.56445C21.5872 2.71547 21.7067 2.8947 21.7881 3.09189C21.8695 3.28908 21.9113 3.50038 21.9111 3.71372C21.9109 3.92706 21.8686 4.13827 21.7868 4.33529C21.7049 4.5323 21.585 4.71126 21.434 4.86195L21.438 4.85695Z" fill="#ffffff"/>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_4_1412">
-                      <rect width="24" height="24" fill="white"/>
-                    </clipPath>
-                  </defs>
-                </svg>
-                <span *ngIf="!isLoading">{{ 'Edit' | translate }}</span>
-                <span *ngIf="isLoading">{{ 'Edit' | translate }}</span>
-                
+                type="button" 
+                class="btn btn-gold"
+                (click)="openPasswordModal()">
+                <i class="fas fa-key me-2"></i>
+                <span>{{ 'EDIT_PROFILE.CHANGE_PASSWORD' | translate }}</span>
               </button>
-              </div>
-              <div class="info-data"> 
-                <div> <img class="profile-img" src="assets/images/profile-img.png" [alt]="'EDIT_PROFILE.LOGO' | translate" /> </div>
-
-                <div class="pig-gr">
-                <div class="gr-1">
-                <div class="data-1">
-                  <H2>English Name</H2>
-                  <p>Hashem Hany Hashem</p>
-                </div>
-
-                <div class="data-1">
-                  <H2>Arabic Name</H2>
-                  <p>هاشم هاني هاشم</p>
-                </div>
-                </div>
-
-                <div class="gr-1">
-                <div class="data-1">
-                  <H2>User name</H2>
-                  <p>Hashem</p>
-                </div>
-
-                <div class="data-1">
-                  <H2>Civil ID</H2>
-                  <p>0122222222555</p>
-                </div>
-
-                <div class="data-1">
-                  <H2>Gender</H2>
-                  <p>Male</p>
-                </div>
-                </div>
-                </div>
-
-              </div>
             </div>
 
-
-
-              <!-- Basic Information input -->
+            <!-- Basic Information Section -->
             <div class="login-box mb-4">
-              <h2 class="title gold mb-4">{{ 'REGISTRATION.BASIC_INFO' | translate }}</h2>
-
-             <div class="info-data">
-                <div>
+              <div class="card-header">
+                <h2 class="title gold mb-4">{{ 'REGISTRATION.BASIC_INFO' | translate }}</h2>
+                <button 
+                  type="button" 
+                  class="btn btn-gold"
+                  (click)="toggleBasicInfoEditMode()"
+                  *ngIf="!isBasicInfoEditMode">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <g clip-path="url(#clip0_4_1412)">
+                      <path d="M22.853 1.14795C22.1732 0.469151 21.2517 0.0878906 20.291 0.0878906C19.3303 0.0878906 18.4089 0.469151 17.729 1.14795L1.46502 17.412C0.999266 17.8751 0.629977 18.426 0.378513 19.0327C0.127049 19.6395 -0.00159798 20.2901 1.49812e-05 20.947V23C1.49812e-05 23.2652 0.105372 23.5195 0.292908 23.7071C0.480445 23.8946 0.734799 24 1.00002 24H3.05301C3.70978 24.0018 4.36038 23.8734 4.96717 23.6221C5.57396 23.3708 6.12487 23.0016 6.58801 22.536L22.853 6.27095C23.5315 5.59115 23.9126 4.66992 23.9126 3.70945C23.9126 2.74899 23.5315 1.82776 22.853 1.14795ZM5.17401 21.122C4.61002 21.6822 3.84798 21.9977 3.05301 22H2.00002V20.947C1.999 20.5529 2.07617 20.1625 2.22705 19.7984C2.37793 19.4343 2.59953 19.1038 2.87901 18.826L15.222 6.48295L17.522 8.78295L5.17401 21.122ZM21.438 4.85695L18.932 7.36395L16.632 5.06895L19.139 2.56195C19.29 2.41126 19.4693 2.29179 19.6664 2.21036C19.8636 2.12893 20.0749 2.08714 20.2883 2.08738C20.5016 2.08761 20.7128 2.12986 20.9098 2.21172C21.1069 2.29357 21.2858 2.41343 21.4365 2.56445C21.5872 2.71547 21.7067 2.8947 21.7881 3.09189C21.8695 3.28908 21.9113 3.50038 21.9111 3.71372C21.9109 3.92706 21.8686 4.13827 21.7868 4.33529C21.7049 4.5323 21.585 4.71126 21.434 4.86195L21.438 4.85695Z" fill="#ffffff"/>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_4_1412">
+                        <rect width="24" height="24" fill="white"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                  <span>{{ 'EDIT_PROFILE.EDIT' | translate }}</span>
+                </button>
+              </div>
+              
+              <div class="info-data">
+                <!-- Profile Photo Section -->
+                <div class="info-data">
+                  <div class="info-data" *ngIf="!isBasicInfoEditMode">
+                    <img 
+                      class="profile-img" 
+                      [src]="profilePhotoPreview || 'assets/images/profile-img.png'" 
+                      [alt]="'EDIT_PROFILE.PROFILE_PHOTO' | translate" />
+                  </div>
+                  
+                  <div class="profile-photo-upload" *ngIf="isBasicInfoEditMode" (click)="triggerProfilePhotoInput()">
                     <div class="photo-placeholder">
-                        <div class="text-center">
-                            <div class="camera-icon">
-                                <i class="fas fa-camera" style="font-size: 2rem;"></i>
-                            </div>
-                            <div>Uploade photo</div>
+                      <div class="text-center">
+                        <div class="camera-icon">
+                          <i class="fas fa-camera" style="font-size: 2rem;"></i>
                         </div>
-                    </div>
-                </div>
-
-              <div style="width: 100%;">
-                <div class="row">
-                  <div class="col-xl-6">
-                    <div class="mb-4">
-                      <label for="English Name" class="form-label">{{ 'English Name' | translate }}</label>
-                      <input 
-                        type="text" 
-                        class="form-control" 
-                        id="English Name" 
-                        formControlName="English Name"
-                        [class.is-invalid]="isFieldInvalid('English Name')"
-                        placeholder="{{ 'Hashem hany Hashem' | translate }}">
-                      <div class="invalid-feedback" *ngIf="isFieldInvalid('English Name')">
-                        {{ getFieldError('English Name') }}
+                        <div>{{ 'EDIT_PROFILE.UPLOAD_PHOTO' | translate }}</div>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-xl-6">
-                    <div class="mb-4">
-                      <label for="Arabic  Name" class="form-label">{{ 'Arabic  Name' | translate }}</label>
-                      <input 
-                        type="text" 
-                        class="form-control" 
-                        id="Arabic  Name" 
-                        formControlName="Arabic  Name"
-                        [class.is-invalid]="isFieldInvalid('Arabic  Name')"
-                        placeholder="{{ 'هاشم هاني هاشم' | translate }}">
-                      <div class="invalid-feedback" *ngIf="isFieldInvalid('Arabic  Name')">
-                        {{ getFieldError('Arabic  Name') }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xl-4">
-                    <div class="mb-4">
-                      <label for="User name" class="form-label">{{ 'User name' | translate }}</label>
-                      <input 
-                        type="text" 
-                        class="form-control" 
-                        id="User name" 
-                        formControlName="User name"
-                        [class.is-invalid]="isFieldInvalid('User name')"
-                        placeholder="{{ 'Hashem hany Hashem' | translate }}">
-                      <div class="invalid-feedback" *ngIf="isFieldInvalid('User name')">
-                        {{ getFieldError('User name') }}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-xl-4">
-                    <div class="mb-4">
-                      <label for="Civil ID" class="form-label">{{ 'Civil ID' | translate }}</label>
-                      <input 
-                        type="text" 
-                        class="form-control" 
-                        id="Civil ID" 
-                        formControlName="Civil ID"
-                        [class.is-invalid]="isFieldInvalid('Civil ID')"
-                        placeholder="{{ '0122222222555' | translate }}">
-                      <div class="invalid-feedback" *ngIf="isFieldInvalid('Civil ID')">
-                        {{ getFieldError('Civil ID') }}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-xl-4">
-                    <div class="mb-4">
-                      <label for="Gender" class="form-label">{{ 'Gender' | translate }}</label>
-                      <input 
-                        type="text" 
-                        class="form-control" 
-                        id="Gender" 
-                        formControlName="Gender"
-                        [class.is-invalid]="isFieldInvalid('Gender')"
-                        placeholder="{{ 'Male' | translate }}">
-                      <div class="invalid-feedback" *ngIf="isFieldInvalid('Gender')">
-                        {{ getFieldError('Gender') }}
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-              </div>
-               <div class="card-header">
-              
-                <div class="btn-grp">
-              <button 
-                style="height: 44px; width: 109px;"
-                type="submit" 
-                class="btn btn-gray" 
-                [disabled]="isLoading">
-                <span *ngIf="!isLoading">{{ 'Cancel' | translate }}</span>
-                <span *ngIf="isLoading">{{ 'Cancel ' | translate }}</span>
-              </button>
-
-              <button 
-                style="height: 44px; width: 109px;"
-                type="submit" 
-                class="btn btn-gold" 
-                [disabled]="isLoading">
-                <span *ngIf="!isLoading">{{ 'Save' | translate }}</span>
-                <span *ngIf="isLoading">{{ 'Save' | translate }}</span>
-              </button>
-              </div>
-              </div>
-
-            </div>
-
-
-            <!-- Contact Information -->
-            <div class="login-box mb-4">
-             <div class="card-header">
-              <h2 class="title gold mb-4">{{ 'REGISTRATION.CONTACT_INFO' | translate }}</h2>
-              <button 
-                style="height: 44px; width: 109px;"
-                type="submit" 
-                class="btn btn-gold" 
-                [disabled]="isLoading">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <g clip-path="url(#clip0_4_1412)">
-                    <path d="M22.853 1.14795C22.1732 0.469151 21.2517 0.0878906 20.291 0.0878906C19.3303 0.0878906 18.4089 0.469151 17.729 1.14795L1.46502 17.412C0.999266 17.8751 0.629977 18.426 0.378513 19.0327C0.127049 19.6395 -0.00159798 20.2901 1.49812e-05 20.947V23C1.49812e-05 23.2652 0.105372 23.5195 0.292908 23.7071C0.480445 23.8946 0.734799 24 1.00002 24H3.05301C3.70978 24.0018 4.36038 23.8734 4.96717 23.6221C5.57396 23.3708 6.12487 23.0016 6.58801 22.536L22.853 6.27095C23.5315 5.59115 23.9126 4.66992 23.9126 3.70945C23.9126 2.74899 23.5315 1.82776 22.853 1.14795ZM5.17401 21.122C4.61002 21.6822 3.84798 21.9977 3.05301 22H2.00002V20.947C1.999 20.5529 2.07617 20.1625 2.22705 19.7984C2.37793 19.4343 2.59953 19.1038 2.87901 18.826L15.222 6.48295L17.522 8.78295L5.17401 21.122ZM21.438 4.85695L18.932 7.36395L16.632 5.06895L19.139 2.56195C19.29 2.41126 19.4693 2.29179 19.6664 2.21036C19.8636 2.12893 20.0749 2.08714 20.2883 2.08738C20.5016 2.08761 20.7128 2.12986 20.9098 2.21172C21.1069 2.29357 21.2858 2.41343 21.4365 2.56445C21.5872 2.71547 21.7067 2.8947 21.7881 3.09189C21.8695 3.28908 21.9113 3.50038 21.9111 3.71372C21.9109 3.92706 21.8686 4.13827 21.7868 4.33529C21.7049 4.5323 21.585 4.71126 21.434 4.86195L21.438 4.85695Z" fill="#ffffff"/>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_4_1412">
-                      <rect width="24" height="24" fill="white"/>
-                    </clipPath>
-                  </defs>
-                </svg>
-                <span *ngIf="!isLoading">{{ 'Edit' | translate }}</span>
-                <span *ngIf="isLoading">{{ 'Edit' | translate }}</span>
-                
-              </button>
-              </div>
-              
-               <div class="pig-gr">
-                <div class="gr-1">
-                <div class="data-1">
-                  <H2>E-mail</H2>
-                  <p>Hashem at gmail.com</p>
-                </div>
-
-                <div class="data-1">
-                  <H2>Mobile</H2>
-                  <p>+971 00000000</p>
-                </div>
-                </div>
-
-                <div class="gr-1" style="width: 50%;">
-                <div class="data-1">
-                  <H2>Telephone</H2>
-                  <p>+971 00000000</p>
-                </div>
-
-                </div>
-                </div>
-            </div>
-
-
-             <!-- Contact Information input -->
-            <div class="login-box mb-4">
-              
-
-              <div class="card-header">
-              <h2 class="title gold mb-4">{{ 'REGISTRATION.CONTACT_INFO' | translate }}</h2>
-                
-              </div>
-              
-              <div class="row">
-                <div class="col-xl-6">
-                  <div class="mb-4">
-                    <label for="email" class="form-label">{{ 'REGISTRATION.EMAIL' | translate }} *</label>
                     <input 
+                      type="file" 
+                      id="profilePhotoInput"
+                      accept="image/*"
+                      (change)="onProfilePhotoSelected($event)"
+                      style="display: none;">
+                  </div>
+                </div>
+
+                <!-- Basic Information Fields -->
+                <div class="pig-gr">
+                  <div class="gr-1">
+                    <div class="data-1">
+                      <h2>{{ 'REGISTRATION.NAME_EN' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('nameEn')?.value || '-' }}</p>
+                      <input 
+                        *ngIf="isBasicInfoEditMode"
+                        type="text" 
+                        class="form-control" 
+                        formControlName="nameEn"
+                        [class.is-invalid]="isFieldInvalid('nameEn')"
+                        placeholder="{{ 'REGISTRATION.ENTER_NAME_EN' | translate }}">
+                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('nameEn')">
+                        {{ getFieldError('nameEn') }}
+                      </div>
+                    </div>
+
+                    <div class="data-1">
+                      <h2>{{ 'REGISTRATION.NAME_AR' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('name')?.value || '-' }}</p>
+                      <input 
+                        *ngIf="isBasicInfoEditMode"
+                        type="text" 
+                        class="form-control" 
+                        formControlName="name"
+                        [class.is-invalid]="isFieldInvalid('name')"
+                        placeholder="{{ 'REGISTRATION.ENTER_NAME_AR' | translate }}">
+                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('name')">
+                        {{ getFieldError('name') }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="gr-1">
+                    <div class="data-1">
+                      <h2>{{ 'REGISTRATION.USERNAME' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('userName')?.value || '-' }}</p>
+                      <input 
+                        *ngIf="isBasicInfoEditMode"
+                        type="text" 
+                        class="form-control" 
+                        formControlName="userName"
+                        [class.is-invalid]="isFieldInvalid('userName')"
+                        placeholder="{{ 'REGISTRATION.ENTER_USERNAME' | translate }}">
+                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('userName')">
+                        {{ getFieldError('userName') }}
+                      </div>
+                    </div>
+
+                    <div class="data-1">
+                      <h2>{{ 'REGISTRATION.CIVIL_ID' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('civilId')?.value || '-' }}</p>
+                      <input 
+                        *ngIf="isBasicInfoEditMode"
+                        type="text" 
+                        class="form-control" 
+                        formControlName="civilId"
+                        [class.is-invalid]="isFieldInvalid('civilId')"
+                        placeholder="{{ 'REGISTRATION.ENTER_CIVIL_ID' | translate }}">
+                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('civilId')">
+                        {{ getFieldError('civilId') }}
+                      </div>
+                    </div>
+
+                    <!-- Individual User Fields -->
+                    <div class="data-1" *ngIf="isIndividualUser()">
+                      <h2>{{ 'REGISTRATION.GENDER' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">{{ getGenderDisplayValue() }}</p>
+                      <input 
+                        *ngIf="isBasicInfoEditMode"
+                        type="text" 
+                        class="form-control" 
+                        [value]="getGenderDisplayValue()"
+                        [disabled]="true"
+                        readonly>
+                    </div>
+                  </div>
+
+                  <!-- Institution User Fields -->
+                  <div class="gr-1" *ngIf="isInstitutionUser()">
+                    <div class="data-1">
+                      <h2>{{ 'REGISTRATION.FOUNDATION_TYPE' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('foundationType')?.value || '-' }}</p>
+                      <input 
+                        *ngIf="isBasicInfoEditMode"
+                        type="text" 
+                        class="form-control" 
+                        formControlName="foundationType"
+                        [class.is-invalid]="isFieldInvalid('foundationType')"
+                        placeholder="{{ 'REGISTRATION.ENTER_FOUNDATION_TYPE' | translate }}">
+                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('foundationType')">
+                        {{ getFieldError('foundationType') }}
+                      </div>
+                    </div>
+
+                    <div class="data-1">
+                      <h2>{{ 'REGISTRATION.FOUNDATION_NAME' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('foundationName')?.value || '-' }}</p>
+                      <input 
+                        *ngIf="isBasicInfoEditMode"
+                        type="text" 
+                        class="form-control" 
+                        formControlName="foundationName"
+                        [class.is-invalid]="isFieldInvalid('foundationName')"
+                        placeholder="{{ 'REGISTRATION.ENTER_FOUNDATION_NAME' | translate }}">
+                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('foundationName')">
+                        {{ getFieldError('foundationName') }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="gr-1" *ngIf="isInstitutionUser()">
+                    <div class="data-1">
+                      <h2>{{ 'REGISTRATION.LICENSE_NUMBER' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('licenseNumber')?.value || '-' }}</p>
+                      <input 
+                        *ngIf="isBasicInfoEditMode"
+                        type="text" 
+                        class="form-control" 
+                        formControlName="licenseNumber"
+                        [class.is-invalid]="isFieldInvalid('licenseNumber')"
+                        placeholder="{{ 'REGISTRATION.ENTER_LICENSE_NUMBER' | translate }}">
+                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('licenseNumber')">
+                        {{ getFieldError('licenseNumber') }}
+                      </div>
+                    </div>
+
+                    <div class="data-1">
+                      <h2>{{ 'REGISTRATION.LICENSE_END_DATE' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('licenseEndDate')?.value || '-' }}</p>
+                      <input 
+                        *ngIf="isBasicInfoEditMode"
+                        type="date" 
+                        class="form-control" 
+                        formControlName="licenseEndDate"
+                        [class.is-invalid]="isFieldInvalid('licenseEndDate')"
+                        [min]="today">
+                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('licenseEndDate')">
+                        {{ getFieldError('licenseEndDate') }}
+                      </div>
+                    </div>
+
+                    <div class="data-1">
+                      <h2>{{ 'REGISTRATION.ENTITY' | translate }}</h2>
+                      <p *ngIf="!isBasicInfoEditMode">
+                        {{ getEntityDisplayValue() }}
+                      </p>
+                      <ng-select 
+                        *ngIf="isBasicInfoEditMode"
+                        formControlName="entityId"
+                        [class.is-invalid]="isFieldInvalid('entityId')"
+                        [placeholder]="'REGISTRATION.SELECT_ENTITY' | translate"
+                        [items]="entities"
+                        bindLabel="text"
+                        bindValue="id"
+                        [loading]="entitiesLoading"
+                        (scrollToEnd)="onEntitiesScrollToEnd()">
+                      </ng-select>
+                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('entityId')">
+                        {{ getFieldError('entityId') }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Edit Mode Buttons -->
+              <div class="btn-grp" *ngIf="isBasicInfoEditMode">
+                <button 
+                  type="button" 
+                  class="btn btn-gray" 
+                  (click)="cancelBasicInfo()">
+                  <span>{{ 'EDIT_PROFILE.CANCEL' | translate }}</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  class="btn btn-gold" 
+                  (click)="saveBasicInfo()"
+                  [disabled]="isLoading">
+                  <span *ngIf="!isLoading">{{ 'EDIT_PROFILE.SAVE' | translate }}</span>
+                  <span *ngIf="isLoading">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    {{ 'EDIT_PROFILE.SAVING' | translate }}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Contact Information & Address Section (Combined) -->
+            <div class="login-box mb-4">
+              <div class="card-header">
+                <h2 class="title gold mb-4">{{ 'EDIT_PROFILE.CONTACT_ADDRESS_INFO' | translate }}</h2>
+                <button 
+                  type="button" 
+                  class="btn btn-gold"
+                  (click)="toggleContactAddressEditMode()"
+                  *ngIf="!isContactAddressEditMode">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <g clip-path="url(#clip0_4_1412)">
+                      <path d="M22.853 1.14795C22.1732 0.469151 21.2517 0.0878906 20.291 0.0878906C19.3303 0.0878906 18.4089 0.469151 17.729 1.14795L1.46502 17.412C0.999266 17.8751 0.629977 18.426 0.378513 19.0327C0.127049 19.6395 -0.00159798 20.2901 1.49812e-05 20.947V23C1.49812e-05 23.2652 0.105372 23.5195 0.292908 23.7071C0.480445 23.8946 0.734799 24 1.00002 24H3.05301C3.70978 24.0018 4.36038 23.8734 4.96717 23.6221C5.57396 23.3708 6.12487 23.0016 6.58801 22.536L22.853 6.27095C23.5315 5.59115 23.9126 4.66992 23.9126 3.70945C23.9126 2.74899 23.5315 1.82776 22.853 1.14795ZM5.17401 21.122C4.61002 21.6822 3.84798 21.9977 3.05301 22H2.00002V20.947C1.999 20.5529 2.07617 20.1625 2.22705 19.7984C2.37793 19.4343 2.59953 19.1038 2.87901 18.826L15.222 6.48295L17.522 8.78295L5.17401 21.122ZM21.438 4.85695L18.932 7.36395L16.632 5.06895L19.139 2.56195C19.29 2.41126 19.4693 2.29179 19.6664 2.21036C19.8636 2.12893 20.0749 2.08714 20.2883 2.08738C20.5016 2.08761 20.7128 2.12986 20.9098 2.21172C21.1069 2.29357 21.2858 2.41343 21.4365 2.56445C21.5872 2.71547 21.7067 2.8947 21.7881 3.09189C21.8695 3.28908 21.9113 3.50038 21.9111 3.71372C21.9109 3.92706 21.8686 4.13827 21.7868 4.33529C21.7049 4.5323 21.585 4.71126 21.434 4.86195L21.438 4.85695Z" fill="#ffffff"/>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_4_1412">
+                        <rect width="24" height="24" fill="white"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                  <span>{{ 'EDIT_PROFILE.EDIT' | translate }}</span>
+                </button>
+              </div>
+              
+              <div class="pig-gr">
+                <!-- Contact Information -->
+                <div class="gr-1">
+                  <div class="data-1">
+                    <h2>{{ 'REGISTRATION.EMAIL' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">{{ profileForm.get('email')?.value || '-' }}</p>
+                    <input 
+                      *ngIf="isContactAddressEditMode"
                       type="email" 
                       class="form-control" 
-                      id="email" 
                       formControlName="email"
-                      [readonly]="true"
                       [class.is-invalid]="isFieldInvalid('email')"
                       placeholder="{{ 'REGISTRATION.ENTER_EMAIL' | translate }}">
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('email')">
                       {{ getFieldError('email') }}
                     </div>
                   </div>
-                </div>
-                <div class="col-xl-6">
-                  <div class="mb-4">
-                    <label for="phoneNumber" class="form-label">{{ 'REGISTRATION.MOBILE' | translate }} *</label>
+
+                  <div class="data-1">
+                    <h2>{{ 'REGISTRATION.MOBILE' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">{{ profileForm.get('phoneNumber')?.value || '-' }}</p>
                     <input 
+                      *ngIf="isContactAddressEditMode"
                       type="tel" 
                       class="form-control" 
-                      id="phoneNumber" 
                       formControlName="phoneNumber"
                       [class.is-invalid]="isFieldInvalid('phoneNumber')"
                       placeholder="{{ 'REGISTRATION.ENTER_MOBILE' | translate }}">
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('phoneNumber')">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('phoneNumber')">
                       {{ getFieldError('phoneNumber') }}
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xl-6">
-                  <div class="mb-4">
-                    <label for="telNumber" class="form-label">{{ 'REGISTRATION.TELEPHONE' | translate }}</label>
+
+                  <div class="data-1">
+                    <h2>{{ 'REGISTRATION.TELEPHONE' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">{{ profileForm.get('telNumber')?.value || '-' }}</p>
                     <input 
+                      *ngIf="isContactAddressEditMode"
                       type="tel" 
                       class="form-control" 
-                      id="telNumber" 
                       formControlName="telNumber"
                       [class.is-invalid]="isFieldInvalid('telNumber')"
                       placeholder="{{ 'REGISTRATION.ENTER_TELEPHONE' | translate }}">
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('telNumber')">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('telNumber')">
                       {{ getFieldError('telNumber') }}
                     </div>
                   </div>
                 </div>
-              </div>
-               <div class="btn-grp">
-              <button 
-                style="height: 44px; width: 109px;"
-                type="submit" 
-                class="btn btn-gray" 
-                [disabled]="isLoading">
-                <span *ngIf="!isLoading">{{ 'Cancel' | translate }}</span>
-                <span *ngIf="isLoading">{{ 'Cancel ' | translate }}</span>
-              </button>
 
-              <button 
-                style="height: 44px; width: 109px;"
-                type="submit" 
-                class="btn btn-gold" 
-                [disabled]="isLoading">
-                <span *ngIf="!isLoading">{{ 'Save' | translate }}</span>
-                <span *ngIf="isLoading">{{ 'Save' | translate }}</span>
-              </button>
-              </div>
-            </div>
-
-
-
-            <!-- Address Information -->
-            <div class="login-box mb-4">
-              <h2 class="title gold mb-4">{{ 'REGISTRATION.ADDRESS_INFO' | translate }}</h2>
-              <div class="row">
-                <div class="col-xl-6">
-                  <div class="mb-4">
-                    <label for="countryId" class="form-label">{{ 'REGISTRATION.COUNTRY' | translate }}</label>
+                <!-- Address Information -->
+                <div class="gr-1">
+                  <div class="data-1">
+                    <h2>{{ 'REGISTRATION.COUNTRY' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">
+                      {{ getCountryDisplayValue() }}
+                    </p>
                     <ng-select 
-                      id="countryId"
+                      *ngIf="isContactAddressEditMode"
                       formControlName="countryId"
                       [class.is-invalid]="isFieldInvalid('countryId')"
                       [placeholder]="'REGISTRATION.SELECT_COUNTRY' | translate"
@@ -369,16 +364,18 @@
                       [loading]="countriesLoading"
                       (scrollToEnd)="onCountriesScrollToEnd()">
                     </ng-select>
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('countryId')">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('countryId')">
                       {{ getFieldError('countryId') }}
                     </div>
                   </div>
-                </div>
-                <div class="col-xl-6">
-                  <div class="mb-4">
-                    <label for="cityId" class="form-label">{{ 'REGISTRATION.CITY' | translate }} *</label>
+
+                  <div class="data-1">
+                    <h2>{{ 'REGISTRATION.CITY' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">
+                      {{ getCityDisplayValue() }}
+                    </p>
                     <ng-select 
-                      id="cityId"
+                      *ngIf="isContactAddressEditMode"
                       formControlName="cityId"
                       [class.is-invalid]="isFieldInvalid('cityId')"
                       [placeholder]="'REGISTRATION.SELECT_CITY' | translate"
@@ -388,50 +385,90 @@
                       [loading]="citiesLoading"
                       (scrollToEnd)="onCitiesScrollToEnd()">
                     </ng-select>
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('cityId')">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('cityId')">
                       {{ getFieldError('cityId') }}
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-xl-8">
-                  <div class="mb-4">
-                    <label for="address" class="form-label">{{ 'REGISTRATION.ADDRESS' | translate }} *</label>
+
+                <div class="gr-1">
+                  <div class="data-1 address-field">
+                    <h2>{{ 'REGISTRATION.ADDRESS' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">{{ profileForm.get('address')?.value || '-' }}</p>
                     <textarea 
+                      *ngIf="isContactAddressEditMode"
                       class="form-control" 
-                      id="address" 
                       rows="3"
                       formControlName="address"
                       [class.is-invalid]="isFieldInvalid('address')"
                       placeholder="{{ 'REGISTRATION.ENTER_ADDRESS' | translate }}"></textarea>
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('address')">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('address')">
                       {{ getFieldError('address') }}
                     </div>
                   </div>
-                </div>
-                <div class="col-xl-4">
-                  <div class="mb-4">
-                    <label for="poBox" class="form-label">{{ 'REGISTRATION.PO_BOX' | translate }}</label>
+
+                  <div class="data-1">
+                    <h2>{{ 'REGISTRATION.PO_BOX' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">{{ profileForm.get('poBox')?.value || '-' }}</p>
                     <input 
+                      *ngIf="isContactAddressEditMode"
                       type="text" 
                       class="form-control" 
-                      id="poBox" 
                       formControlName="poBox"
                       [class.is-invalid]="isFieldInvalid('poBox')"
                       placeholder="{{ 'REGISTRATION.ENTER_PO_BOX' | translate }}">
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('poBox')">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('poBox')">
                       {{ getFieldError('poBox') }}
                     </div>
                   </div>
                 </div>
               </div>
+
+              <!-- Edit Mode Buttons -->
+              <div class="btn-grp" *ngIf="isContactAddressEditMode">
+                <button 
+                  type="button" 
+                  class="btn btn-gray" 
+                  (click)="cancelContactAddress()">
+                  <span>{{ 'EDIT_PROFILE.CANCEL' | translate }}</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  class="btn btn-gold" 
+                  (click)="saveContactAddress()"
+                  [disabled]="isLoading">
+                  <span *ngIf="!isLoading">{{ 'EDIT_PROFILE.SAVE' | translate }}</span>
+                  <span *ngIf="isLoading">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    {{ 'EDIT_PROFILE.SAVING' | translate }}
+                  </span>
+                </button>
+              </div>
             </div>
 
             <!-- Documents/Attachments Section -->
-            <div class="login-box mb-4" *ngIf="attachmentConfigs.length > 0">
-              <h2 class="title gold mb-4">{{ 'EDIT_PROFILE.DOCUMENTS' | translate }}</h2>
-              
+            <div class="login-box mb-4 documents-section" *ngIf="attachmentConfigs.length > 0">
+              <div class="card-header">
+                <h2 class="title gold mb-4">{{ 'EDIT_PROFILE.DOCUMENTS' | translate }}</h2>
+                <button 
+                  type="button" 
+                  class="btn btn-gold"
+                  (click)="toggleAttachmentsEditMode()"
+                  *ngIf="!isAttachmentsEditMode">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <g clip-path="url(#clip0_4_1412)">
+                      <path d="M22.853 1.14795C22.1732 0.469151 21.2517 0.0878906 20.291 0.0878906C19.3303 0.0878906 18.4089 0.469151 17.729 1.14795L1.46502 17.412C0.999266 17.8751 0.629977 18.426 0.378513 19.0327C0.127049 19.6395 -0.00159798 20.2901 1.49812e-05 20.947V23C1.49812e-05 23.2652 0.105372 23.5195 0.292908 23.7071C0.480445 23.8946 0.734799 24 1.00002 24H3.05301C3.70978 24.0018 4.36038 23.8734 4.96717 23.6221C5.57396 23.3708 6.12487 23.0016 6.58801 22.536L22.853 6.27095C23.5315 5.59115 23.9126 4.66992 23.9126 3.70945C23.9126 2.74899 23.5315 1.82776 22.853 1.14795ZM5.17401 21.122C4.61002 21.6822 3.84798 21.9977 3.05301 22H2.00002V20.947C1.999 20.5529 2.07617 20.1625 2.22705 19.7984C2.37793 19.4343 2.59953 19.1038 2.87901 18.826L15.222 6.48295L17.522 8.78295L5.17401 21.122ZM21.438 4.85695L18.932 7.36395L16.632 5.06895L19.139 2.56195C19.29 2.41126 19.4693 2.29179 19.6664 2.21036C19.8636 2.12893 20.0749 2.08714 20.2883 2.08738C20.5016 2.08761 20.7128 2.12986 20.9098 2.21172C21.1069 2.29357 21.2858 2.41343 21.4365 2.56445C21.5872 2.71547 21.7067 2.8947 21.7881 3.09189C21.8695 3.28908 21.9113 3.50038 21.9111 3.71372C21.9109 3.92706 21.8686 4.13827 21.7868 4.33529C21.7049 4.5323 21.585 4.71126 21.434 4.86195L21.438 4.85695Z" fill="#ffffff"/>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_4_1412">
+                        <rect width="24" height="24" fill="white"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                  <span>{{ 'EDIT_PROFILE.EDIT' | translate }}</span>
+                </button>
+              </div>
               
               <div class="row" *ngFor="let config of attachmentConfigs">
                 <div class="col-xl-12">
@@ -441,58 +478,70 @@
                       <span class="text-danger" *ngIf="isAttachmentRequired(config)">*</span>
                     </label>
                     
-
-                    
                     <!-- Existing Attachment Display -->
-                    <div class="existing-attachment mb-3" [ngClass]="{'read-only': attachmentsReadOnly}" *ngIf="hasExistingFile(config.id) && !hasNewFile(config.id)">
-                      <div class="d-flex align-items-center gap-3 p-3 border rounded bg-light" [ngClass]="attachmentsReadOnly ? 'justify-content-center text-center flex-column' : ''">
-                        <div class="existing-file-preview">
+                    <div class="existing-attachment mb-3" *ngIf="hasExistingFile(config.id) && !hasNewFile(config.id)">
+                      <div class="uploaded-file">
+                        <div class="d-flex gap-2 align-items-center">
                           <img 
                             [src]="filePreviews[config.id]" 
                             [alt]="'EDIT_PROFILE.FILE_PREVIEW' | translate" 
                             class="file-preview"
                             (error)="onImageError($event)" />
-                        </div>
-                        <div class="flex-grow-1" *ngIf="!attachmentsReadOnly">
-                          <div class="d-flex align-items-center gap-2">
-                            <i class="fas fa-check-circle text-success"></i>
-                            <span class="fw-semibold text-success">{{ 'EDIT_PROFILE.EXISTING_FILE' | translate }}</span>
-                            <span class="badge" 
-                                  [class.badge-success]="isAttachmentRequired(config)"
-                                  [class.badge-warning]="!isAttachmentRequired(config)">
-                              {{ isAttachmentRequired(config) ? ('EDIT_PROFILE.MANDATORY' | translate) : ('EDIT_PROFILE.OPTIONAL' | translate) }}
-                            </span>
+                          <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                              <i class="fas fa-check-circle text-success"></i>
+                              <span class="fw-semibold text-success">{{ 'EDIT_PROFILE.EXISTING_FILE' | translate }}</span>
+                              <span class="badge" 
+                                    [class.badge-success]="isAttachmentRequired(config)"
+                                    [class.badge-warning]="!isAttachmentRequired(config)">
+                                {{ isAttachmentRequired(config) ? ('EDIT_PROFILE.MANDATORY' | translate) : ('EDIT_PROFILE.OPTIONAL' | translate) }}
+                              </span>
+                            </div>
+                            <p class="mb-0 text-muted small">{{ getExistingFileName(config.id) }}</p>
                           </div>
-                          <p class="mb-0 text-muted small">{{ getExistingFileName(config.id) }}</p>
                         </div>
-                        <!-- Show delete button only for optional attachments -->
-                        <button 
-                          type="button" 
-                          class="btn btn-outline-danger btn-sm"
-                          (click)="removeExistingFile(config.id)"
-                          [title]="canDeleteAttachment(config.id) ? ('EDIT_PROFILE.DELETE_ATTACHMENT' | translate) : ('EDIT_PROFILE.MANDATORY_CANNOT_DELETE' | translate)"
-                          [disabled]="!canDeleteAttachment(config.id)"
-                          *ngIf="!attachmentsReadOnly && canDeleteAttachment(config.id)">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                        <!-- Show update button for all existing attachments -->
-                        <button 
-                          type="button" 
-                          class="btn btn-outline-primary btn-sm"
-                          (click)="triggerFileInput(config.id)"
-                          [title]="'EDIT_PROFILE.UPDATE_ATTACHMENT' | translate"
-                          *ngIf="!attachmentsReadOnly">
-                          <i class="fas fa-edit"></i>
-                        </button>
+                        
+                        <div class="d-flex gap-2">
+                          <!-- View button (always visible) -->
+                          <button 
+                            type="button" 
+                            class="btn btn-outline-info btn-sm"
+                            (click)="viewAttachment(config.id)"
+                            [title]="'EDIT_PROFILE.VIEW_ATTACHMENT' | translate">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          
+                          <!-- Edit mode buttons -->
+                          <div *ngIf="isAttachmentsEditMode" class="d-flex gap-2">
+                            <!-- Delete button -->
+                            <button 
+                              type="button" 
+                              class="btn btn-outline-danger btn-sm"
+                              (click)="removeExistingFile(config.id)"
+                              [title]="'EDIT_PROFILE.DELETE_ATTACHMENT' | translate">
+                              <i class="fas fa-trash"></i>
+                            </button>
+                            
+                            <!-- Update button -->
+                            <button 
+                              type="button" 
+                              class="btn btn-outline-info btn-sm"
+                              (click)="triggerFileInput(config.id)"
+                              [title]="'EDIT_PROFILE.UPDATE_ATTACHMENT' | translate">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
-                    <!-- File Upload Area -->
+                    <!-- File Upload Area (show when no existing file OR in edit mode) -->
                     <div class="upload-area" 
                          [class.has-file]="selectedFiles[config.id]"
                          [class.is-invalid]="isAttachmentRequired(config) && !selectedFiles[config.id] && !hasExistingFile(config.id) && submitted"
-                         *ngIf="!attachmentsReadOnly && (!hasExistingFile(config.id) || hasNewFile(config.id))"
-                         (click)="triggerFileInput(config.id)">
+                         *ngIf="!hasExistingFile(config.id) || isAttachmentsEditMode"
+                         [class.clickable]="isAttachmentsEditMode"
+                         (click)="isAttachmentsEditMode ? triggerFileInput(config.id) : null">
                       
                       <div class="upload-content" *ngIf="!selectedFiles[config.id]">
                         <div class="upload-icon">
@@ -517,7 +566,7 @@
                       </div>
 
                       <!-- New File Preview -->
-                      <div class="uploaded-file" *ngIf="!attachmentsReadOnly && selectedFiles[config.id]" (click)="$event.stopPropagation()">
+                      <div class="uploaded-file" *ngIf="selectedFiles[config.id]" (click)="$event.stopPropagation()">
                         <div class="d-flex gap-2">
                           <img 
                             [src]="filePreviews[config.id]" 
@@ -542,15 +591,14 @@
                         </button>
                       </div>
                       
-                      <!-- Hidden file input -->
+                      <!-- Hidden file input (always present but only functional in edit mode) -->
                       <input 
                         type="file" 
                         [id]="'file-' + config.id"
                         class="file-input" 
                         (change)="onFileSelected($event, config.id)"
                         accept=".jpg,.jpeg,.png,.gif,.pdf"
-                        style="display: none;"
-                        *ngIf="!attachmentsReadOnly">
+                        style="display: none;">
                     </div>
                     
                     <div class="invalid-feedback" *ngIf="isAttachmentRequired(config) && !selectedFiles[config.id] && !hasExistingFile(config.id) && submitted">
@@ -559,75 +607,28 @@
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Change Password (Optional) -->
-            <div class="login-box mb-4">
-              <h2 class="title gold mb-4">{{ 'EDIT_PROFILE.CHANGE_PASSWORD' | translate }}</h2>
-              <p class="text-muted mb-4">{{ 'EDIT_PROFILE.PASSWORD_OPTIONAL' | translate }}</p>
-              
-              <div class="row">
-                <div class="col-xl-4">
-                  <div class="mb-4">
-                    <label for="currentPassword" class="form-label">{{ 'EDIT_PROFILE.CURRENT_PASSWORD' | translate }}</label>
-                    <input 
-                      type="password" 
-                      class="form-control" 
-                      id="currentPassword" 
-                      formControlName="currentPassword"
-                      [class.is-invalid]="isFieldInvalid('currentPassword')"
-                      placeholder="{{ 'EDIT_PROFILE.ENTER_CURRENT_PASSWORD' | translate }}">
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('currentPassword')">
-                      {{ getFieldError('currentPassword') }}
-                    </div>
-                  </div>
-                </div>
-                <div class="col-xl-4">
-                  <div class="mb-4">
-                    <label for="password" class="form-label">{{ 'EDIT_PROFILE.NEW_PASSWORD' | translate }}</label>
-                    <input 
-                      type="password" 
-                      class="form-control" 
-                      id="password" 
-                      formControlName="password"
-                      [class.is-invalid]="isFieldInvalid('password')"
-                      placeholder="{{ 'EDIT_PROFILE.ENTER_NEW_PASSWORD' | translate }}">
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
-                      {{ getFieldError('password') }}
-                    </div>
-                  </div>
-                </div>
-                <div class="col-xl-4">
-                  <div class="mb-4">
-                    <label for="confirmPassword" class="form-label">{{ 'EDIT_PROFILE.CONFIRM_NEW_PASSWORD' | translate }}</label>
-                    <input 
-                      type="password" 
-                      class="form-control" 
-                      id="confirmPassword" 
-                      formControlName="confirmPassword"
-                      [class.is-invalid]="isFieldInvalid('confirmPassword')"
-                      placeholder="{{ 'EDIT_PROFILE.CONFIRM_NEW_PASSWORD' | translate }}">
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('confirmPassword')">
-                      {{ getFieldError('confirmPassword') }}
-                    </div>
-                    <div class="valid-feedback" *ngIf="showPasswordMatch()">
-                      {{ 'REGISTRATION.PASSWORDS_MATCH' | translate }}
-                    </div>
-                  </div>
-                </div>
+              <!-- Edit Mode Buttons -->
+              <div class="btn-grp" *ngIf="isAttachmentsEditMode">
+                <button 
+                  type="button" 
+                  class="btn btn-gray" 
+                  (click)="toggleAttachmentsEditMode()">
+                  <span>{{ 'EDIT_PROFILE.CANCEL' | translate }}</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  class="btn btn-gold" 
+                  (click)="saveAttachments()"
+                  [disabled]="isLoading">
+                  <span *ngIf="!isLoading">{{ 'EDIT_PROFILE.SAVE' | translate }}</span>
+                  <span *ngIf="isLoading">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    {{ 'EDIT_PROFILE.SAVING' | translate }}
+                  </span>
+                </button>
               </div>
-            </div>
-
-            <!-- Submit Buttons -->
-            <div class="d-flex gap-4 mt-5" style="margin-left: 880px; width: 400px;">
-              <button 
-                type="submit" 
-                class="btn btn-gold w-50" 
-                [disabled]="isLoading">
-                <span *ngIf="!isLoading">{{ 'Edit' | translate }}</span>
-                <span *ngIf="isLoading">{{ 'Edit' | translate }}</span>
-              </button>
-
             </div>
 
           </form>
@@ -635,4 +636,84 @@
       </div>
     </div>
   </section>
+
+  <!-- Password Change Modal -->
+  <div class="modal fade" [class.show]="showPasswordModal" [style.display]="showPasswordModal ? 'block' : 'none'" 
+       *ngIf="showPasswordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="passwordModalLabel">{{ 'EDIT_PROFILE.CHANGE_PASSWORD' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="closePasswordModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="profileForm">
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="mb-4">
+                  <label for="currentPassword" class="form-label">{{ 'EDIT_PROFILE.CURRENT_PASSWORD' | translate }} *</label>
+                  <input 
+                    type="password" 
+                    class="form-control" 
+                    id="currentPassword" 
+                    formControlName="currentPassword"
+                    [class.is-invalid]="isFieldInvalid('currentPassword')"
+                    placeholder="{{ 'EDIT_PROFILE.ENTER_CURRENT_PASSWORD' | translate }}">
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('currentPassword')">
+                    {{ getFieldError('currentPassword') }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-6">
+                <div class="mb-4">
+                  <label for="password" class="form-label">{{ 'EDIT_PROFILE.NEW_PASSWORD' | translate }} *</label>
+                  <input 
+                    type="password" 
+                    class="form-control" 
+                    id="password" 
+                    formControlName="password"
+                    [class.is-invalid]="isFieldInvalid('password')"
+                    placeholder="{{ 'EDIT_PROFILE.ENTER_NEW_PASSWORD' | translate }}">
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
+                    {{ getFieldError('password') }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6">
+                <div class="mb-4">
+                  <label for="confirmPassword" class="form-label">{{ 'EDIT_PROFILE.CONFIRM_NEW_PASSWORD' | translate }} *</label>
+                  <input 
+                    type="password" 
+                    class="form-control" 
+                    id="confirmPassword" 
+                    formControlName="confirmPassword"
+                    [class.is-invalid]="isFieldInvalid('confirmPassword')"
+                    placeholder="{{ 'EDIT_PROFILE.CONFIRM_NEW_PASSWORD' | translate }}">
+                  <div class="invalid-feedback" *ngIf="isFieldInvalid('confirmPassword')">
+                    {{ getFieldError('confirmPassword') }}
+                  </div>
+                  <div class="valid-feedback" *ngIf="showPasswordMatch()">
+                    {{ 'REGISTRATION.PASSWORDS_MATCH' | translate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-gray" (click)="closePasswordModal()">
+            {{ 'EDIT_PROFILE.CANCEL' | translate }}
+          </button>
+          <button type="button" class="btn btn-gold" (click)="onSubmit()">
+            {{ 'EDIT_PROFILE.SAVE_PASSWORD' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal Backdrop -->
+  <div class="modal-backdrop fade" [class.show]="showPasswordModal" *ngIf="showPasswordModal"></div>
 </div>

@@ -38,3 +38,29 @@ line-height: normal;
             margin-right: 10px;
             color: #8B7355;
         }
+
+        // Custom button styling for system brown
+        .btn-outline-brown {
+            color: var(--Color-25, #8D734D);
+            border-color: var(--Color-25, #8D734D);
+            background-color: transparent;
+            
+            &:hover {
+                color: white;
+                background-color: var(--Color-25, #8D734D);
+                border-color: var(--Color-25, #8D734D);
+            }
+            
+            &:focus {
+                color: white;
+                background-color: var(--Color-25, #8D734D);
+                border-color: var(--Color-25, #8D734D);
+                box-shadow: 0 0 0 0.2rem rgba(141, 115, 77, 0.25);
+            }
+            
+            &:active {
+                color: white;
+                background-color: var(--Color-25, #8D734D);
+                border-color: var(--Color-25, #8D734D);
+            }
+        }

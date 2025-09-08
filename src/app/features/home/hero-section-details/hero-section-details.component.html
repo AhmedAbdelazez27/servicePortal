@@ -30,9 +30,9 @@
     </div>
 
     <!-- Hero Section Content -->
-    <div class="row">
-      <!-- Image Column -->
-      <div class="col-lg-6 mb-4">
+    <div class="hero-layout">
+      <!-- Image Section - 80% width -->
+      <div class="hero-image-section">
         <div class="hero-image-container">
           <img 
             [src]="getHeroSectionImage(heroSection)" 
@@ -43,8 +43,8 @@
         </div>
       </div>
 
-      <!-- Content Column -->
-      <div class="col-lg-6">
+      <!-- Content Section - Below image -->
+      <div class="hero-content-section">
         <div class="hero-content">
           <h1 class="hero-title mb-3">
             {{ getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.NO_DESCRIPTION' | translate) }}
@@ -55,8 +55,6 @@
               {{ getHeroSectionDescription(heroSection) || ('HOME.HERO_SECTION.NO_DESCRIPTION' | translate) }}
             </p>
           </div>
-
-
         </div>
       </div>
     </div>

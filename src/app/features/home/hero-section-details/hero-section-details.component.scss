@@ -1,18 +1,36 @@
 .hero-section-details {
-  .hero-image-container {
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  .hero-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .hero-image-section {
+    width: 85%;
     
-    img {
-      width: 100%;
-      height: auto;
-      transition: transform 0.3s ease;
+    .hero-image-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       
-      &:hover {
-        transform: scale(1.02);
+      img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: scale(1.02);
+        }
       }
+    }
+  }
+
+  .hero-content-section {
+    width: 100%;
+    
+    .hero-content {
+      max-width: 800px;
     }
   }
 
@@ -199,15 +217,37 @@
 // Responsive Design
 @media (max-width: 992px) {
   .hero-section-details {
+    .hero-layout {
+      gap: 1.5rem;
+    }
+    
+    .hero-image-section {
+      width: 90%;
+    }
+    
     .hero-content {
       padding: 0;
-      margin-top: 2rem;
     }
   }
 }
 
 @media (max-width: 768px) {
   .hero-section-details {
+    .hero-layout {
+      gap: 1rem;
+    }
+    
+    .hero-image-section {
+      width: 95%;
+    }
+    
+    .hero-content-section {
+      .hero-content {
+        max-width: 100%;
+        padding: 0 1rem;
+      }
+    }
+    
     .hero-title {
       font-size: 1.8rem;
     }

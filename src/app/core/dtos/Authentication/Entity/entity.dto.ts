@@ -20,6 +20,7 @@ export interface EntityDto {
   descriptionAr: string;
   descriptionEn: string;
   isShowInPortal: boolean;
+  isDonation?: boolean | null;
   masterId: number;
   attachment: AttachmentDto;
 }
@@ -33,6 +34,7 @@ export interface CreateEntityDto {
   entitY_WEBSITE: string;
   entitY_MAIL: string;
   acC_DETAILS_ID: string;
+  isDonation?: boolean;
 }
 
 export interface UpdateEntityDto {
@@ -44,6 +46,7 @@ export interface UpdateEntityDto {
   entitY_WEBSITE: string;
   entitY_MAIL: string;
   acC_DETAILS_ID: string;
+  isDonation?: boolean;
 }
 
 export interface GetEntityByIdDto {
@@ -55,6 +58,7 @@ export interface GetEntityByIdDto {
   entitY_WEBSITE: string;
   entitY_MAIL: string;
   acC_DETAILS_ID: string;
+  isDonation?: boolean;
 }
 
 export interface GetAllEntitiesResponseDto {
@@ -67,6 +71,7 @@ export interface EntityParameter {
   entityId?: string;
   skip: number;
   take: number;
+  isDonation?: boolean;
 }
 
 export interface PagedResultDto<T> {
