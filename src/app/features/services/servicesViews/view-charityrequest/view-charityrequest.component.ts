@@ -88,7 +88,7 @@ type RequestAdvertisementTarget = {
   id: number;
   mainApplyServiceId: number;
   lkpTargetTypeId: number;
-  lkpTargetTypeText  : string | null;
+  lkpTargetTypeText: string | null;
   othertxt?: string | null;
 };
 
@@ -102,7 +102,7 @@ type RequestAdvertisementMethod = {
   id: number;
   mainApplyServiceId: number;
   lkpAdMethodId: number;
-  lkpAdMethodText : string | null;
+  lkpAdMethodText: string | null;
 
   othertxt?: string | null;
 };
@@ -131,6 +131,8 @@ type RequestAdvertisement = {
   requestAdvertisementTargets: RequestAdvertisementTarget[];
   requestAdvertisementAdLocations: RequestAdvertisementLocation[];
   requestAdvertisementAdMethods: RequestAdvertisementMethod[];
+  advertisementStatusName: any;
+  advertisementStatus: any
 };
 
 type CharityEventPermitDto = {
@@ -264,7 +266,7 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-    // ad add
+  // ad add
   advertForm!: FormGroup;
   isDragOver = false;
   advertisementType: any[] = [];
@@ -275,6 +277,8 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
   isSaving = false;
   isFormInitialized = false;
   currentUserName = '';
+
+  addWorkFlowSteps: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -528,13 +532,13 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
   }
 
   // Workflow comment attachments
-  onTableCellClick(event: any,id:any) {
+  onTableCellClick(event: any, id: any) {
     // const btn = event.event?.target?.closest?.('.attachment-btn');
     // if (btn) {
     //   const id = parseInt(btn.getAttribute('data-comment-id'), 10);
     //   if (id) this.fetchAndViewCommentAttachments(id);
     // }
-     if (id) this.fetchAndViewCommentAttachments(id);
+    if (id) this.fetchAndViewCommentAttachments(id);
   }
   onCommentsTableAction(_: { action: string; row: any }) { /* hook جاهز */ }
 
@@ -614,22 +618,22 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
 
   // start comment attachment
-    loadCommentAttachmentConfigs(): void {
-      const sub = this.attachmentService.getAttachmentsConfigByType(
-        AttachmentsConfigType.Comment,
-        true,
-        null
-      ).subscribe({
-        next: (configs: any) => {
-          this.commentAttachmentConfigs = configs || [];
-          this.initializeCommentAttachments();
-        },
-        error: (error) => {
-          // Handle error silently
-        }
-      });
-      this.subscriptions.push(sub);
-    }
+  loadCommentAttachmentConfigs(): void {
+    const sub = this.attachmentService.getAttachmentsConfigByType(
+      AttachmentsConfigType.Comment,
+      true,
+      null
+    ).subscribe({
+      next: (configs: any) => {
+        this.commentAttachmentConfigs = configs || [];
+        this.initializeCommentAttachments();
+      },
+      error: (error) => {
+        // Handle error silently
+      }
+    });
+    this.subscriptions.push(sub);
+  }
 
   // Comment management methods
   addWorkFlowComment(): void {
@@ -771,18 +775,18 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
     // Add file to arrays
     this.commentSelectedFiles[configId].push(file);
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
       this.commentFilePreviews[configId].push(e.target?.result as string);
-      
+
       const base64String = (e.target?.result as string).split(',')[1];
       this.commentAttachments[configId].push({
         fileBase64: base64String,
         fileName: file.name,
         attConfigID: configId
       });
-      
+
       this.cdr.detectChanges();
     };
     reader.readAsDataURL(file);
@@ -809,12 +813,12 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     if (this.commentSelectedFiles[configId] && this.commentSelectedFiles[configId].length > fileIndex) {
       this.commentSelectedFiles[configId].splice(fileIndex, 1);
       this.commentFilePreviews[configId].splice(fileIndex, 1);
-      
+
       if (this.commentAttachments[configId] && this.commentAttachments[configId].length > fileIndex) {
         this.commentAttachments[configId].splice(fileIndex, 1);
       }
     }
-    
+
     this.cdr.detectChanges();
   }
 
@@ -823,12 +827,12 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       // Try to find the file input for adding more files first
       let fileInput = document.getElementById(`comment-file-more-${configId}`) as HTMLInputElement;
-      
+
       // If not found, try the original file input (for when no files are selected yet)
       if (!fileInput) {
         fileInput = document.getElementById(`comment-file-${configId}`) as HTMLInputElement;
       }
-      
+
       if (fileInput) {
         fileInput.click();
       } else {
@@ -855,19 +859,19 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     }
   }
 
-    initializeCommentAttachments(): void {
+  initializeCommentAttachments(): void {
     this.commentAttachments = {};
     this.commentSelectedFiles = {};
     this.commentFilePreviews = {};
-    
+
     this.commentAttachmentConfigs.forEach(config => {
       if (config.id) {
         this.commentAttachments[config.id] = [];
       }
     });
   }
-  
-    // Legacy file handling methods (keeping for backward compatibility)
+
+  // Legacy file handling methods (keeping for backward compatibility)
   onFileSelected(event: any): void {
     const files = event.target.files;
     if (files && files.length > 0) {
@@ -1208,4 +1212,29 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
       this.router.navigate(['/login']);
     }
   }
+
+  // add work flow modal
+  showWfModal = false;
+  openAdWorkflow(ad: any) {
+    this.loadworkflowAdd(ad.mainApplyServiceId);
+  }
+
+  closeWfModal() {
+    this.showWfModal = false;
+  }
+
+    loadworkflowAdd(id:any): void {
+    const sub = this.mainApplyServiceService.getDetailById({ id }).subscribe({
+      next: (resp: any) => {
+        this.addWorkFlowSteps = resp.workFlowSteps || [];
+        console.log(resp);
+         this.showWfModal = true;
+      },
+      error: () => {
+        this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
 }

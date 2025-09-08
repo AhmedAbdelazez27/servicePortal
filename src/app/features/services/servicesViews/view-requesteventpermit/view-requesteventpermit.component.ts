@@ -116,6 +116,8 @@ type RequestAdvertisementDto = {
   requestAdvertisementTargets?: RequestAdvertisementTarget[] | null;
   requestAdvertisementAdLocations?: RequestAdvertisementAdLocation[] | null;
   requestAdvertisementAdMethods?: RequestAdvertisementAdMethod[] | null;
+  advertisementStatusName:any;
+  advertisementStatus:any;
 };
 
 type RequestEventPermitDto = {
@@ -281,6 +283,8 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   isSaving = false;
   isFormInitialized = false;
   currentUserName = '';
+
+  addWorkFlowSteps: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -1241,6 +1245,32 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
       this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
       this.router.navigate(['/login']);
     }
+  };
+
+  
+  // add work flow modal
+  showWfModal = false;
+  openAdWorkflow(ad: any) {
+    this.loadworkflowAdd(ad.mainApplyServiceId);
   }
+
+  closeWfModal() {
+    this.showWfModal = false;
+  }
+
+    loadworkflowAdd(id:any): void {
+    const sub = this.mainApplyServiceService.getDetailById({ id }).subscribe({
+      next: (resp: any) => {
+        this.addWorkFlowSteps = resp.workFlowSteps || [];
+        console.log(resp);
+         this.showWfModal = true;
+      },
+      error: () => {
+        this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
 }
 
