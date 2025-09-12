@@ -18,6 +18,8 @@ export const routes: Routes = [
     { path: 'service-details/:id', loadComponent: () => import('./features/home/service-details/service-details.component').then(m => m.ServiceDetailsComponent) },
     { path: 'contact-us', loadComponent: () => import('./features/home/contact-us/contact-us.component').then(m => m.ContactUsComponent) },
     { path: 'about', loadChildren: () => import('./features/about/about.routes').then(m => m.aboutRoutes) },
+      { path: 'websitcontent', loadChildren: () => import('./features/websitcontent/websitcontent.routes').then(m => m.websitcontentRoutes) },
+
     { path: 'charity-organizations', loadComponent: () => import('./features/charity-organizations/charity-organizations.component').then(m => m.CharityOrganizationsComponent) },
     { path: 'polls', loadComponent: () => import('./features/polls/polls.component').then(m => m.PollsComponent) },
     { path: 'initiatives', loadComponent: () => import('./features/initiatives/initiatives.component').then(m => m.InitiativesComponent) },

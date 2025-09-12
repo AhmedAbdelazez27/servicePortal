@@ -28,20 +28,30 @@ export class ContactUsComponent implements OnInit {
     this.initializeContactForm();
   }
 
-  // Custom validator for UAE mobile number format
+  // Custom validator for UAE mobile number format (9 digits starting with 5)
   private uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) {
       return null; // Let required validator handle empty values
     }
     
-    const uaeMobileRegex = /^(?:\+9715[0-9]{8}|05[0-9]{8})$/;
+    // Validate 9 digits starting with 5
+    const uaeMobileRegex = /^5[0-9]{8}$/;
     return uaeMobileRegex.test(control.value) ? null : { invalidUaeMobile: true };
   }
 
-  // Restrict mobile input to only numbers and +
+  // Restrict mobile input to only numbers (no + needed since +971 is fixed)
   restrictMobileInput(event: KeyboardEvent): void {
-    const allowedChars = /[0-9+]/;
+    const allowedChars = /[0-9]/;
     const key = event.key;
+    
+    // Allow backspace, delete, tab, escape, enter, and arrow keys
+    if (event.key === 'Backspace' || event.key === 'Delete' || event.key === 'Tab' || 
+        event.key === 'Escape' || event.key === 'Enter' || 
+        event.key === 'ArrowLeft' || event.key === 'ArrowRight' || 
+        event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      return;
+    }
+    
     if (!allowedChars.test(key)) {
       event.preventDefault();
     }
@@ -68,7 +78,7 @@ export class ContactUsComponent implements OnInit {
     const contactInfo: CreateContactInformationDto = {
       name: this.contactForm.value.name,
       email: this.contactForm.value.email,
-      mobileNumber: this.contactForm.value.mobileNumber,
+      mobileNumber: `971${this.contactForm.value.mobileNumber}`, // Add 971 prefix
       title: this.contactForm.value.title,
       message: this.contactForm.value.message,
     };

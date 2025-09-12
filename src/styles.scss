@@ -77,18 +77,21 @@ a {
 .navbar .nav-link {
   color: var(--Color-19, #A6A6A6);
   font-family: 'Expo Arabic Book';
-  font-size: 16px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
   letter-spacing: 0.08px;
+    margin: 7px;
+
 }
 
 .navbar .nav-link.active,
 .navbar .nav-link:hover {
   color: var(--Color-16, #000);
+
   font-family: 'Expo Arabic Book';
-  font-size: 16px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
@@ -1716,13 +1719,13 @@ ul {
   align-items: center;
   gap: 8px;
   border-radius: 10px;
-  border: 1px solid #5ba7a4;
-  background-color: #5ba7a4;
+  border: 1px solid #8D734D;
+  background-color: #8D734D;
   color: #fff;
 }
 
 .btn-success:hover {
-  background-color: #72C5C2;
+  background-color: #8D734D;
   color: #fff;
 }
 
@@ -2328,7 +2331,7 @@ ul {
 
 
 .toast-success {
-  background-color: #198754;
+  background-color: #8D734D;
   color: white;
 }
 
@@ -2961,8 +2964,8 @@ select:focus {
   }
 
   &.border-success {
-    border-color: #28a745;
-    background: lighten(#28a745, 55%);
+    border-color: #8D734D;
+    background: lighten(#8D734D, 55%);
   }
 
   .upload-label {
@@ -3561,7 +3564,7 @@ a,
   }
 
   &.border-success {
-    border-color: #28a745 !important;
+    border-color: #8D734D !important;
     border-width: 2px;
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
   }
@@ -3579,9 +3582,94 @@ a,
   height: 20px;
 }
 
+.mobile-prefix-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--Color-21, #F7F7F7) !important;
+  border: none !important;
+  border-radius: 10px 0 0 10px !important;
+  padding: 12px 16px !important;
+  min-width: 90px;
+  min-height: 48px !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.mobile-input-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
 
 
 
+.uae-flag-image {
+  width: 24px;
+  height: 16px;
+  margin-right: 8px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+
+.mobile-number-input {
+  border: none !important;
+  background-color: var(--Color-21, #F7F7F7) !important;
+  border-radius: 0 10px 10px 0 !important;
+  padding: 12px 16px !important;
+  min-height: 48px !important;
+}
+
+.mobile-number-input:focus {
+  border: none !important;
+  outline: 0;
+  box-shadow: none !important;
+}
+
+/* Adjust the form container for mobile input */
+.mobile-input-container.form-container {
+  padding: 0;
+  border: none;
+  background: var(--Color-21, #F7F7F7);
+  border-radius: 10px;
+  gap: 0;
+  align-items: center;
+}
+
+.mobile-input-container.form-container svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: var(--Color-21, #F7F7F7);
+  padding: 12px;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-input-container.form-container svg path {
+  width: 20px;
+  height: 20px;
+}
+
+/* Adjust prefix container to account for icon */
+.mobile-input-container .mobile-prefix-container {
+  margin-left: 44px; /* Space for the phone icon */
+}
+
+/* Focus state for the entire mobile input - matches form input styling */
+.mobile-input-container:focus-within {
+  border: 1px solid #8d734d !important;
+  box-shadow: 0 0 0 .25rem #e4d8c6 !important;
+}
+
+.mobile-input-container:focus-within .mobile-input-container.form-container svg {
+  background-color: var(--Color-21, #F7F7F7);
+}
 
 // ==============================================================================Arabic===========================================================================
 
@@ -3625,18 +3713,21 @@ a,
   .navbar .nav-link {
     color: var(--Color-19, #A6A6A6);
     font-family: 'Expo Arabic Book';
-    font-size: 16px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
     letter-spacing: 0.08px;
+        margin: 7px;
+
   }
 
   .navbar .nav-link.active,
   .navbar .nav-link:hover {
     color: var(--Color-16, #000);
+
     font-family: 'Expo Arabic Book';
-    font-size: 16px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
@@ -7079,4 +7170,115 @@ td {
   background: rgba(146, 29, 66, 0.50);
   color: #fff;
   font-size: 14px;
+}
+
+.service-box-two-items-container .service-box{
+      height: calc(100% - 8px);
+}
+
+.service-box{
+  box-shadow: 0 67.114px 109.061px 0 rgba(0, 0, 0, 0.05);
+}
+.mobile-prefix-container {
+  display: flex;
+  align-items: center;
+  direction: rtl; /* RTL support */
+  background-color: var(--Color-21, #F7F7F7) !important;
+  border: none !important;
+  border-radius: 0 10px 10px 0 !important; /* Changed for RTL */
+  padding: 12px 16px !important;
+  min-width: 90px;
+  min-height: 48px !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.mobile-input-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  direction: rtl; /* RTL layout */
+}
+
+.uae-flag-image {
+  width: 24px;
+  height: 16px;
+  margin-left: 8px; /* Switched from margin-right */
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-number-input {
+  border: none !important;
+  background-color: var(--Color-21, #F7F7F7) !important;
+  border-radius: 0 10px 10px 0 !important; /* Will override for RTL below */
+  padding: 12px 16px !important;
+  min-height: 48px !important;
+}
+
+:dir(rtl) .mobile-number-input {
+  border-radius: 10px 0 0 10px !important; /* RTL mirror */
+}
+
+.mobile-number-input:focus {
+  border: none !important;
+  outline: 0;
+  box-shadow: none !important;
+}
+
+.mobile-input-container.form-container {
+  padding: 0;
+  border: none;
+  background: var(--Color-21, #F7F7F7);
+  border-radius: 10px;
+  gap: 0;
+  align-items: center;
+  position: relative;
+}
+
+/* Icon position for LTR */
+.mobile-input-container.form-container svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: var(--Color-21, #F7F7F7);
+  padding: 12px;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon position for RTL */
+:dir(rtl) .mobile-input-container.form-container svg {
+  left: auto;
+  right: 12px;
+}
+
+/* Adjust the icon spacing */
+.mobile-input-container .mobile-prefix-container {
+  margin-left: 44px; /* default for LTR */
+}
+
+:dir(rtl) .mobile-input-container .mobile-prefix-container {
+  margin-left: 0;
+  margin-right: 44px; /* RTL mirror */
+}
+
+.mobile-input-container.form-container svg path {
+  width: 20px;
+  height: 20px;
+}
+
+/* Focus state */
+.mobile-input-container:focus-within {
+  border: 1px solid #8d734d !important;
+  box-shadow: 0 0 0 .25rem #e4d8c6 !important;
+}
+
+.mobile-input-container:focus-within .mobile-input-container.form-container svg {
+  background-color: var(--Color-21, #F7F7F7);
 }

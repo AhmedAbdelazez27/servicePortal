@@ -8,6 +8,7 @@ import {
   Validators,
   AbstractControl,
   ValidatorFn,
+  ValidationErrors,
 } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -148,7 +149,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
 
       supervisorName: ['', [Validators.required, Validators.minLength(2)]],
       jopTitle: [''],
-              supervisorMobile: ['', [Validators.required, Validators.pattern(/^(?:\+9715[0-9]{8}|05[0-9]{8})$/), Validators.minLength(7)]],
+              supervisorMobile: ['', [Validators.required, this.uaeMobileValidator.bind(this)]],
 
       serviceType: [ServiceType.DistributionSitePermitApplication],
       distributionSiteCoordinators: ['', Validators.required], // renamed and only this field
@@ -467,10 +468,10 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Validate supervisor mobile format using the new UAE pattern
+    // Validate supervisor mobile format (9 digits starting with 5)
     const supervisorMobile = this.mainInfoForm.get('supervisorMobile')?.value;
     if (supervisorMobile) {
-      const uaeMobilePattern = /^(?:\+9715[0-9]{8}|05[0-9]{8})$/;
+      const uaeMobilePattern = /^5[0-9]{8}$/;
       if (!uaeMobilePattern.test(supervisorMobile)) {
         if (showToastr) {
           this.toastr.error(this.translate.instant('VALIDATION.INVALID_PHONE_FORMAT'));
@@ -901,7 +902,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
 
         supervisorName: formData.supervisorName,
         jopTitle: formData.jopTitle,
-        supervisorMobile: formData.supervisorMobile,
+        supervisorMobile: `971${formData.supervisorMobile}`, // Add 971 prefix
 
         serviceType: ServiceType.DistributionSitePermitApplication,
         distributionSiteCoordinators: formData.distributionSiteCoordinators,
@@ -1129,14 +1130,45 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     return control && control.touched && control.errors && control.errors['endDateBeforeStart'];
   }
 
-  restrictMobileInput(event: KeyboardEvent) {
-    const allowedChars = /[0-9+]/;
+  // Custom validator for UAE mobile number format (9 digits starting with 5)
+  private uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // Let required validator handle empty values
+    }
+    
+    // Validate 9 digits starting with 5
+    const uaeMobileRegex = /^5[0-9]{8}$/;
+    return uaeMobileRegex.test(control.value) ? null : { invalidUaeMobile: true };
+  }
+
+  // Restrict mobile input to only numbers (no + needed since +971 is fixed)
+  restrictMobileInput(event: KeyboardEvent): void {
+    const allowedChars = /[0-9]/;
     const key = event.key;
+    
+    // Allow backspace, delete, tab, escape, enter, and arrow keys
+    if (event.key === 'Backspace' || event.key === 'Delete' || event.key === 'Tab' || 
+        event.key === 'Escape' || event.key === 'Enter' || 
+        event.key === 'ArrowLeft' || event.key === 'ArrowRight' || 
+        event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      return;
+    }
+    
     if (!allowedChars.test(key)) {
       event.preventDefault();
     }
   }
 
+  // Handle mobile number input event for real-time validation
+  onSupervisorMobileInput(): void {
+    const mobileControl = this.mainInfoForm.get('supervisorMobile');
+    if (mobileControl && mobileControl.value) {
+      // Trigger validation as user types
+      mobileControl.markAsTouched();
+    }
+  }
+
+  // Handle mobile number blur event to trigger validation
   onSupervisorMobileBlur(): void {
     const mobileControl = this.mainInfoForm.get('supervisorMobile');
     if (mobileControl && mobileControl.value) {

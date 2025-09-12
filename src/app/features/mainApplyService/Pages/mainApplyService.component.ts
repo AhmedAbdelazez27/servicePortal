@@ -123,6 +123,7 @@ export class MainApplyServiceComponent {
     const skip = (event.pageNumber - 1) * event.pageSize;
     this.searchParams.skip = skip;
     this.searchParams.userId = localStorage.getItem('userId');
+    this.searchParams.excludeAdverisment = true;
 
     const cleanedFilters = this.cleanFilterObject(this.searchParams);
     this.spinnerService.show();
@@ -308,7 +309,7 @@ export class MainApplyServiceComponent {
 
   printExcel(): void {
     this.spinnerService.show();;
-    const cleanedFilters = this.cleanFilterObject(this.searchParams);
+    const cleanedFilters = this.cleanFilterObject({ ...this.searchParams, excludeAdverisment: true });
    
     this.mainApplyService.getAll({ ...cleanedFilters, skip: 0, take: 1 })
       .pipe(takeUntil(this.destroy$))

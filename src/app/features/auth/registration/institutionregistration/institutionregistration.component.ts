@@ -91,11 +91,8 @@ export class InstitutionregistrationComponent implements OnInit {
   private initializeForm(): void {
     this.registrationForm = this.fb.group({
       // Basic Information
-      foundationType: ['', [Validators.required, Validators.minLength(2)]],
-      foundationName: ['', [Validators.required, Validators.minLength(2)]],
-      licenseNumber: ['', [Validators.required, Validators.minLength(5)]],
-      licenseEndDate: [null, Validators.required],
-      nameEn: ['', [Validators.required, Validators.minLength(2)]],
+      
+       nameEn: ['', [Validators.required, Validators.minLength(2)]],
       name: ['', [Validators.required, Validators.minLength(2)]],
       userName: ['', [Validators.required, Validators.minLength(3)]],
       civilId: ['', [Validators.required, Validators.minLength(10)]],

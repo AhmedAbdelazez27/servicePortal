@@ -349,11 +349,24 @@
                                     
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">{{ 'FASTING_TENT_REQ.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
-                                        <input type="tel" class="form-control" formControlName="supervisorMobile"
-                                               [class.is-invalid]="(submitted || supervisorForm.get('supervisorMobile')?.touched) && supervisorForm.get('supervisorMobile')?.errors"
-                                               (keypress)="restrictMobileInput($event)"
-                                               (blur)="onSupervisorMobileBlur()"
-                                               placeholder="+9715XXXXXXXX or 05XXXXXXXX">
+                                        
+                                        <!-- Mobile Number Input with UAE Flag and 971 prefix -->
+                                        <div class="mobile-input-container" [class.is-invalid]="(submitted || supervisorForm.get('supervisorMobile')?.touched) && supervisorForm.get('supervisorMobile')?.errors">
+                                            <div class="mobile-prefix-container">
+                                                <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                                                <span class="mobile-prefix">971</span>
+                                            </div>
+                                            <input 
+                                                type="tel" 
+                                                class="form-control mobile-number-input" 
+                                                formControlName="supervisorMobile"
+                                                placeholder="565666666"
+                                                maxlength="9"
+                                                (keypress)="restrictMobileInput($event)"
+                                                (input)="onSupervisorMobileInput()"
+                                                (blur)="onSupervisorMobileBlur()">
+                                        </div>
+                                        
                                         <div *ngIf="(submitted || supervisorForm.get('supervisorMobile')?.touched) && supervisorForm.get('supervisorMobile')?.errors" class="invalid-feedback">
                                             <div *ngIf="supervisorForm.get('supervisorMobile')?.hasError('required')">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}

@@ -5,8 +5,7 @@ import { Router } from '@angular/router';
 import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ServiceSettingService } from '../../../core/services/serviceSetting.service';
 import { ServiceDto, GetAllServicesParameters } from '../../../core/dtos/serviceSetting/serviceSetting.dto';
-import { ContactUsComponent } from '../contact-us/contact-us.component';
-import { InitiativeService } from '../../../core/services/initiative.service';
+ import { InitiativeService } from '../../../core/services/initiative.service';
 import { InitiativeDto, GetAllInitiativeParameter } from '../../../core/dtos/UserSetting/initiatives/initiative.dto';
 import { HeroSectionSettingService } from '../../../core/services/UserSetting/hero-section-setting.service';
 import { HeroSectionSettingDto, GetAllHeroSectionSettingRequestDto } from '../../../core/dtos/UserSetting/hero-section-setting.dto';
@@ -18,7 +17,7 @@ declare var $: any;
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CarouselModule, CommonModule, TranslateModule, ContactUsComponent],
+  imports: [CarouselModule, CommonModule, TranslateModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })

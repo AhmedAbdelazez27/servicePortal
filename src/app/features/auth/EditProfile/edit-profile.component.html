@@ -318,13 +318,24 @@
                   <div class="data-1">
                     <h2>{{ 'REGISTRATION.MOBILE' | translate }}</h2>
                     <p *ngIf="!isContactAddressEditMode">{{ profileForm.get('phoneNumber')?.value || '-' }}</p>
-                    <input 
-                      *ngIf="isContactAddressEditMode"
-                      type="tel" 
-                      class="form-control" 
-                      formControlName="phoneNumber"
-                      [class.is-invalid]="isFieldInvalid('phoneNumber')"
-                      placeholder="{{ 'REGISTRATION.ENTER_MOBILE' | translate }}">
+                    
+                    <!-- Mobile Number Input with UAE Flag and +971 prefix -->
+                    <div *ngIf="isContactAddressEditMode" class="mobile-input-container" [class.is-invalid]="isFieldInvalid('phoneNumber')">
+                      <div class="mobile-prefix-container">
+                        <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                        <span class="mobile-prefix">971</span>
+                      </div>
+                      <input 
+                        type="tel" 
+                        class="form-control mobile-number-input" 
+                        formControlName="phoneNumber"
+                        placeholder="565666666"
+                        maxlength="9"
+                        (keypress)="restrictMobileInput($event)"
+                        (input)="onMobileNumberInput()"
+                        (blur)="onMobileNumberBlur()">
+                    </div>
+                    
                     <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('phoneNumber')">
                       {{ getFieldError('phoneNumber') }}
                     </div>
@@ -356,6 +367,7 @@
                     <ng-select 
                       *ngIf="isContactAddressEditMode"
                       formControlName="countryId"
+                      class="w-100"
                       [class.is-invalid]="isFieldInvalid('countryId')"
                       [placeholder]="'REGISTRATION.SELECT_COUNTRY' | translate"
                       [items]="countries"
@@ -377,6 +389,7 @@
                     <ng-select 
                       *ngIf="isContactAddressEditMode"
                       formControlName="cityId"
+                      class="w-100"
                       [class.is-invalid]="isFieldInvalid('cityId')"
                       [placeholder]="'REGISTRATION.SELECT_CITY' | translate"
                       [items]="cities"
@@ -448,7 +461,7 @@
             </div>
 
             <!-- Documents/Attachments Section -->
-            <div class="login-box mb-4 documents-section" *ngIf="attachmentConfigs.length > 0">
+            <div class="login-box mb-4 documents-section" *ngIf="attachmentConfigs.length > 0 && userType !== 1">
               <div class="card-header">
                 <h2 class="title gold mb-4">{{ 'EDIT_PROFILE.DOCUMENTS' | translate }}</h2>
                 <button 
@@ -470,7 +483,81 @@
                 </button>
               </div>
               
-              <div class="row" *ngFor="let config of attachmentConfigs">
+              <!-- Existing Attachments Grid Display -->
+              <div *ngIf="getExistingAttachments().length > 0" class="mb-4">
+                <div class="row">
+                  <div class="col-xl-4 col-lg-6 mb-4" *ngFor="let config of getExistingAttachments()">
+                    <div class="attachment-box">
+                      <div class="attachment-card-header">
+                        <h6 class="card-title">{{ getAttachmentDisplayName(config) }}</h6>
+                        <div class="attachment-badges">
+                          <span class="badge" 
+                                [class.badge-success]="isAttachmentRequired(config)"
+                                [class.badge-warning]="!isAttachmentRequired(config)">
+                            {{ isAttachmentRequired(config) ? ('EDIT_PROFILE.MANDATORY' | translate) : ('EDIT_PROFILE.OPTIONAL' | translate) }}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div class="attachment-preview-container">
+                        <img 
+                          [src]="filePreviews[config.id]" 
+                          [alt]="'EDIT_PROFILE.FILE_PREVIEW' | translate" 
+                          class="attachment-preview-image"
+                          (error)="onImageError($event)" />
+                        <div class="attachment-overlay">
+                          <i class="fas fa-check-circle text-success"></i>
+                          <span class="fw-semibold text-success">{{ 'EDIT_PROFILE.EXISTING_FILE' | translate }}</span>
+                        </div>
+                      </div>
+                      
+                      <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}: {{ formatDateTime(getExistingFileDate(config.id)) }}</p>
+                      
+                      <div class="d-flex justify-content-between mt-auto">
+                        <button 
+                          type="button" 
+                          class="btn btn-next-style me-2"
+                          (click)="viewAttachment(config.id)"
+                          [title]="'EDIT_PROFILE.VIEW_ATTACHMENT' | translate">
+                          <i class="fas fa-eye me-1"></i>
+                          {{ 'COMMON.VIEW' | translate }}
+                        </button>
+                        
+                        <!-- Edit mode buttons -->
+                        <div *ngIf="isAttachmentsEditMode" class="edit-actions">
+                          <button 
+                            type="button" 
+                            class="btn btn-delete-attachment me-1"
+                            (click)="removeExistingFile(config.id)"
+                            [title]="'EDIT_PROFILE.DELETE_ATTACHMENT' | translate">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                          
+                          <button 
+                            type="button" 
+                            class="btn btn-update-attachment"
+                            (click)="triggerFileInput(config.id)"
+                            [title]="'EDIT_PROFILE.UPDATE_ATTACHMENT' | translate">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <!-- Hidden file input for existing attachments (needed for edit functionality) -->
+                      <input 
+                        type="file" 
+                        [id]="'file-' + config.id"
+                        class="file-input" 
+                        (change)="onFileSelected($event, config.id)"
+                        accept=".jpg,.jpeg,.png,.gif,.pdf"
+                        style="display: none;">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- File Upload Areas for attachment configs without existing files (only in edit mode) -->
+              <div class="row" *ngFor="let config of getAttachmentConfigsNeedingUpload()">
                 <div class="col-xl-12">
                   <div class="mb-4">
                     <label class="form-label">
@@ -478,68 +565,10 @@
                       <span class="text-danger" *ngIf="isAttachmentRequired(config)">*</span>
                     </label>
                     
-                    <!-- Existing Attachment Display -->
-                    <div class="existing-attachment mb-3" *ngIf="hasExistingFile(config.id) && !hasNewFile(config.id)">
-                      <div class="uploaded-file">
-                        <div class="d-flex gap-2 align-items-center">
-                          <img 
-                            [src]="filePreviews[config.id]" 
-                            [alt]="'EDIT_PROFILE.FILE_PREVIEW' | translate" 
-                            class="file-preview"
-                            (error)="onImageError($event)" />
-                          <div class="flex-grow-1">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                              <i class="fas fa-check-circle text-success"></i>
-                              <span class="fw-semibold text-success">{{ 'EDIT_PROFILE.EXISTING_FILE' | translate }}</span>
-                              <span class="badge" 
-                                    [class.badge-success]="isAttachmentRequired(config)"
-                                    [class.badge-warning]="!isAttachmentRequired(config)">
-                                {{ isAttachmentRequired(config) ? ('EDIT_PROFILE.MANDATORY' | translate) : ('EDIT_PROFILE.OPTIONAL' | translate) }}
-                              </span>
-                            </div>
-                            <p class="mb-0 text-muted small">{{ getExistingFileName(config.id) }}</p>
-                          </div>
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                          <!-- View button (always visible) -->
-                          <button 
-                            type="button" 
-                            class="btn btn-outline-info btn-sm"
-                            (click)="viewAttachment(config.id)"
-                            [title]="'EDIT_PROFILE.VIEW_ATTACHMENT' | translate">
-                            <i class="fas fa-eye"></i>
-                          </button>
-                          
-                          <!-- Edit mode buttons -->
-                          <div *ngIf="isAttachmentsEditMode" class="d-flex gap-2">
-                            <!-- Delete button -->
-                            <button 
-                              type="button" 
-                              class="btn btn-outline-danger btn-sm"
-                              (click)="removeExistingFile(config.id)"
-                              [title]="'EDIT_PROFILE.DELETE_ATTACHMENT' | translate">
-                              <i class="fas fa-trash"></i>
-                            </button>
-                            
-                            <!-- Update button -->
-                            <button 
-                              type="button" 
-                              class="btn btn-outline-info btn-sm"
-                              (click)="triggerFileInput(config.id)"
-                              [title]="'EDIT_PROFILE.UPDATE_ATTACHMENT' | translate">
-                              <i class="fas fa-edit"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <!-- File Upload Area (show when no existing file OR in edit mode) -->
+                    <!-- File Upload Area (only show when in edit mode and no existing file) -->
                     <div class="upload-area" 
                          [class.has-file]="selectedFiles[config.id]"
                          [class.is-invalid]="isAttachmentRequired(config) && !selectedFiles[config.id] && !hasExistingFile(config.id) && submitted"
-                         *ngIf="!hasExistingFile(config.id) || isAttachmentsEditMode"
                          [class.clickable]="isAttachmentsEditMode"
                          (click)="isAttachmentsEditMode ? triggerFileInput(config.id) : null">
                       

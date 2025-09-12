@@ -8,6 +8,7 @@ import {
   Validators,
   AbstractControl,
   ValidatorFn,
+  ValidationErrors,
 } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -175,7 +176,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     this.supervisorForm = this.fb.group({
       supervisorName: ['', [Validators.required, Validators.minLength(2)]],
       jopTitle: ['', [Validators.required, Validators.minLength(2)]],
-      supervisorMobile: ['', [Validators.required, Validators.pattern(/^(?:\+9715[0-9]{8}|05[0-9]{8})$/), Validators.minLength(7)]],
+      supervisorMobile: ['', [Validators.required, this.uaeMobileValidator.bind(this)]],
     });
 
     this.partnersForm = this.fb.group({
@@ -623,8 +624,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       return false;
     }
     
-    // Validate UAE mobile number format
-    const uaeMobilePattern = /^(?:\+9715[0-9]{8}|05[0-9]{8})$/;
+    // Validate UAE mobile number format (9 digits starting with 5)
+    const uaeMobilePattern = /^5[0-9]{8}$/;
     if (!uaeMobilePattern.test(supervisorMobile)) {
       if (showToastr) {
         this.toastr.error(this.translate.instant('VALIDATION.INVALID_PHONE_FORMAT'));
@@ -1532,7 +1533,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         locationId: formData.locationId,
         supervisorName: supervisorData.supervisorName,
         jopTitle: supervisorData.jopTitle,
-        supervisorMobile: supervisorData.supervisorMobile,
+        supervisorMobile: `971${supervisorData.supervisorMobile}`, // Add 971 prefix
         tentDate: dateDetailsData.tentDate || null,
         serviceType: ServiceType.TentPermission, // Always send as enum value
         distributionSiteCoordinators: formData.distributionSiteCoordinators,
@@ -1758,14 +1759,45 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     return control && control.touched && control.errors && control.errors['endDateBeforeStart'];
   }
 
-  restrictMobileInput(event: KeyboardEvent) {
-    const allowedChars = /[0-9+]/;
+  // Custom validator for UAE mobile number format (9 digits starting with 5)
+  private uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // Let required validator handle empty values
+    }
+    
+    // Validate 9 digits starting with 5
+    const uaeMobileRegex = /^5[0-9]{8}$/;
+    return uaeMobileRegex.test(control.value) ? null : { invalidUaeMobile: true };
+  }
+
+  // Restrict mobile input to only numbers (no + needed since +971 is fixed)
+  restrictMobileInput(event: KeyboardEvent): void {
+    const allowedChars = /[0-9]/;
     const key = event.key;
+    
+    // Allow backspace, delete, tab, escape, enter, and arrow keys
+    if (event.key === 'Backspace' || event.key === 'Delete' || event.key === 'Tab' || 
+        event.key === 'Escape' || event.key === 'Enter' || 
+        event.key === 'ArrowLeft' || event.key === 'ArrowRight' || 
+        event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      return;
+    }
+    
     if (!allowedChars.test(key)) {
       event.preventDefault();
     }
   }
 
+  // Handle mobile number input event for real-time validation
+  onSupervisorMobileInput(): void {
+    const mobileControl = this.supervisorForm.get('supervisorMobile');
+    if (mobileControl && mobileControl.value) {
+      // Trigger validation as user types
+      mobileControl.markAsTouched();
+    }
+  }
+
+  // Handle mobile number blur event to trigger validation
   onSupervisorMobileBlur(): void {
     const mobileControl = this.supervisorForm.get('supervisorMobile');
     if (mobileControl && mobileControl.value) {

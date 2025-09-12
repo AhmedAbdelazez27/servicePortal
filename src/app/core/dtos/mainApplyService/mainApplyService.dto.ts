@@ -12,6 +12,7 @@ export class FiltermainApplyServiceDto {
   serviceStatus: string | null = null;
   applyDate: string | null = null;
   applyNo: string | null = null;
+  excludeAdverisment: boolean = false;
 
   userIdstr: string | null = null;
   serviceIdstr: string | null = null;

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -131,7 +133,7 @@ export class EditProfileComponent implements OnInit {
       
       // Contact Information
       email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required, Validators.minLength(8)]],
+      phoneNumber: ['', [this.uaeMobileValidator.bind(this)]], // Optional field
       telNumber: ['', [Validators.minLength(8)]], // Optional
       
       // Address Information
@@ -244,7 +246,7 @@ export class EditProfileComponent implements OnInit {
       licenseEndDate: userData.licenseEndDate ? new Date(userData.licenseEndDate).toISOString().split('T')[0] : null,
       entityId: userData.entityId || null,
       email: userData.email || '',
-      phoneNumber: userData.phoneNumber || '',
+      phoneNumber: this.stripCountryCode(userData.phoneNumber || ''),
       telNumber: userData.telNumber || '',
       countryId: userData.countryId || null,
       cityId: userData.cityId || null,
@@ -794,7 +796,7 @@ export class EditProfileComponent implements OnInit {
         name: formData.name,
         nameEn: formData.nameEn,
         email: formData.email,
-        phoneNumber: formData.phoneNumber,
+        phoneNumber: `971${formData.phoneNumber}`, // Add 971 prefix
         telNumber: formData.telNumber,
         address: formData.address,
         cityId: formData.cityId,
@@ -878,6 +880,7 @@ export class EditProfileComponent implements OnInit {
       if (field.errors['minlength']) return this.translate.instant('VALIDATION.MINLENGTH', { length: field.errors['minlength'].requiredLength });
       if (field.errors['pattern']) return this.translate.instant('VALIDATION.PATTERN');
       if (field.errors['mismatch']) return this.translate.instant('VALIDATION.PASSWORD_MISMATCH');
+      if (field.errors['invalidUaeMobile']) return this.translate.instant('CONTACT.MOBILE_INVALID');
     }
     return '';
   }
@@ -911,6 +914,40 @@ export class EditProfileComponent implements OnInit {
       return attachment.imgPath.split('/').pop() || this.translate.instant('EDIT_PROFILE.FILE');
     }
     return this.translate.instant('EDIT_PROFILE.FILE');
+  }
+
+  getExistingFileDate(configId: number): string {
+    const attachment = this.existingAttachments[configId];
+    if (attachment && attachment.lastModified) {
+      return attachment.lastModified.toString();
+    }
+    return new Date().toISOString();
+  }
+
+  formatDateTime(dateString: string): string {
+    if (!dateString) return '-';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (error) {
+      return '-';
+    }
+  }
+
+  getExistingAttachments(): any[] {
+    return this.attachmentConfigs.filter(config => this.hasExistingFile(config.id) && !this.hasNewFile(config.id));
+  }
+
+  getAttachmentConfigsNeedingUpload(): any[] {
+    // Only show upload areas for configs that:
+    // 1. Don't have existing files from backend
+    // 2. Are in edit mode
+    // 3. Don't have new files selected
+    return this.attachmentConfigs.filter(config => 
+      !this.hasExistingFile(config.id) && 
+      this.isAttachmentsEditMode && 
+      !this.hasNewFile(config.id)
+    );
   }
 
   // Date validation
@@ -1110,7 +1147,7 @@ export class EditProfileComponent implements OnInit {
           
           // Contact & Address Information fields
           email: formData.email,
-          phoneNumber: formData.phoneNumber,
+          phoneNumber: `971${formData.phoneNumber}`, // Add 971 prefix
           telNumber: formData.telNumber,
           address: formData.address,
           cityId: formData.cityId,
@@ -1182,7 +1219,7 @@ export class EditProfileComponent implements OnInit {
           
           // Contact & Address Information fields
           email: formData.email,
-          phoneNumber: formData.phoneNumber,
+          phoneNumber: `971${formData.phoneNumber}`, // Add 971 prefix
           telNumber: formData.telNumber,
           address: formData.address,
           cityId: formData.cityId,
@@ -1515,13 +1552,16 @@ export class EditProfileComponent implements OnInit {
       await this.handleAttachmentOperations();
       this.toggleAttachmentsEditMode();
       
-      // Reload user data to reflect changes
-      await this.loadUserData();
-      
       this.toastr.success(
         this.translate.instant('EDIT_PROFILE.ATTACHMENTS_SAVED'), 
         this.translate.instant('TOAST.TITLE.SUCCESS')
       );
+      
+      // Reload the page after successful attachment operations
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500); // Small delay to show the success message
+      
     } catch (error) {
       this.toastr.error(
         this.translate.instant('EDIT_PROFILE.ATTACHMENT_SAVE_ERROR'), 
@@ -1531,5 +1571,64 @@ export class EditProfileComponent implements OnInit {
       this.isLoading = false;
       this.spinnerService.hide();
     }
+  }
+
+  // Custom validator for UAE mobile number format (9 digits starting with 5)
+  private uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // Let required validator handle empty values
+    }
+    
+    // Validate 9 digits starting with 5
+    const uaeMobileRegex = /^5[0-9]{8}$/;
+    return uaeMobileRegex.test(control.value) ? null : { invalidUaeMobile: true };
+  }
+
+  // Restrict mobile input to only numbers (no + needed since +971 is fixed)
+  restrictMobileInput(event: KeyboardEvent): void {
+    const allowedChars = /[0-9]/;
+    const key = event.key;
+    
+    // Allow backspace, delete, tab, escape, enter, and arrow keys
+    if (event.key === 'Backspace' || event.key === 'Delete' || event.key === 'Tab' || 
+        event.key === 'Escape' || event.key === 'Enter' || 
+        event.key === 'ArrowLeft' || event.key === 'ArrowRight' || 
+        event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      return;
+    }
+    
+    if (!allowedChars.test(key)) {
+      event.preventDefault();
+    }
+  }
+
+  // Handle mobile number blur event to trigger validation
+  onMobileNumberBlur(): void {
+    const mobileControl = this.profileForm.get('phoneNumber');
+    if (mobileControl && mobileControl.value) {
+      // Trigger validation on blur
+      mobileControl.markAsTouched();
+    }
+  }
+
+  // Handle mobile number input event for real-time validation
+  onMobileNumberInput(): void {
+    const mobileControl = this.profileForm.get('phoneNumber');
+    if (mobileControl && mobileControl.value) {
+      // Trigger validation as user types
+      mobileControl.markAsTouched();
+    }
+  }
+
+  // Strip country code (971) from phone number for display
+  private stripCountryCode(phoneNumber: string): string {
+    if (!phoneNumber) return '';
+    
+    // Remove 971 prefix if present
+    if (phoneNumber.startsWith('971')) {
+      return phoneNumber.substring(3);
+    }
+    
+    return phoneNumber;
   }
 }
