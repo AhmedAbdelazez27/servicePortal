@@ -2,8 +2,9 @@
 import { Component } from '@angular/core';
  
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslationService } from '../../../../core/services/translation.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-privacy',
   imports: [CommonModule,TranslateModule],
@@ -11,9 +12,20 @@ import { TranslationService } from '../../../../core/services/translation.servic
   styleUrl: './privacy.component.scss'
 })
 export class PrivacyComponent {
-constructor( private translationService: TranslationService
-)
-{}
+  currentLang = 'en';
+  private langSub?: Subscription;
+
+ constructor(private translate: TranslateService) {}
+
+  ngOnInit(): void {
+    this.currentLang = this.translate.currentLang || this.translate.getDefaultLang();
+    this.langSub = this.translate.onLangChange
+      .subscribe((e: LangChangeEvent) => this.currentLang = e.lang);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
+  }
 }
 
  

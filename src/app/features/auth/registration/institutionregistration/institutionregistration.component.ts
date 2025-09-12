@@ -122,6 +122,7 @@ export class InstitutionregistrationComponent implements OnInit {
       serviceType: [2], // Institution
       userStatus: [1], // New
       applyDate: [new Date()],
+      acceptTerms: [false, Validators.requiredTrue],
     }, {
       validators: confirmPasswordValidator('password', 'confirmPassword')
     });
@@ -309,10 +310,11 @@ export class InstitutionregistrationComponent implements OnInit {
           attConfigID: parseInt(configId)
         });
       }
+            const { acceptTerms, poBox, ...rest } = formData;
 
       const createUserDto: CreateUserDto = {
-        ...formData,
-        boxNo: formData.poBox, // Map poBox form field to boxNo DTO field
+         ...rest,
+        boxNo: poBox, // Map poBox form field to boxNo DTO field
         attachments: attachments.length > 0 ? attachments : undefined
       };
 

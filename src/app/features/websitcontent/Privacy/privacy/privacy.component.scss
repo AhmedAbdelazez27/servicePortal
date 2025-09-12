@@ -1,0 +1,25 @@
+p{
+    padding-right: 8px;
+    padding-left: 8px;
+}
+
+
+ p {
+  padding-inline: 8px;
+  margin: 0 0 8px 0;
+  position: relative;
+  padding-inline-start: 18px;
+}
+
+
+ p::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--gold, #c9a13a);
+  border-radius: 50%;
+  position: absolute;
+  top: 0.7em;                
+  inset-inline-start: 6px;    
+}
+

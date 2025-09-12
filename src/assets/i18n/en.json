@@ -259,6 +259,10 @@
     "SENDING": "Sending..."
   },
   "REGISTRATION": {
+     "TERMS_TITLE": "Terms & Conditions",
+    "ACCEPT_TERMS": "I have read and agree to the",
+    "I_AGREE": "I agree",
+    "I_DISAGREE": "I do not agree",
     "INDIVIDUAL": {
       "TITLE": "Individual Registration"
     },
@@ -476,7 +480,8 @@
     "PHONE_LENGTH": "Please enter a valid phone number with 7 to 20 digits.",
     "MIN_ONE_CHANNEL": "Select at least one channel.",
     "START_DATE_PAST_MESSAGE": "Start date cannot be in the past. Please select a valid future date.",
-    "END_DATE_BEFORE_START_MESSAGE": "End date must be after start date. Please select a valid end date."
+    "END_DATE_BEFORE_START_MESSAGE": "End date must be after start date. Please select a valid end date.",
+    "ACCEPT_TERMS": "You must accept the terms and conditions"
   },
   "SERVICES": {
     "TITLE": "Services",
@@ -793,7 +798,10 @@
     "LOCATION": "Location",
     "METHOD": "Method",
     "NO_ADS": "No Ads",
-    "NO_PARTNERS": "No Partners"
+    "NO_PARTNERS": "No Partners",
+     "TERMS_AND_CONDITIONS": "Terms & Conditions",
+    "PRIVACY_POLICY": "Privacy Policy",
+    "AND": "and"
   },
   "SHARED": {
     "FORMS": {

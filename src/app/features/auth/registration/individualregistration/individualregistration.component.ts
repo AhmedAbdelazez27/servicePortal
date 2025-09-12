@@ -45,12 +45,12 @@ export class IndividualregistrationComponent implements OnInit {
   registrationForm!: FormGroup;
   submitted: boolean = false;
   isLoading: boolean = false;
-  
+
   // Dropdown data
   countries: any[] = [];
   cities: any[] = [];
   genderOptions: any[] = [];
-  
+
   // Pagination for dropdowns
   countriesLoading: boolean = false;
   citiesLoading: boolean = false;
@@ -58,12 +58,12 @@ export class IndividualregistrationComponent implements OnInit {
   countriesHasMore: boolean = true;
   citiesHasMore: boolean = true;
   genderHasMore: boolean = true;
-  
+
   // Attachment data
   attachmentConfigs: AttachmentsConfigDto[] = [];
   selectedFiles: { [key: number]: File } = {};
   filePreviews: { [key: number]: string } = {};
-  
+
   // Search parameters
   searchSelect2Params = new FndLookUpValuesSelect2RequestDto();
 
@@ -93,31 +93,32 @@ export class IndividualregistrationComponent implements OnInit {
       userName: ['', [Validators.required, Validators.minLength(3)]],
       gender: [null, Validators.required],
       civilId: ['', [Validators.required, Validators.minLength(10)]],
-      
+
       // Contact Information
       email: ['', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required, Validators.minLength(8)]],
       telNumber: ['', [Validators.minLength(8)]], // Optional
-      
+
       // Address Information
       countryId: [null], // Optional
       cityId: [null, Validators.required],
       address: ['', [Validators.required, Validators.minLength(10)]],
       poBox: ['', [Validators.minLength(3)]], // Optional
-      
+
       // Password
       password: ['', [
-        Validators.required, 
+        Validators.required,
         Validators.minLength(6),
         Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/)
       ]],
       confirmPassword: ['', [Validators.required]],
-      
+
       // Hidden fields for API
       userType: [3], // Client
       serviceType: [1], // Individual
       userStatus: [1], // New
       applyDate: [new Date()],
+      acceptTerms: [false, Validators.requiredTrue],
     }, {
       validators: confirmPasswordValidator('password', 'confirmPassword')
     });
@@ -131,13 +132,13 @@ export class IndividualregistrationComponent implements OnInit {
 
   private fetchCountries(): void {
     if (this.countriesLoading || !this.countriesHasMore) return;
-    
+
     this.countriesLoading = true;
     const params = new FndLookUpValuesSelect2RequestDto();
     params.searchValue = '';
     params.skip = this.countries.length;
     params.take = 20;
-    
+
     this.select2Service.getCountrySelect2(params).subscribe({
       next: (response: any) => {
         const newCountries = response?.results || [];
@@ -161,13 +162,13 @@ export class IndividualregistrationComponent implements OnInit {
 
   private loadMoreCities(): void {
     if (this.citiesLoading || !this.citiesHasMore) return;
-    
+
     this.citiesLoading = true;
     const cityParams = new FndLookUpValuesSelect2RequestDto();
     cityParams.searchValue = '';
     cityParams.skip = this.cities.length;
     cityParams.take = 20;
-    
+
     this.select2Service.getCitySelect2(cityParams).subscribe({
       next: (response: any) => {
         const newCities = response?.results || [];
@@ -184,17 +185,17 @@ export class IndividualregistrationComponent implements OnInit {
 
   private fetchGenderOptions(): void {
     if (this.genderLoading || !this.genderHasMore) return;
-    
+
     this.genderLoading = true;
     const genderParams = new FndLookUpValuesSelect2RequestDto();
     genderParams.searchValue = '';
     genderParams.skip = this.genderOptions.length;
     genderParams.take = 20;
-    
+
     this.select2Service.getGenderSelect2(genderParams).subscribe({
       next: (response: any) => {
         const newGenderOptions = response || [];
-        
+
         this.genderOptions = [...this.genderOptions, ...newGenderOptions];
         this.genderHasMore = newGenderOptions.length === genderParams.take;
         this.genderLoading = false;
@@ -232,19 +233,19 @@ export class IndividualregistrationComponent implements OnInit {
     // File size validation (5MB)
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-              this.toastr.error(this.translate.instant('REGISTRATION.TOASTR.FILE_SIZE_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+      this.toastr.error(this.translate.instant('REGISTRATION.TOASTR.FILE_SIZE_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
       return;
     }
 
     // File type validation
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
     if (!allowedTypes.includes(file.type)) {
-              this.toastr.error(this.translate.instant('REGISTRATION.TOASTR.FILE_TYPE_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+      this.toastr.error(this.translate.instant('REGISTRATION.TOASTR.FILE_TYPE_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
       return;
     }
 
     this.selectedFiles[configId] = file;
-    
+
     // Create preview for images
     if (file.type.startsWith('image/')) {
       const reader = new FileReader();
@@ -289,7 +290,7 @@ export class IndividualregistrationComponent implements OnInit {
 
     try {
       const formData = this.registrationForm.value;
-      
+
       // Convert numeric fields to numbers if they exist
       const numericFields = ['gender', 'userType', 'serviceType', 'userStatus'];
       numericFields.forEach(field => {
@@ -297,10 +298,10 @@ export class IndividualregistrationComponent implements OnInit {
           formData[field] = Number(formData[field]);
         }
       });
-      
+
       // Prepare attachments
       const attachments: AttachmentBase64Dto[] = [];
-      
+
       for (const [configId, file] of Object.entries(this.selectedFiles)) {
         const base64 = await this.fileToBase64(file as File);
         attachments.push({
@@ -310,10 +311,10 @@ export class IndividualregistrationComponent implements OnInit {
           attConfigID: parseInt(configId)
         });
       }
-
+      const { acceptTerms, poBox, ...rest } = formData;
       const createUserDto: CreateUserDto = {
-        ...formData,
-        boxNo: formData.poBox, // Map poBox form field to boxNo DTO field
+        ...rest,
+        boxNo: poBox,// Map poBox form field to boxNo DTO field
         attachments: attachments.length > 0 ? attachments : undefined
       };
 
@@ -359,8 +360,8 @@ export class IndividualregistrationComponent implements OnInit {
   showPasswordMatch(): boolean {
     const pass = this.registrationForm.get('password')?.value;
     const confirm = this.registrationForm.get('confirmPassword')?.value;
-    return pass && confirm && pass === confirm && 
-           !this.registrationForm.get('confirmPassword')?.errors?.['mismatch'];
+    return pass && confirm && pass === confirm &&
+      !this.registrationForm.get('confirmPassword')?.errors?.['mismatch'];
   }
 
   getAttachmentDisplayName(config: AttachmentsConfigDto): string {
