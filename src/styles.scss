@@ -7284,9 +7284,8 @@ td {
 }
 
 
-/* دعم RTL تلقائي */
+
 [dir="rtl"] .numbered-list li       { padding: 12px 52px 12px 12px;}
 [dir="rtl"] .numbered-list li::before { left: auto; right: 14px; }
 
-/* تباعد بسيط داخل الأكورديون */
 .accordion-body .numbered-list li + li { margin-top: 8px; }
