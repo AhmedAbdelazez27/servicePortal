@@ -1,7 +1,7 @@
 <div class="container mt-5">
     <div class="bg-light p-4 mb-3 " style="border-radius: 10px !important;">
         <h1 class="title mb-3">{{ 'mainApplyServiceResourceName.title' | translate }}</h1>
-        <div class="d-flex gap-3 align-items-center">
+        <!-- <div class="d-flex gap-3 align-items-center">
             <div class="status-indicator">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <g clip-path="url(#clip0_4_814)">
@@ -74,7 +74,56 @@
             </div>
 
 
-        </div>
+        </div> -->
+
+
+<div class="d-flex gap-3 align-items-center flex-wrap">
+  <ng-container *ngFor="let item of summaryRequests">
+    <div class="status-indicator d-flex align-items-center gap-2">
+      <ng-container [ngSwitch]="normalizeStatus(item.status)">
+
+        <!-- New -->
+        <svg *ngSwitchCase="'new'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 25 24" fill="none">
+          <path d="M17 14...Z" fill="#374957"></path>
+        </svg>
+
+        <!-- Under Process -->
+        <svg *ngSwitchCase="'under_process'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 8.00098...Z" fill="#374957"></path>
+          <path d="M21.2938 13.9...Z" fill="#374957"></path>
+        </svg>
+
+        <!-- Approved -->
+        <svg *ngSwitchCase="'approved'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M10.4996 17.0003...Z" fill="#374957"></path>
+        </svg>
+
+        <!-- Draft -->
+        <svg *ngSwitchCase="'draft'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M23.2715 9.41927...Z" fill="#374957"></path>
+        </svg>
+
+        <!-- Rejected -->
+        <svg *ngSwitchCase="'rejected'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15.9994 7.99982...Z" fill="#374957"></path>
+        </svg>
+
+        <!-- Default -->
+        <svg *ngSwitchDefault xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 25 24" fill="none">
+          <path d="M17 14...Z" fill="#374957"></path>
+        </svg>
+      </ng-container>
+
+      <span class="fw-semibold">
+        {{ displayStatusLabel(item.status) }}: {{ item.totalRequest }}
+      </span>
+      <small class="text-muted">({{ item.percent | number:'1.0-2' }}%)</small>
+    </div>
+  </ng-container>
+</div>
+
+
+
     </div>
 
   <!-- <app-generic-data-table [columnDefs]="columnDefs"

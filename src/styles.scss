@@ -7265,7 +7265,7 @@ td {
 
 :dir(rtl) .mobile-input-container .mobile-prefix-container {
   margin-left: 0;
-  margin-right: 44px; /* RTL mirror */
+  margin-right: 14px; /* RTL mirror */
 }
 
 .mobile-input-container.form-container svg path {
@@ -7282,3 +7282,11 @@ td {
 .mobile-input-container:focus-within .mobile-input-container.form-container svg {
   background-color: var(--Color-21, #F7F7F7);
 }
+
+
+/* دعم RTL تلقائي */
+[dir="rtl"] .numbered-list li       { padding: 12px 52px 12px 12px;}
+[dir="rtl"] .numbered-list li::before { left: auto; right: 14px; }
+
+/* تباعد بسيط داخل الأكورديون */
+.accordion-body .numbered-list li + li { margin-top: 8px; }

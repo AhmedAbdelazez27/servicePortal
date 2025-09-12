@@ -54,7 +54,7 @@
                 </div>
 
                 <!-- Service Steps Accordion -->
-                <div class="accordion mb-4" id="serviceStepsAccordion" *ngIf="service.serviceDepartments && service.serviceDepartments.length > 0">
+                <!-- <div class="accordion mb-4" id="serviceStepsAccordion" *ngIf="service.serviceDepartments && service.serviceDepartments.length > 0">
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -72,7 +72,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Required Documents Accordion -->
                 <div class="accordion mb-4" id="documentsAccordion" *ngIf="service.attachmentsConfigs && service.attachmentsConfigs.length > 0">
@@ -85,7 +85,7 @@
                         </h2>
                         <div id="collapseDocuments" class="accordion-collapse collapse" data-bs-parent="#documentsAccordion">
                             <div class="accordion-body">
-                                <ul>
+                                <ul class="numbered-list">
                                     <li *ngFor="let attachment of service.attachmentsConfigs">
                                         {{ getAttachmentName(attachment) }}
                                     </li>
@@ -108,7 +108,7 @@
                         <div [id]="'collapseAttribute' + i" class="accordion-collapse collapse" data-bs-parent="#attributesAccordion">
                             <div class="accordion-body">
                                <div *ngIf="hasAttributeValues(attribute)">
-                                <ul>
+                                <ul class="numbered-list">
                                     <li *ngFor="let value of getAttributeValues(attribute)">
                                         {{ getAttributeValueText(value) }}
                                     </li>

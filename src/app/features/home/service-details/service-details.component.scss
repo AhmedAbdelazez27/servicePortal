@@ -78,3 +78,67 @@
     }
   }
 }
+
+
+/* لون أساسي قابل للتعديل */
+:root { --accent: #8D734D; }
+
+/* لستة مرقمة بأرقام داخل دائرة */
+.numbered-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: li;
+}
+
+.numbered-list li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+  padding: 12px 12px 12px 52px; /* مساحة لليمين/اليسار حسب الاتجاه */
+  font-size: 1.05rem;           /* أكبر شوية */
+  line-height: 1.4;
+  border-radius: 12px;
+  background: #faf8f4;          /* خفيف */
+  border: 1px solid #eee;
+  transition: background .2s ease, transform .15s ease, box-shadow .2s ease;
+}
+
+.numbered-list li::before {
+  counter-increment: li;
+  content: counter(li);
+  // position: absolute;
+  margin-top: 27px;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 50%;
+  background: #8D734D;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,.12);
+}
+
+/* Hover لمسة بسيطة */
+.numbered-list li:hover {
+  background: #f4efe7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.06);
+}
+
+/* نسخة أضيق للايتمز داخل الأتريبيوتس */
+.numbered-list.compact li {
+  font-size: 1rem;
+  padding: 10px 10px 10px 48px;
+}
+
+

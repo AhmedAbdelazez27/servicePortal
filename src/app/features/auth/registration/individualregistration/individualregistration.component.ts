@@ -90,7 +90,7 @@ export class IndividualregistrationComponent implements OnInit {
       // Basic Information
       nameEn: ['', [Validators.required, Validators.minLength(2)]],
       name: ['', [Validators.required, Validators.minLength(2)]],
-      userName: ['', [Validators.required, Validators.minLength(3)]],
+      userName: ['', [Validators.required, Validators.email]],
       gender: [null, Validators.required],
       civilId: ['', [Validators.required, Validators.minLength(10)]],
 

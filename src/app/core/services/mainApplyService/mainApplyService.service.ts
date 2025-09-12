@@ -31,4 +31,8 @@ export class MainApplyService {
     const apiUrl = `${this.BASE_URL}${ApiEndpoints.MainApplyService.Update}`;
     return this.http.post<PagedResult<mainApplyServiceDto>>(apiUrl, params);
   }
+
+  GetHomeTotalRequestSummaryPortal():Observable <any>{
+    return this.http.get(`${environment.apiBaseUrl}/Home/GetHomeTotalRequestSummaryPortal`)
+  }
 }

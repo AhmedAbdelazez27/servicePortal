@@ -51,6 +51,7 @@ export class MainApplyServiceComponent {
   searchParamsById = new FiltermainApplyServiceByIdDto();
 
   loadgridData: mainApplyServiceDto[] = [];
+  summaryRequests: any[] = [];
   loadformData: mainApplyServiceDto = {} as mainApplyServiceDto;
 
 
@@ -64,7 +65,7 @@ export class MainApplyServiceComponent {
     private fb: FormBuilder,
     private router: Router
   )
-  {
+  {  
     
     this.userserviceForm = this.fb.group({
       serviceIds: [[], Validators.required]
@@ -72,6 +73,7 @@ export class MainApplyServiceComponent {
   }
 
   ngOnInit(): void {
+    this.GetHomeTotalRequestSummaryPortal();
     this.buildColumnDefs();
     this.rowActions = [
       { label: this.translate.instant('Common.ViewInfo'), icon: 'icon-frame-view', action: 'onViewInfo' },
@@ -85,7 +87,14 @@ export class MainApplyServiceComponent {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
+  GetHomeTotalRequestSummaryPortal(){
+    this.mainApplyService.GetHomeTotalRequestSummaryPortal().subscribe({
+      next :(res)=>{
+        console.log(res);
+        this.summaryRequests = res.requestSummary ;
+      }
+    })
+  }
   onSearch(): void {
     this.getLoadDataGrid({ pageNumber: 1, pageSize: this.pagination.take });
   }
@@ -376,5 +385,46 @@ get totalPages(): number {
   const total = this.pagination?.totalCount || 0;
   return Math.max(1, Math.ceil(total / size));
 }
+
+
+// helpers for status -> key normalization + label by UI language
+statusAliases: Record<string, string[]> = {
+  new: ['new', 'جديد'],
+  under_process: ['under process', 'قيد المعالجة', 'under-process', 'under_process'],
+  rejected: ['rejected', 'مرفوض'],
+  draft: ['draft', 'مسودة'],
+  approved: ['approved', 'معتمد'],
+};
+
+private aliasToKey = new Map<string, string>(
+  Object.entries(this.statusAliases).flatMap(([key, arr]) =>
+    arr.map(a => [a.trim().toLowerCase(), key] as [string, string])
+  )
+);
+
+normalizeStatus(status: string | null | undefined): string {
+  if (!status) return 'other';
+  const s = status.trim().toLowerCase();
+  return this.aliasToKey.get(s) ?? 'other';
+}
+
+statusLabelByKey(key: string): { ar: string; en: string } {
+  switch (key) {
+    case 'new':            return { ar: 'جديد',           en: 'New' };
+    case 'under_process':  return { ar: 'قيد المعالجة',   en: 'Under Process' };
+    case 'rejected':       return { ar: 'مرفوض',          en: 'Rejected' };
+    case 'draft':          return { ar: 'مسودة',          en: 'Draft' };
+    case 'approved':       return { ar: 'معتمد',          en: 'Approved' };
+    default:               return { ar: 'أخرى',           en: 'Other' };
+  }
+}
+
+displayStatusLabel(rawStatus: string): string {
+  const key = this.normalizeStatus(rawStatus);
+  const lbl = this.statusLabelByKey(key);
+  return this.translate?.currentLang === 'ar' ? lbl.ar : lbl.en;
+}
+
+
 }
 
