@@ -3722,6 +3722,10 @@ a,
 
   }
 
+  .phone-number{
+    text-align: right;
+  }
+
   .navbar .nav-link.active,
   .navbar .nav-link:hover {
     color: var(--Color-16, #000);
@@ -7265,7 +7269,7 @@ td {
 
 :dir(rtl) .mobile-input-container .mobile-prefix-container {
   margin-left: 0;
-  margin-right: 14px; /* RTL mirror */
+  margin-right: 44px; /* RTL mirror */
 }
 
 .mobile-input-container.form-container svg path {
@@ -7283,6 +7287,10 @@ td {
   background-color: var(--Color-21, #F7F7F7);
 }
 
+
+.contact-number-info{
+  direction: ltr !important;
+}
 
 
 [dir="rtl"] .numbered-list li       { padding: 12px 52px 12px 12px;}

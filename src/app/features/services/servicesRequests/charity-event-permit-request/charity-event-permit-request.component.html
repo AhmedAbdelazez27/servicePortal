@@ -792,7 +792,7 @@
                                                                 cfg.id!) }}
                                                             </span>
 
-                                                            <img *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
+                                                            <img style="width: 150px; height: 100px;" *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
                           && state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).selected[cfg.id!].type.startsWith('image/')"
                                                                 [src]="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
                                                                 class="preview-image">
@@ -908,7 +908,7 @@
                                                             selectedFileName(AttachmentsConfigType.DeclarationOfCharityEffectiveness,
                                                             config.id!) }}
                                                         </span>
-                                                        <img *ngIf="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
+                                                        <img  style="width: 150px; height: 100px;" *ngIf="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
                       && state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).selected[config.id!].type.startsWith('image/')"
                                                             [src]="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
                                                             class="preview-image">
