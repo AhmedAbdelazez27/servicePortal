@@ -96,6 +96,7 @@
                     </div>
                   </div>
                 </div>
+            
                 <div class="col-xl-6">
                   <div class="mb-4">
                     <label for="entityId" class="form-label">{{ 'REGISTRATION.ENTITY' | translate }} *</label>
@@ -106,6 +107,41 @@
                     <div class="invalid-feedback" *ngIf="isFieldInvalid('entityId')">
                       {{ getFieldError('entityId') }}
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <!-- ID Number Issue Date -->
+                <div class="col-xl-6 mb-4">
+                  <label class="form-label">{{ 'REGISTRATION.ID_NUMBER_ISSUE_DATE' | translate }}</label>
+                  <input type="date" class="form-control" formControlName="idNumberIssueDate" 
+                         [class.is-invalid]="isFieldInvalid('idNumberIssueDate')"
+                         [class.is-valid]="registrationForm.get('idNumberIssueDate')?.valid && (registrationForm.get('idNumberIssueDate')?.touched || submitted)">
+                  <div *ngIf="isFieldInvalid('idNumberIssueDate')" class="invalid-feedback">
+                    {{ getFieldError('idNumberIssueDate') }}
+                  </div>
+                </div>
+                
+                <!-- ID Number Expiry Date -->
+                <div class="col-xl-6 mb-4">
+                  <label class="form-label">{{ 'REGISTRATION.ID_NUMBER_EXPIRY_DATE' | translate }}</label>
+                  <input type="date" class="form-control" formControlName="idNumberExpiryDate"
+                         [class.is-invalid]="isFieldInvalid('idNumberExpiryDate')"
+                         [class.is-valid]="registrationForm.get('idNumberExpiryDate')?.valid && (registrationForm.get('idNumberExpiryDate')?.touched || submitted)">
+                  <div *ngIf="isFieldInvalid('idNumberExpiryDate')" class="invalid-feedback">
+                    {{ getFieldError('idNumberExpiryDate') }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <!-- Date of Birth -->
+                <div class="col-xl-6 mb-4">
+                  <label class="form-label">{{ 'REGISTRATION.DATE_OF_BIRTH' | translate }}</label>
+                  <input type="date" class="form-control" formControlName="dateOfBirth"
+                         [class.is-invalid]="isFieldInvalid('dateOfBirth')"
+                         [class.is-valid]="registrationForm.get('dateOfBirth')?.valid && (registrationForm.get('dateOfBirth')?.touched || submitted)">
+                  <div *ngIf="isFieldInvalid('dateOfBirth')" class="invalid-feedback">
+                    {{ getFieldError('dateOfBirth') }}
                   </div>
                 </div>
               </div>
@@ -130,11 +166,32 @@
                 <div class="col-xl-6">
                   <div class="mb-4">
                     <label for="phoneNumber" class="form-label">{{ 'REGISTRATION.MOBILE' | translate }} *</label>
-                    <input type="tel" class="form-control" id="phoneNumber" formControlName="phoneNumber"
-                      [class.is-invalid]="isFieldInvalid('phoneNumber')"
-                      placeholder="{{ 'REGISTRATION.ENTER_MOBILE' | translate }}">
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('phoneNumber')">
-                      {{ getFieldError('phoneNumber') }}
+                    
+                    <!-- Mobile Number Input with UAE Flag and 971 prefix -->
+                    <div class="mobile-input-container" style="border : none !important;" [class.is-invalid]="(submitted || registrationForm.get('phoneNumber')?.touched) && registrationForm.get('phoneNumber')?.errors">
+                        <div class="mobile-prefix-container">
+                            <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                            <span class="mobile-prefix">971</span>
+                        </div>
+                        <input 
+                            type="tel" 
+                            class="form-control mobile-number-input" 
+                            id="phoneNumber"
+                            formControlName="phoneNumber"
+                            placeholder="565666666"
+                            maxlength="9"
+                            (keypress)="restrictMobileInput($event)"
+                            (input)="onPhoneNumberInput()"
+                            (blur)="onPhoneNumberBlur()">
+                    </div>
+                    
+                    <div *ngIf="(submitted || registrationForm.get('phoneNumber')?.touched) && registrationForm.get('phoneNumber')?.errors" class="invalid-feedback">
+                        <div *ngIf="registrationForm.get('phoneNumber')?.hasError('required')">
+                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                        </div>
+                        <div *ngIf="registrationForm.get('phoneNumber')?.hasError('pattern')">
+                            {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -143,11 +200,32 @@
                 <div class="col-xl-6">
                   <div class="mb-4">
                     <label for="telNumber" class="form-label">{{ 'REGISTRATION.TELEPHONE' | translate }}</label>
-                    <input type="tel" class="form-control" id="telNumber" formControlName="telNumber"
-                      [class.is-invalid]="isFieldInvalid('telNumber')"
-                      placeholder="{{ 'REGISTRATION.ENTER_TELEPHONE' | translate }}">
-                    <div class="invalid-feedback" *ngIf="isFieldInvalid('telNumber')">
-                      {{ getFieldError('telNumber') }}
+                    
+                    <!-- Mobile Number Input with UAE Flag and 971 prefix -->
+                    <div class="mobile-input-container" style="border : none !important;" [class.is-invalid]="(submitted || registrationForm.get('telNumber')?.touched) && registrationForm.get('telNumber')?.errors">
+                        <div class="mobile-prefix-container">
+                            <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                            <span class="mobile-prefix">971</span>
+                        </div>
+                        <input 
+                            type="tel" 
+                            class="form-control mobile-number-input" 
+                            id="telNumber"
+                            formControlName="telNumber"
+                            placeholder="565666666"
+                            maxlength="9"
+                            (keypress)="restrictMobileInput($event)"
+                            (input)="onTelNumberInput()"
+                            (blur)="onTelNumberBlur()">
+                    </div>
+                    
+                    <div *ngIf="(submitted || registrationForm.get('telNumber')?.touched) && registrationForm.get('telNumber')?.errors" class="invalid-feedback">
+                        <div *ngIf="registrationForm.get('telNumber')?.hasError('required')">
+                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                        </div>
+                        <div *ngIf="registrationForm.get('telNumber')?.hasError('pattern')">
+                            {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
+                        </div>
                     </div>
                   </div>
                 </div>

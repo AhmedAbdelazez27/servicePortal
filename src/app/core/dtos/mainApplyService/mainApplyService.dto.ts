@@ -150,6 +150,9 @@ export class AppUserDto {
   licenseNumber: string | null = null;
   licenseEndDate: Date | null = null;
   civilId: string | null = null;
+  idNumberIssueDate: Date | null = null;
+  idNumberExpiryDate: Date | null = null;
+  dateOfBirth: Date | null = null;
   fax: string | null = null;
   boxNo: string | null = null;
   entityId: string | null = null;

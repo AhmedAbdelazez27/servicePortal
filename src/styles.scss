@@ -36,6 +36,8 @@
 
 body {
   font-family: 'Expo Arabic Book';
+  background-color: #F7F7F7;
+
 }
 
 
@@ -77,12 +79,12 @@ a {
 .navbar .nav-link {
   color: var(--Color-19, #A6A6A6);
   font-family: 'Expo Arabic Book';
-  font-size: 18px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
   letter-spacing: 0.08px;
-    margin: 7px;
+  margin: 7px;
 
 }
 
@@ -266,10 +268,11 @@ a {
   padding-bottom: unset;
   color: #000;
   text-align: start;
-  max-width: 700px;
+  max-width: 650px;
   background-color: #fff;
   padding: 24px;
   border-radius: 12px;
+  width: max-content;
 }
 
 .btn-gold {
@@ -369,6 +372,7 @@ section {
   font-weight: 400;
   line-height: normal;
   text-transform: capitalize;
+  margin-bottom: 0 !important;
 }
 
 .btn-link {
@@ -452,7 +456,9 @@ section {
 }
 
 .footer {
-  padding-top: 64px;
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 10px 10px 0 0;
 }
 
 .footer-links a {
@@ -479,13 +485,13 @@ section {
 }
 
 .copyrights-footer {
-  padding: 24px 64px;
+  padding: 24px;
   align-items: center;
   gap: 64px;
   align-self: stretch;
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px;
   background: var(--Color-20, #EDEDED);
-  margin: 32px 0 24px 0;
+  margin: 0 0 24px 0;
   color: var(--Color-17, #252525);
   font-size: 16px;
   font-style: normal;
@@ -3277,11 +3283,11 @@ select:focus {
   border-radius: 12px;
 }
 
-.comment-area{
-     // background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    font-size: 14px;
+.comment-area {
+  // background-color: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 14px;
 }
 
 
@@ -3593,6 +3599,7 @@ a,
   min-height: 48px !important;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 .mobile-input-container {
   display: flex;
   align-items: center;
@@ -3658,7 +3665,8 @@ a,
 
 /* Adjust prefix container to account for icon */
 .mobile-input-container .mobile-prefix-container {
-  margin-left: 44px; /* Space for the phone icon */
+  margin-left: 44px;
+  /* Space for the phone icon */
 }
 
 /* Focus state for the entire mobile input - matches form input styling */
@@ -3713,16 +3721,16 @@ a,
   .navbar .nav-link {
     color: var(--Color-19, #A6A6A6);
     font-family: 'Expo Arabic Book';
-    font-size: 18px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
     letter-spacing: 0.08px;
-        margin: 7px;
+    margin: 7px;
 
   }
 
-  .phone-number{
+  .phone-number {
     text-align: right;
   }
 
@@ -3905,10 +3913,12 @@ a,
     padding-bottom: unset;
     color: #000;
     text-align: start;
-    max-width: 700px;
+    max-width: 650px;
     background-color: #fff;
     padding: 24px;
     border-radius: 12px;
+    width: max-content;
+
   }
 
   .btn-gold {
@@ -4091,7 +4101,9 @@ a,
   }
 
   .footer {
-    padding-top: 64px;
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 10px 10px 0 0;
   }
 
   .footer-links a {
@@ -4118,13 +4130,13 @@ a,
   }
 
   .copyrights-footer {
-    padding: 24px 64px;
+    padding: 24px;
     align-items: center;
     gap: 64px;
     align-self: stretch;
-    border-radius: 10px;
+    border-radius: 0 0 10px 10px;
     background: var(--Color-20, #EDEDED);
-    margin: 32px 0 24px 0;
+    margin: 0 0 24px 0;
     color: var(--Color-17, #252525);
     font-size: 16px;
     font-style: normal;
@@ -6569,8 +6581,8 @@ a,
     border-radius: 12px;
   }
 
-.comment-area{
-     // background-color: #ffffff;
+  .comment-area {
+    // background-color: #ffffff;
     padding: 16px;
     border-radius: 8px;
     font-size: 14px;
@@ -7176,36 +7188,42 @@ td {
   font-size: 14px;
 }
 
-.service-box-two-items-container .service-box{
-      height: calc(100% - 8px);
+.service-box-two-items-container .service-box {
+  height: calc(100% - 8px);
 }
 
-.service-box{
+.service-box {
   box-shadow: 0 67.114px 109.061px 0 rgba(0, 0, 0, 0.05);
 }
+
 .mobile-prefix-container {
   display: flex;
   align-items: center;
-  direction: rtl; /* RTL support */
+  direction: rtl;
+  /* RTL support */
   background-color: var(--Color-21, #F7F7F7) !important;
   border: none !important;
-  border-radius: 0 10px 10px 0 !important; /* Changed for RTL */
+  border-radius: 0 10px 10px 0 !important;
+  /* Changed for RTL */
   padding: 12px 16px !important;
   min-width: 90px;
   min-height: 48px !important;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 .mobile-input-container {
   display: flex;
   align-items: center;
   position: relative;
-  direction: rtl; /* RTL layout */
+  direction: rtl;
+  /* RTL layout */
 }
 
 .uae-flag-image {
   width: 24px;
   height: 16px;
-  margin-left: 8px; /* Switched from margin-right */
+  margin-left: 8px;
+  /* Switched from margin-right */
   border-radius: 2px;
   object-fit: cover;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -7214,13 +7232,15 @@ td {
 .mobile-number-input {
   border: none !important;
   background-color: var(--Color-21, #F7F7F7) !important;
-  border-radius: 0 10px 10px 0 !important; /* Will override for RTL below */
+  border-radius: 0 10px 10px 0 !important;
+  /* Will override for RTL below */
   padding: 12px 16px !important;
   min-height: 48px !important;
 }
 
 :dir(rtl) .mobile-number-input {
-  border-radius: 10px 0 0 10px !important; /* RTL mirror */
+  border-radius: 10px 0 0 10px !important;
+  /* RTL mirror */
 }
 
 .mobile-number-input:focus {
@@ -7264,12 +7284,14 @@ td {
 
 /* Adjust the icon spacing */
 .mobile-input-container .mobile-prefix-container {
-  margin-left: 44px; /* default for LTR */
+  margin-left: 44px;
+  /* default for LTR */
 }
 
 :dir(rtl) .mobile-input-container .mobile-prefix-container {
   margin-left: 0;
-  margin-right: 44px; /* RTL mirror */
+  margin-right: 44px;
+  /* RTL mirror */
 }
 
 .mobile-input-container.form-container svg path {
@@ -7288,12 +7310,27 @@ td {
 }
 
 
-.contact-number-info{
+.contact-number-info {
   direction: ltr !important;
 }
 
 
-[dir="rtl"] .numbered-list li       { padding: 12px 52px 12px 12px;}
-[dir="rtl"] .numbered-list li::before { left: auto; right: 14px; }
+[dir="rtl"] .numbered-list li {
+  padding: 12px 52px 12px 12px;
+}
 
-.accordion-body .numbered-list li + li { margin-top: 8px; }
+[dir="rtl"] .numbered-list li::before {
+  left: auto;
+  right: 14px;
+}
+
+.accordion-body .numbered-list li+li {
+  margin-top: 8px;
+}
+
+
+.contact-form {
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 10px;
+}

@@ -5,8 +5,8 @@
             <img [src]="getHeroSectionImage(heroSection)" class="d-block w-100" (error)="onImageError($event)"
                 [alt]="getHeroSectionTitle(heroSection)" />
             <div class="carousel-caption d-none d-md-block">
-                <h5>{{ getHeroSectionTitle(heroSection) }}</h5>
-                <p *ngIf="getHeroSectionDescription(heroSection)">{{ getHeroSectionDescription(heroSection) }}</p>
+                <div [innerHTML]="getHeroSectionTitle(heroSection)"></div>
+                <!-- <p *ngIf="getHeroSectionDescription(heroSection)">{{ getHeroSectionDescription(heroSection) }}</p> -->
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-gold" (click)="onHeroSectionDetails(heroSection)">
                         {{ 'HOME.READ_MORE' | translate }}
@@ -317,11 +317,13 @@
             <div class="col-xl-6 mb-3" *ngIf="initiatives.length > 0">
                 <div class="service-box h-100">
                     <div class="mb-3">
-                        <img [src]="getInitiativeImage(initiatives[0])" [alt]="getInitiativeName(initiatives[0])"
+                        <img style="height: 207px; object-fit: cover;" [src]="getInitiativeImage(initiatives[0])" [alt]="getInitiativeName(initiatives[0])"
                             class="w-100" (error)="onImageError($event)" />
                     </div>
                     <span>{{ getInitiativeName(initiatives[0]) }}</span>
-                    <p class="mb-4">{{ getInitiativeDescription(initiatives[0]) }}</p>
+                     <!-- <p class="mb-4">{{ getInitiativeDescription(initiatives[0]) }}</p>  -->
+                              <div  [innerHTML]="getInitiativeDescription(initiatives[0])"></div>
+ 
                     <div class="d-flex justify-content-end">
                         <button class="btn btn-link" (click)="onInitiativeDetails(initiatives[0])">
                             {{ 'HOME.MORE' | translate }}
@@ -342,7 +344,8 @@
                         <!-- Second initiative -->
                         <div class="service-box mb-3" *ngIf="initiatives[1]">
                             <span>{{ getInitiativeName(initiatives[1]) }}</span>
-                            <p class="mb-4">{{ getInitiativeDescription(initiatives[1]) }}</p>
+                           <p class="mb-4" [innerHTML]="getInitiativeDescription(initiatives[1])"></p>
+
                             <div class="d-flex justify-content-end mt-auto">
                                 <button class="btn btn-link" (click)="onInitiativeDetails(initiatives[1])">
                                     {{ 'HOME.MORE' | translate }}
@@ -359,7 +362,8 @@
                         <!-- Third initiative -->
                         <div class="service-box" *ngIf="initiatives[2]">
                             <span>{{ getInitiativeName(initiatives[2]) }}</span>
-                            <p class="mb-4">{{ getInitiativeDescription(initiatives[2]) }}</p>
+                          <p class="mb-4" [innerHTML]="getInitiativeDescription(initiatives[2])"></p>
+
                             <div class="d-flex justify-content-end mt-auto">
                                 <button class="btn btn-link" (click)="onInitiativeDetails(initiatives[2])">
                                     {{ 'HOME.MORE' | translate }}

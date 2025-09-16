@@ -917,14 +917,34 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           this.isSaving = false;
         },
         error: (error) => {
-          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+          console.error('Error creating distribution site request:', error);
+          
+          // Check if it's a business error with a specific reason
+          if (error.error && error.error.reason) {
+            // Show the specific reason from the API response
+            this.toastr.error(error.error.reason);
+          } else {
+            // Fallback to generic error message
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+          }
+          
           this.isSaving = false;
         }
       });
       this.subscriptions.push(sub);
       
-    } catch (error) {
-      this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+    } catch (error: any) {
+      console.error('Error in onSubmit:', error);
+      
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+      }
+      
       this.isSaving = false;
     }
   }

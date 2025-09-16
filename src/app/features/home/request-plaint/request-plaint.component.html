@@ -359,7 +359,7 @@
                                                     </div>
                                                     <div *ngIf="selectedFiles[config.id!]" class="file-preview">
                                                         <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
-                                                        <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')" 
+                                                        <img style="width: 150px; height: 100px;"  *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')" 
                                                              [src]="filePreviews[config.id!]" 
                                                              class="preview-image">
                                                     </div>

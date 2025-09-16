@@ -18,7 +18,7 @@
   </div>
 
   <!-- Hero Section Details -->
-  <div *ngIf="heroSection && !loading" class="hero-section-details">
+  <div *ngIf="heroSection && !loading">
     <!-- Back Button -->
     <div class="mb-4">
       <button class="btn btn-outline-secondary" (click)="onBackToHome()">
@@ -29,34 +29,27 @@
       </button>
     </div>
 
-    <!-- Hero Section Content -->
-    <div class="hero-layout">
-      <!-- Image Section - 80% width -->
-      <div class="hero-image-section">
-        <div class="hero-image-container">
-          <img 
+    <img  class="w-100 mb-4" style="max-height: 500px; object-fit: cover; border-radius: 10px;"
             [src]="getHeroSectionImage(heroSection)" 
             [alt]="getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.IMAGE_ALT' | translate)"
-            class="img-fluid rounded shadow"
+            
             (error)="onImageError($event)"
           />
-        </div>
-      </div>
 
       <!-- Content Section - Below image -->
       <div class="hero-content-section">
-        <div class="hero-content">
-          <h1 class="hero-title mb-3">
+
+        <div class="hero-content" >
+         
             {{ getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.NO_DESCRIPTION' | translate) }}
-          </h1>
+         
           
           <div class="hero-description mb-4">
-            <p class="lead">
-              {{ getHeroSectionDescription(heroSection) || ('HOME.HERO_SECTION.NO_DESCRIPTION' | translate) }}
-            </p>
+         <div [innerHTML]="getHeroSectionDescription(heroSection)"></div>
+
+        
           </div>
         </div>
       </div>
-    </div>
   </div>
 </div>

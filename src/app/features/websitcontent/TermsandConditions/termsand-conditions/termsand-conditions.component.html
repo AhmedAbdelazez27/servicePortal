@@ -1,8 +1,6 @@
 <section>
-  <div class="container service py-5">
-    <div class="row justify-content-center">
-      <div class="col-12 col-lg-10 col-xl-9">
-
+  <div class="container service">
+   
         <!-- Header card (نفس شكل الـ Disclaimer/Privacy) -->
          <div class="service-info-card mb-4 align-items-center">
           <div class="service-icon">
@@ -19,26 +17,23 @@
             </svg>
           </div>
 
-          <h2 class="mb-0 ">
-            {{ 'Homepage.title' | translate }}
-          </h2>
+          <h4 class="title">
+           <ng-container *ngIf="currentLang === 'ar'; else enT">
+            الشروط والأحكام
+          </ng-container>
+          <ng-template #enT>Terms and Conditions</ng-template>
+          </h4>
 
 
         </div>
 
 
         <!-- عنوان الصفحة -->
-        <h3 class="mb-3 gold text-center">
-          <ng-container *ngIf="currentLang === 'ar'; else enT">
-            الشروط والأحكام
-          </ng-container>
-          <ng-template #enT>Terms and Conditions</ng-template>
-        </h3>
+        
 
         <!-- ====================== Arabic (RTL) ====================== -->
         <div dir="rtl" class="mb-4" *ngIf="currentLang === 'ar'">
-          <h4 class="mb-2">مجلس تنسيق العمل الخيري والأوقاف - عجمان</h4>
-          <h5 class="mb-3">الشروط والأحكام</h5>
+          
 
           <p>مرحبًا بك في الموقع الإلكتروني الخاص بـ مجلس تنسيق العمل الخيري والأوقاف في عجمان. باستخدامك لهذا الموقع، فإنك توافق على الالتزام بالشروط والأحكام التالية. إذا كنت لا توافق على هذه الشروط، فيرجى عدم استخدام الموقع.</p>
 
@@ -69,8 +64,7 @@
 
         <!-- ====================== English (LTR) ====================== -->
         <div dir="ltr" *ngIf="currentLang === 'en'">
-          <h4 class="mb-2">Charity Coordination Council – Ajman</h4>
-          <h5 class="mb-3">Terms and Conditions</h5>
+           
 
           <p>Welcome to the official website of the Charity Coordination Council – Ajman. By accessing or using this website, you acknowledge that you have read, understood, and agreed to comply with these Terms and Conditions. If you do not agree, please discontinue use of this website.</p>
 
@@ -100,8 +94,5 @@
           <p>The Council reserves the right to amend or update these Terms and Conditions at any time without prior notice.</p>
           <p>Users are encouraged to review this page periodically to remain informed of the latest updates, which shall take effect immediately upon publication.</p>
         </div>
-
-      </div>
-    </div>
   </div>
 </section>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -6,6 +6,8 @@ import {
   FormsModule,
   ReactiveFormsModule,
   Validators,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -58,7 +60,8 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private toastr: ToastrService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.initializeForm();
   }
@@ -102,7 +105,7 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
       complaintType: [null, Validators.required],
       contactNumber: [
         '',
-        [Validators.required, Validators.pattern(/^\+?[0-9]+$/)],
+        [Validators.required, this.uaeMobileValidator.bind(this)],
       ],
       applicantName: ['', Validators.required],
       details: ['', Validators.required],
@@ -232,7 +235,7 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
       const createDto: CreateRequestComplaintDto = {
         userId: currentUser.id,
         complaintType: formData.complaintType,
-        contactNumber: formData.contactNumber,
+        contactNumber: `971${formData.contactNumber}`, // Add 971 prefix
         applicantName: formData.applicantName,
         details: formData.details,
         email: formData.email || null,
@@ -249,17 +252,37 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
           this.isSaving = false;
         },
         error: (error) => {
-          this.toastr.error(
-            this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_COMPLAINT')
-          );
+          console.error('Error creating request complaint:', error);
+          
+          // Check if it's a business error with a specific reason
+          if (error.error && error.error.reason) {
+            // Show the specific reason from the API response
+            this.toastr.error(error.error.reason);
+          } else {
+            // Fallback to generic error message
+            this.toastr.error(
+              this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_COMPLAINT')
+            );
+          }
+          
           this.isSaving = false;
         },
       });
       this.subscriptions.push(sub);
-    } catch (error) {
-      this.toastr.error(
-        this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_COMPLAINT')
-      );
+    } catch (error: any) {
+      console.error('Error in onSubmit:', error);
+      
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        this.toastr.error(
+          this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_COMPLAINT')
+        );
+      }
+      
       this.isSaving = false;
     }
   }
@@ -351,5 +374,40 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
   // Navigation helper method
   navigateToServices(): void {
     this.router.navigate(['/services']);
+  }
+
+  // UAE Mobile validation methods
+  uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (!value) return null;
+    
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    return uaeMobilePattern.test(value) ? null : { pattern: true };
+  }
+
+  restrictMobileInput(event: KeyboardEvent): void {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9]/.test(char)) {
+      event.preventDefault();
+    }
+  }
+
+  onContactNumberInput(): void {
+    const mobileControl = this.requestComplaintForm.get('contactNumber');
+    if (mobileControl) {
+      let value = mobileControl.value;
+      if (value && value.length > 9) {
+        value = value.substring(0, 9);
+        mobileControl.setValue(value);
+      }
+    }
+  }
+
+  onContactNumberBlur(): void {
+    const mobileControl = this.requestComplaintForm.get('contactNumber');
+    if (mobileControl) {
+      mobileControl.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
   }
 }

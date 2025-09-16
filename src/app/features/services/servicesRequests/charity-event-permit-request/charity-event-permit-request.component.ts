@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AttachmentService } from '../../../../core/services/attachments/attachment.service';
@@ -143,7 +143,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private toastr: ToastrService,
     private router: Router,
-    private _CharityEventPermitRequestService: CharityEventPermitRequestService
+    private _CharityEventPermitRequestService: CharityEventPermitRequestService,
+    private cdr: ChangeDetectorRef
   ) {
     this.initializeForm();
     this.initPartnerForm();
@@ -184,8 +185,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         endDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
         supervisorName: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
         jopTitle: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        telephone1: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        telephone2: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+        telephone1: this.fb.control('', { validators: [Validators.required, this.uaeMobileValidator.bind(this)], nonNullable: true }),
+        telephone2: this.fb.control('', { validators: [Validators.required, this.uaeMobileValidator.bind(this)], nonNullable: true }),
         email: this.fb.control<string | null>(null, { validators: [Validators.email] }),
         advertisementType: this.fb.control<1 | 2>(1, { validators: [Validators.required], nonNullable: true }),
         notes: this.fb.control<string | null>(null),
@@ -688,11 +689,14 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         masterId: a.masterId || 0
       }));
 
+      const formData = this.firstStepForm.value;
       const payload: any = {
-        ...this.firstStepForm.value,
-        requestDate: toISO(this.firstStepForm.value.requestDate ?? new Date()),
-        startDate: toISO(this.firstStepForm.value.startDate),
-        endDate: toISO(this.firstStepForm.value.endDate),
+        ...formData,
+        requestDate: toISO(formData.requestDate ?? new Date()),
+        startDate: toISO(formData.startDate),
+        endDate: toISO(formData.endDate),
+        telephone1: `971${formData.telephone1}`, // Add 971 prefix
+        telephone2: `971${formData.telephone2}`, // Add 971 prefix
         requestAdvertisements: this.requestAdvertisements,
         attachments: mainAttachments,
         partners: (this.partners || []).map(p => ({
@@ -718,15 +722,33 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => {
           console.error('Error creating charity event permit request:', error);
-          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+          
+          // Check if it's a business error with a specific reason
+          if (error.error && error.error.reason) {
+            // Show the specific reason from the API response
+            this.toastr.error(error.error.reason);
+          } else {
+            // Fallback to generic error message
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+          }
+          
           this.isSaving = false;
         }
       });
       this.subscriptions.push(sub);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in onSubmit:', error);
-      this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+      
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+      }
+      
       this.isSaving = false;
     }
   }
@@ -903,6 +925,60 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
   removeAdvertisement(i: number): void {
     this.requestAdvertisements.splice(i, 1);
+  }
+
+  // UAE Mobile validation methods
+  uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (!value) return null;
+    
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    return uaeMobilePattern.test(value) ? null : { pattern: true };
+  }
+
+  restrictMobileInput(event: KeyboardEvent): void {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9]/.test(char)) {
+      event.preventDefault();
+    }
+  }
+
+  onTelephone1Input(): void {
+    const mobileControl = this.firstStepForm.get('telephone1');
+    if (mobileControl) {
+      let value = mobileControl.value;
+      if (value && value.length > 9) {
+        value = value.substring(0, 9);
+        mobileControl.setValue(value);
+      }
+    }
+  }
+
+  onTelephone1Blur(): void {
+    const mobileControl = this.firstStepForm.get('telephone1');
+    if (mobileControl) {
+      mobileControl.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
+  }
+
+  onTelephone2Input(): void {
+    const mobileControl = this.firstStepForm.get('telephone2');
+    if (mobileControl) {
+      let value = mobileControl.value;
+      if (value && value.length > 9) {
+        value = value.substring(0, 9);
+        mobileControl.setValue(value);
+      }
+    }
+  }
+
+  onTelephone2Blur(): void {
+    const mobileControl = this.firstStepForm.get('telephone2');
+    if (mobileControl) {
+      mobileControl.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
   }
 
 }

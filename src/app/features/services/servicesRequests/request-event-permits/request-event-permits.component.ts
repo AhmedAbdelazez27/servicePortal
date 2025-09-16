@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -143,7 +143,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private toastr: ToastrService,
     private router: Router,
-    private _CharityEventPermitRequestService: CharityEventPermitRequestService
+    private _CharityEventPermitRequestService: CharityEventPermitRequestService,
+    private cdr: ChangeDetectorRef
   ) {
     this.initializeForm();
     this.initPartnerForm();
@@ -266,12 +267,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         }),
 
         adminTel: this.fb.control<string>('', {
-          validators: [Validators.required, phoneRules(7, 20)],
+          validators: [Validators.required, this.uaeMobileValidator.bind(this)],
           nonNullable: true,
         }),
 
         telephone: this.fb.control<string>('', {
-          validators: [Validators.required, phoneRules(7, 20)],
+          validators: [Validators.required, this.uaeMobileValidator.bind(this)],
           nonNullable: true,
         }),
 
@@ -887,14 +888,17 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         masterId: a.masterId || 0
       }));
 
+      const formData = this.firstStepForm.value;
       const payload: any = {
-        ...this.firstStepForm.value,
-        lkpPermitTypeId : +this.firstStepForm.value.lkpPermitTypeId ,
-        lkpRequestTypeId : +this.firstStepForm.value.lkpRequestTypeId ,
+        ...formData,
+        lkpPermitTypeId : +formData.lkpPermitTypeId ,
+        lkpRequestTypeId : +formData.lkpRequestTypeId ,
 
-        requestDate: toISO(this.firstStepForm.value.requestDate ?? new Date()),
-        startDate: toISO(this.firstStepForm.value.startDate),
-        endDate: toISO(this.firstStepForm.value.endDate),
+        requestDate: toISO(formData.requestDate ?? new Date()),
+        startDate: toISO(formData.startDate),
+        endDate: toISO(formData.endDate),
+        adminTel: `971${formData.adminTel}`, // Add 971 prefix
+        telephone: `971${formData.telephone}`, // Add 971 prefix
         requestAdvertisements: this.requestAdvertisements,
         attachments: mainAttachments,
         partners: (this.partners || []).map(p => ({
@@ -919,16 +923,34 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           this.isSaving = false;
         },
         error: (error: any) => {
-          console.error('Error creating charity event permit request:', error);
-          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+          console.error('Error creating request event permit:', error);
+          
+          // Check if it's a business error with a specific reason
+          if (error.error && error.error.reason) {
+            // Show the specific reason from the API response
+            this.toastr.error(error.error.reason);
+          } else {
+            // Fallback to generic error message
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+          }
+          
           this.isSaving = false;
         }
       });
       this.subscriptions.push(sub);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in onSubmit:', error);
-      this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+      
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+      }
+      
       this.isSaving = false;
     }
   }
@@ -1255,6 +1277,60 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   //   };
 
   // }
+
+  // UAE Mobile validation methods
+  uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (!value) return null;
+    
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    return uaeMobilePattern.test(value) ? null : { pattern: true };
+  }
+
+  restrictMobileInput(event: KeyboardEvent): void {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9]/.test(char)) {
+      event.preventDefault();
+    }
+  }
+
+  onAdminTelInput(): void {
+    const mobileControl = this.firstStepForm.get('adminTel');
+    if (mobileControl) {
+      let value = mobileControl.value;
+      if (value && value.length > 9) {
+        value = value.substring(0, 9);
+        mobileControl.setValue(value);
+      }
+    }
+  }
+
+  onAdminTelBlur(): void {
+    const mobileControl = this.firstStepForm.get('adminTel');
+    if (mobileControl) {
+      mobileControl.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
+  }
+
+  onTelephoneInput(): void {
+    const mobileControl = this.firstStepForm.get('telephone');
+    if (mobileControl) {
+      let value = mobileControl.value;
+      if (value && value.length > 9) {
+        value = value.substring(0, 9);
+        mobileControl.setValue(value);
+      }
+    }
+  }
+
+  onTelephoneBlur(): void {
+    const mobileControl = this.firstStepForm.get('telephone');
+    if (mobileControl) {
+      mobileControl.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
+  }
 
 
 }

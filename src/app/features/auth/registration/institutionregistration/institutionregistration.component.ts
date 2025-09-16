@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -6,6 +6,8 @@ import {
   FormsModule,
   ReactiveFormsModule,
   Validators,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -79,6 +81,7 @@ export class InstitutionregistrationComponent implements OnInit {
     private router: Router,
     private attachmentService: AttachmentService,
     private select2Service: Select2Service,
+    private cdr: ChangeDetectorRef
   ) {
     this.initializeForm();
   }
@@ -96,12 +99,15 @@ export class InstitutionregistrationComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(2)]],
       userName: ['', [Validators.required, , Validators.email]],
       civilId: ['', [Validators.required, Validators.minLength(10)]],
+      idNumberIssueDate: [null],
+      idNumberExpiryDate: [null],
+      dateOfBirth: [null],
       entityId: [null, Validators.required],
       
       // Contact Information
       email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required, Validators.minLength(8)]],
-      telNumber: ['', [Validators.minLength(8)]], // Optional
+      phoneNumber: ['', [Validators.required, this.uaeMobileValidator.bind(this)]],
+      telNumber: ['', [this.uaeMobileValidator.bind(this)]], // Optional
       
       // Address Information
       countryId: [null], // Optional
@@ -314,6 +320,8 @@ export class InstitutionregistrationComponent implements OnInit {
 
       const createUserDto: CreateUserDto = {
          ...rest,
+        phoneNumber: `971${formData.phoneNumber}`, // Add 971 prefix
+        telNumber: formData.telNumber ? `971${formData.telNumber}` : formData.telNumber, // Add 971 prefix if telNumber exists
         boxNo: poBox, // Map poBox form field to boxNo DTO field
         attachments: attachments.length > 0 ? attachments : undefined
       };
@@ -324,7 +332,16 @@ export class InstitutionregistrationComponent implements OnInit {
           this.router.navigate(['/register/pending']);
         },
         error: (error) => {
-          this.toastr.error(this.translate.instant('REGISTRATION.TOASTR.REGISTRATION_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+          console.error('Error creating institution registration:', error);
+          
+          // Check if it's a business error with a specific reason
+          if (error.error && error.error.reason) {
+            // Show the specific reason from the API response
+            this.toastr.error(error.error.reason);
+          } else {
+            // Fallback to generic error message
+            this.toastr.error(this.translate.instant('REGISTRATION.TOASTR.REGISTRATION_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+          }
         },
         complete: () => {
           this.isLoading = false;
@@ -332,8 +349,18 @@ export class InstitutionregistrationComponent implements OnInit {
         }
       });
 
-    } catch (error) {
-      this.toastr.error(this.translate.instant('REGISTRATION.TOASTR.GENERAL_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+    } catch (error: any) {
+      console.error('Error in onSubmit:', error);
+      
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        this.toastr.error(this.translate.instant('REGISTRATION.TOASTR.GENERAL_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+      }
+      
       this.isLoading = false;
       this.spinnerService.hide();
     }
@@ -393,5 +420,59 @@ export class InstitutionregistrationComponent implements OnInit {
 
   onEntitiesScrollToEnd(): void {
     this.fetchEntities();
+  }
+
+  // UAE Mobile validation methods
+  uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (!value) return null;
+    
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    return uaeMobilePattern.test(value) ? null : { pattern: true };
+  }
+
+  restrictMobileInput(event: KeyboardEvent): void {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9]/.test(char)) {
+      event.preventDefault();
+    }
+  }
+
+  onPhoneNumberInput(): void {
+    const mobileControl = this.registrationForm.get('phoneNumber');
+    if (mobileControl) {
+      let value = mobileControl.value;
+      if (value && value.length > 9) {
+        value = value.substring(0, 9);
+        mobileControl.setValue(value);
+      }
+    }
+  }
+
+  onPhoneNumberBlur(): void {
+    const mobileControl = this.registrationForm.get('phoneNumber');
+    if (mobileControl) {
+      mobileControl.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
+  }
+
+  onTelNumberInput(): void {
+    const mobileControl = this.registrationForm.get('telNumber');
+    if (mobileControl) {
+      let value = mobileControl.value;
+      if (value && value.length > 9) {
+        value = value.substring(0, 9);
+        mobileControl.setValue(value);
+      }
+    }
+  }
+
+  onTelNumberBlur(): void {
+    const mobileControl = this.registrationForm.get('telNumber');
+    if (mobileControl) {
+      mobileControl.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
   }
 }

@@ -222,11 +222,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(dateFormSub);
 
-    // Subscribe to startDate changes to show toaster immediately if past date is entered
+    // Subscribe to startDate changes for validation without showing toasts immediately
     const startDateControl = this.dateDetailsForm.get('startDate');
     if (startDateControl) {
       const startDateSub = startDateControl.valueChanges.subscribe(() => {
-        this.validateDateDetailsTab(true);
+        // Only validate without showing toasts - toasts will show when user tries to proceed
+        this.validateDateDetailsTab(false);
       });
       this.subscriptions.push(startDateSub);
     }
@@ -1548,16 +1549,34 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           this.isSaving = false;
         },
         error: (error) => {
-          // console.error('Error creating fasting tent request:', error);
-          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+          console.error('Error creating fasting tent request:', error);
+          
+          // Check if it's a business error with a specific reason
+          if (error.error && error.error.reason) {
+            // Show the specific reason from the API response
+            this.toastr.error(error.error.reason);
+          } else {
+            // Fallback to generic error message
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+          }
+          
           this.isSaving = false;
         }
       });
       this.subscriptions.push(sub);
       
-    } catch (error) {
-      // console.error('Error in onSubmit:', error);
-      this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+    } catch (error: any) {
+      console.error('Error in onSubmit:', error);
+      
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+      }
+      
       this.isSaving = false;
     }
   }

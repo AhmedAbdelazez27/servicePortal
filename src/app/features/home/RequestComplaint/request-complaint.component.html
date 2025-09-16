@@ -64,11 +64,31 @@
                 <div class="col-md-6 mb-4">
                   <label class="form-label">{{ 'REQUEST_COMPLAINT.CONTACT_NUMBER' | translate }} <span
                       class="text-danger">*</span></label>
-                  <input type="tel" class="form-control" formControlName="contactNumber"
-                    [placeholder]="'REQUEST_COMPLAINT.CONTACT_NUMBER_PLACEHOLDER' | translate"
-                    [class.is-invalid]="hasFieldError('contactNumber')">
-                  <div *ngIf="hasFieldError('contactNumber')" class="invalid-feedback">
-                    {{ getFieldErrorMessage('contactNumber') }}
+                  
+                  <!-- Mobile Number Input with UAE Flag and 971 prefix -->
+                  <div class="mobile-input-container" style="border : none !important;" [class.is-invalid]="(submitted || requestComplaintForm.get('contactNumber')?.touched) && requestComplaintForm.get('contactNumber')?.errors">
+                      <div class="mobile-prefix-container">
+                          <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                          <span class="mobile-prefix">971</span>
+                      </div>
+                      <input 
+                          type="tel" 
+                          class="form-control mobile-number-input" 
+                          formControlName="contactNumber"
+                          placeholder="565666666"
+                          maxlength="9"
+                          (keypress)="restrictMobileInput($event)"
+                          (input)="onContactNumberInput()"
+                          (blur)="onContactNumberBlur()">
+                  </div>
+                  
+                  <div *ngIf="(submitted || requestComplaintForm.get('contactNumber')?.touched) && requestComplaintForm.get('contactNumber')?.errors" class="invalid-feedback">
+                      <div *ngIf="requestComplaintForm.get('contactNumber')?.hasError('required')">
+                          {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                      </div>
+                      <div *ngIf="requestComplaintForm.get('contactNumber')?.hasError('pattern')">
+                          {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
+                      </div>
                   </div>
                 </div>
 

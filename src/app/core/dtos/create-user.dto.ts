@@ -18,6 +18,9 @@ export interface CreateUserDto {
   licenseNumber?: string;
   licenseEndDate?: Date;
   civilId?: string;
+  idNumberIssueDate?: Date;
+  idNumberExpiryDate?: Date;
+  dateOfBirth?: Date;
   fax?: string;
   boxNo?: string;
   entityId?: string;

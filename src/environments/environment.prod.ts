@@ -1,7 +1,8 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://192.168.51.130/CCC.Backend/api',
-  //apiBaseUrl:'https://localhost:7156/api'
+   //apiBaseUrl:'https://localhost:7156/api'
+      apiBaseUrl: 'https://192.168.51.130/api',
+
   firebase: {
     apiKey: "AIzaSyAB3FKe70tGitiH23qLJY7jU_gLAxzjWhc",
     authDomain: "ccc-serevices.firebaseapp.com",

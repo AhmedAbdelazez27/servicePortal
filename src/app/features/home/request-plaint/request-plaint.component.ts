@@ -158,7 +158,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     this.requestPlaintForm = this.fb.group({
       userId: [currentUser?.id || '', Validators.required],
       requestMainApplyServiceId: [null, Validators.required],
-      requestingEntityId: [null, Validators.required],
+      requestingEntityId: [null],
       requestNo: [0], // Will be auto-generated
       requestDate: [new Date().toISOString().split('T')[0], Validators.required],
       details: ['', Validators.required],
@@ -272,11 +272,12 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
           
           // Trigger change detection
           this.cdr.detectChanges();
-        } else {
-          console.warn('No user entities found for userId:', userId);
-          // Disable the form if no entities are available
-          this.requestPlaintForm.disable();
-        }
+        } 
+        // else {
+        //   console.warn('No user entities found for userId:', userId);
+        //   // Disable the form if no entities are available
+        //   this.requestPlaintForm.disable();
+        // }
         return entities;
       })
     );
@@ -309,7 +310,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
             this.toastr.warning(this.translate.instant('REQUEST_PLAINT.NO_ENTITIES_AVAILABLE'));
           }
           // Disable the form if no entities are available
-          this.requestPlaintForm.disable();
+          // this.requestPlaintForm.disable();
         }
       },
       error: (error) => {
@@ -319,7 +320,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
           this.toastr.error(this.translate.instant('ERRORS.FAILED_LOAD_DATA'));
         }
         // Disable the form on error
-        this.requestPlaintForm.disable();
+        // this.requestPlaintForm.disable();
       }
     });
     this.subscriptions.push(sub);
@@ -465,7 +466,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
 
   validateStep1(): boolean {
     const form = this.requestPlaintForm;
-    const requiredFields = ['requestMainApplyServiceId', 'requestingEntityId', 'details'];
+    const requiredFields = ['requestMainApplyServiceId', 'details'];
     
     for (const field of requiredFields) {
       if (!form.get(field)?.value) {
@@ -730,15 +731,33 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error creating request plaint:', error);
-          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+          
+          // Check if it's a business error with a specific reason
+          if (error.error && error.error.reason) {
+            // Show the specific reason from the API response
+            this.toastr.error(error.error.reason);
+          } else {
+            // Fallback to generic error message
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+          }
+          
           this.isSaving = false;
         }
       });
       this.subscriptions.push(sub);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in onSubmit:', error);
-      this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+      
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+      }
+      
       this.isSaving = false;
     }
   }
@@ -748,7 +767,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     switch (step) {
       case 1:
         const step1Valid = !!(this.requestPlaintForm.get('requestMainApplyServiceId')?.valid && 
-               this.requestPlaintForm.get('requestingEntityId')?.valid &&
                this.requestPlaintForm.get('details')?.valid);
 
         return step1Valid;
@@ -806,7 +824,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     }
     
     // Check only the most essential required fields
-    const requiredFields = ['requestMainApplyServiceId', 'requestingEntityId', 'details'];
+    const requiredFields = ['requestMainApplyServiceId', 'details'];
     const fieldResults = requiredFields.map(field => {
       const control = this.requestPlaintForm.get(field);
       const hasValue = control && control.value && control.value.toString().trim();

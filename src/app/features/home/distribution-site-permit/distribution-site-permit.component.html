@@ -351,7 +351,7 @@
                                         <label class="form-label">{{ 'DIST_SITE.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
                                         
                                         <!-- Mobile Number Input with UAE Flag and 971 prefix -->
-                                        <div class="mobile-input-container" [class.is-invalid]="(submitted || mainInfoForm.get('supervisorMobile')?.touched) && mainInfoForm.get('supervisorMobile')?.errors">
+                                        <div class="mobile-input-container" style="border : none !important;" [class.is-invalid]="(submitted || mainInfoForm.get('supervisorMobile')?.touched) && mainInfoForm.get('supervisorMobile')?.errors">
                                             <div class="mobile-prefix-container">
                                                 <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
                                                 <span class="mobile-prefix">971</span>

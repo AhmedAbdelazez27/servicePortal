@@ -1,0 +1,79 @@
+// Mobile input container with UAE flag and prefix
+.mobile-input-container {
+  
+
+  display: flex;
+  align-items: center;
+  direction: ltr; // Override RTL to ensure prefix appears on the left
+  // border: 1px solid #ced4da;
+  border-radius: 10px;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  
+  &:focus-within {
+    border-color: #8d734d !important;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem #e4d8c6 !important;
+  }
+  
+  &.is-invalid {
+    border-color: #dc3545;
+    border-radius: 10px;
+    
+    &:focus-within {
+      // border-color: #dc3545;
+      // box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+  }
+}
+
+.mobile-prefix-container {
+  border: none !important;
+  display: flex;
+  align-items: center;
+  direction: ltr !important; // Override RTL to ensure prefix appears on the left
+
+
+  margin-left: 0 !important;
+  padding: 14px;
+      /* border-radius: 0 10px 10px 0 !important; */ // i need to override this to remove this in this file 
+      
+  
+  background-color: #F7F7F7;
+  //  border-left: 1px solid #ced4da;
+  border-radius: 0.375rem 0 0 0.375rem !important; // Override global border-radius rule
+  min-width: 80px;
+  
+  .uae-flag-image {
+    width: 20px;
+    height: 15px;
+    margin-right: 8px;
+    border-radius: 2px;
+    object-fit: cover;
+  }
+  
+  .mobile-prefix {
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.875rem;
+  }
+}
+
+.mobile-number-input {
+  border: none !important;
+  border-radius: 0 0.375rem 0.375rem 0 !important;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+  box-shadow: none !important;
+  
+  &:focus {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  
+  &::placeholder {
+    color: #6c757d;
+    opacity: 1;
+  }
+}

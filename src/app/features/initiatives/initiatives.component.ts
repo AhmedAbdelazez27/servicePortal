@@ -62,7 +62,7 @@ export class InitiativesComponent implements OnInit {
 
   getInitiativeDescription(initiative: InitiativeDto): string {
     const currentLanguage = localStorage.getItem('language') || 'en';
-    return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '');
+    return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '').replace(/&nbsp;/g, ' ');
   }
 
   getInitiativeImage(initiative: InitiativeDto): string {

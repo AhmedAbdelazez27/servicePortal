@@ -435,6 +435,54 @@
                     </div>
                   </div>
                 </div>
+
+                <!-- Date Fields Section -->
+                <div class="gr-1">
+                  <div class="data-1">
+                    <h2>{{ 'REGISTRATION.ID_NUMBER_ISSUE_DATE' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">{{ profileForm.get('idNumberIssueDate')?.value || '-' }}</p>
+                    <input 
+                      *ngIf="isContactAddressEditMode"
+                      type="date" 
+                      class="form-control" 
+                      formControlName="idNumberIssueDate"
+                      [class.is-invalid]="isFieldInvalid('idNumberIssueDate')"
+                      [class.is-valid]="profileForm.get('idNumberIssueDate')?.valid && (profileForm.get('idNumberIssueDate')?.touched || submitted)">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('idNumberIssueDate')">
+                      {{ getFieldError('idNumberIssueDate') }}
+                    </div>
+                  </div>
+
+                  <div class="data-1">
+                    <h2>{{ 'REGISTRATION.ID_NUMBER_EXPIRY_DATE' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">{{ profileForm.get('idNumberExpiryDate')?.value || '-' }}</p>
+                    <input 
+                      *ngIf="isContactAddressEditMode"
+                      type="date" 
+                      class="form-control" 
+                      formControlName="idNumberExpiryDate"
+                      [class.is-invalid]="isFieldInvalid('idNumberExpiryDate')"
+                      [class.is-valid]="profileForm.get('idNumberExpiryDate')?.valid && (profileForm.get('idNumberExpiryDate')?.touched || submitted)">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('idNumberExpiryDate')">
+                      {{ getFieldError('idNumberExpiryDate') }}
+                    </div>
+                  </div>
+
+                  <div class="data-1">
+                    <h2>{{ 'REGISTRATION.DATE_OF_BIRTH' | translate }}</h2>
+                    <p *ngIf="!isContactAddressEditMode">{{ profileForm.get('dateOfBirth')?.value || '-' }}</p>
+                    <input 
+                      *ngIf="isContactAddressEditMode"
+                      type="date" 
+                      class="form-control" 
+                      formControlName="dateOfBirth"
+                      [class.is-invalid]="isFieldInvalid('dateOfBirth')"
+                      [class.is-valid]="profileForm.get('dateOfBirth')?.valid && (profileForm.get('dateOfBirth')?.touched || submitted)">
+                    <div class="invalid-feedback" *ngIf="isContactAddressEditMode && isFieldInvalid('dateOfBirth')">
+                      {{ getFieldError('dateOfBirth') }}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- Edit Mode Buttons -->

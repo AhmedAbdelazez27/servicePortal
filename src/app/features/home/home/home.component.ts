@@ -220,8 +220,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   getInitiativeDescription(initiative: InitiativeDto): string {
-    const currentLanguage = localStorage.getItem('language') || 'en';
-    return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '');
+        const currentLanguage = this.translationService.currentLang;
+
+    return currentLanguage === 'ar' ? (initiative.descriptionAr || '').replace(/&nbsp;/, ' ') :  (initiative.descriptionEn ).replace(/&nbsp;/, ' ') ;
   }
 
   getInitiativeImage(initiative: InitiativeDto): string {

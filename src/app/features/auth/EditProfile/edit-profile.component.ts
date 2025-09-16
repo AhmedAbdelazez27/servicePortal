@@ -123,6 +123,9 @@ export class EditProfileComponent implements OnInit {
       userName: ['', [Validators.required, Validators.minLength(3)]],
       gender: [null],
       civilId: ['', [Validators.required, Validators.minLength(10)]],
+      idNumberIssueDate: [null],
+      idNumberExpiryDate: [null],
+      dateOfBirth: [null],
       
       // Institution specific fields
       foundationType: [''],
@@ -240,6 +243,9 @@ export class EditProfileComponent implements OnInit {
       userName: userData.userName || '',
       gender: userData.gender !== undefined && userData.gender !== null ? String(userData.gender) : null,
       civilId: userData.civilId || '',
+      idNumberIssueDate: userData.idNumberIssueDate ? new Date(userData.idNumberIssueDate).toISOString().split('T')[0] : null,
+      idNumberExpiryDate: userData.idNumberExpiryDate ? new Date(userData.idNumberExpiryDate).toISOString().split('T')[0] : null,
+      dateOfBirth: userData.dateOfBirth ? new Date(userData.dateOfBirth).toISOString().split('T')[0] : null,
       foundationType: userData.foundationType || '',
       foundationName: userData.foundationName || '',
       licenseNumber: userData.licenseNumber || '',
@@ -265,8 +271,8 @@ export class EditProfileComponent implements OnInit {
     // Disable basic info fields (gender is now read-only)
     this.setFormFieldsEnabled(['nameEn', 'name', 'userName', 'civilId', 'foundationType', 'foundationName', 'licenseNumber', 'licenseEndDate', 'entityId'], false);
     
-    // Disable contact and address fields (including email)
-    this.setFormFieldsEnabled(['email', 'phoneNumber', 'telNumber', 'countryId', 'cityId', 'address', 'poBox'], false);
+    // Disable contact and address fields (including email and date fields)
+    this.setFormFieldsEnabled(['email', 'phoneNumber', 'telNumber', 'countryId', 'cityId', 'address', 'poBox', 'idNumberIssueDate', 'idNumberExpiryDate', 'dateOfBirth'], false);
   }
 
   private updateFormValidators(userType: number): void {
@@ -803,6 +809,9 @@ export class EditProfileComponent implements OnInit {
         countryId: formData.countryId,
         boxNo: formData.poBox,
         civilId: formData.civilId,
+        idNumberIssueDate: formData.idNumberIssueDate,
+        idNumberExpiryDate: formData.idNumberExpiryDate,
+        dateOfBirth: formData.dateOfBirth,
         userType: formData.userType,
         serviceType: formData.serviceType,
         userStatus: formData.userStatus,
@@ -1097,12 +1106,12 @@ export class EditProfileComponent implements OnInit {
   toggleBasicInfoEditMode(): void {
     this.isBasicInfoEditMode = !this.isBasicInfoEditMode;
     // Exclude the always-disabled fields from being enabled
-            this.setFormFieldsEnabled(['foundationType', 'foundationName', 'licenseNumber', 'licenseEndDate', 'entityId'], this.isBasicInfoEditMode);
+    this.setFormFieldsEnabled(['foundationType', 'foundationName', 'licenseNumber', 'licenseEndDate', 'entityId'], this.isBasicInfoEditMode);
   }
 
   toggleContactAddressEditMode(): void {
     this.isContactAddressEditMode = !this.isContactAddressEditMode;
-    this.setFormFieldsEnabled(['email', 'phoneNumber', 'telNumber', 'countryId', 'cityId', 'address', 'poBox'], this.isContactAddressEditMode);
+    this.setFormFieldsEnabled(['email', 'phoneNumber', 'telNumber', 'countryId', 'cityId', 'address', 'poBox', 'idNumberIssueDate', 'idNumberExpiryDate', 'dateOfBirth'], this.isContactAddressEditMode);
   }
 
   toggleAttachmentsEditMode(): void {
@@ -1141,6 +1150,9 @@ export class EditProfileComponent implements OnInit {
           name: formData.name,
           nameEn: formData.nameEn,
           civilId: formData.civilId,
+          idNumberIssueDate: formData.idNumberIssueDate,
+          idNumberExpiryDate: formData.idNumberExpiryDate,
+          dateOfBirth: formData.dateOfBirth,
           userType: formData.userType,
           serviceType: formData.serviceType,
           userStatus: formData.userStatus,
@@ -1197,7 +1209,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   async saveContactAddress(): Promise<void> {
-    if (this.validateSection(['email', 'phoneNumber', 'telNumber', 'countryId', 'cityId', 'address', 'poBox'])) {
+    if (this.validateSection(['email', 'phoneNumber', 'telNumber', 'countryId', 'cityId', 'address', 'poBox', 'idNumberIssueDate', 'idNumberExpiryDate', 'dateOfBirth'])) {
       this.isLoading = true;
       this.spinnerService.show();
 
@@ -1213,6 +1225,9 @@ export class EditProfileComponent implements OnInit {
           name: formData.name,
           nameEn: formData.nameEn,
           civilId: formData.civilId,
+          idNumberIssueDate: formData.idNumberIssueDate,
+          idNumberExpiryDate: formData.idNumberExpiryDate,
+          dateOfBirth: formData.dateOfBirth,
           userType: formData.userType,
           serviceType: formData.serviceType,
           userStatus: formData.userStatus,
@@ -1260,7 +1275,7 @@ export class EditProfileComponent implements OnInit {
 
   cancelBasicInfo(): void {
     this.isBasicInfoEditMode = false;
-            this.setFormFieldsEnabled(['nameEn', 'name', 'userName', 'civilId', 'foundationType', 'foundationName', 'licenseNumber', 'licenseEndDate', 'entityId'], false);
+    this.setFormFieldsEnabled(['foundationType', 'foundationName', 'licenseNumber', 'licenseEndDate', 'entityId'], false);
     
     // Restore original profile photo if user cancelled
     if (this.selectedProfilePhoto) {
@@ -1274,7 +1289,7 @@ export class EditProfileComponent implements OnInit {
 
   cancelContactAddress(): void {
     this.isContactAddressEditMode = false;
-    this.setFormFieldsEnabled(['email', 'phoneNumber', 'telNumber', 'countryId', 'cityId', 'address', 'poBox'], false);
+    this.setFormFieldsEnabled(['email', 'phoneNumber', 'telNumber', 'countryId', 'cityId', 'address', 'poBox', 'idNumberIssueDate', 'idNumberExpiryDate', 'dateOfBirth'], false);
     // Restore original values
     this.populateForm(this.userData);
   }

@@ -361,32 +361,62 @@
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'event.AdminTel' | translate }} <span
                                                 class="text-danger">*</span></label>
-                                        <input class="form-control" formControlName="adminTel"
-                                            [class.is-invalid]="firstStepForm.get('adminTel')?.touched && firstStepForm.get('adminTel')?.invalid">
-                                        <div class="invalid-feedback"
-                                            *ngIf="firstStepForm.get('adminTel')?.touched && firstStepForm.get('adminTel')?.errors as e">
-                                            <span *ngIf="e['required']">{{ 'VALIDATION.REQUIRED_FIELD' | translate
-                                                }}</span>
-                                            <span *ngIf="e['phoneLength']">{{ 'VALIDATION.PHONE_LENGTH' | translate
-                                                }}</span>
-                                            <span *ngIf="e['phonePattern']">{{ 'VALIDATION.PHONE_PATTERN' | translate
-                                                }}</span>
+                                        
+                                        <!-- Mobile Number Input with UAE Flag and 971 prefix -->
+                                        <div class="mobile-input-container" style="border : none !important;" [class.is-invalid]="(submitted || firstStepForm.get('adminTel')?.touched) && firstStepForm.get('adminTel')?.errors">
+                                            <div class="mobile-prefix-container">
+                                                <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                                                <span class="mobile-prefix">971</span>
+                                            </div>
+                                            <input 
+                                                type="tel" 
+                                                class="form-control mobile-number-input" 
+                                                formControlName="adminTel"
+                                                placeholder="565666666"
+                                                maxlength="9"
+                                                (keypress)="restrictMobileInput($event)"
+                                                (input)="onAdminTelInput()"
+                                                (blur)="onAdminTelBlur()">
+                                        </div>
+                                        
+                                        <div *ngIf="(submitted || firstStepForm.get('adminTel')?.touched) && firstStepForm.get('adminTel')?.errors" class="invalid-feedback">
+                                            <div *ngIf="firstStepForm.get('adminTel')?.hasError('required')">
+                                                {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                            </div>
+                                            <div *ngIf="firstStepForm.get('adminTel')?.hasError('pattern')">
+                                                {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'event.TELEPHONE' | translate }} <span
                                                 class="text-danger">*</span></label>
-                                        <input class="form-control" formControlName="telephone"
-                                            [class.is-invalid]="firstStepForm.get('telephone')?.touched && firstStepForm.get('telephone')?.invalid">
-                                        <div class="invalid-feedback"
-                                            *ngIf="firstStepForm.get('telephone')?.touched && firstStepForm.get('telephone')?.errors as e">
-                                            <span *ngIf="e['required']">{{ 'VALIDATION.REQUIRED_FIELD' | translate
-                                                }}</span>
-                                            <span *ngIf="e['phoneLength']">{{ 'VALIDATION.PHONE_LENGTH' | translate
-                                                }}</span>
-                                            <span *ngIf="e['phonePattern']">{{ 'VALIDATION.PHONE_PATTERN' | translate
-                                                }}</span>
+                                        
+                                        <!-- Mobile Number Input with UAE Flag and 971 prefix -->
+                                        <div class="mobile-input-container" style="border : none !important;" [class.is-invalid]="(submitted || firstStepForm.get('telephone')?.touched) && firstStepForm.get('telephone')?.errors">
+                                            <div class="mobile-prefix-container">
+                                                <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                                                <span class="mobile-prefix">971</span>
+                                            </div>
+                                            <input 
+                                                type="tel" 
+                                                class="form-control mobile-number-input" 
+                                                formControlName="telephone"
+                                                placeholder="565666666"
+                                                maxlength="9"
+                                                (keypress)="restrictMobileInput($event)"
+                                                (input)="onTelephoneInput()"
+                                                (blur)="onTelephoneBlur()">
+                                        </div>
+                                        
+                                        <div *ngIf="(submitted || firstStepForm.get('telephone')?.touched) && firstStepForm.get('telephone')?.errors" class="invalid-feedback">
+                                            <div *ngIf="firstStepForm.get('telephone')?.hasError('required')">
+                                                {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                            </div>
+                                            <div *ngIf="firstStepForm.get('telephone')?.hasError('pattern')">
+                                                {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -585,7 +615,7 @@
                                                     <div *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
                                                         class="file-preview uploaded-file mb-4">
                                                         <div class="d-flex align-items-center gap-2">
-                                                            <img *ngIf="getPreview(AttachmentsConfigType.Partner, cfg.id!)
+                                                            <img style="width: 150px; height: 100px;" *ngIf="getPreview(AttachmentsConfigType.Partner, cfg.id!)
                                                           && state(AttachmentsConfigType.Partner).selected[cfg.id!].type?.startsWith('image/')"
                                                                 [src]="getPreview(AttachmentsConfigType.Partner, cfg.id!)"
                                                                 class="img-thumbnail uploaded-img">

@@ -1,3 +1,65 @@
+// Mobile input container with UAE flag and prefix
+.mobile-input-container {
+  display: flex;
+  align-items: center;
+  direction: ltr; // Override RTL to ensure prefix appears on the left
+  border-radius: 10px;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  
+  &:focus-within {
+    border-color: #8d734d !important;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem #e4d8c6 !important;
+  }
+  
+  &.is-invalid {
+    border-color: #dc3545;
+    border-radius: 10px;
+    
+    &:focus-within {
+      // border-color: #dc3545;
+      // box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+  }
+}
+
+.mobile-prefix-container {
+  border: none !important;
+  display: flex;
+  align-items: center;
+  direction: ltr !important; // Override RTL to ensure prefix appears on the left
+  margin-left: 0 !important;
+  padding: 14px;
+  background-color: #F7F7F7;
+  border-radius: 0 10px 10px 0 !important; // Adjusted border-radius
+  min-width: 80px;
+  
+  .uae-flag-image {
+    width: 20px;
+    height: 15px;
+    margin-right: 8px;
+    border-radius: 2px;
+    object-fit: cover;
+  }
+  
+  .mobile-prefix {
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.875rem;
+  }
+}
+
+.mobile-number-input {
+  border: none;
+  padding-left: 0;
+  
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+
 .registration-container {
   min-height: 100vh;
   background-color: #f8f9fa;
