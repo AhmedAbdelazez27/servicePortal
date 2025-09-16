@@ -292,3 +292,13 @@
     transform: translateY(0);
   }
 }
+
+
+.hero-description {
+  white-space: normal;      
+  overflow-wrap: anywhere;     
+  word-break: break-word;      
+}
+.hero-description p {
+  margin-bottom: 1rem;         
+}

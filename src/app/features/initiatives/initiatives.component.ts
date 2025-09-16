@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { InitiativeService } from '../../core/services/initiative.service';
 import { InitiativeDto, GetAllInitiativeParameter } from '../../core/dtos/UserSetting/initiatives/initiative.dto';
+import { TranslationService } from '../../core/services/translation.service';
 
 @Component({
   selector: 'app-initiatives',
@@ -19,7 +20,8 @@ export class InitiativesComponent implements OnInit {
 
   constructor(
     private initiativeService: InitiativeService,
-    private router: Router
+    private router: Router,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -60,10 +62,20 @@ export class InitiativesComponent implements OnInit {
     return currentLanguage === 'ar' ? (initiative.nameAr || '') : (initiative.nameEn || initiative.nameAr || '');
   }
 
-  getInitiativeDescription(initiative: InitiativeDto): string {
-    const currentLanguage = localStorage.getItem('language') || 'en';
-    return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '').replace(/&nbsp;/g, ' ');
-  }
+  // getInitiativeDescription(initiative: InitiativeDto): string {
+  //   const currentLanguage = localStorage.getItem('language') || 'en';
+  //   return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '').replace(/&nbsp;/g, ' ');
+  // }
+  getInitiativeDescription(initiative: InitiativeDto, maxLength: number = 150): string {
+  const currentLanguage = this.translationService.currentLang;
+
+  const text = currentLanguage === 'ar'
+    ? (initiative.descriptionAr || '').replace(/&nbsp;/g, ' ')
+    : (initiative.descriptionEn || '').replace(/&nbsp;/g, ' ');
+
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+}
+
 
   getInitiativeImage(initiative: InitiativeDto): string {
     return initiative.attachment?.imgPath || 'assets/images/initiative-1.png';

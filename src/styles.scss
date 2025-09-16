@@ -7334,3 +7334,12 @@ td {
   background-color: #fff;
   border-radius: 10px;
 }
+
+.initiative-description {
+  white-space: normal;          
+  overflow-wrap: anywhere;      
+  word-break: break-word;       
+}
+.initiative-description p {
+  margin: 0 0 1rem;              
+}

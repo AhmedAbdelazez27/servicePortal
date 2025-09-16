@@ -24,7 +24,7 @@ export class HeroSectionDetailsComponent implements OnInit {
     private heroSectionService: HeroSectionSettingService,
     private translationService: TranslationService,
     private translate: TranslateService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadHeroSectionDetails();
@@ -57,10 +57,22 @@ export class HeroSectionDetailsComponent implements OnInit {
     return currentLanguage === 'ar' ? heroSection.titleAr : heroSection.titleEn;
   }
 
+  // getHeroSectionDescription(heroSection: HeroSectionSettingDto): string {
+  //   const currentLanguage = this.translationService.currentLang;
+  //   return currentLanguage === 'ar' ? heroSection.descriptionAr : heroSection.descriptionEn;
+  // }
   getHeroSectionDescription(heroSection: HeroSectionSettingDto): string {
     const currentLanguage = this.translationService.currentLang;
-    return currentLanguage === 'ar' ? heroSection.descriptionAr : heroSection.descriptionEn;
+
+    let html = currentLanguage === 'ar'
+      ? (heroSection.descriptionAr || '')
+      : (heroSection.descriptionEn || '');
+
+    // تنظيف &nbsp; → مسافة عادية
+    return html.replace(/&nbsp;/g, ' ');
   }
+
+
 
   getHeroSectionImage(heroSection: HeroSectionSettingDto): string {
     return heroSection.attachment?.imgPath || 'assets/images/slider-1.png';

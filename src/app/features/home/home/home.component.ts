@@ -219,11 +219,28 @@ export class HomeComponent implements OnInit, AfterViewInit {
     return currentLanguage === 'ar' ? (initiative.nameAr || '') : (initiative.nameEn || initiative.nameAr || '');
   }
 
-  getInitiativeDescription(initiative: InitiativeDto): string {
-        const currentLanguage = this.translationService.currentLang;
+  // getInitiativeDescription(initiative: InitiativeDto): string {
+  //       const currentLanguage = this.translationService.currentLang;
 
-    return currentLanguage === 'ar' ? (initiative.descriptionAr || '').replace(/&nbsp;/, ' ') :  (initiative.descriptionEn ).replace(/&nbsp;/, ' ') ;
-  }
+  //   return currentLanguage === 'ar' ? (initiative.descriptionAr || '').replace(/&nbsp;/, ' ') :  (initiative.descriptionEn ).replace(/&nbsp;/, ' ') ;
+  // }
+//   getInitiativeDescription(initiative: InitiativeDto): string {
+//   const currentLanguage = this.translationService.currentLang;
+
+//   return currentLanguage === 'ar'
+//     ? (initiative.descriptionAr || '').replace(/&nbsp;/g, ' ')
+//     : (initiative.descriptionEn || '').replace(/&nbsp;/g, ' ');
+// }
+getInitiativeDescription(initiative: InitiativeDto, maxLength: number = 150): string {
+  const currentLanguage = this.translationService.currentLang;
+
+  const text = currentLanguage === 'ar'
+    ? (initiative.descriptionAr || '').replace(/&nbsp;/g, ' ')
+    : (initiative.descriptionEn || '').replace(/&nbsp;/g, ' ');
+
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+}
+
 
   getInitiativeImage(initiative: InitiativeDto): string {
     return initiative.attachment?.imgPath || 'assets/images/initiative-1.png';

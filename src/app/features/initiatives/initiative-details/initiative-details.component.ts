@@ -274,10 +274,17 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   }
 
 
-  getInitiativeDescription(initiative: InitiativeDto): string {
-    const currentLanguage = this.translationService.currentLang;
-    return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '');
-  }
+  // getInitiativeDescription(initiative: InitiativeDto): string {
+  //   const currentLanguage = this.translationService.currentLang;
+  //   return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '');
+  // }
+getInitiativeDescription(initiative: InitiativeDto): string {
+  const currentLanguage = this.translationService.currentLang;
+
+  return currentLanguage === 'ar'
+    ? (initiative.descriptionAr || '').replace(/&nbsp;/g, ' ')
+    : (initiative.descriptionEn || '').replace(/&nbsp;/g, ' ');
+}
 
   getInitiativeImage(initiative: InitiativeDto): string {
     return initiative.attachment?.imgPath || 'assets/images/initiative-1.png';
