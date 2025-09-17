@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ServiceSettingService } from '../../../core/services/serviceSetting.service';
 import { ServiceDto, GetAllServicesParameters, ServiceType } from '../../../core/dtos/serviceSetting/serviceSetting.dto';
+import { TranslationService } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-services-list',
@@ -26,12 +27,14 @@ export class ServicesListComponent implements OnInit {
     'icon2', // Chart/Analytics icon
     'icon3', // Users/Team icon
     'icon4', // Rocket/Innovation icon
-    'icon5'  // Lightbulb/Ideas icon
+    'icon5',  // Lightbulb/Ideas icon
+    'icon6'  // Lightbulb/Ideas icon
   ];
 
   constructor(
     private serviceSettingService: ServiceSettingService,
-    private router: Router
+    private router: Router,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -95,4 +98,19 @@ export class ServicesListComponent implements OnInit {
   getIconIndex(index: number): number {
     return index % this.serviceIcons.length;
   }
+
+  getServiceType(service: ServiceDto): string {
+  const currentLanguage = this.translationService.currentLang;
+
+  switch (service.serviceType) {
+    case 1:
+      return currentLanguage === 'ar' ? 'خدمات أفراد' : ' Individual Services ';
+    case 2:
+      return currentLanguage === 'ar' ? 'خدمات مؤسسات' : ' Corporate Services ';
+    case 3:
+      return currentLanguage === 'ar' ? '  خدمات أفراد/مؤسسات   ' : ' Individual/Corporate Services ';
+    default:
+      return '';
+  }
+}
 }

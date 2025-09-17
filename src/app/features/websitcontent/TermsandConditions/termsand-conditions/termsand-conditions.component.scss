@@ -1,10 +1,10 @@
-p{
-    padding-right: 8px;
-    padding-left: 8px;
+p {
+  padding-right: 8px;
+  padding-left: 8px;
 }
 
 
- p {
+p {
   padding-inline: 8px;
   margin: 0 0 8px 0;
   position: relative;
@@ -12,14 +12,27 @@ p{
 }
 
 
- p::before {
+p::before {
   content: '';
   width: 6px;
   height: 6px;
   background: var(--gold, #8D734D);
   border-radius: 50%;
   position: absolute;
-  top: 0.7em;                
-  inset-inline-start: 6px;    
+  top: 0.7em;
+  inset-inline-start: 6px;
 }
 
+p.titles{
+    padding: 0px;
+}
+p.titles::before {
+  content: '';
+  width: 0px;
+  height: 0px;
+  background: var(--gold, #8D734D);
+  border-radius: 50%;
+  position: absolute;
+  top: 0em;
+  inset-inline-start: 0px;
+}

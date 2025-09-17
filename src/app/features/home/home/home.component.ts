@@ -5,11 +5,13 @@ import { Router } from '@angular/router';
 import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ServiceSettingService } from '../../../core/services/serviceSetting.service';
 import { ServiceDto, GetAllServicesParameters } from '../../../core/dtos/serviceSetting/serviceSetting.dto';
- import { InitiativeService } from '../../../core/services/initiative.service';
+import { InitiativeService } from '../../../core/services/initiative.service';
 import { InitiativeDto, GetAllInitiativeParameter } from '../../../core/dtos/UserSetting/initiatives/initiative.dto';
 import { HeroSectionSettingService } from '../../../core/services/UserSetting/hero-section-setting.service';
 import { HeroSectionSettingDto, GetAllHeroSectionSettingRequestDto } from '../../../core/dtos/UserSetting/hero-section-setting.dto';
 import { TranslationService } from '../../../core/services/translation.service';
+import { TextProcessingService } from '../../../core/services/text-processing.service';
+import { CleanHtmlPipe } from '../../../shared/pipes/clean-html.pipe';
 
 declare var bootstrap: any;
 declare var $: any;
@@ -17,9 +19,10 @@ declare var $: any;
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CarouselModule, CommonModule, TranslateModule],
+  imports: [CarouselModule, CommonModule, TranslateModule, CleanHtmlPipe],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  providers: [CleanHtmlPipe]
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   customOptions?: OwlOptions;
@@ -33,6 +36,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   error = '';
   initiativesError = '';
   heroSectionsError = '';
+  lang: string = "";
 
   // Array to track which icon should be used (this creates a cycle through available icons)
   serviceIcons = [
@@ -40,46 +44,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     'icon2', // Chart/Analytics icon
     'icon3', // Users/Team icon
     'icon4', // Rocket/Innovation icon
-    'icon5'  // Lightbulb/Ideas icon
-  ];
-
-  campaigns1 = [
-    {
-      id: 1,
-      filePath: 'assets/img/campaign1.jpg',
-      projectCampainName: 'HOME.CAMPAIGNS.FOOD_AID',
-      projectCampainNameEn: 'HOME.CAMPAIGNS.FOOD_AID',
-      requiredAmount: '10,000 AED',
-      collectedAmount: '6,500 AED',
-      progress: 65,
-    },
-    {
-      id: 2,
-      filePath: 'assets/img/campaign2.jpg',
-      projectCampainName: 'HOME.CAMPAIGNS.ORPHAN_SUPPORT',
-      projectCampainNameEn: 'HOME.CAMPAIGNS.ORPHAN_SUPPORT',
-      requiredAmount: '8,000 AED',
-      collectedAmount: '5,200 AED',
-      progress: 65,
-    },
-    {
-      id: 3,
-      filePath: 'assets/img/campaign3.jpg',
-      projectCampainName: 'HOME.CAMPAIGNS.EMERGENCY_HEALTHCARE',
-      projectCampainNameEn: 'HOME.CAMPAIGNS.EMERGENCY_HEALTHCARE',
-      requiredAmount: '15,000 AED',
-      collectedAmount: '9,000 AED',
-      progress: 60,
-    },
-    {
-      id: 4,
-      filePath: '../../../../assets/images/initiative-1.png',
-      projectCampainName: 'HOME.CAMPAIGNS.SHELTER_SUPPORT',
-      projectCampainNameEn: 'HOME.CAMPAIGNS.SHELTER_SUPPORT',
-      requiredAmount: '12,000 AED',
-      collectedAmount: '8,500 AED',
-      progress: 70,
-    }
+    'icon5',  // Lightbulb/Ideas icon
+    'icon6'  // Lightbulb/Ideas icon
   ];
 
   constructor(
@@ -88,11 +54,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private heroSectionService: HeroSectionSettingService,
     private translationService: TranslationService,
     private translateService: TranslateService,
-    private router: Router
+    private router: Router,
+    public textService: TextProcessingService
   ) {
-
-     this.setCarouselOptions(this.translationService.currentLang);
+    this.lang = localStorage.getItem("lang") || "";
+    this.setCarouselOptions(this.translationService.currentLang);
     this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.lang = event.lang
       this.setCarouselOptions(event.lang);
     });
 
@@ -213,46 +181,24 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const currentLanguage = this.translationService.currentLang;
     return currentLanguage === 'ar' ? (service.descriptionAr || '') : (service.descriptionEn || service.descriptionAr || '');
   }
-getServiceType(service: ServiceDto): string {
-  const currentLanguage = this.translationService.currentLang;
+  getServiceType(service: ServiceDto): string {
+    const currentLanguage = this.translationService.currentLang;
 
-  switch (service.serviceType) {
-    case 1:
-      return currentLanguage === 'ar' ? 'خدمات أفراد' : ' Individual Services ';
-    case 2:
-      return currentLanguage === 'ar' ? 'خدمات مؤسسات' : ' Corporate Services ';
-    case 3:
-      return currentLanguage === 'ar' ? '  خدمات أفراد/مؤسسات   ' : ' Individual/Corporate Services ';
-    default:
-      return '';
+    switch (service.serviceType) {
+      case 1:
+        return currentLanguage === 'ar' ? 'خدمات أفراد' : ' Individual Services ';
+      case 2:
+        return currentLanguage === 'ar' ? 'خدمات مؤسسات' : ' Corporate Services ';
+      case 3:
+        return currentLanguage === 'ar' ? '  خدمات أفراد/مؤسسات   ' : ' Individual/Corporate Services ';
+      default:
+        return '';
+    }
   }
-}
   getInitiativeName(initiative: InitiativeDto): string {
     const currentLanguage = this.translationService.currentLang;
     return currentLanguage === 'ar' ? (initiative.nameAr || '') : (initiative.nameEn || initiative.nameAr || '');
   }
-
-  // getInitiativeDescription(initiative: InitiativeDto): string {
-  //       const currentLanguage = this.translationService.currentLang;
-
-  //   return currentLanguage === 'ar' ? (initiative.descriptionAr || '').replace(/&nbsp;/, ' ') :  (initiative.descriptionEn ).replace(/&nbsp;/, ' ') ;
-  // }
-//   getInitiativeDescription(initiative: InitiativeDto): string {
-//   const currentLanguage = this.translationService.currentLang;
-
-//   return currentLanguage === 'ar'
-//     ? (initiative.descriptionAr || '').replace(/&nbsp;/g, ' ')
-//     : (initiative.descriptionEn || '').replace(/&nbsp;/g, ' ');
-// }
-getInitiativeDescription(initiative: InitiativeDto, maxLength: number = 150): string {
-  const currentLanguage = this.translationService.currentLang;
-
-  const text = currentLanguage === 'ar'
-    ? (initiative.descriptionAr || '').replace(/&nbsp;/g, ' ')
-    : (initiative.descriptionEn || '').replace(/&nbsp;/g, ' ');
-
-  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-}
 
 
   getInitiativeImage(initiative: InitiativeDto): string {
@@ -283,73 +229,73 @@ getInitiativeDescription(initiative: InitiativeDto, maxLength: number = 150): st
   }
 
   // Contact form handled by ContactUsComponent
-  setCarouselOptions(lang:string){
-          if (lang == 'ar') {
-        this.customOptions = {
-          rtl: true, // Enable RTL for Owl Carousel
-          loop: true, // Carousel will loop after last item
-          margin: 10, // Margin between items
-          nav: true, // Enable navigation arrows
-          dots: true, // Enable dots for navigation
-          autoplay: false, // Disable autoplay
-          responsive: {
-            0: { items: 1 }, // 1 item for small screens
-            600: { items: 2 }, // 2 items for medium screens
-            1000: { items: 3 }, // 3 items for large screens
-          },
-          navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
-            '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
-          ], // Custom navigation text
-        };
+  setCarouselOptions(lang: string) {
+    if (lang == 'ar') {
+      this.customOptions = {
+        rtl: true, // Enable RTL for Owl Carousel
+        loop: true, // Carousel will loop after last item
+        margin: 10, // Margin between items
+        nav: true, // Enable navigation arrows
+        dots: true, // Enable dots for navigation
+        autoplay: false, // Disable autoplay
+        responsive: {
+          0: { items: 1 }, // 1 item for small screens
+          600: { items: 2 }, // 2 items for medium screens
+          1000: { items: 3 }, // 3 items for large screens
+        },
+        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+        ], // Custom navigation text
+      };
 
-        this.initiativesOptions = {
-          rtl: true, // Enable RTL for Owl Carousel
-          loop: true, // Carousel will loop after last item
-          margin: 10, // Margin between items
-          nav: true, // Enable navigation arrows
-          dots: true, // Enable dots for navigation
-          autoplay: false, // Disable autoplay
-          responsive: {
-            0: { items: 1 }, // 1 item for small screens
-            600: { items: 1 }, // 2 items for medium screens
-            1000: { items: 2 }, // 3 items for large screens
-          },
-          navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
-            '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
-          ], // Custom navigation text
-        };
-      } else {
-        this.customOptions = {
-          loop: true, // Carousel will loop after last item
-          margin: 10, // Margin between items
-          nav: true, // Enable navigation arrows
-          dots: true, // Enable dots for navigation
-          autoplay: false, // Disable autoplay
-          responsive: {
-            0: { items: 1 }, // 1 item for small screens
-            600: { items: 2 }, // 2 items for medium screens
-            1000: { items: 3 }, // 3 items for large screens
-          },
-          navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
-            '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
-          ], // Custom navigation text
-        };
+      this.initiativesOptions = {
+        rtl: true, // Enable RTL for Owl Carousel
+        loop: true, // Carousel will loop after last item
+        margin: 10, // Margin between items
+        nav: true, // Enable navigation arrows
+        dots: true, // Enable dots for navigation
+        autoplay: false, // Disable autoplay
+        responsive: {
+          0: { items: 1 }, // 1 item for small screens
+          600: { items: 1 }, // 2 items for medium screens
+          1000: { items: 2 }, // 3 items for large screens
+        },
+        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+        ], // Custom navigation text
+      };
+    } else {
+      this.customOptions = {
+        loop: true, // Carousel will loop after last item
+        margin: 10, // Margin between items
+        nav: true, // Enable navigation arrows
+        dots: true, // Enable dots for navigation
+        autoplay: false, // Disable autoplay
+        responsive: {
+          0: { items: 1 }, // 1 item for small screens
+          600: { items: 2 }, // 2 items for medium screens
+          1000: { items: 3 }, // 3 items for large screens
+        },
+        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+        ], // Custom navigation text
+      };
 
-        this.initiativesOptions = {
-          loop: true, // Carousel will loop after last item
-          margin: 10, // Margin between items
-          nav: true, // Enable navigation arrows
-          dots: true, // Enable dots for navigation
-          autoplay: false, // Disable autoplay
-          responsive: {
-            0: { items: 1 }, // 1 item for small screens
-            600: { items: 1 }, // 2 items for medium screens
-            1000: { items: 2 }, // 3 items for large screens
-          },
-          navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
-            '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
-          ], // Custom navigation text
-        };
-      }
+      this.initiativesOptions = {
+        loop: true, // Carousel will loop after last item
+        margin: 10, // Margin between items
+        nav: true, // Enable navigation arrows
+        dots: true, // Enable dots for navigation
+        autoplay: false, // Disable autoplay
+        responsive: {
+          0: { items: 1 }, // 1 item for small screens
+          600: { items: 1 }, // 2 items for medium screens
+          1000: { items: 2 }, // 3 items for large screens
+        },
+        navText: ['<span class="custom-prev" style="visibility: hidden;">&lt;</span>', // Add custom class for "Previous"
+          '<span class="custom-next" style="visibility: hidden;">&gt;</span>'  // Add custom class for "Next"
+        ], // Custom navigation text
+      };
+    }
   }
 }

@@ -179,3 +179,13 @@ input.form-control, select.form-select {
         font-size: 14px;
     }
 }
+
+
+.d-flex .btn {
+  transition: all 0.2s ease-in-out; 
+}
+
+.d-flex .btn:hover {
+  text-decoration: underline; 
+  color: #8D734D;            
+}

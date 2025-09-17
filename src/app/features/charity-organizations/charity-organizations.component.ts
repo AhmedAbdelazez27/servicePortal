@@ -111,18 +111,18 @@ export class CharityOrganizationsComponent implements OnInit, OnDestroy {
     if (entity.isDonation === true) {
       return {
         allowed: true,
-        text: this.currentLanguage === 'ar' ? 'التبرعات مسموحة' : 'Donations are allowed'
+        text: this.currentLanguage === 'ar' ? 'مصرح بجمع التبرعات بعجمان ' : 'Authorized to collect donations in Ajman'
       };
     } else if (entity.isDonation === false) {
       return {
         allowed: false,
-        text: this.currentLanguage === 'ar' ? 'التبرعات غير مسموحة' : 'Donations are not allowed'
+        text: this.currentLanguage === 'ar' ? 'غير مصرح بجمع التبرعات بعجمان' : 'Not authorized to collect donations in Ajman'
       };
     } else {
       // isDonation is null or undefined
       return {
         allowed: false,
-        text: this.currentLanguage === 'ar' ? 'التبرعات غير مسموحة' : 'Donations are not allowed'
+        text: this.currentLanguage === 'ar' ? 'غير مصرح بجمع التبرعات بعجمان' : 'Not authorized to collect donations in Ajman'
       };
     }
   }

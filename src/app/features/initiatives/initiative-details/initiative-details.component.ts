@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router ,RouterLink} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { map, Observable, startWith, Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { InitiativeService } from '../../../core/services/initiative.service';
 import { InitiativeDto, InitiativeDetailsDto } from '../../../core/dtos/UserSetting/initiatives/initiative.dto';
 import { TranslationService } from '../../../core/services/translation.service';
+import { CleanHtmlPipe } from '../../../shared/pipes/clean-html.pipe';
 
 @Component({
   selector: 'app-initiative-details',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterLink],
+  imports: [CommonModule, TranslateModule, RouterLink, CleanHtmlPipe],
   templateUrl: './initiative-details.component.html',
   styleUrls: ['./initiative-details.component.scss']
 })
@@ -20,13 +21,14 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   loading = false;
   error: string | null = null;
   initiativeId: string | null = null;
-  
+
   // Map properties
   private map: L.Map | null = null;
   private markers: L.Marker[] = [];
   private mapInitialized = false;
-  lang$: Observable<any> ;
+  lang$: Observable<any>;
   private subscriptions = new Subscription();
+  lang:string = "";
 
   constructor(
     private initiativeService: InitiativeService,
@@ -36,10 +38,17 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     private translationService: TranslationService,
     private cdr: ChangeDetectorRef
   ) {
-      this.lang$= this.translateService.onLangChange.pipe(
-    startWith({ lang: this.translateService.currentLang || this.translateService.defaultLang || 'ar' } as LangChangeEvent),
-    map(e => (e.lang || 'ar').split('-')[0])
-  );
+    this.lang$ = this.translateService.onLangChange.pipe(
+      startWith({ lang: this.translateService.currentLang || this.translateService.defaultLang || 'ar' } as LangChangeEvent),
+      map(e => (e.lang || 'ar').split('-')[0])
+    );
+
+    this.lang = localStorage.getItem("lang") || "";
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.lang = event.lang;
+    });
+
+
   }
 
   // 'ar', 'en'
@@ -51,7 +60,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     } else {
       this.error = 'ERRORS.INITIATIVE_ID_NOT_FOUND';
     }
-    
+
     // Add global function for map popup
     (window as any).openInGoogleMaps = (coordinates: string) => {
       this.openInGoogleMaps(coordinates);
@@ -84,7 +93,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     if (this.map) {
       this.map.remove();
     }
-    
+
     // Clean up global function
     delete (window as any).openInGoogleMaps;
   }
@@ -99,7 +108,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
       next: (response: any) => {
         this.initiative = response || null;
         this.loading = false;
-        
+
         // Initialize map after data is loaded
         setTimeout(() => {
           this.initializeMap();
@@ -117,7 +126,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
 
   initializeMap(): void {
     if (this.mapInitialized) return;
-    
+
     // Only initialize if we have initiative data and it has locations
     if (!this.initiative || !this.initiative.initiativeDetails || this.initiative.initiativeDetails.length === 0) {
       return;
@@ -157,7 +166,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     this.markers = [];
 
     const locations = this.initiative.initiativeDetails.filter(detail => detail.isActive);
-    
+
     if (locations.length === 0) return;
 
     const bounds = L.latLngBounds([]);
@@ -167,7 +176,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
       locations.forEach((location, index) => {
         try {
           const coordinates = this.parseCoordinates(location.locationCoordinates);
-          
+
           if (coordinates) {
             const marker = L.marker([coordinates.lat, coordinates.lng])
               .addTo(this.map!)
@@ -197,7 +206,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
           return { lat, lng };
         }
       }
-      
+
       // Handle comma-separated format (e.g., "25.206049,55.248212")
       if (coordinatesString.includes(',')) {
         const [lat, lng] = coordinatesString.split(',').map(coord => parseFloat(coord.trim()));
@@ -205,7 +214,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
           return { lat, lng };
         }
       }
-      
+
       // Handle JSON format (e.g., '{"lat": 25.206049, "lng": 55.248212}')
       try {
         const parsed = JSON.parse(coordinatesString);
@@ -215,7 +224,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
       } catch (jsonError) {
         // Not a JSON format, continue to next check
       }
-      
+
       return null;
     } catch (error) {
       return null;
@@ -225,13 +234,13 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   createPopupContent(location: InitiativeDetailsDto, index: number): string {
     const currentLanguage = this.translationService.currentLang;
     const locationName = currentLanguage === 'ar' ? location.locationNameAr : location.locationNameEn;
-    
+
     // Get translations with fallback - ensure we have the actual translated text
     let locationText = this.translateService.instant('INITIATIVES.LOCATION');
     let openInMapsText = this.translateService.instant('COMMON.OPEN_IN_GOOGLE_MAPS');
-    
 
-    
+
+
     // If translation service returns the key itself or undefined, use fallback
     if (!locationText || locationText === 'INITIATIVES.LOCATION') {
       locationText = currentLanguage === 'ar' ? 'الموقع' : 'Location';
@@ -239,7 +248,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     if (!openInMapsText || openInMapsText === 'COMMON.OPEN_IN_GOOGLE_MAPS') {
       openInMapsText = currentLanguage === 'ar' ? 'فتح في خرائط جوجل' : 'Open in Google Maps';
     }
-    
+
     return `
       <div class="map-popup">
         <h6>${locationName}</h6>
@@ -278,33 +287,33 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   //   const currentLanguage = this.translationService.currentLang;
   //   return currentLanguage === 'ar' ? (initiative.descriptionAr || '') : (initiative.descriptionEn || initiative.descriptionAr || '');
   // }
-getInitiativeDescription(initiative: InitiativeDto): string {
-  const currentLanguage = this.translationService.currentLang;
+  getInitiativeDescription(initiative: InitiativeDto): string {
+    const currentLanguage = this.translationService.currentLang;
 
-  return currentLanguage === 'ar'
-    ? (initiative.descriptionAr || '').replace(/&nbsp;/g, ' ')
-    : (initiative.descriptionEn || '').replace(/&nbsp;/g, ' ');
-}
+    return currentLanguage === 'ar'
+      ? (initiative.descriptionAr || '').replace(/&nbsp;/g, ' ')
+      : (initiative.descriptionEn || '').replace(/&nbsp;/g, ' ');
+  }
 
   getInitiativeImage(initiative: InitiativeDto): string {
     return initiative.attachment?.imgPath || 'assets/images/initiative-1.png';
   }
 
-getInitiativeDate(initiative: InitiativeDto): string {
-  if (!initiative.initiativeDate) return '';
+  getInitiativeDate(initiative: InitiativeDto): string {
+    if (!initiative.initiativeDate) return '';
 
-  const date = new Date(initiative.initiativeDate);
-  return date.toLocaleDateString(
-    this.translationService.currentLang === 'ar' 
-      ? 'ar-EG-u-ca-gregory'  // عربي ميلادي
-      : 'en-US-u-ca-gregory', // إنجليزي ميلادي
-    {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }
-  );
-}
+    const date = new Date(initiative.initiativeDate);
+    return date.toLocaleDateString(
+      this.translationService.currentLang === 'ar'
+        ? 'ar-EG-u-ca-gregory'  // عربي ميلادي
+        : 'en-US-u-ca-gregory', // إنجليزي ميلادي
+      {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }
+    );
+  }
 
 
   getTargetGroup(initiative: InitiativeDto): string {
@@ -345,7 +354,7 @@ getInitiativeDate(initiative: InitiativeDto): string {
     this.markers = [];
 
     const locations = this.initiative.initiativeDetails.filter(detail => detail.isActive);
-    
+
     if (locations.length === 0) return;
 
     const bounds = L.latLngBounds([]);
@@ -353,7 +362,7 @@ getInitiativeDate(initiative: InitiativeDto): string {
     locations.forEach((location, index) => {
       try {
         const coordinates = this.parseCoordinates(location.locationCoordinates);
-        
+
         if (coordinates) {
           const marker = L.marker([coordinates.lat, coordinates.lng])
             .addTo(this.map!)
@@ -362,9 +371,9 @@ getInitiativeDate(initiative: InitiativeDto): string {
           this.markers.push(marker);
           bounds.extend([coordinates.lat, coordinates.lng]);
         }
-              } catch (error) {
-          // Handle error silently
-        }
+      } catch (error) {
+        // Handle error silently
+      }
     });
 
     // Fit map to show all markers
@@ -403,7 +412,7 @@ getInitiativeDate(initiative: InitiativeDto): string {
       this.translateService.get(requiredTranslations).subscribe((translations) => {
         // Test individual translations
         this.testTranslations();
-        
+
         // Force change detection after translations are loaded
         this.cdr.detectChanges();
       }, (error) => {

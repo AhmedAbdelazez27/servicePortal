@@ -1,0 +1,13 @@
+p.titles{
+    padding: 0px;
+}
+p.titles::before {
+  content: '';
+  width: 0px;
+  height: 0px;
+  background: var(--gold, #8D734D);
+  border-radius: 50%;
+  position: absolute;
+  top: 0em;
+  inset-inline-start: 0px;
+}

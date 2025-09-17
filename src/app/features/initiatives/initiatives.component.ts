@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { InitiativeService } from '../../core/services/initiative.service';
 import { InitiativeDto, GetAllInitiativeParameter } from '../../core/dtos/UserSetting/initiatives/initiative.dto';
 import { TranslationService } from '../../core/services/translation.service';
+import { CleanHtmlPipe } from '../../shared/pipes/clean-html.pipe';
 
 @Component({
   selector: 'app-initiatives',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule,CleanHtmlPipe],
   templateUrl: './initiatives.component.html',
   styleUrls: ['./initiatives.component.scss']
 })
@@ -17,12 +18,20 @@ export class InitiativesComponent implements OnInit {
   initiatives: InitiativeDto[] = [];
   loading = false;
   error = '';
+  lang:string = '';
 
   constructor(
     private initiativeService: InitiativeService,
     private router: Router,
-    private translationService: TranslationService
-  ) {}
+    private translationService: TranslationService,
+     private translateService: TranslateService
+  ) {
+        this.lang = localStorage.getItem("lang") || "";
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.lang = event.lang;
+    });
+
+  }
 
   ngOnInit(): void {
     this.loadInitiatives();

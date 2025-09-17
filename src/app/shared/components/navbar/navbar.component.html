@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <a class="navbar-brand d-flex gap-3" href="#">
             <!-- <img src="./../../../assets/images/logo.png" class="header-logo"/> -->
-            <img src="./../../../assets/images/council-logo.png" class="header-logo"/>
+            <img src="./../../../assets/images/council-logo.png" class="header-logo" />
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,8 +20,10 @@
                         {{ 'NAVIGATION.ABOUT_US' | translate }}
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" routerLink="/about/councile">{{ 'NAVIGATION.ABOUT_COUNCIL' | translate }}</a></li>
-                        <li><a class="dropdown-item" routerLink="/about/manager-message">{{ 'NAVIGATION.GENERAL_MANAGER_MESSAGE' | translate }}</a>
+                        <li><a class="dropdown-item" routerLink="/about/councile">{{ 'NAVIGATION.ABOUT_COUNCIL' |
+                                translate }}</a></li>
+                        <li><a class="dropdown-item" routerLink="/about/manager-message">{{
+                                'NAVIGATION.GENERAL_MANAGER_MESSAGE' | translate }}</a>
                         </li>
                     </ul>
                 </li>
@@ -29,7 +31,7 @@
                     <a class="nav-link" routerLink="/services" routerLinkActive="active">{{ 'NAVIGATION.SERVICES' |
                         translate }}</a>
                 </li>
-             
+
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/initiatives" routerLinkActive="active">{{ 'NAVIGATION.INITIATIVES'
                         | translate }}</a>
@@ -69,9 +71,11 @@
                                 </defs>
                             </svg>
 
-                           
 
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger badge-notification" *ngIf="unseenCount > 0">{{ unseenCount > 99 ? '99+' : unseenCount
+
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger badge-notification"
+                                *ngIf="unseenCount > 0">{{ unseenCount > 99 ? '99+' : unseenCount
                                 }}</span>
                         </button>
 
@@ -89,18 +93,12 @@
                             <span>{{ currentUserName }}</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <!-- <li>
-                                <a class="dropdown-item" href="#" (click)="onChangePassword()">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                        <circle cx="12" cy="16" r="1"></circle>
-                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                    </svg>
-                                    {{ 'NAVBAR.CHANGE_PASSWORD' | translate }}
+                            <li>
+                                <a class="d-flex flex-column align-items-center gap-2"(click)="onChangePassword()">
+                                    <img src="./../../../assets/images/profile-img.png" class="profile-img" />
+                                    <span style="color:#252525">{{ currentUserName }}</span>
                                 </a>
-                            </li> -->
+                            </li>
                             <li>
                                 <a class="dropdown-item" [routerLink]="['/edit-profile']">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -114,7 +112,7 @@
                             </li>
 
 
-    <li>
+                            <li>
                                 <a class="dropdown-item" [routerLink]="['/request']">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -128,7 +126,7 @@
 
 
 
-                       
+
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

@@ -121,9 +121,11 @@
             <!-- <p class="subtitle">
               {{ getInitiativeDescription(initiative) }}
             </p> -->
-            <div class="initiative-description mb-1"
+            <!-- <div class="initiative-description mb-1"
                                 [innerHTML]="getInitiativeDescription(initiative)">
-                            </div>
+                            </div> -->
+                            <p *ngIf="lang == 'ar'">{{ initiative.descriptionAr | cleanHtml }}</p>
+          <p *ngIf="lang == 'en'">{{ initiative.descriptionEn | cleanHtml}}</p>
           </div>
         </div>
 

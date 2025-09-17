@@ -44,7 +44,6 @@ export class LoginComponent {
         this.auth.saveToken(res?.token);
         const decodedData = this.auth.decodeToken();
         
-
         
         if (decodedData) {
           // Store permissions if they exist (optional)

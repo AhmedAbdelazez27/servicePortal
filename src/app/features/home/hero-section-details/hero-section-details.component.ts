@@ -1,16 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HeroSectionSettingService } from '../../../core/services/UserSetting/hero-section-setting.service';
 import { HeroSectionSettingDto } from '../../../core/dtos/UserSetting/hero-section-setting.dto';
 import { TranslationService } from '../../../core/services/translation.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { CleanHtmlPipe } from '../../../shared/pipes/clean-html.pipe';
 
 @Component({
   selector: 'app-hero-section-details',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule,CleanHtmlPipe],
   templateUrl: './hero-section-details.component.html',
   styleUrls: ['./hero-section-details.component.scss']
 })
@@ -18,6 +19,7 @@ export class HeroSectionDetailsComponent implements OnInit {
   heroSection: HeroSectionSettingDto | null = null;
   loading = false;
   error = '';
+  currentLanguage:string = "";
 
   constructor(private sanitizer: DomSanitizer ,
     private route: ActivatedRoute,
@@ -25,7 +27,14 @@ export class HeroSectionDetailsComponent implements OnInit {
     private heroSectionService: HeroSectionSettingService,
     private translationService: TranslationService,
     private translate: TranslateService
-  ) { }
+  ) { 
+
+   this.currentLanguage = this.translationService.currentLang;
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+         this.currentLanguage = event.lang;
+       });
+   
+  }
 
   ngOnInit(): void {
     this.loadHeroSectionDetails();

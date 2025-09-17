@@ -20,17 +20,15 @@
   <!-- Hero Section Details -->
   <div *ngIf="heroSection && !loading">
     <!-- Back Button -->
-  
 
-    <img  class="w-100 mb-4 mt-4" style="max-height: 500px; object-fit: cover; border-radius: 10px;"
-            [src]="getHeroSectionImage(heroSection)" 
-            [alt]="getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.IMAGE_ALT' | translate)"
-            
-            (error)="onImageError($event)"
-          />
 
-      <!-- Content Section - Below image -->
-      <div class="hero-content-section">
+    <img class="w-100 mb-4 mt-4" style="max-height: 500px; object-fit: cover; border-radius: 10px;"
+      [src]="getHeroSectionImage(heroSection)"
+      [alt]="getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.IMAGE_ALT' | translate)"
+      (error)="onImageError($event)" />
+
+    <!-- Content Section - Below image -->
+    <div class="hero-content-section">
 
       <div class="hero-content">
 
@@ -39,8 +37,9 @@
 
         <div class=" hero-description mb-4">
           <!-- <div [innerHTML]="getHeroSectionDescription(heroSection)"></div> -->
-          <div class="hero-description" [innerHTML]="getHeroSectionDescription(heroSection)"></div>
-
+          <!-- <div class="hero-description" [innerHTML]="getHeroSectionDescription(heroSection)"></div> -->
+          <p *ngIf="currentLanguage == 'ar'">{{ heroSection.descriptionAr | cleanHtml}}</p>
+          <p *ngIf="currentLanguage == 'en'">{{ heroSection.descriptionEn | cleanHtml}}</p>
 
 
         </div>
