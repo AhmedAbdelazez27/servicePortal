@@ -2850,7 +2850,7 @@ select:focus {
 
 .initiative-date {
   display: flex;
-  background-color: #1D9286;
+  background-color: #8D734D;
   color: #fff;
   border-radius: 5px !important;
   padding: 6px 12px;
@@ -6149,7 +6149,7 @@ a,
 
   .initiative-date {
     display: flex;
-    background-color: #1D9286;
+    background-color: #8D734D;
     color: #fff;
     border-radius: 5px !important;
     padding: 6px 12px;
@@ -7333,6 +7333,29 @@ td {
   padding: 16px;
   background-color: #fff;
   border-radius: 10px;
+}
+
+
+.header-logo{
+  height: 60px;
+}
+
+@media(max-width:991px){
+  .header-logo{
+  height: 50px;
+}
+}
+
+
+
+.login-logo{
+  height: 90px;
+}
+
+@media(max-width:991px){
+  .login-logo{
+  height: 60px;
+}
 }
 
 .initiative-description {

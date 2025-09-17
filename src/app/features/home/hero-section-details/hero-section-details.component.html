@@ -20,30 +20,24 @@
   <!-- Hero Section Details -->
   <div *ngIf="heroSection && !loading">
     <!-- Back Button -->
-    <div class="mb-4">
-      <button class="btn btn-outline-secondary" (click)="onBackToHome()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-2">
-          <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round" />
-        </svg>
-        {{ 'COMMON.BACK_TO_HOME' | translate }}
-      </button>
-    </div>
+  
 
-    <img class="w-100 mb-4" style="max-height: 500px; object-fit: cover; border-radius: 10px;"
-      [src]="getHeroSectionImage(heroSection)"
-      [alt]="getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.IMAGE_ALT' | translate)"
-      (error)="onImageError($event)" />
+    <img  class="w-100 mb-4 mt-4" style="max-height: 500px; object-fit: cover; border-radius: 10px;"
+            [src]="getHeroSectionImage(heroSection)" 
+            [alt]="getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.IMAGE_ALT' | translate)"
+            
+            (error)="onImageError($event)"
+          />
 
-    <!-- Content Section - Below image -->
-    <div class="hero-content-section">
+      <!-- Content Section - Below image -->
+      <div class="hero-content-section">
 
       <div class="hero-content">
 
         {{ getHeroSectionTitle(heroSection) || ('HOME.HERO_SECTION.NO_DESCRIPTION' | translate) }}
 
 
-        <div class="hero-description mb-4">
+        <div class=" hero-description mb-4">
           <!-- <div [innerHTML]="getHeroSectionDescription(heroSection)"></div> -->
           <div class="hero-description" [innerHTML]="getHeroSectionDescription(heroSection)"></div>
 

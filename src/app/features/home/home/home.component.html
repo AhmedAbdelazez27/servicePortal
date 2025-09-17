@@ -4,11 +4,11 @@
         <div class="carousel-item" *ngFor="let heroSection of heroSections; let i = index" [class.active]="i === 0">
             <img [src]="getHeroSectionImage(heroSection)" class="d-block w-100" (error)="onImageError($event)"
                 [alt]="getHeroSectionTitle(heroSection)" />
-            <div class="carousel-caption d-none d-md-block">
-                <div [innerHTML]="getHeroSectionTitle(heroSection)"></div>
+            <div (click)="onHeroSectionDetails(heroSection)" style="font-size: 24px; cursor: pointer;" class="carousel-caption d-none d-md-block">
+                <div  [innerHTML]="getHeroSectionTitle(heroSection)"></div>
                 <!-- <p *ngIf="getHeroSectionDescription(heroSection)">{{ getHeroSectionDescription(heroSection) }}</p> -->
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-gold" (click)="onHeroSectionDetails(heroSection)">
+                    <button class="btn" style="background-color:#8D734D; font-size: 11px; color: white;" >
                         {{ 'HOME.READ_MORE' | translate }}
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path
@@ -21,6 +21,14 @@
                     </button>
                 </div>
             </div>
+
+
+
+
+
+
+
+
         </div>
     </div>
 
@@ -227,6 +235,7 @@
                                     <p class="mb-4" style="height: 48px; overflow: hidden;">{{
                                         getServiceDescription(service) || ('HOME.SERVICE_CARDS.NO_DESCRIPTION' |
                                         translate) }}</p>
+                                             <span>{{ getServiceType(service) }}</span>
                                     <div class="d-flex justify-content-end">
                                         <button class="btn btn-link" (click)="onServiceDetails(service)">
                                             {{ 'HOME.MORE' | translate }}
@@ -322,7 +331,7 @@
                     </div>
                     <span>{{ getInitiativeName(initiatives[0]) }}</span>
                     <!-- <p class="mb-4">{{ getInitiativeDescription(initiatives[0]) }}</p>  -->
-                    <div [innerHTML]="getInitiativeDescription(initiatives[0])"></div>
+                    <div class="initiative-description mb-1" [innerHTML]="getInitiativeDescription(initiatives[0])"></div>
 
                     <div class="d-flex justify-content-end">
                         <button class="btn btn-link" (click)="onInitiativeDetails(initiatives[0])">

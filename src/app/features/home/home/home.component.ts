@@ -213,7 +213,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const currentLanguage = this.translationService.currentLang;
     return currentLanguage === 'ar' ? (service.descriptionAr || '') : (service.descriptionEn || service.descriptionAr || '');
   }
+getServiceType(service: ServiceDto): string {
+  const currentLanguage = this.translationService.currentLang;
 
+  switch (service.serviceType) {
+    case 1:
+      return currentLanguage === 'ar' ? 'خدمات أفراد' : ' Individual Services ';
+    case 2:
+      return currentLanguage === 'ar' ? 'خدمات مؤسسات' : ' Corporate Services ';
+    case 3:
+      return currentLanguage === 'ar' ? '  خدمات أفراد/مؤسسات   ' : ' Individual/Corporate Services ';
+    default:
+      return '';
+  }
+}
   getInitiativeName(initiative: InitiativeDto): string {
     const currentLanguage = this.translationService.currentLang;
     return currentLanguage === 'ar' ? (initiative.nameAr || '') : (initiative.nameEn || initiative.nameAr || '');

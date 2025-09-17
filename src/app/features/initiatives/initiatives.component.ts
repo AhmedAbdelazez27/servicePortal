@@ -58,7 +58,7 @@ export class InitiativesComponent implements OnInit {
   }
 
   getInitiativeName(initiative: InitiativeDto): string {
-    const currentLanguage = localStorage.getItem('language') || 'en';
+  const currentLanguage = this.translationService.currentLang;
     return currentLanguage === 'ar' ? (initiative.nameAr || '') : (initiative.nameEn || initiative.nameAr || '');
   }
 

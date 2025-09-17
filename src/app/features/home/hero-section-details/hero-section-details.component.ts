@@ -5,6 +5,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HeroSectionSettingService } from '../../../core/services/UserSetting/hero-section-setting.service';
 import { HeroSectionSettingDto } from '../../../core/dtos/UserSetting/hero-section-setting.dto';
 import { TranslationService } from '../../../core/services/translation.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-hero-section-details',
@@ -18,7 +19,7 @@ export class HeroSectionDetailsComponent implements OnInit {
   loading = false;
   error = '';
 
-  constructor(
+  constructor(private sanitizer: DomSanitizer ,
     private route: ActivatedRoute,
     private router: Router,
     private heroSectionService: HeroSectionSettingService,
@@ -61,7 +62,7 @@ export class HeroSectionDetailsComponent implements OnInit {
   //   const currentLanguage = this.translationService.currentLang;
   //   return currentLanguage === 'ar' ? heroSection.descriptionAr : heroSection.descriptionEn;
   // }
-  getHeroSectionDescription(heroSection: HeroSectionSettingDto): string {
+  getHeroSectionDescription22(heroSection: HeroSectionSettingDto): string {
     const currentLanguage = this.translationService.currentLang;
 
     let html = currentLanguage === 'ar'
@@ -72,7 +73,19 @@ export class HeroSectionDetailsComponent implements OnInit {
     return html.replace(/&nbsp;/g, ' ');
   }
 
+getHeroSectionDescription(heroSection: HeroSectionSettingDto): SafeHtml {
+  const currentLanguage = this.translationService.currentLang;
 
+  let html = currentLanguage === 'ar'
+    ? (heroSection.descriptionAr || '')
+    : (heroSection.descriptionEn || '');
+
+  // استبدل النقطة أو كلمة معينة بـ <br> عشان ينزل سطر
+  html = html.replace(/\. /g, '.<br>');  
+  html = html.replace(/contire/gi, 'contire<br>');
+
+  return this.sanitizer.bypassSecurityTrustHtml(html);
+}
 
   getHeroSectionImage(heroSection: HeroSectionSettingDto): string {
     return heroSection.attachment?.imgPath || 'assets/images/slider-1.png';

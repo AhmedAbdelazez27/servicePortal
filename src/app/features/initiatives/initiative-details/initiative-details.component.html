@@ -46,7 +46,7 @@
         <div class="col-12 mb-5">
           <h4 class="gold">{{ getInitiativeName(initiative) }}</h4>
 
-          <img [src]="getInitiativeImage(initiative)" [alt]="getInitiativeName(initiative)"
+          <img style="height: 500px; object-fit: cover;" [src]="getInitiativeImage(initiative)" [alt]="getInitiativeName(initiative)"
             class="w-100 rounded-3 initiative-image" (error)="onImageError($event)" />
 
           <!-- Date and Target Group below the image -->

@@ -290,16 +290,22 @@ getInitiativeDescription(initiative: InitiativeDto): string {
     return initiative.attachment?.imgPath || 'assets/images/initiative-1.png';
   }
 
-  getInitiativeDate(initiative: InitiativeDto): string {
-    if (!initiative.initiativeDate) return '';
-    
-    const date = new Date(initiative.initiativeDate);
-    return date.toLocaleDateString(this.translationService.currentLang === 'ar' ? 'ar-SA' : 'en-US', {
+getInitiativeDate(initiative: InitiativeDto): string {
+  if (!initiative.initiativeDate) return '';
+
+  const date = new Date(initiative.initiativeDate);
+  return date.toLocaleDateString(
+    this.translationService.currentLang === 'ar' 
+      ? 'ar-EG-u-ca-gregory'  // عربي ميلادي
+      : 'en-US-u-ca-gregory', // إنجليزي ميلادي
+    {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
-    });
-  }
+    }
+  );
+}
+
 
   getTargetGroup(initiative: InitiativeDto): string {
     return initiative.targetGroup || '';

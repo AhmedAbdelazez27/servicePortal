@@ -65,28 +65,31 @@
     </div> -->
 
     <div *ngIf="!loading && !error" class="row align-items-stretch">
-      <div *ngFor="let initiative of initiatives" class="col-xl-4 col-lg-6 mb-4 d-flex">
-        <div class="service-box flex-fill d-flex flex-column" (click)="onInitiativeClick(initiative)">
-          <div class="mb-3">
-            <img [src]="getInitiativeImage(initiative)" [alt]="getInitiativeName(initiative)"
-              class="w-100 initiative-image" (error)="onImageError($event)">
-          </div>
+     <div *ngFor="let initiative of initiatives" class="col-xl-4 col-lg-6 mb-4 d-flex">
+  <div class="service-box flex-fill d-flex flex-column" (click)="onInitiativeClick(initiative)">
+    <div class="mb-3">
+      <img [src]="getInitiativeImage(initiative)" 
+           [alt]="getInitiativeName(initiative)"
+           class="w-100 initiative-image"
+           (error)="onImageError($event)">
+    </div>
 
-          <span class="mb-3 d-block initiative-title" [innerHTML]="getInitiativeName(initiative)"></span>
-          <p class="mb-4 initiative-description flex-grow-1" [innerHTML]="getInitiativeDescription(initiative)"></p>
+    <span class="mb-3 d-block initiative-title" [innerHTML]="getInitiativeName(initiative)"></span>
+    <p class="mb-4 initiative-description flex-grow-1" [innerHTML]="getInitiativeDescription(initiative)"></p>
 
-
-          <div class="d-flex justify-content-end align-items-end mt-auto">
-            <button class="btn btn-link" (click)="onInitiativeClick(initiative)">
-              {{ 'COMMON.VIEW' | translate }}
-              <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
-                <path d="M1.1665 11L6.1665 6L1.1665 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                  stroke-linejoin="round" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
+    <!-- الزرار دايمًا تحت -->
+    <div class="d-flex justify-content-end align-items-end mt-auto">
+      <button class="btn btn-link" (click)="onInitiativeClick(initiative)">
+        {{ 'COMMON.VIEW' | translate }}
+        <svg xmlns="http://www.w3.org/2000/svg" width="7" height="12" viewBox="0 0 7 12" fill="none">
+          <path d="M1.1665 11L6.1665 6L1.1665 1" 
+                stroke="currentColor" stroke-width="1.5" 
+                stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
 
     </div>
 
