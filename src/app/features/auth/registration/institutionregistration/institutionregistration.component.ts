@@ -28,6 +28,7 @@ import { FndLookUpValuesSelect2RequestDto } from '../../../../core/dtos/FndLookU
 
 // Validators
 import { confirmPasswordValidator } from '../../../../shared/customValidators/confirmPasswordValidator';
+import { UAEPassDto } from '../../../../core/dtos/uaepass.dto';
 
 @Component({
   selector: 'app-institutionregistration',
@@ -52,7 +53,8 @@ export class InstitutionregistrationComponent implements OnInit {
   countries: any[] = [];
   cities: any[] = [];
   entities: any[] = [];
-  
+  genderOptions: any[] = [];
+
   // Pagination for dropdowns
   countriesLoading: boolean = false;
   citiesLoading: boolean = false;
@@ -60,7 +62,9 @@ export class InstitutionregistrationComponent implements OnInit {
   countriesHasMore: boolean = true;
   citiesHasMore: boolean = true;
   entitiesHasMore: boolean = true;
-  
+  genderLoading: boolean = false;
+  genderHasMore: boolean = true;
+
   // Attachment data
   attachmentConfigs: AttachmentsConfigDto[] = [];
   selectedFiles: { [key: number]: File } = {};
@@ -71,6 +75,7 @@ export class InstitutionregistrationComponent implements OnInit {
   
   // Date properties
   today = new Date().toISOString().split('T')[0];
+  uaePassInfo: UAEPassDto = {} as UAEPassDto;
 
   constructor(
     private fb: FormBuilder,
@@ -87,11 +92,18 @@ export class InstitutionregistrationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+   
     this.loadDropdownData();
     this.loadAttachmentConfigs();
   }
 
   private initializeForm(): void {
+    const storedInfo = localStorage.getItem('UAEPassInfo');
+    if (storedInfo) {
+      this.uaePassInfo = JSON.parse(storedInfo) as UAEPassDto;
+    }
+    console.log(this.uaePassInfo);
+
     this.registrationForm = this.fb.group({
       // Basic Information
       
@@ -101,6 +113,9 @@ export class InstitutionregistrationComponent implements OnInit {
       civilId: ['', [Validators.required, Validators.minLength(10)]],
       idNumberIssueDate: [null],
       idNumberExpiryDate: [null],
+      gender: [null],
+      genderstr: [null],
+      uuid: [null],
       dateOfBirth: [null],
       entityId: [null, Validators.required],
       
@@ -132,12 +147,36 @@ export class InstitutionregistrationComponent implements OnInit {
     }, {
       validators: confirmPasswordValidator('password', 'confirmPassword')
     });
+
+    if (this.uaePassInfo) {
+      let mobile = this.uaePassInfo.mobile || '';
+
+      if (mobile.startsWith('971')) {
+        mobile = mobile.substring(3);
+      }
+      this.registrationForm.patchValue({
+        name: this.uaePassInfo.fullnameAr
+          || (this.uaePassInfo.firstnameAR + ' ' + this.uaePassInfo.lastnameAR),
+        nameEn: this.uaePassInfo.fullnameEN
+          || (this.uaePassInfo.firstnameEN + ' ' + this.uaePassInfo.lastnameEN),
+        email: this.uaePassInfo.email,
+        phoneNumber: mobile,
+        civilId: this.uaePassInfo.idn,
+        uuid: this.uaePassInfo.uuid,
+        dateOfBirth: this.uaePassInfo.birthdate,
+        idNumberExpiryDate: this.uaePassInfo.idexpirydate,
+        countryId: this.uaePassInfo.countryId,
+        gender: this.uaePassInfo.genderId,
+        genderstr: this.uaePassInfo.gender,
+      });
+    }
   }
 
   private loadDropdownData(): void {
     this.fetchCountries();
     this.fetchCities();
     this.fetchEntities();
+    this.fetchGenderOptions();
   }
 
   private fetchCountries(): void {
@@ -147,7 +186,7 @@ export class InstitutionregistrationComponent implements OnInit {
     const params = new FndLookUpValuesSelect2RequestDto();
     params.searchValue = '';
     params.skip = this.countries.length;
-    params.take = 20;
+    params.take = 9999;
     
     this.select2Service.getCountrySelect2(params).subscribe({
       next: (response: any) => {
@@ -227,6 +266,33 @@ export class InstitutionregistrationComponent implements OnInit {
     });
   }
 
+  private fetchGenderOptions(): void {
+    if (this.genderLoading || !this.genderHasMore) return;
+
+    this.genderLoading = true;
+    const genderParams = new FndLookUpValuesSelect2RequestDto();
+    genderParams.searchValue = '';
+    genderParams.skip = this.genderOptions.length;
+    genderParams.take = 20;
+
+    this.select2Service.getGenderSelect2(genderParams).subscribe({
+      next: (response: any) => {
+        const newGenderOptions = response || [];
+
+        this.genderOptions = [...this.genderOptions, ...newGenderOptions];
+        this.genderHasMore = newGenderOptions.length === genderParams.take;
+        this.genderLoading = false;
+      },
+      error: (err: any) => {
+        this.toastr.error(this.translate.instant('REGISTRATION.TOASTR.GENDER_LOAD_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+        this.genderLoading = false;
+      }
+    });
+  }
+
+  onGenderScrollToEnd(): void {
+    this.fetchGenderOptions();
+  }
   onFileSelected(event: any, configId: number): void {
     const file = event.target.files[0];
     if (file) {
@@ -316,7 +382,7 @@ export class InstitutionregistrationComponent implements OnInit {
           attConfigID: parseInt(configId)
         });
       }
-            const { acceptTerms, poBox, ...rest } = formData;
+      const { acceptTerms, poBox, ...rest } = formData;
 
       const createUserDto: CreateUserDto = {
          ...rest,

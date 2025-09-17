@@ -15,6 +15,10 @@ export class ApiEndpoints {
     OtpSendViaEmail: '/Otp/SendViaEmail',
     ResetPassword: '/ResetPassword',
     UpdateUserStatus: '/UpdateUserStatus',
+    UAEPassBaseURL: '/UAEPass',
+    GetLoginInfo: '/Login',
+    GetUAEPAssInfo: '/Register',
+
   };
 
   static readonly Roles = {
@@ -396,5 +400,23 @@ export class ApiEndpoints {
   
   static readonly Advertisement = {
     Create: '/Advertisement/Create'
+  };
+
+
+  static readonly UAE_PASS_CONFIG = {
+    baseUrl: 'https://stg-id.uaepass.ae/idshub',
+
+    //getURLCredention: {
+    //  clientId: 'sandbox_stage',
+    //  //  redirectUri: 'http://compassint.ddns.net:2040/login'
+    //  redirectUri: 'http://localhost:51999/login',
+    //  clientsecret: 'HnlHOJTkTb66Y5H'
+    //},
+
+    getURLCredention: {
+      clientId: 'ccc_web_stg',
+      clientsecret: 'Q9pOTvlchYARcSFL',
+      redirectUri: 'https://192.168.51.130:2002/login'
+    }
   };
 }

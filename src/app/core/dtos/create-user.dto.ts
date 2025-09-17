@@ -24,6 +24,7 @@ export interface CreateUserDto {
   fax?: string;
   boxNo?: string;
   entityId?: string;
+  uuid?: string;
   applyDate?: Date;
   userStatus?: number;
   serviceType?: number;

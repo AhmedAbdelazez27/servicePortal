@@ -1,4 +1,7 @@
-import { AttachmentDto, AttachmentBase64Dto } from '../../attachments/attachment.dto';
+import {
+  AttachmentDto,
+  AttachmentBase64Dto,
+} from '../../attachments/attachment.dto';
 
 export interface InitiativeDto {
   id: number;
@@ -9,6 +12,7 @@ export interface InitiativeDto {
   initiativeDate: Date;
   isActive: boolean;
   targetGroup: string;
+  targetGroupEn: string;
   attachment?: AttachmentDto;
   initiativeDetails?: InitiativeDetailsDto[];
 }
@@ -21,6 +25,7 @@ export interface CreateInitiativeDto {
   initiativeDate: Date;
   isActive: boolean;
   targetGroup: string;
+  targetGroupEn: string;
   attachment?: AttachmentBase64Dto;
   initiativeDetails?: CreateInitiativeDetailsDto[];
 }
@@ -34,6 +39,7 @@ export interface UpdateInitiativeDto {
   initiativeDate: Date;
   isActive: boolean;
   targetGroup: string;
+  targetGroupEn: string;
   attachment?: AttachmentBase64Dto;
   initiativeDetails?: CreateInitiativeDetailsDto[];
 }

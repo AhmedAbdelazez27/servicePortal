@@ -34,7 +34,7 @@
                     <label for="nameEn" class="form-label">{{ 'REGISTRATION.ENGLISH_NAME' | translate }} *</label>
                     <input type="text" class="form-control" id="nameEn" formControlName="nameEn"
                       [class.is-invalid]="isFieldInvalid('nameEn')"
-                      placeholder="{{ 'REGISTRATION.ENTER_ENGLISH_NAME' | translate }}">
+                      placeholder="{{ 'REGISTRATION.ENTER_ENGLISH_NAME' | translate }}" readonly>
                     <div class="invalid-feedback" *ngIf="isFieldInvalid('nameEn')">
                       {{ getFieldError('nameEn') }}
                     </div>
@@ -45,7 +45,7 @@
                     <label for="name" class="form-label">{{ 'REGISTRATION.ARABIC_NAME' | translate }} *</label>
                     <input type="text" class="form-control" id="name" formControlName="name"
                       [class.is-invalid]="isFieldInvalid('name')"
-                      placeholder="{{ 'REGISTRATION.ENTER_ARABIC_NAME' | translate }}">
+                      placeholder="{{ 'REGISTRATION.ENTER_ARABIC_NAME' | translate }}" readonly>
                     <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
                       {{ getFieldError('name') }}
                     </div>
@@ -69,7 +69,7 @@
                     <label for="gender" class="form-label">{{ 'REGISTRATION.GENDER' | translate }} *</label>
                     <ng-select id="gender" formControlName="gender" [class.is-invalid]="isFieldInvalid('gender')"
                       [placeholder]="'REGISTRATION.SELECT_GENDER' | translate" [items]="genderOptions" bindLabel="text"
-                      bindValue="id" [loading]="genderLoading" (scrollToEnd)="onGenderScrollToEnd()">
+                      bindValue="id" [loading]="genderLoading" (scrollToEnd)="onGenderScrollToEnd()" readonly>
                     </ng-select>
                     <div class="invalid-feedback" *ngIf="isFieldInvalid('gender')">
                       {{ getFieldError('gender') }}
@@ -81,7 +81,7 @@
                     <label for="civilId" class="form-label">{{ 'REGISTRATION.CIVIL_ID' | translate }} *</label>
                     <input type="text" class="form-control" id="civilId" formControlName="civilId"
                       [class.is-invalid]="isFieldInvalid('civilId')"
-                      placeholder="{{ 'REGISTRATION.ENTER_CIVIL_ID' | translate }}">
+                      placeholder="{{ 'REGISTRATION.ENTER_CIVIL_ID' | translate }}" readonly>
                     <div class="invalid-feedback" *ngIf="isFieldInvalid('civilId')">
                       {{ getFieldError('civilId') }}
                     </div>
@@ -93,7 +93,7 @@
                     <ng-select id="countryId" formControlName="countryId"
                       [class.is-invalid]="isFieldInvalid('countryId')"
                       [placeholder]="'REGISTRATION.SELECT_COUNTRY' | translate" [items]="countries" bindLabel="text"
-                      bindValue="id" [loading]="countriesLoading" (scrollToEnd)="onCountriesScrollToEnd()">
+                      bindValue="id" [loading]="countriesLoading" (scrollToEnd)="onCountriesScrollToEnd()" readonly>
                     </ng-select>
                     <div class="invalid-feedback" *ngIf="isFieldInvalid('countryId')">
                       {{ getFieldError('countryId') }}
@@ -147,7 +147,7 @@
                     <label for="email" class="form-label">{{ 'REGISTRATION.EMAIL' | translate }} *</label>
                     <input type="email" class="form-control" id="email" formControlName="email"
                       [class.is-invalid]="isFieldInvalid('email')"
-                      placeholder="{{ 'REGISTRATION.ENTER_EMAIL' | translate }}">
+                      placeholder="{{ 'REGISTRATION.ENTER_EMAIL' | translate }}" readonly>
                     <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
                       {{ getFieldError('email') }}
                     </div>
@@ -172,7 +172,7 @@
                             maxlength="9"
                             (keypress)="restrictMobileInput($event)"
                             (input)="onPhoneNumberInput()"
-                            (blur)="onPhoneNumberBlur()">
+                            (blur)="onPhoneNumberBlur()" readonly>
                     </div>
                     
                     <div *ngIf="(submitted || registrationForm.get('phoneNumber')?.touched) && registrationForm.get('phoneNumber')?.errors" class="invalid-feedback">

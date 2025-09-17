@@ -6,10 +6,12 @@ import { environment } from '../../../environments/environment';
 import { jwtDecode } from "jwt-decode";
 import { Router } from '@angular/router';
 import { ApiEndpoints } from '../constants/api-endpoints';
+import { LoginUAEPassDto, UAEPassDto } from '../dtos/uaepass.dto';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly BASE_URL = `${environment.apiBaseUrl}/Login`;
+  private readonly UAEPassBASE_URL = `${environment.apiBaseUrl}${ApiEndpoints.User.UAEPassBaseURL}`;
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -168,5 +170,15 @@ export class AuthService {
 
   resetPassword(payload: any): Observable<any> {
     return this.http.post(`${environment.apiBaseUrl}${ApiEndpoints.User.Base}${ApiEndpoints.User.ResetPassword}`, payload);
+  }
+  
+  UAEPasslogin(params: LoginUAEPassDto): Observable<any> {
+    const apiUrl = `${this.UAEPassBASE_URL}${ApiEndpoints.User.GetLoginInfo}`;
+    return this.http.post<any>(apiUrl, params);
+  }
+
+  GetUAEPassInfo(params: LoginUAEPassDto): Observable<UAEPassDto> {
+    const apiUrl = `${this.UAEPassBASE_URL}${ApiEndpoints.User.GetUAEPAssInfo}`;
+    return this.http.post<UAEPassDto>(apiUrl, params);
   }
 }

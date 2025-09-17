@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { SpinnerService } from '../../../core/services/spinner.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -8,6 +8,11 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../core/services/notification.service';
+import { TranslationService } from '../../../core/services/translation.service copy';
+import { LoginUAEPassDto } from '../../../core/dtos/uaepass.dto';
+import { Subject, takeUntil } from 'rxjs';
+import { ApiEndpoints } from '../../../core/constants/api-endpoints';
+type ModalMode = 'login' | 'signUpInstitution' | 'signUpIndividual';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +23,10 @@ import { NotificationService } from '../../../core/services/notification.service
 export class LoginComponent {
   form !: FormGroup;
   submitted: boolean = false;
+  uaePassParams = new LoginUAEPassDto();
+  lang: string | null = null;
+  destroy$ = new Subject<boolean>();
+  modalMode: ModalMode = 'login';
 
   constructor(
     private fb: FormBuilder,
@@ -26,11 +35,33 @@ export class LoginComponent {
     private spinnerService: SpinnerService,
     private toastr: ToastrService,
     private translate: TranslateService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private route: ActivatedRoute,
+    private translation: TranslationService
   ) {
     this.form = this.fb.group({
       userName: ['', Validators.required],
       password: ['', Validators.required],
+    });
+  }
+
+
+  ngOnInit() {
+    this.lang = localStorage.getItem('lang');
+
+    this.route.queryParams.subscribe(params => {
+      this.uaePassParams = {
+        code: params['code'],
+        state: params['state'],
+        lang: this.lang
+      };
+
+    
+      if (this.isValidCodeState(this.uaePassParams)) {
+        this.getUAEPassInfo(this.uaePassParams);
+      } else {
+        console.log('Code or state is invalid. API call not made.');
+      }
     });
   }
 
@@ -44,6 +75,7 @@ export class LoginComponent {
         this.auth.saveToken(res?.token);
         const decodedData = this.auth.decodeToken();
         
+
         
         if (decodedData) {
           // Store permissions if they exist (optional)
@@ -145,16 +177,194 @@ export class LoginComponent {
     return null;
   }
 
+
+  loginByUAEPass(): void {
+    this.modalMode = 'login';
+    this.redirectToUAEPass();
+  }
+
   routeToForgetPassword(){
     this.router.navigate(['/forgot-password']);
   }
 
-  routeToInstitutionRegistration(){
-    this.router.navigate(['/register/institution']);
+  routeToInstitutionRegistration() {
+    this.modalMode = 'signUpInstitution';
+    this.redirectToUAEPass();
   }
 
-  routeToIndividualRegistration(){
-    this.router.navigate(['/register/individual']);
+  routeToIndividualRegistration() {
+    this.modalMode = 'signUpIndividual';
+    this.redirectToUAEPass();
+  }
+
+  isValidCodeState(params: any): boolean {
+    return !!(params.code && params.state && params.code.trim() !== '' && params.state.trim() !== '');
+  }
+
+  private generateRandomState(): string {
+    return Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
+  }
+
+  private redirectToUAEPass(): void {
+    const config = ApiEndpoints.UAE_PASS_CONFIG.getURLCredention; // Change to production when needed
+    const baseUrl = ApiEndpoints.UAE_PASS_CONFIG.baseUrl; // Change to production when needed
+    const state = this.generateRandomState();
+    const uaePassURL =
+      `${baseUrl}/authorize` +
+      `?response_type=code` +
+      `&client_id=${config.clientId}` +
+      `&scope=urn:uae:digitalid:profile:general` +
+      `&state=${config.clientsecret}` +
+      `&redirect_uri=${encodeURIComponent(config.redirectUri)}` +
+      `&acr_values=urn:safelayer:tws:policies:authentication:level:low` +
+      `&ui_locales=${this.lang}`;
+
+    sessionStorage.setItem('uae_pass_mode', this.modalMode);
+    sessionStorage.setItem('uae_pass_state', config.clientsecret);
+
+    window.location.href = uaePassURL;
+  }
+
+  getUAEPassInfo(params: LoginUAEPassDto) {
+   
+    this.spinnerService.show();
+    const storedState = sessionStorage.getItem('uae_pass_state');
+    if (storedState && storedState !== params.state) {
+      this.toastr.error('Security validation failed', 'Error');
+      this.spinnerService.hide();
+      return;
+    }
+    const storedMode = sessionStorage.getItem('uae_pass_mode') as ModalMode;
+    if (storedMode) {
+      this.modalMode = storedMode;
+    }
+    switch (this.modalMode) {
+      case 'login':
+        this.handleUAEPassLogin(params);
+        break;
+      case 'signUpInstitution':
+        this.handleUAEPassInstitutionSignup(params);
+        break;
+      case 'signUpIndividual':
+        this.handleUAEPassIndividualSignup(params);
+        break;
+      default:
+        console.error('Invalid modal mode:', this.modalMode);
+        this.spinnerService.hide();
+    }
+    sessionStorage.removeItem('uae_pass_mode');
+    sessionStorage.removeItem('uae_pass_state');
+  }
+
+  private handleUAEPassLogin(params: LoginUAEPassDto): void {
+    this.auth.UAEPasslogin(params)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.handleLoginSuccess(res);
+        },
+        error: (err) => {
+          this.handleUAEPassError(err);
+        },
+        complete: () => {
+          this.spinnerService.hide();
+        }
+      });
+  }
+
+  private handleLoginSuccess(res: any): void {
+    this.auth.saveToken(res?.token);
+    const decodedData = this.auth.decodeToken();
+
+    if (decodedData) {
+      if (decodedData.Permissions) {
+        localStorage.setItem('permissions', JSON.stringify(decodedData.Permissions));
+      }
+
+      if (decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
+        localStorage.setItem('pages', JSON.stringify(decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']));
+      }
+
+      const userId = this.extractUserIdFromToken(decodedData);
+      if (userId) {
+        localStorage.setItem('userId', userId);
+      } else {
+        this.toastr.error(this.translate.instant('AUTH.MESSAGES.TOKEN_EXTRACTION_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+        this.spinnerService.hide();
+        return;
+      }
+    } else {
+      this.toastr.error(this.translate.instant('AUTH.MESSAGES.INVALID_TOKEN_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+      this.spinnerService.hide();
+      return;
+    }
+
+    this.toastr.success(this.translate.instant('AUTH.MESSAGES.LOGIN_SUCCESS'), this.translate.instant('TOAST.TITLE.SUCCESS'));
+    this.spinnerService.hide();
+    this.initializeNotificationSession();
+
+    this.router.navigate(['/home']);
+  }
+
+
+  private handleUAEPassInstitutionSignup(params: LoginUAEPassDto): void {
+    this.auth.GetUAEPassInfo(params)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          localStorage.setItem('UAEPassInfo', JSON.stringify(res));
+          this.spinnerService.hide();
+          this.router.navigate(['/register/institution']);
+        },
+        error: (err) => {
+          this.handleUAEPassError(err);
+        },
+        complete: () => {
+          this.spinnerService.hide();
+        }
+      });
+  }
+
+  /**
+   * Handle UAE Pass individual signup
+   */
+  private handleUAEPassIndividualSignup(params: LoginUAEPassDto): void {
+    this.auth.GetUAEPassInfo(params)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          localStorage.setItem('UAEPassInfo', JSON.stringify(res));
+          this.spinnerService.hide();
+          this.router.navigate(['/register/individual']);
+        },
+        error: (err) => {
+          this.handleUAEPassError(err);
+        },
+        complete: () => {
+          this.spinnerService.hide();
+        }
+      });
+  }
+
+  private handleUAEPassError(err: any): void {
+    const message = err.error?.message || err.error?.reason || 'UAE Pass authentication failed';
+    this.toastr.error(this.translate.instant(message), this.translate.instant('TOAST.TITLE.ERROR'));
+
+    // Redirect to UAE Pass logout
+    const redirectUri = window.location.origin + '/login';
+    const logoutURL = `${ApiEndpoints.UAE_PASS_CONFIG.baseUrl}/logout?redirect_uri=${encodeURIComponent(redirectUri)}`;
+
+    setTimeout(() => {
+      window.location.href = logoutURL;
+    }, 2000); // Give user time to read the error message
+
+    this.spinnerService.hide();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }
 

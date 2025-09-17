@@ -28,6 +28,7 @@ import { FndLookUpValuesSelect2RequestDto } from '../../../../core/dtos/FndLookU
 
 // Validators
 import { confirmPasswordValidator } from '../../../../shared/customValidators/confirmPasswordValidator';
+import { UAEPassDto } from '../../../../core/dtos/uaepass.dto';
 
 @Component({
   selector: 'app-individualregistration',
@@ -68,6 +69,7 @@ export class IndividualregistrationComponent implements OnInit {
 
   // Search parameters
   searchSelect2Params = new FndLookUpValuesSelect2RequestDto();
+  uaePassInfo: UAEPassDto = {} as UAEPassDto;
 
   constructor(
     private fb: FormBuilder,
@@ -89,6 +91,12 @@ export class IndividualregistrationComponent implements OnInit {
   }
 
   private initializeForm(): void {
+    const storedInfo = localStorage.getItem('UAEPassInfo');
+    if (storedInfo) {
+      this.uaePassInfo = JSON.parse(storedInfo) as UAEPassDto;
+    }
+    console.log(this.uaePassInfo);
+
     this.registrationForm = this.fb.group({
       // Basic Information
       nameEn: ['', [Validators.required, Validators.minLength(2)]],
@@ -99,6 +107,7 @@ export class IndividualregistrationComponent implements OnInit {
       idNumberIssueDate: [null],
       idNumberExpiryDate: [null],
       dateOfBirth: [null],
+      uuid: [null],
 
       // Contact Information
       email: ['', [Validators.required, Validators.email]],
@@ -128,6 +137,28 @@ export class IndividualregistrationComponent implements OnInit {
     }, {
       validators: confirmPasswordValidator('password', 'confirmPassword')
     });
+    if (this.uaePassInfo) {
+      let mobile = this.uaePassInfo.mobile || '';
+
+      if (mobile.startsWith('971')) {
+        mobile = mobile.substring(3);
+      }
+      this.registrationForm.patchValue({
+        name: this.uaePassInfo.fullnameAr
+          || (this.uaePassInfo.firstnameAR + ' ' + this.uaePassInfo.lastnameAR),
+        nameEn: this.uaePassInfo.fullnameEN
+          || (this.uaePassInfo.firstnameEN + ' ' + this.uaePassInfo.lastnameEN),
+        email: this.uaePassInfo.email,
+        phoneNumber: mobile,
+        civilId: this.uaePassInfo.idn,
+        uuid: this.uaePassInfo.uuid,
+        dateOfBirth: this.uaePassInfo.birthdate,
+        idNumberExpiryDate: this.uaePassInfo.idexpirydate,
+        countryId: this.uaePassInfo.countryId,
+        gender: this.uaePassInfo.genderId,
+        genderstr: this.uaePassInfo.gender,
+      });
+    }
   }
 
   private loadDropdownData(): void {
@@ -143,7 +174,7 @@ export class IndividualregistrationComponent implements OnInit {
     const params = new FndLookUpValuesSelect2RequestDto();
     params.searchValue = '';
     params.skip = this.countries.length;
-    params.take = 20;
+    params.take = 9999;
 
     this.select2Service.getCountrySelect2(params).subscribe({
       next: (response: any) => {
