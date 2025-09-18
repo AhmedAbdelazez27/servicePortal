@@ -64,7 +64,7 @@
       </div>
     </div> -->
 
-    <div *ngIf="!loading && !error" class="row align-items-stretch">
+    <!-- <div *ngIf="!loading && !error" class="row align-items-stretch">
       <div *ngFor="let initiative of initiatives" class="col mb-4  d-flex">
         <div class="service-box flex-fill d-flex flex-column" (click)="onInitiativeClick(initiative)">
           <div class="mb-3">
@@ -87,11 +87,11 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
 
 
-    <!-- <div *ngIf="!loading && !error" class="row align-items-stretch">
+    <div *ngIf="!loading && !error" class="row align-items-stretch">
       <div *ngFor="let initiative of initiatives" class="col-xl-4 col-lg-6 mb-4 d-flex">
         <div class="service-box flex-fill d-flex flex-column" (click)="onInitiativeClick(initiative)">
           <div class="mb-3">
@@ -100,7 +100,10 @@
           </div>
 
           <span class="mb-3 d-block initiative-title" [innerHTML]="getInitiativeName(initiative)"></span>
-          <p class="mb-4 initiative-description flex-grow-1" [innerHTML]="getInitiativeDescription(initiative)"></p>
+          <!-- <p class="mb-4 initiative-description flex-grow-1" [innerHTML]="getInitiativeDescription(initiative)"></p> -->
+
+           <p class="mb-4 initiative-description flex-grow-1" style="overflow-x: hidden;" *ngIf="lang == 'ar'">{{ initiative.descriptionAr | cleanHtml:{ maxLength: 150 } }}</p>
+          <p class="mb-4 initiative-description flex-grow-1" style="overflow-x: hidden;" *ngIf="lang == 'en'">{{ initiative.descriptionEn | cleanHtml:{ maxLength: 150 } }}</p>
 
 
           <div class="d-flex justify-content-end align-items-end mt-auto">
@@ -115,7 +118,7 @@
         </div>
       </div>
 
-    </div> -->
+    </div>
 
 
     <!-- No Data State -->
