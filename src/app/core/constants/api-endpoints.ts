@@ -416,7 +416,7 @@ export class ApiEndpoints {
     getURLCredention: {
       clientId: 'ccc_web_stg',
       clientsecret: 'Q9pOTvlchYARcSFL',
-      redirectUri: 'https://192.168.51.130:2002/login'
+      redirectUri: 'https://192.168.51.130:2001/login'
     }
   };
 }
