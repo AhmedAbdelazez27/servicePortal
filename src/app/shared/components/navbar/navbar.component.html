@@ -40,9 +40,19 @@
                     <a class="nav-link" routerLink="/charity-organizations" routerLinkActive="active">{{
                         'NAVIGATION.CHARITY_ORGANIZATIONS' | translate }}</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" routerLink="/polls" routerLinkActive="active">{{ 'POLLS.TITLE' | translate
                         }}</a>
+                </li> -->
+                <li class="nav-item dropdown dropdown-hover">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        {{ 'NAVIGATION.Digital_Participation' | translate }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" routerLink="/polls">{{ 'POLLS.TITLE' |
+                                translate }}</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/contact-us" routerLinkActive="active">{{ 'NAVIGATION.CONTACT_US' |
@@ -94,7 +104,7 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="d-flex flex-column align-items-center gap-2"(click)="onChangePassword()">
+                                <a class="d-flex flex-column align-items-center gap-2" (click)="onChangePassword()">
                                     <img src="./../../../assets/images/profile-img.png" class="profile-img" />
                                     <span style="color:#252525">{{ currentUserName }}</span>
                                 </a>

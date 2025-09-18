@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { Router } from '@angular/router';
 import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -24,7 +24,7 @@ declare var $: any;
   styleUrls: ['./home.component.scss'],
   providers: [CleanHtmlPipe]
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit, AfterViewInit ,OnDestroy {
   customOptions?: OwlOptions;
   initiativesOptions?: OwlOptions;
   services: ServiceDto[] = [];
@@ -55,7 +55,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private translationService: TranslationService,
     private translateService: TranslateService,
     private router: Router,
-    public textService: TextProcessingService
+    public textService: TextProcessingService,
+    private zone: NgZone, private cdr: ChangeDetectorRef
   ) {
     this.lang = localStorage.getItem("lang") || "";
     this.setCarouselOptions(this.translationService.currentLang);
@@ -66,7 +67,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
 
   }
-
+  
   ngOnInit(): void {
     this.loadServices();
     this.loadInitiatives();
@@ -74,26 +75,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   @ViewChild('carouselEl') carouselEl!: ElementRef;
+  private carouselInst: any;
 
   ngAfterViewInit(): void {
-    console.log(this.heroSections.length);
-
-    const el = this.carouselEl.nativeElement;
-    console.log("before", el);
-
-    if (this.heroSections.length && el) {
-      console.log("after");
-
-      const c = new bootstrap.Carousel(el, {
-        interval: 3000,
-        ride: 'carousel',
-        pause: true,   // hover action
-        wrap: true,
-        touch: true
-      });
-
-      c.cycle();
-    }
+    this.initCarouselSafely();
 
   }
 
@@ -104,7 +89,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const request: GetAllHeroSectionSettingRequestDto = {
       skip: 0,
       take: 100,
-      isActive: true // Only get active hero sections
+      isActive: true 
     };
 
     this.heroSectionService.getAll(request).subscribe({
@@ -115,12 +100,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
           .sort((a: HeroSectionSettingDto, b: HeroSectionSettingDto) => a.viewOrder - b.viewOrder);
 
         this.heroSectionsLoading = false;
+        this.cdr.detectChanges();       
 
-        setTimeout(() => {
-          const elindicators = document.getElementById('carousel-indicator-1');
-          console.log("elindicators = ", elindicators);
-          elindicators?.click();
-        }, 3000);
+        setTimeout(() => this.initCarouselSafely(), 0);
 
       },
       error: (error: any) => {
@@ -129,6 +111,37 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     });
   }
+  ////////////////////////////////////////
+  private disposeCarousel() {
+    try { this.carouselInst?.dispose?.(); } catch { }
+    this.carouselInst = null;
+  }
+
+  private initCarouselSafely() {
+
+    // Ensure Angular has finished rendering the DOM before initializing the carousel
+    this.zone.onStable.asObservable().subscribe(() => {
+      const el = this.carouselEl?.nativeElement;
+      if (!el) return;
+
+     
+      this.disposeCarousel();
+
+      this.carouselInst = new bootstrap.Carousel(el, {
+        interval: 3000,
+        ride: 'carousel',
+        pause: false,  
+        wrap: true,
+        touch: true
+      });
+
+      // تأكيد التشغيل
+      this.carouselInst.cycle();
+    });
+  }
+  ////////////////////////////////////////
+
+
 
   loadServices(): void {
     this.loading = true;
@@ -320,4 +333,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
       };
     }
   }
+
+  ngOnDestroy(): void {
+   this.disposeCarousel();
+  }
+
+  
 }

@@ -259,7 +259,7 @@
     "SENDING": "Sending..."
   },
   "REGISTRATION": {
-     "TERMS_TITLE": "Terms & Conditions",
+    "TERMS_TITLE": "Terms & Conditions",
     "ACCEPT_TERMS": "I have read and agree to the",
     "I_AGREE": "I agree",
     "I_DISAGREE": "I do not agree",
@@ -802,7 +802,7 @@
     "METHOD": "Method",
     "NO_ADS": "No Ads",
     "NO_PARTNERS": "No Partners",
-     "TERMS_AND_CONDITIONS": "Terms & Conditions",
+    "TERMS_AND_CONDITIONS": "Terms & Conditions",
     "PRIVACY_POLICY": "Privacy Policy",
     "AND": "and"
   },
@@ -1049,7 +1049,6 @@
       "SETUP_DATE": "Setup Date",
       "TENT_SETUP_DATE": "Tent Setup Date"
     }
-
   },
   "ATTACHMENTS": {
     "DOCUMENT_TYPE": "Document Type",
@@ -1585,7 +1584,8 @@
     "REQUEST": "Request",
     "INITIATIVES": "Initiatives",
     "CHARITY_ORGANIZATIONS": "Charity Organizations",
-    "CONTACT_US": "Contact Us"
+    "CONTACT_US": "Contact Us",
+    "Digital_Participation": "Digital Participation"
   },
   "INITIATIVES": {
     "TITLE": "Initiatives",
@@ -1984,20 +1984,20 @@
     "go_back": "Go Back",
     "contact": "Contact Us",
     "hint": "If you just signed in, try refreshing the page or navigating from the main menu."
-  }
-    ,
-    "Homepage": {
-      "title" :"Charity Coordination Council  Ajman",
-    "Privacy":  "Privacy Policy",
-    "Disclaimer":"Disclaimer",
-    "websitecontent": "Terms and Conditions"  
-     ,"ITEMS": [
-       "1- The Council provides this website and its content and services for informational and awareness purposes and to facilitate access to related services." ,
-"2- Under no circumstances shall the Council be held liable for any direct, indirect, incidental, consequential, special, or exceptional damages arising from the use of this website" ,
-"3- While the Council strives to regularly update the data and information published on the website, it does not guarantee that all information will always be current. Users are encouraged to verify the accuracy of information before taking any actions based on it.",
-"4- Website availability may be affected by interruptions, maintenance activities, or technical failures beyond the control of the Council, which shall not be held responsible for such occurrences." ,
-"5- This website may contain links to external websites for user convenience. The Council assumes no responsibility for the content of those websites, their availability, or any problems that may result from their use.",
-"6- Users are responsible for taking appropriate precautions, including the use of antivirus software and keeping their security systems updated, when browsing the website or downloading any files.",
-"7- The Council shall not be held liable for damages resulting from hacking incidents or the misuse of user data by unauthorized third parties."    ]
+  },
+  "Homepage": {
+    "title": "Charity Coordination Council  Ajman",
+    "Privacy": "Privacy Policy",
+    "Disclaimer": "Disclaimer",
+    "websitecontent": "Terms and Conditions",
+    "ITEMS": [
+      "1- The Council provides this website and its content and services for informational and awareness purposes and to facilitate access to related services.",
+      "2- Under no circumstances shall the Council be held liable for any direct, indirect, incidental, consequential, special, or exceptional damages arising from the use of this website",
+      "3- While the Council strives to regularly update the data and information published on the website, it does not guarantee that all information will always be current. Users are encouraged to verify the accuracy of information before taking any actions based on it.",
+      "4- Website availability may be affected by interruptions, maintenance activities, or technical failures beyond the control of the Council, which shall not be held responsible for such occurrences.",
+      "5- This website may contain links to external websites for user convenience. The Council assumes no responsibility for the content of those websites, their availability, or any problems that may result from their use.",
+      "6- Users are responsible for taking appropriate precautions, including the use of antivirus software and keeping their security systems updated, when browsing the website or downloading any files.",
+      "7- The Council shall not be held liable for damages resulting from hacking incidents or the misuse of user data by unauthorized third parties."
+    ]
   }
 }

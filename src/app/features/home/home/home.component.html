@@ -9,7 +9,7 @@
             <img [src]="getHeroSectionImage(heroSection)" class="d-block w-100" (error)="onImageError($event)"
                 [alt]="getHeroSectionTitle(heroSection)" />
             <div (click)="onHeroSectionDetails(heroSection)" style="font-size: 24px; cursor: pointer;"
-                class="carousel-caption d-none d-md-block">
+                class="carousel-caption">
                 <div [innerHTML]="getHeroSectionTitle(heroSection)"></div>
                 <!-- <p *ngIf="getHeroSectionDescription(heroSection)">{{ getHeroSectionDescription(heroSection) }}</p> -->
                 <div class="d-flex justify-content-end">
@@ -354,7 +354,7 @@
         <!-- Content -->
         <div *ngIf="!initiativesLoading && !initiativesError" class="row mb-4">
             <!-- First initiative with image (if available) -->
-            <div class="col-xl-6 mb-3" *ngIf="initiatives.length > 0">
+            <div class="col-xl-6 mb-3" *ngIf="initiatives.length > 0" style="padding: 0 5px;">
                 <div class="service-box h-100">
                     <div class="mb-3">
                         <img style="height: 207px; object-fit: cover;" [src]="getInitiativeImage(initiatives[0])"
@@ -378,11 +378,11 @@
             </div>
 
             <!-- Second and third initiatives without images -->
-            <div class="col-xl-6 service-box-two-items-container mb-3" *ngIf="initiatives.length > 1">
+            <div class="col-xl-6 service-box-two-items-container mb-3" *ngIf="initiatives.length > 1"  style="padding: 0 5px;">
                 <div class="row h-100">
-                    <div class="col-12 h-50 mb-2">
+                    <div class="col-12 h-50 mb-1">
                         <!-- Second initiative -->
-                        <div class="service-box mb-3" *ngIf="initiatives[1]">
+                        <div class="service-box mb-1" *ngIf="initiatives[1]">
                             <span>{{ getInitiativeName(initiatives[1]) }}</span>
                             <!-- <p class="initiative-description mb-1"
                                 [innerHTML]="getInitiativeDescription(initiatives[1])">

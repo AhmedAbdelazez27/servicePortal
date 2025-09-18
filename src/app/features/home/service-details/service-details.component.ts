@@ -50,6 +50,12 @@ export class ServiceDetailsComponent implements OnInit {
     this.serviceSettingService.getById(Number(this.serviceId)).subscribe({
       next: (response: any) => {
         this.service = response || null;
+        if (this.service?.attachmentsConfigs) {
+          this.service.attachmentsConfigs = this.service.attachmentsConfigs.sort(
+            (a: any, b: any) => a.id - b.id
+          );
+        }
+
         this.loading = false;
       },
       error: (error: any) => {
@@ -130,7 +136,7 @@ export class ServiceDetailsComponent implements OnInit {
 
   onRequestService(): void {
     console.log("rrrrrrrrr");
-    
+
     if (this.service) {
       // Check if this is Fasting and Distribution Tent service (ID = 1)
       if (this.service.serviceId === 1) {
