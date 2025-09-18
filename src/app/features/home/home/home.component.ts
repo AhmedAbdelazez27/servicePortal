@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { Router } from '@angular/router';
 import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -73,14 +73,28 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.loadHeroSections();
   }
 
+  @ViewChild('carouselEl') carouselEl!: ElementRef;
+
   ngAfterViewInit(): void {
-    const el = document.querySelector('#carouselExampleCaptions');
-    if (el) {
-      new bootstrap.Carousel(el, {
-        interval: 4000,
-        ride: 'carousel'
+    console.log(this.heroSections.length);
+
+    const el = this.carouselEl.nativeElement;
+    console.log("before", el);
+
+    if (this.heroSections.length && el) {
+      console.log("after");
+
+      const c = new bootstrap.Carousel(el, {
+        interval: 3000,
+        ride: 'carousel',
+        pause: true,   // hover action
+        wrap: true,
+        touch: true
       });
+
+      c.cycle();
     }
+
   }
 
   loadHeroSections(): void {
@@ -99,7 +113,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.heroSections = (response.data || [])
           .filter((item: HeroSectionSettingDto) => item.isActive)
           .sort((a: HeroSectionSettingDto, b: HeroSectionSettingDto) => a.viewOrder - b.viewOrder);
+
         this.heroSectionsLoading = false;
+
+        setTimeout(() => {
+          const elindicators = document.getElementById('carousel-indicator-1');
+          console.log("elindicators = ", elindicators);
+          elindicators?.click();
+        }, 3000);
+
       },
       error: (error: any) => {
         this.heroSectionsError = 'ERRORS.FAILED_LOAD_HERO_SECTIONS';

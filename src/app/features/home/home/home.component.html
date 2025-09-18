@@ -1,5 +1,9 @@
-<div id="carouselExampleCaptions" class="carousel slide" *ngIf="!heroSectionsLoading && heroSections.length > 0">
-
+<div  #carouselEl id="carouselExampleCaptions" class="carousel slide" *ngIf="!heroSectionsLoading && heroSections.length > 0"
+    data-bs-ride="carousel"
+     data-bs-interval="2000" data-bs-pause="true"     
+     data-bs-wrap="true"        
+     data-bs-touch="true">
+ٍ
     <div class="carousel-inner">
         <div class="carousel-item" *ngFor="let heroSection of heroSections; let i = index" [class.active]="i === 0">
             <img [src]="getHeroSectionImage(heroSection)" class="d-block w-100" (error)="onImageError($event)"
@@ -35,7 +39,7 @@
 
     <!-- Carousel Indicators -->
     <div class="carousel-indicators" *ngIf="heroSections.length > 1">
-        <button type="button" *ngFor="let heroSection of heroSections; let i = index"
+        <button type="button" *ngFor="let heroSection of heroSections; let i = index"  [id]="'carousel-indicator-' + i"
             data-bs-target="#carouselExampleCaptions" [attr.data-bs-slide-to]="i" [class.active]="i === 0"
             [attr.aria-current]="i === 0 ? 'true' : null" [attr.aria-label]="'Slide ' + (i + 1)">
         </button>
