@@ -261,4 +261,9 @@ export class Select2Service {
     const apiUrl = `${this.BASE_URL}${Select2APIEndpoint.Select2.GetServiceTypeSelect2}`
     return this.http.post<SelectdropdownResult>(apiUrl, params);
   }
+
+  getRegionSelect2List(params: FndLookUpValuesSelect2RequestDto): Observable<SelectdropdownResult> {
+    const apiUrl = `${this.BASE_URL}${Select2APIEndpoint.Select2.GetRegionSelect2List}`
+    return this.http.post<SelectdropdownResult>(apiUrl, params);
+  }
 }

@@ -31,27 +31,23 @@
 
 
                 <!-- Combined Description and Service Type Card -->
-                <div class="row mb-4">
-                    <div class="col-12 mb-3">
-                        <div class="info-card">
-                            <div class="info-card-content">
+                      <div class="info-card p-4 mb-4">
+                            <div class="row">
                                 <!-- Description Row -->
-                                <div class="info-row">
-                                    <span class="info-label">{{ 'SERVICES.SERVICE_DESCRIPTION' | translate }}</span>
-                                    <span class="info-value">
+                                <div class="col-xl-6 mb-2">
+                                    <h5 class="gold">{{ 'SERVICES.SERVICE_DESCRIPTION' | translate }}</h5>
+                                    <p class="mb-0">
                                         {{ service ? getServiceDescription(service) : ('SERVICES.NO_DESCRIPTION' | translate) }}
-                                    </span>
+                                    </p>
                                 </div>
                                 
                                 <!-- Service Type Row -->
-                                <div class="info-row" *ngIf="service.serviceTypeName">
-                                    <span class="info-label">{{ 'SERVICES.SERVICE_TYPE' | translate }}</span>
-                                    <span class="info-value">{{ service.serviceTypeName }}</span>
+                                <div class="col-xl-6 mb-2" *ngIf="service.serviceTypeName">
+                                    <h5 class="gold">{{ 'SERVICES.SERVICE_TYPE' | translate }}</h5>
+                                    <p class="mb-0">{{ service.serviceTypeName }}</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
                 <!-- Service Steps Accordion -->
                 <!-- <div class="accordion mb-4" id="serviceStepsAccordion" *ngIf="service.serviceDepartments && service.serviceDepartments.length > 0">

@@ -4,22 +4,7 @@
   "TOGGLE_LANG": "Switch to Arabic",
   "PAGE_NOT_FOUND": "Oops! Page not found.",
   "BACK_HOME": "Back to Home",
-  "COMMON": {
-    "LOADING": "Loading...",
-    "LOADING_DATA": "Loading data, please wait...",
-    "ERROR": "Error",
-    "ERROR_OCCURRED": "An error occurred while loading the data.",
-    "REFRESH": "Refresh",
-    "VIEW": "View",
-    "OPEN_IN_GOOGLE_MAPS": "Open in Google Maps",
-    "BACK_TO_INITIATIVES": "Back to Initiatives",
-    "BACK_TO_HOME": "Back to Home",
-    "VISIT_LINK": "Visit Link",
-    "VIEW_ORDER": "View Order",
-    "STATUS": "Status",
-    "ACTIVE": "Active",
-    "INACTIVE": "Inactive"
-  },
+
   "TOAST": {
     "TITLE": {
       "SUCCESS": "Success",
@@ -252,9 +237,9 @@
     "MOBILE_PLACEHOLDER": "Mobile Number",
     "TITLE_PLACEHOLDER": "Title",
     "MESSAGE_PLACEHOLDER": "Message",
-    "ADDRESS": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text.",
-    "PHONE": "+971 123 45678 / +971 987 654321",
-    "EMAIL": "mail@google.com",
+    "ADDRESS": "Charity Coordination Council - Ajman, Al Rumailah , Shurafa Tower 2",
+    "PHONE": "067116111",
+    "EMAIL": "Info@ccc.gov.ae",
     "SEND": "Send",
     "SENDING": "Sending..."
   },
@@ -661,8 +646,15 @@
   },
   "SUCCESS": {
     "REQUEST_PLAINT_CREATED": "Your grievance request has been submitted successfully!",
-    "REQUEST_COMPLAINT_CREATED": "Complaint request created successfully"
+    "REQUEST_COMPLAINT_CREATED": "Complaint request created successfully",
+    "FASTING_TENT_REQUEST_CREATED": "Fasting tent request submitted successfully!",
+    "DISTRIBUTION_SITE_REQUEST_CREATED": "Distribution site permit request submitted successfully!",
+    "LOCATION_AVAILABLE": "Location is available",
+    "LOCATION_SELECTED": "Location selected successfully",
+    "PARTNER_ADDED": "Partner added successfully",
+    "PARTNER_REMOVED": "Partner removed successfully"
   },
+
   "ERRORS": {
     "SERVICE_ID_NOT_FOUND": "Service ID not found",
     "FAILED_LOAD_SERVICE_DETAILS": "Failed to load service details. Please try again.",
@@ -685,7 +677,7 @@
     "FAILED_LOAD_LOCATION_DETAILS": "Failed to load location details. Please try again.",
     "LOCATION_NOT_AVAILABLE": "This location is not available.",
     "FAILED_LOAD_CHARITY_ORGANIZATIONS": "Failed to load charity organizations. Please try again.",
-    "FAILED_LOAD_POLLS": "Failed to load polls. Please try again.",
+    "FAILED_LOAD_POLLS": "Failed to load surveys. Please try again.",
     "FAILED_LOAD_HERO_SECTIONS": "Failed to load hero sections. Please try again.",
     "FAILED_LOAD_HERO_SECTION": "Failed to load hero section details. Please try again.",
     "INVALID_ID": "Invalid ID provided."
@@ -693,17 +685,57 @@
   "WARNINGS": {
     "REASON_ALREADY_ADDED": "This reason has already been added."
   },
+
   "COMMON": {
-    "REQUEST_SERVICE": "Request Service",
     "LOADING": "Loading...",
     "LOADING_DATA": "Loading data, please wait...",
+    "ERROR": "Error",
+    "ERROR_OCCURRED": "An error occurred while loading the data.",
+    "REFRESH": "Refresh",
+    "VIEW": "View",
     "OPEN_IN_GOOGLE_MAPS": "Open in Google Maps",
     "BACK_TO_INITIATIVES": "Back to Initiatives",
     "BACK_TO_HOME": "Back to Home",
     "VISIT_LINK": "Visit Link",
     "VIEW_ORDER": "View Order",
+    "STATUS": "Status",
     "ACTIVE": "Active",
     "INACTIVE": "Inactive",
+    "Action": "Action",
+    "ViewInfo": "Show Details",
+    "ShowInfo": "Show Details",
+    "StudyDetails": "Study Details",
+    "Clear": "Clear",
+    "Search": "Apply",
+    "Data": " Search Result",
+    "Close": "Close",
+    "NoData": "No data available to display",
+    "SearchTitle": "Filter",
+    "Select": "-- Select --",
+    "PrintExcel": "Export to Excel",
+    "Total": "Total",
+    "Print": " Print PDF",
+    "Required": "This Field is Required",
+    "ViewHistoryInfo": "Beneficiary History",
+    "ViewPaymentInfo": "Guarantee Disbursements",
+    "ViewContractInfo": "Contracts",
+    "users": "Users",
+    "screens": "Screens",
+    "entities": "Entities",
+    "edit": "Edit",
+    "deletd": "Delete",
+    "cancel": "Cancel",
+    "addNew": "Add New",
+    "save": "Save",
+    "role": "Roles",
+    "permissions": "Permissions",
+    "dept": "Department",
+    "userdept": "Users in Department",
+    "deleteWarning": "Are you sure you want delete",
+    "requestComplaint": "Request Complaint",
+    "MORE_FILES": "Add More Files",
+    "DESCRIPTION": "Description",
+    "TARGET_GROUP": "Target Group",
     "REQUEST_SERVICE": "Request Service",
     "LOADING_COMMENTS": "Loading comments...",
     "LOADING_ATTACHMENTS": "Loading attachments...",
@@ -719,22 +751,17 @@
     "OPTIONAL": "Optional",
     "ADD_PARTNER": "Add Partner",
     "CHECKING_AVAILABILITY": "Checking availability...",
-    "ERROR_OCCURRED": "An error occurred",
-    "ERROR": "Error",
     "SUCCESS": "Success",
-    "VIEW": "View",
     "DELETE": "Delete",
     "BACK": "Back",
     "SERVICE_INFO": "Service Information",
     "APPLICATION_NO": "Application Number",
     "APPLICATION_DATE": "Application Date",
-    "STATUS": "Status",
     "PERMIT_NUMBER": "Permit Number",
     "TAB": "Tab",
     "OF": "of",
     "GO_BACK": "Go Back",
     "DATA_NOT_FOUND": "Data not found",
-    "REFRESH": "Refresh",
     "COMMENT": "Comment",
     "COMMENTS": "Comments",
     "DEPARTMENT": "Department",
@@ -806,6 +833,7 @@
     "PRIVACY_POLICY": "Privacy Policy",
     "AND": "and"
   },
+
   "SHARED": {
     "FORMS": {
       "SUPERVISOR_INFO": "Supervisor Information",
@@ -932,43 +960,8 @@
       "REJECTED": "Rejected"
     }
   },
-  "Common": {
-    "Action": "Action",
-    "ViewInfo": "Show Details",
-    "ShowInfo": "Show Details",
-    "StudyDetails": "Study Details",
-    "Clear": "Clear",
-    "Search": "Apply",
-    "Data": " Search Result",
-    "Close": "Close",
-    "NoData": "No data available to display",
-    "SearchTitle": "Filter",
-    "Select": "-- Select --",
-    "PrintExcel": "Export to Excel",
-    "Total": "Total",
-    "Print": " Print PDF",
-    "Required": "This Field is Required",
-    "ViewHistoryInfo": "Beneficiary History",
-    "ViewPaymentInfo": "Guarantee Disbursements",
-    "ViewContractInfo": "Contracts",
-    "users": "Users",
-    "screens": "Screens",
-    "entities": "Entities",
-    "edit": "Edit",
-    "deletd": "Delete",
-    "cancel": "Cancel",
-    "addNew": "Add New",
-    "save": "Save",
-    "role": "Roles",
-    "permissions": "Permissions",
-    "dept": "Department",
-    "userdept": "Users in Department",
-    "deleteWarning": "Are you sure you want delete",
-    "requestComplaint": "Request Complaint",
-    "MORE_FILES": "Add More Files",
-    "DESCRIPTION": "Description",
-    "TARGET_GROUP": "Target Group"
-  },
+
+
   "REGIONS": {
     "TITLE": "Regions Management",
     "ADD_NEW": "Add New Region",
@@ -1050,22 +1043,7 @@
       "TENT_SETUP_DATE": "Tent Setup Date"
     }
   },
-  "ATTACHMENTS": {
-    "DOCUMENT_TYPE": "Document Type",
-    "FILE": "File",
-    "DRAG_DROP_OR_CLICK": "Drag and drop files here or click to select",
-    "SUPPORTED_FORMATS": "Supported formats: PDF, DOC, DOCX, JPG, PNG (max 5MB)"
-  },
-  "SUCCESS": {
-    "REQUEST_PLAINT_CREATED": "Grievance request submitted successfully!",
-    "REQUEST_COMPLAINT_CREATED": "Complaint request created successfully",
-    "FASTING_TENT_REQUEST_CREATED": "Fasting tent request submitted successfully!",
-    "DISTRIBUTION_SITE_REQUEST_CREATED": "Distribution site permit request submitted successfully!",
-    "LOCATION_AVAILABLE": "Location is available",
-    "LOCATION_SELECTED": "Location selected successfully",
-    "PARTNER_ADDED": "Partner added successfully",
-    "PARTNER_REMOVED": "Partner removed successfully"
-  },
+
   "mainApplyServiceResourceName": {
     "title": "Request",
     "accep": "Approve",
@@ -1566,13 +1544,13 @@
     "NO_CONTACT_INFO": "No contact information available"
   },
   "POLLS": {
-    "TITLE": "Polls",
-    "DESCRIPTION": "Participate in community polls and surveys",
-    "NO_POLLS": "No Polls Found",
-    "NO_POLLS_DESCRIPTION": "There are no polls available at the moment.",
+    "TITLE": "surveys",
+    "DESCRIPTION": "Participate in community surveys and surveys",
+    "NO_POLLS": "No surveys Found",
+    "NO_POLLS_DESCRIPTION": "There are no surveys available at the moment.",
     "DATE": "Date",
-    "LOADING": "Loading polls...",
-    "ERROR_LOADING": "Failed to load polls",
+    "LOADING": "Loading surveys...",
+    "ERROR_LOADING": "Failed to load surveys",
     "RETRY": "Try Again"
   },
   "NAVIGATION": {
@@ -1603,7 +1581,8 @@
     "ERROR_LOADING": "Failed to load initiatives",
     "RETRY": "Try Again",
     "BACK_TO_INITIATIVES": "Back to Initiatives",
-    "BACK_TO_HOME": "Back to Home"
+    "BACK_TO_HOME": "Back to Home",
+    "RegionName": "Region"
   },
   "event": {
     "PmStartTime": "Evening Start Time",
@@ -1642,19 +1621,15 @@
     "STATUS_WAITING": "Waiting",
     "STATUS_RECEIVED": "Received",
     "STATUS_RETURN_FOR_MODIFICATIONS": "Return for Modifications",
-    "STATUS_UNKNOWN": "Unknown Status",
-    "STATUS_ACCEPT": "Accepted",
-    "STATUS_REJECT": "Rejected",
-    "STATUS_REJECT_FOR_REASON": "Rejected with Reason",
-    "STATUS_WAITING": "Waiting",
-    "STATUS_RECEIVED": "Received",
-    "STATUS_RETURN_FOR_MODIFICATIONS": "Return for Modifications"
+    "STATUS_UNKNOWN": "Unknown Status"
   },
+
   "COMMENTS": {
     "ENTER_COMMENT": "Please enter a comment",
     "COMMENT_ADDED": "Comment added successfully",
     "ERROR_ADDING_COMMENT": "Error adding comment"
   },
+
   "DIST_SITE": {
     "TITLE": "Distribution Site Permit",
     "DESCRIPTION": "Apply for a distribution site permit by completing the required information, selecting location coordinates on the map, and uploading necessary documents.",

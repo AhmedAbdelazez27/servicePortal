@@ -110,13 +110,13 @@
           <div class="header-section clean-layout">
             <h5 class="main-title mt-2 mb-4 d-flex gap-3 align-items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" class="me-2">
-                <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14 2V8H20" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 13H8" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 17H8" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M10 9H9H8" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M14 2V8H20" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M16 13H8" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M16 17H8" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M10 9H9H8" stroke="#8D734D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-              {{ 'Common.DESCRIPTION' | translate }}
+              {{ 'COMMON.DESCRIPTION' | translate }}
             </h5>
             <!-- <p class="subtitle">
               {{ getInitiativeDescription(initiative) }}
@@ -124,8 +124,8 @@
             <!-- <div class="initiative-description mb-1"
                                 [innerHTML]="getInitiativeDescription(initiative)">
                             </div> -->
-                            <p *ngIf="lang == 'ar'">{{ initiative.descriptionAr | cleanHtml }}</p>
-          <p *ngIf="lang == 'en'">{{ initiative.descriptionEn | cleanHtml}}</p>
+                            <p *ngIf="lang == 'ar'" [innerHtml]="initiative.descriptionAr"></p>
+          <p *ngIf="lang == 'en'" [innerHtml]="initiative.descriptionEn"></p>
           </div>
         </div>
 
@@ -135,6 +135,13 @@
         <!-- Map Section -->
         <div class="col-xl-12 mb-5" *ngIf="initiative.initiativeDetails && initiative.initiativeDetails.length > 0">
           <h5 class="mb-3 gold">{{ 'INITIATIVES.LOCATIONS' | translate }}</h5>
+          <div class="col-xl-6 mb-3">
+            <label for="region" class="form-label">{{ 'INITIATIVES.RegionName' | translate }}</label>
+            <ng-select [items]="regionSelect2" bindLabel="text" bindValue="value" [multiple]="false"
+                       [closeOnSelect]="true" class="ng-select-custom">
+            </ng-select>
+          </div>
+
           <div id="initiative-map"></div>
 
           <!-- Location List -->
@@ -146,7 +153,7 @@
                   <h6 class="location-name">{{ getLocationName(location) }}</h6>
                   <p class="mb-2">{{ 'INITIATIVES.LOCATION' | translate }} #{{ i + 1 }}</p>
                   <button class="btn btn-sm btn-outline-brown"
-                    (click)="openLocationInGoogleMaps(location.locationCoordinates)">
+                          (click)="openLocationInGoogleMaps(location.locationCoordinates)">
                     {{ 'COMMON.OPEN_IN_GOOGLE_MAPS' | translate }}
                   </button>
                 </div>

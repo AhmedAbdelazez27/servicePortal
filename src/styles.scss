@@ -326,6 +326,7 @@ a {
   cursor: grab;
   display: flex;
   flex-direction: column;
+  height: 100%;
 
 
 }
@@ -3972,6 +3973,7 @@ a,
     cursor: grab;
     display: flex;
     flex-direction: column;
+    height: 100%;
 
 
   }
@@ -6961,9 +6963,25 @@ a,
 
 @media(max-width:767px) {
   .carousel-inner img {
-    height: 250px;
+    height: 350px;
     object-fit: cover;
 
+
+  }
+
+  .carousel-caption{
+    font-size: 18px !important;
+    max-width: 370px !important;
+    padding: 16px;
+    bottom: 16px;
+
+  }
+
+  .rtl .carousel-caption{
+    font-size: 18px !important;
+    max-width: 370px !important;
+    padding: 16px;
+    bottom: 16px;
 
   }
 
@@ -7373,4 +7391,8 @@ margin: 0 0 1rem;
   overflow-wrap: break-word;   
   display: block;
 
+}
+
+img{
+  object-fit: cover;
 }

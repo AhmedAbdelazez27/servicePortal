@@ -92,8 +92,8 @@
 
 
     <div *ngIf="!loading && !error" class="row align-items-stretch">
-      <div *ngFor="let initiative of initiatives" class="col-xl-4 col-lg-6 mb-4 d-flex">
-        <div class="service-box flex-fill d-flex flex-column" (click)="onInitiativeClick(initiative)">
+      <div *ngFor="let initiative of initiatives" class="col-xl-4 col-lg-6 mb-4">
+        <div class="service-box " (click)="onInitiativeClick(initiative)">
           <div class="mb-3">
             <img [src]="getInitiativeImage(initiative)" [alt]="getInitiativeName(initiative)"
               class="w-100 initiative-image" (error)="onImageError($event)">

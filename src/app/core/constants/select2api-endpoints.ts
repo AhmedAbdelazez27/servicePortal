@@ -58,6 +58,7 @@ export class Select2APIEndpoint {
     GetPartner: '/Partner',
     GetPermitRequestTypeSelect2: '/Lookup/PermitRequestType',
     GetPermitTypeSelect2: '/Lookup/PermitType',
+    GetRegionSelect2List: '/Initiative/GetInitiativeRegionSelect2List',
   };
 }
 

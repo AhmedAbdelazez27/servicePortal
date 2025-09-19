@@ -10,7 +10,7 @@
                 [alt]="getHeroSectionTitle(heroSection)" />
             <div (click)="onHeroSectionDetails(heroSection)" style="font-size: 24px; cursor: pointer;"
                 class="carousel-caption">
-                <div [innerHTML]="getHeroSectionTitle(heroSection)"></div>
+                <div [innerHTML]="getHeroSectionTitle(heroSection)" class="mb-2"></div>
                 <!-- <p *ngIf="getHeroSectionDescription(heroSection)">{{ getHeroSectionDescription(heroSection) }}</p> -->
                 <div class="d-flex justify-content-end">
                     <button class="btn" style="background-color:#8D734D; font-size: 11px; color: white;">

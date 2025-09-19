@@ -8,6 +8,10 @@ import { InitiativeService } from '../../../core/services/initiative.service';
 import { InitiativeDto, InitiativeDetailsDto } from '../../../core/dtos/UserSetting/initiatives/initiative.dto';
 import { TranslationService } from '../../../core/services/translation.service';
 import { CleanHtmlPipe } from '../../../shared/pipes/clean-html.pipe';
+import { FndLookUpValuesSelect2RequestDto } from '../../../core/dtos/FndLookUpValues.dto';
+import { ToastrService } from 'ngx-toastr';
+import { Select2Service } from '../../../core/services/Select2.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 // Fix for Leaflet marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -20,7 +24,7 @@ L.Icon.Default.mergeOptions({
 @Component({
   selector: 'app-initiative-details',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterLink, CleanHtmlPipe],
+  imports: [CommonModule, TranslateModule, RouterLink, CleanHtmlPipe, NgSelectModule],
   templateUrl: './initiative-details.component.html',
   styleUrls: ['./initiative-details.component.scss']
 })
@@ -38,13 +42,18 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   private subscriptions = new Subscription();
   lang:string = "";
 
+  regionSelect2: any[] = [];
+  searchSelect2Params = new FndLookUpValuesSelect2RequestDto();
+
   constructor(
     private initiativeService: InitiativeService,
     private route: ActivatedRoute,
     private router: Router,
     private translateService: TranslateService,
     private translationService: TranslationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toastr: ToastrService,
+    private select2Service: Select2Service
   ) {
     this.lang$ = this.translateService.onLangChange.pipe(
       startWith({ lang: this.translateService.currentLang || this.translateService.defaultLang || 'ar' } as LangChangeEvent),
@@ -62,6 +71,8 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   // 'ar', 'en'
 
   ngOnInit(): void {
+    this.fetchregionSelect2();
+
     this.initiativeId = this.route.snapshot.paramMap.get('id');
     if (this.initiativeId) {
       this.loadInitiativeDetails();
@@ -104,6 +115,17 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
 
     // Clean up global function
     delete (window as any).openInGoogleMaps;
+  }
+
+  fetchregionSelect2(): void {
+    this.select2Service.getRegionSelect2List(this.searchSelect2Params).subscribe({
+      next: (response: any) => {
+        this.regionSelect2 = response?.results || [];
+      },
+      error: (err: any) => {
+        this.toastr.error('Failed to load Country.', 'Error');
+      }
+    });
   }
 
   loadInitiativeDetails(): void {

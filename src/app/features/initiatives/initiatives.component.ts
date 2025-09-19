@@ -32,7 +32,15 @@ export class InitiativesComponent implements OnInit {
     });
 
   }
-
+truncateHtml(html: string, maxLength: number): string {
+  // نحول HTML → نص فقط
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  const text = div.innerText || div.textContent || '';
+  
+  // نقص النص
+  return text.length > maxLength ? text.substring(0, maxLength) + '…' : text;
+}
   ngOnInit(): void {
     this.loadInitiatives();
   }

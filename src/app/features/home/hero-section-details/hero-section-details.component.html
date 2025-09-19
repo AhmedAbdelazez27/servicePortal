@@ -38,8 +38,8 @@
         <div class=" hero-description mb-4">
           <!-- <div [innerHTML]="getHeroSectionDescription(heroSection)"></div> -->
           <!-- <div class="hero-description" [innerHTML]="getHeroSectionDescription(heroSection)"></div> -->
-          <p *ngIf="currentLanguage == 'ar'">{{ heroSection.descriptionAr | cleanHtml}}</p>
-          <p *ngIf="currentLanguage == 'en'">{{ heroSection.descriptionEn | cleanHtml}}</p>
+          <p *ngIf="currentLanguage == 'ar'"  [innerHtml]="heroSection.descriptionAr"></p>
+          <p *ngIf="currentLanguage == 'en'"  [innerHtml]="heroSection.descriptionEn"></p>
 
 
         </div>
