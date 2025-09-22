@@ -5,13 +5,14 @@ import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-transla
 import { map, Observable, startWith, Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { InitiativeService } from '../../../core/services/initiative.service';
-import { InitiativeDto, InitiativeDetailsDto } from '../../../core/dtos/UserSetting/initiatives/initiative.dto';
+import { InitiativeDto, InitiativeDetailsDto, FilterById } from '../../../core/dtos/UserSetting/initiatives/initiative.dto';
 import { TranslationService } from '../../../core/services/translation.service';
 import { CleanHtmlPipe } from '../../../shared/pipes/clean-html.pipe';
 import { FndLookUpValuesSelect2RequestDto } from '../../../core/dtos/FndLookUpValues.dto';
 import { ToastrService } from 'ngx-toastr';
 import { Select2Service } from '../../../core/services/Select2.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
 
 // Fix for Leaflet marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -24,7 +25,7 @@ L.Icon.Default.mergeOptions({
 @Component({
   selector: 'app-initiative-details',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterLink, CleanHtmlPipe, NgSelectModule],
+  imports: [CommonModule, TranslateModule, RouterLink, CleanHtmlPipe, NgSelectModule, FormsModule],
   templateUrl: './initiative-details.component.html',
   styleUrls: ['./initiative-details.component.scss']
 })
@@ -33,6 +34,8 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   loading = false;
   error: string | null = null;
   initiativeId: string | null = null;
+  regionName: string | null = null;
+  searchParams = new FilterById();
 
   // Map properties
   private map: L.Map | null = null;
@@ -128,13 +131,23 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     });
   }
 
+  onRegionChange(selected: any): void {
+    this.regionName = selected.text;
+    // Reset map initialization to allow reinitialization with new data
+    this.resetMap();
+    this.loadInitiativeDetails();
+  }
+
   loadInitiativeDetails(): void {
     if (!this.initiativeId) return;
 
     this.loading = true;
     this.error = null;
-
-    this.initiativeService.getById(Number(this.initiativeId)).subscribe({
+    const params: FilterById = {
+      id: Number(this.initiativeId),
+      regionName: this.regionName || null,
+    };
+    this.initiativeService.getById(params).subscribe({
       next: (response: any) => {
         this.initiative = response || null;
         this.loading = false;
@@ -152,6 +165,17 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
         this.loading = false;
       },
     });
+  }
+
+  resetMap(): void {
+    // Clear existing map and reset initialization flag
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
+    // Clear markers array
+    this.markers = [];
+    this.mapInitialized = false;
   }
 
   initializeMap(): void {
@@ -197,9 +221,12 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
 
     const locations = this.initiative.initiativeDetails.filter(detail => detail.isActive);
 
-    if (locations.length === 0) return;
+    if (locations.length === 0) {
+      return;
+    }
 
     const bounds = L.latLngBounds([]);
+    let markersAdded = 0;
 
     // Ensure translations are loaded before creating markers
     this.translateService.get(['INITIATIVES.LOCATION', 'COMMON.OPEN_IN_GOOGLE_MAPS']).subscribe(() => {
@@ -214,14 +241,14 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
 
             this.markers.push(marker);
             bounds.extend([coordinates.lat, coordinates.lng]);
+            markersAdded++;
           }
         } catch (error) {
-          // Handle error silently
         }
       });
 
       // Fit map to show all markers
-      if (bounds.isValid()) {
+      if (bounds.isValid() && markersAdded > 0) {
         this.map!.fitBounds(bounds, { padding: [20, 20] });
       }
     });

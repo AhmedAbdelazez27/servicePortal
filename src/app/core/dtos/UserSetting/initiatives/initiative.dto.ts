@@ -80,3 +80,7 @@ export interface InitiativePagedResponse {
   totalCount: number;
   data: InitiativeDto[];
 }
+export class FilterById {
+  id: number | null = null;
+  regionName: string | null = null;
+}

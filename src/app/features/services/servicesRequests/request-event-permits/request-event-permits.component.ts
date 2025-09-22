@@ -1,6 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AttachmentService } from '../../../../core/services/attachments/attachment.service';
@@ -8,13 +17,32 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { TranslationService } from '../../../../core/services/translation.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { AttachmentsConfigDto, AttachmentsConfigType } from '../../../../core/dtos/attachments/attachments-config.dto';
+import {
+  AttachmentsConfigDto,
+  AttachmentsConfigType,
+} from '../../../../core/dtos/attachments/attachments-config.dto';
 import { forkJoin, map, Subscription } from 'rxjs';
-import { PlaintReasonsDto, RequestPlaintAttachmentDto, RequestPlaintEvidenceDto, RequestPlaintJustificationDto, RequestPlaintReasonDto, Select2Item, UserEntityDto } from '../../../../core/dtos/RequestPlaint/request-plaint.dto';
+import {
+  PlaintReasonsDto,
+  RequestPlaintAttachmentDto,
+  RequestPlaintEvidenceDto,
+  RequestPlaintJustificationDto,
+  RequestPlaintReasonDto,
+  Select2Item,
+  UserEntityDto,
+} from '../../../../core/dtos/RequestPlaint/request-plaint.dto';
 import { CharityEventPermitRequestService } from '../../../../core/services/charity-event-permit-request.service';
-import { arrayMinLength, dateRangeValidator } from '../../../../shared/customValidators';
+import {
+  arrayMinLength,
+  dateRangeValidator,
+} from '../../../../shared/customValidators';
 import { RequestAdvertisement } from '../../../../core/dtos/charity-event-permit/charity-event-permit.dto';
-import { phoneRules, rfc3339OrEmpty, rfc3339Required, timeRangesOk } from '../../../../shared/customValidators/requestevent.validators';
+import {
+  phoneRules,
+  rfc3339OrEmpty,
+  rfc3339Required,
+  timeRangesOk,
+} from '../../../../shared/customValidators/requestevent.validators';
 import { PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
 
 type AttachmentState = {
@@ -24,7 +52,6 @@ type AttachmentState = {
   previews: Record<number, string>;
   sub?: Subscription;
 };
-
 
 @Component({
   selector: 'app-request-event-permits',
@@ -36,7 +63,7 @@ type AttachmentState = {
     NgSelectModule,
   ],
   templateUrl: './request-event-permits.component.html',
-  styleUrl: './request-event-permits.component.scss'
+  styleUrl: './request-event-permits.component.scss',
 })
 export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   len = (a: readonly unknown[] | null | undefined) => a?.length ?? 0;
@@ -50,7 +77,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         items: [],
         selected: {},
         previews: {},
-        sub: undefined
+        sub: undefined,
       });
     }
     return this.attachmentStates.get(type)!;
@@ -66,11 +93,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     return !!this.ensureState(type).selected[id];
   }
 
-  public selectedFileName(type: AttachmentsConfigType, id: number): string | null {
+  public selectedFileName(
+    type: AttachmentsConfigType,
+    id: number
+  ): string | null {
     return this.ensureState(type).selected[id]?.name ?? null;
   }
-
-
 
   currentStep: number = 1;
   totalSteps: number = 4;
@@ -91,7 +119,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
   // Computed property for entity display name
   get entityDisplayField(): string {
-    return this.translationService.currentLang === 'ar' ? 'entityName' : 'entityNameEn';
+    return this.translationService.currentLang === 'ar'
+      ? 'entityName'
+      : 'entityNameEn';
   }
 
   // Tables data
@@ -99,7 +129,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   justifications: RequestPlaintJustificationDto[] = [];
   reasons: RequestPlaintReasonDto[] = [];
   attachments: RequestPlaintAttachmentDto[] = [];
-
 
   // File upload
   selectedFiles: { [key: number]: File } = {};
@@ -114,10 +143,10 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   advertisementMethodType: any[] = [];
   donationChannelsLookup: any[] = [];
   partnerTypes: any[] = [
-    { id: PartnerType.Person,     label: 'Person' },
+    { id: PartnerType.Person, label: 'Person' },
     { id: PartnerType.Government, label: 'Government' },
-    { id: PartnerType.Supplier,   label: 'Supplier' },
-    { id: PartnerType.Company,    label: 'Company' },
+    { id: PartnerType.Supplier, label: 'Supplier' },
+    { id: PartnerType.Company, label: 'Company' },
   ];
   requestTypes: any[] = [];
   permitsTypes: any[] = [];
@@ -133,7 +162,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     { id: 'en', text: 'English' },
   ];
   service: any;
-
 
   constructor(
     private fb: FormBuilder,
@@ -156,7 +184,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     this.loadInitialData();
   }
 
-
   private clearAllToasts(): void {
     this.toastr.clear();
   }
@@ -168,8 +195,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-    this.attachmentStates.forEach(s => s.sub?.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.attachmentStates.forEach((s) => s.sub?.unsubscribe());
   }
 
   initializeForm(): void {
@@ -182,7 +209,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
             nonNullable: true,
           }
         ),
-
 
         lkpRequestTypeId: this.fb.control<number>(1, {
           validators: [Validators.required],
@@ -231,19 +257,19 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
         amStartTime: this.fb.control<string>('', {
           validators: [rfc3339Required],
-          nonNullable: true
+          nonNullable: true,
         }),
         amEndTime: this.fb.control<string>('', {
           validators: [rfc3339Required],
-          nonNullable: true
+          nonNullable: true,
         }),
         pmStartTime: this.fb.control<string>('', {
           validators: [rfc3339Required],
-          nonNullable: true
+          nonNullable: true,
         }),
         pmEndTime: this.fb.control<string>('', {
           validators: [rfc3339Required],
-          nonNullable: true
+          nonNullable: true,
         }),
 
         // amStartTime: this.fb.control('', [Validators.required]),
@@ -296,10 +322,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         }),
       },
       {
-        validators: [timeRangesOk,
+        validators: [
+          timeRangesOk,
           // this.timeRangeValidator('amStartTime', 'amEndTime'),
           // this.timeRangeValidator('pmStartTime', 'pmEndTime')
-        ]
+        ],
       }
     );
   }
@@ -307,24 +334,42 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const currentUser = this.authService.getCurrentUser();
     this.advertForm = this.fb.group(
       {
-
         parentId: this.fb.control<number | null>(0),
         mainApplyServiceId: this.fb.control<number | null>(0),
         requestNo: this.fb.control<number | null>(0),
 
-        serviceType: this.fb.control<number | null>(1, { validators: [Validators.required] }),
-        workFlowServiceType: this.fb.control<number | null>(1, { validators: [Validators.required] }),
+        serviceType: this.fb.control<number | null>(1, {
+          validators: [Validators.required],
+        }),
+        workFlowServiceType: this.fb.control<number | null>(1, {
+          validators: [Validators.required],
+        }),
 
-        requestDate: this.fb.control(new Date().toISOString(), { validators: [Validators.required], nonNullable: true }),
-        userId: this.fb.control(currentUser?.id ?? '', { validators: [Validators.required], nonNullable: true }),
+        requestDate: this.fb.control(new Date().toISOString(), {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
+        userId: this.fb.control(currentUser?.id ?? '', {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
 
         // provider: this.fb.control<string | null>(null),
 
-        adTitle: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+        adTitle: this.fb.control('', {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
         // adLang: this.fb.control<'ar' | 'en'>('ar', { validators: [Validators.required], nonNullable: true }),
 
-        startDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-        endDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+        startDate: this.fb.control('', {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
+        endDate: this.fb.control('', {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
 
         // mobile: this.fb.control<string | null>(null),
         // supervisorName: this.fb.control<string | null>(null),
@@ -333,19 +378,23 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
         // targetedAmount: this.fb.control<number | null>(null),
 
-
         // newAd: this.fb.control<boolean | null>(true),
         // reNewAd: this.fb.control<boolean | null>(false),
         // oldPermNumber: this.fb.control<string | null>(null),
 
         requestEventPermitId: this.fb.control<number | null>(null),
 
-
-        targetTypeIds: this.fb.control<number[]>([], { validators: [arrayMinLength(1)], nonNullable: true }),
-        adMethodIds: this.fb.control<number[]>([], { validators: [arrayMinLength(1)], nonNullable: true }),
+        targetTypeIds: this.fb.control<number[]>([], {
+          validators: [arrayMinLength(1)],
+          nonNullable: true,
+        }),
+        adMethodIds: this.fb.control<number[]>([], {
+          validators: [arrayMinLength(1)],
+          nonNullable: true,
+        }),
       },
       {
-        validators: [dateRangeValidator, this.renewRequiresOldPermValidator]
+        validators: [dateRangeValidator, this.renewRequiresOldPermValidator],
       }
     );
   }
@@ -356,56 +405,71 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const currentUser = this.authService.getCurrentUser();
     if (currentUser?.id) {
       this.firstStepForm.patchValue({
-        userId: currentUser.id
+        userId: currentUser.id,
       });
 
       // Load essential data first (user entity and main service options)
       const essentialOperations = [
-        this._CharityEventPermitRequestService.getAdvertisementMethodType
+        this._CharityEventPermitRequestService.getAdvertisementMethodType,
       ];
 
       forkJoin({
-        advertisementMethodType: this._CharityEventPermitRequestService.getAdvertisementMethodType({}),
-        advertisementTargetType: this._CharityEventPermitRequestService.getAdvertisementTargetType({}),
-        advertisementType: this._CharityEventPermitRequestService.getAdvertisementType(),
-        donationChannelsLookup: this._CharityEventPermitRequestService.getDonationCollectionChannel({}),
+        advertisementMethodType:
+          this._CharityEventPermitRequestService.getAdvertisementMethodType({}),
+        advertisementTargetType:
+          this._CharityEventPermitRequestService.getAdvertisementTargetType({}),
+        advertisementType:
+          this._CharityEventPermitRequestService.getAdvertisementType(),
+        donationChannelsLookup:
+          this._CharityEventPermitRequestService.getDonationCollectionChannel(
+            {}
+          ),
         // partnerTypes: this._CharityEventPermitRequestService.getPartners(),
-        requestTypes: this._CharityEventPermitRequestService.getPermitRequestTypeSelect2({}),
-        permitsTypes: this._CharityEventPermitRequestService.getPermitTypeSelect2({}),
+        requestTypes:
+          this._CharityEventPermitRequestService.getPermitRequestTypeSelect2(
+            {}
+          ),
+        permitsTypes:
+          this._CharityEventPermitRequestService.getPermitTypeSelect2({}),
       }).subscribe({
         next: (res: any) => {
           this.advertisementType = res.advertisementType;
           this.advertisementMethodType = res.advertisementMethodType?.results;
           this.advertisementTargetType = res.advertisementTargetType?.results;
           // this.partnerTypes = res.partnerTypes?.data;
-          console.log,("testttst"+this.partnerTypes);  
-          
+          console.log, 'testttst' + this.partnerTypes;
+
           this.requestTypes = res.requestTypes?.results;
           this.permitsTypes = res.permitsTypes?.results;
-          console.log(res.donationChannelsLookup, "ddddddd");
+          console.log(res.donationChannelsLookup, 'ddddddd');
 
-          this.donationChannelsLookup = res.donationChannelsLookup.results?.length ? res.donationChannelsLookup.results : [
-
-            { id: 1, text: 'SMS' },
-            { id: 2, text: 'Bank Transfer' },
-            { id: 3, text: 'POS' },
-          ];
+          this.donationChannelsLookup = res.donationChannelsLookup.results
+            ?.length
+            ? res.donationChannelsLookup.results
+            : [
+                { id: 1, text: 'SMS' },
+                { id: 2, text: 'Bank Transfer' },
+                { id: 3, text: 'POS' },
+              ];
 
           this.isLoading = false;
           this.isFormInitialized = true; // Mark form as fully initialized
 
           // this.loadAttachmentConfigs();
-          this.loadAttachmentConfigs(AttachmentsConfigType.DeclarationOfCharityEffectiveness);
-          this.loadAttachmentConfigs(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign);
+          this.loadAttachmentConfigs(
+            AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit
+          );
+          this.loadAttachmentConfigs(
+            AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign
+          );
           this.loadAttachmentConfigs(AttachmentsConfigType.Partner);
-
         },
         error: (error: any) => {
           console.error('Error loading essential data:', error);
           this.toastr.error(this.translate.instant('ERRORS.FAILED_LOAD_DATA'));
           this.isLoading = false;
           this.isFormInitialized = true;
-        }
+        },
       });
     } else {
       this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
@@ -415,20 +479,33 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   // start partners
   initPartnerForm(): void {
     this.partnerForm = this.fb.group({
-      name: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-      type: this.fb.control<number | null>(null, { validators: [Validators.required] }),
+      name: this.fb.control('', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      type: this.fb.control<number | null>(null, {
+        validators: [Validators.required],
+      }),
 
       // required
-      licenseIssuer: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-      licenseExpiryDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-      licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+      licenseIssuer: this.fb.control('', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      licenseExpiryDate: this.fb.control('', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      licenseNumber: this.fb.control('', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
 
       // optional
       contactDetails: this.fb.control<string | null>(null),
       mainApplyServiceId: this.fb.control<number | null>(null),
     });
   }
-
 
   addPartner(): void {
     this.partnerForm.markAllAsTouched();
@@ -441,10 +518,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     const v = this.partnerForm.getRawValue();
 
-    const partnerAttachments = this.getValidAttachments(partnerAttachType).map(a => ({
-      ...a,
-      masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
-    }));
+    const partnerAttachments = this.getValidAttachments(partnerAttachType).map(
+      (a) => ({
+        ...a,
+        masterId: a.masterId || Number(v.mainApplyServiceId ?? 0),
+      })
+    );
 
     this.partners.push({
       name: v.name!,
@@ -472,46 +551,66 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   ////////////////////////////////////////////// start attachment functions
 
   loadManyAttachmentConfigs(types: AttachmentsConfigType[]): void {
-    const calls = types.map(t => this.attachmentService.getAttachmentsConfigByType(t)
-      .pipe(map(cfgs => ({ type: t, cfgs: cfgs || [] }))));
+    const calls = types.map((t) =>
+      this.attachmentService
+        .getAttachmentsConfigByType(t)
+        .pipe(map((cfgs) => ({ type: t, cfgs: cfgs || [] })))
+    );
 
     forkJoin(calls).subscribe({
-      next: results => {
+      next: (results) => {
         results.forEach(({ type, cfgs }) => {
           const s = this.ensureState(type);
           s.configs = cfgs;
-          s.items = cfgs.map(cfg => ({
+          s.items = cfgs.map((cfg) => ({
             fileBase64: '',
             fileName: '',
             masterId: 0,
-            attConfigID: cfg.id!
+            attConfigID: cfg.id!,
           }));
           s.selected = {};
           s.previews = {};
         });
       },
-      error: e => console.error('Error loading multi attachment configs', e)
+      error: (e) => console.error('Error loading multi attachment configs', e),
     });
   }
 
-  // ============== 
-  onFileSelected(event: Event, type: AttachmentsConfigType, configId: number): void {
+  // ==============
+  onFileSelected(
+    event: Event,
+    type: AttachmentsConfigType,
+    configId: number
+  ): void {
     const input = event.target as HTMLInputElement;
     const file = input?.files?.[0];
     if (file) this.handleFileUpload(type, configId, file);
   }
 
-  onDragOver(event: DragEvent): void { event.preventDefault(); this.isDragOver = true; }
-  onDragLeave(event: DragEvent): void { event.preventDefault(); this.isDragOver = false; }
-  onDrop(event: DragEvent, type: AttachmentsConfigType, configId: number): void {
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = true;
+  }
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = false;
+  }
+  onDrop(
+    event: DragEvent,
+    type: AttachmentsConfigType,
+    configId: number
+  ): void {
     event.preventDefault();
     this.isDragOver = false;
     const file = event.dataTransfer?.files?.[0];
     if (file) this.handleFileUpload(type, configId, file);
   }
 
-
-  handleFileUpload(type: AttachmentsConfigType, configId: number, file: File): void {
+  handleFileUpload(
+    type: AttachmentsConfigType,
+    configId: number,
+    file: File
+  ): void {
     if (!this.validateFile(file)) return;
 
     const s = this.ensureState(type);
@@ -522,32 +621,40 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       const dataUrl = e.target?.result as string;
       s.previews[configId] = dataUrl;
 
-      const i = s.items.findIndex(a => a.attConfigID === configId);
+      const i = s.items.findIndex((a) => a.attConfigID === configId);
       if (i !== -1) {
         s.items[i] = {
           ...s.items[i],
-          fileBase64: (dataUrl.split(',')[1] ?? ''),
-          fileName: file.name
+          fileBase64: dataUrl.split(',')[1] ?? '',
+          fileName: file.name,
         };
       }
     };
     reader.readAsDataURL(file);
   }
 
-  // ============== 
+  // ==============
   validateFile(file: File): boolean {
     const MAX = 5 * 1024 * 1024;
     const ALLOWED = new Set<string>([
-      'image/jpeg', 'image/png', 'application/pdf',
+      'image/jpeg',
+      'image/png',
+      'application/pdf',
       'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ]);
 
-    if (file.size > MAX) { this.toastr.error(this.translate.instant('VALIDATION.FILE_TOO_LARGE')); return false; }
+    if (file.size > MAX) {
+      this.toastr.error(this.translate.instant('VALIDATION.FILE_TOO_LARGE'));
+      return false;
+    }
 
     const typeOk = ALLOWED.has(file.type);
     const extOk = /\.(jpe?g|png|pdf|docx?|DOCX?)$/i.test(file.name);
-    if (!typeOk && !extOk) { this.toastr.error(this.translate.instant('VALIDATION.INVALID_FILE_TYPE')); return false; }
+    if (!typeOk && !extOk) {
+      this.toastr.error(this.translate.instant('VALIDATION.INVALID_FILE_TYPE'));
+      return false;
+    }
 
     return true;
   }
@@ -557,59 +664,69 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     delete s.selected[configId];
     delete s.previews[configId];
 
-    const i = s.items.findIndex(a => a.attConfigID === configId);
+    const i = s.items.findIndex((a) => a.attConfigID === configId);
     if (i !== -1) {
       s.items[i] = { ...s.items[i], fileBase64: '', fileName: '' };
     }
   }
 
-  // ============== 
+  // ==============
   getAttachmentName(type: AttachmentsConfigType, configId: number): string {
     const s = this.ensureState(type);
-    const cfg = s.configs.find(c => c.id === configId);
+    const cfg = s.configs.find((c) => c.id === configId);
     if (!cfg) return '';
     return this.translationService.currentLang === 'ar'
-      ? (cfg.name || '')
-      : (cfg.nameEn || cfg.name || '');
+      ? cfg.name || ''
+      : cfg.nameEn || cfg.name || '';
   }
 
-  getPreview(type: AttachmentsConfigType, configId: number): string | undefined {
+  getPreview(
+    type: AttachmentsConfigType,
+    configId: number
+  ): string | undefined {
     return this.ensureState(type).previews[configId];
   }
 
-  // ============== 
-  getValidAttachments(type: AttachmentsConfigType): RequestPlaintAttachmentDto[] {
+  // ==============
+  getValidAttachments(
+    type: AttachmentsConfigType
+  ): RequestPlaintAttachmentDto[] {
     const s = this.ensureState(type);
-    return s.items.filter(a => a.fileBase64 && a.fileName);
+    return s.items.filter((a) => a.fileBase64 && a.fileName);
   }
 
-
-  getAllValidAttachments(types: AttachmentsConfigType[]): Record<AttachmentsConfigType, RequestPlaintAttachmentDto[]> {
-    const result = {} as Record<AttachmentsConfigType, RequestPlaintAttachmentDto[]>;
-    types.forEach(t => result[t] = this.getValidAttachments(t));
+  getAllValidAttachments(
+    types: AttachmentsConfigType[]
+  ): Record<AttachmentsConfigType, RequestPlaintAttachmentDto[]> {
+    const result = {} as Record<
+      AttachmentsConfigType,
+      RequestPlaintAttachmentDto[]
+    >;
+    types.forEach((t) => (result[t] = this.getValidAttachments(t)));
     return result;
   }
-
 
   hasMissingRequiredAttachments(type: AttachmentsConfigType): boolean {
     const s = this.ensureState(type);
     return (s.configs || [])
-      .filter(c => (c as any).required === true)
-      .some(c => {
-        const a = s.items.find(x => x.attConfigID === c.id);
+      .filter((c) => (c as any).required === true)
+      .some((c) => {
+        const a = s.items.find((x) => x.attConfigID === c.id);
         return !a || !a.fileBase64 || !a.fileName;
       });
   }
 
-
   validateRequiredForAll(types: AttachmentsConfigType[]): boolean {
-    return types.every(t => !this.hasMissingRequiredAttachments(t));
+    return types.every((t) => !this.hasMissingRequiredAttachments(t));
   }
 
   // ============== reset/clear ==============
   resetAttachments(type: AttachmentsConfigType): void {
     const s = this.ensureState(type);
-    s.items.forEach(it => { it.fileBase64 = ''; it.fileName = ''; });
+    s.items.forEach((it) => {
+      it.fileBase64 = '';
+      it.fileName = '';
+    });
     s.selected = {};
     s.previews = {};
   }
@@ -617,20 +734,23 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const s = this.ensureState(type);
     s.sub?.unsubscribe();
 
-    s.sub = this.attachmentService.getAttachmentsConfigByType(type).subscribe({
-      next: (configs) => {
-        s.configs = configs || [];
-        s.items = s.configs.map(cfg => ({
-          fileBase64: '',
-          fileName: '',
-          masterId: 0,
-          attConfigID: cfg.id!
-        }));
-        s.selected = {};
-        s.previews = {};
-      },
-      error: (e) => console.error('Error loading attachment configs for type', type, e)
-    });
+    s.sub = this.attachmentService
+      .getAttachmentsConfigByType(type, true)
+      .subscribe({
+        next: (configs) => {
+          s.configs = configs || [];
+          s.items = s.configs.map((cfg) => ({
+            fileBase64: '',
+            fileName: '',
+            masterId: 0,
+            attConfigID: cfg.id!,
+          }));
+          s.selected = {};
+          s.previews = {};
+        },
+        error: (e) =>
+          console.error('Error loading attachment configs for type', type, e),
+      });
   }
   ////////////////////////////////////////////// end attachment functions
 
@@ -686,7 +806,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   validateStep1(): boolean {
     const form = this.firstStepForm;
 
-
     if (form.hasError('dateRange') || form.errors?.['dateRange']) return false;
 
     const get = (k: string) => form.get(k);
@@ -701,17 +820,22 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       c.markAsTouched();
     };
 
-    const isNonEmptyString = (v: unknown) => typeof v === 'string' && v.trim().length > 0;
-    const maxLen = (v: unknown, n: number) => typeof v === 'string' && v.trim().length <= n;
+    const isNonEmptyString = (v: unknown) =>
+      typeof v === 'string' && v.trim().length > 0;
+    const maxLen = (v: unknown, n: number) =>
+      typeof v === 'string' && v.trim().length <= n;
     const withinLen = (v: unknown, min: number, max: number) =>
       typeof v === 'string' && v.trim().length >= min && v.trim().length <= max;
 
-    // RFC3339: 2025-08-21T02:21:57Z 
-    const rfc3339 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+\-]\d{2}:\d{2})$/;
-    const isRfc3339 = (s: unknown) => typeof s === 'string' && rfc3339.test(s) && !Number.isNaN(Date.parse(s));
+    // RFC3339: 2025-08-21T02:21:57Z
+    const rfc3339 =
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+\-]\d{2}:\d{2})$/;
+    const isRfc3339 = (s: unknown) =>
+      typeof s === 'string' && rfc3339.test(s) && !Number.isNaN(Date.parse(s));
 
     const phoneRe = /^[\d\s\-\+\(\)]+$/;
-    const isPhone = (s: unknown) => typeof s === 'string' && withinLen(s, 7, 20) && phoneRe.test(s.trim());
+    const isPhone = (s: unknown) =>
+      typeof s === 'string' && withinLen(s, 7, 20) && phoneRe.test(s.trim());
 
     const isEnum123 = (v: unknown) => {
       const n = typeof v === 'string' ? Number(v) : v;
@@ -721,33 +845,55 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     let ok = true;
 
     // 1)required
-    ([
-      ['userId', 450],
-      ['requestSide', 200],
-      ['supervisingSide', 200],
-      ['eventName', 200],
-      ['eventLocation', 500],
-      ['admin', 200],
-      ['delegateName', 200],
-      ['alternateName', 100],
-    ] as const).forEach(([k, max]) => {
+    (
+      [
+        ['userId', 450],
+        ['requestSide', 200],
+        ['supervisingSide', 200],
+        ['eventName', 200],
+        ['eventLocation', 500],
+        ['admin', 200],
+        ['delegateName', 200],
+        ['alternateName', 100],
+      ] as const
+    ).forEach(([k, max]) => {
       const v = val(k);
-      if (!isNonEmptyString(v)) { addErr(k, 'required'); ok = false; return; }
-      if (!maxLen(v, max)) { addErr(k, 'maxlength'); ok = false; }
+      if (!isNonEmptyString(v)) {
+        addErr(k, 'required');
+        ok = false;
+        return;
+      }
+      if (!maxLen(v, max)) {
+        addErr(k, 'maxlength');
+        ok = false;
+      }
     });
 
-
-    (['adminTel', 'telephone'] as const).forEach(k => {
+    (['adminTel', 'telephone'] as const).forEach((k) => {
       const v = val(k);
-      if (!isNonEmptyString(v)) { addErr(k, 'required'); ok = false; return; }
-      if (!isPhone(v)) { addErr(k, 'phone'); ok = false; }
+      if (!isNonEmptyString(v)) {
+        addErr(k, 'required');
+        ok = false;
+        return;
+      }
+      if (!isPhone(v)) {
+        addErr(k, 'phone');
+        ok = false;
+      }
     });
 
     // 3) startDate / endDate
-    (['startDate', 'endDate'] as const).forEach(k => {
+    (['startDate', 'endDate'] as const).forEach((k) => {
       const v = val(k);
-      if (!isNonEmptyString(v)) { addErr(k, 'required'); ok = false; return; }
-      if (!isRfc3339(v)) { addErr(k, 'dateTime'); ok = false; }
+      if (!isNonEmptyString(v)) {
+        addErr(k, 'required');
+        ok = false;
+        return;
+      }
+      if (!isRfc3339(v)) {
+        addErr(k, 'dateTime');
+        ok = false;
+      }
     });
 
     const startStr = val('startDate');
@@ -769,47 +915,73 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       ok = false;
     }
 
-    // AM/PM 
-    (['amStartTime', 'amEndTime', 'pmStartTime', 'pmEndTime'] as const).forEach(k => {
-      const v = val(k);
-      if (v != null && v !== '' && !isRfc3339(v)) { addErr(k, 'dateTime'); ok = false; }
-    });
+    // AM/PM
+    (['amStartTime', 'amEndTime', 'pmStartTime', 'pmEndTime'] as const).forEach(
+      (k) => {
+        const v = val(k);
+        if (v != null && v !== '' && !isRfc3339(v)) {
+          addErr(k, 'dateTime');
+          ok = false;
+        }
+      }
+    );
 
     // 4) Enums: lkpRequestTypeId / lkpPermitTypeId
-    (['lkpRequestTypeId', 'lkpPermitTypeId'] as const).forEach(k => {
+    (['lkpRequestTypeId', 'lkpPermitTypeId'] as const).forEach((k) => {
       const v = val(k);
       if (v === null || v === undefined || `${v}`.trim() === '') {
-        addErr(k, 'required'); ok = false;
+        addErr(k, 'required');
+        ok = false;
       } else if (!isEnum123(v)) {
-        addErr(k, 'enum'); ok = false;
+        addErr(k, 'enum');
+        ok = false;
       }
     });
-
 
     const email = val('email');
     if (email != null && `${email}`.trim() !== '') {
       const emailStr = String(email).trim();
       const basicEmailRe = /^[^@]+@[^@]+$/;
-      if (emailStr.length > 50) { addErr('email', 'maxlength'); ok = false; }
-      if (!basicEmailRe.test(emailStr)) { addErr('email', 'email'); ok = false; }
+      if (emailStr.length > 50) {
+        addErr('email', 'maxlength');
+        ok = false;
+      }
+      if (!basicEmailRe.test(emailStr)) {
+        addErr('email', 'email');
+        ok = false;
+      }
     }
 
     // 6) notes
     const notes = val('notes');
     if (typeof notes === 'string' && notes.trim().length > 4000) {
-      addErr('notes', 'maxlength'); ok = false;
+      addErr('notes', 'maxlength');
+      ok = false;
     }
 
     // 7) targetedAmount
     const targetedAmount = val('targetedAmount');
-    if (targetedAmount !== null && targetedAmount !== undefined && `${targetedAmount}`.trim() !== '') {
+    if (
+      targetedAmount !== null &&
+      targetedAmount !== undefined &&
+      `${targetedAmount}`.trim() !== ''
+    ) {
       const n = Number(targetedAmount);
-      if (!Number.isFinite(n) || n < 0) { addErr('targetedAmount', 'min'); ok = false; }
+      if (!Number.isFinite(n) || n < 0) {
+        addErr('targetedAmount', 'min');
+        ok = false;
+      }
     }
     const channels = val('donationCollectionChannelIds');
     if (channels !== null && channels !== undefined && `${channels}` !== '') {
-      if (!Array.isArray(channels) || !channels.every(x => Number.isInteger(typeof x === 'string' ? Number(x) : x))) {
-        addErr('donationCollectionChannelIds', 'arrayOfIntegers'); ok = false;
+      if (
+        !Array.isArray(channels) ||
+        !channels.every((x) =>
+          Number.isInteger(typeof x === 'string' ? Number(x) : x)
+        )
+      ) {
+        addErr('donationCollectionChannelIds', 'arrayOfIntegers');
+        ok = false;
       }
     }
 
@@ -823,9 +995,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   canSubmit(): boolean {
     if (this.currentStep !== this.totalSteps) return false;
 
-    if (this.isSaving || !this.firstStepForm || !this.isFormInitialized) return false;
+    if (this.isSaving || !this.firstStepForm || !this.isFormInitialized)
+      return false;
 
-    if (!this.firstStepForm.valid || this.firstStepForm.hasError('dateRange')) return false;
+    if (!this.firstStepForm.valid || this.firstStepForm.hasError('dateRange'))
+      return false;
 
     const mustHave = [
       'userId',
@@ -835,21 +1009,29 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       'eventLocation',
       'admin',
       'delegateName',
-      'alternateName'
+      'alternateName',
     ];
-    const allHaveValues = mustHave.every(k => {
+    const allHaveValues = mustHave.every((k) => {
       const c = this.firstStepForm.get(k);
-      return !!(c && c.value !== null && c.value !== undefined && `${c.value}`.trim() !== '');
+      return !!(
+        c &&
+        c.value !== null &&
+        c.value !== undefined &&
+        `${c.value}`.trim() !== ''
+      );
     });
     if (!allHaveValues) return false;
 
-    const channels: number[] = this.firstStepForm.get('donationCollectionChannelIds')?.value || [];
+    const channels: number[] =
+      this.firstStepForm.get('donationCollectionChannelIds')?.value || [];
     if (!channels.length) return false;
 
-    const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
+    const mainAttachType =
+      AttachmentsConfigType.DeclarationOfCharityEffectiveness;
     if (this.hasMissingRequiredAttachments(mainAttachType)) return false;
 
-    const withAd = Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
+    const withAd =
+      Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
     if (withAd && this.requestAdvertisements.length === 0) return false;
 
     return true;
@@ -877,22 +1059,28 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
       // helpers
       const toISO = (input: string | Date) => {
-        const s = typeof input === 'string' && input.length === 16 ? input + ':00' : input;
+        const s =
+          typeof input === 'string' && input.length === 16
+            ? input + ':00'
+            : input;
         const d = new Date(s as any);
         return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
-      }
+      };
 
-      const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
-      const mainAttachments = this.getValidAttachments(mainAttachType).map(a => ({
-        ...a,
-        masterId: a.masterId || 0
-      }));
+      const mainAttachType =
+        AttachmentsConfigType.DeclarationOfCharityEffectiveness;
+      const mainAttachments = this.getValidAttachments(mainAttachType).map(
+        (a) => ({
+          ...a,
+          masterId: a.masterId || 0,
+        })
+      );
 
       const formData = this.firstStepForm.value;
       const payload: any = {
         ...formData,
-        lkpPermitTypeId : +formData.lkpPermitTypeId ,
-        lkpRequestTypeId : +formData.lkpRequestTypeId ,
+        lkpPermitTypeId: +formData.lkpPermitTypeId,
+        lkpRequestTypeId: +formData.lkpRequestTypeId,
 
         requestDate: toISO(formData.requestDate ?? new Date()),
         startDate: toISO(formData.startDate),
@@ -901,61 +1089,68 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         telephone: `971${formData.telephone}`, // Add 971 prefix
         requestAdvertisements: this.requestAdvertisements,
         attachments: mainAttachments,
-        partners: (this.partners || []).map(p => ({
+        partners: (this.partners || []).map((p) => ({
           name: p.name,
           type: Number(p.type),
           licenseIssuer: p.licenseIssuer ?? null,
-          licenseExpiryDate: p.licenseExpiryDate ? toISO(p.licenseExpiryDate) : null,
+          licenseExpiryDate: p.licenseExpiryDate
+            ? toISO(p.licenseExpiryDate)
+            : null,
           licenseNumber: p.licenseNumber ?? null,
           contactDetails: p.contactDetails ?? null,
           mainApplyServiceId: p.mainApplyServiceId ?? null,
-          attachments : p.attachments
+          attachments: p.attachments,
         })),
       };
-      console.log("payload = ", payload);
+      console.log('payload = ', payload);
 
-      const sub = this._CharityEventPermitRequestService.createRequestEvent(payload).subscribe({
-        next: (res) => {
-          console.log(res);
+      const sub = this._CharityEventPermitRequestService
+        .createRequestEvent(payload)
+        .subscribe({
+          next: (res) => {
+            console.log(res);
 
-          this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
-          this.router.navigate(['/services']);
-          this.isSaving = false;
-        },
-        error: (error: any) => {
-          console.error('Error creating request event permit:', error);
-          
-          // Check if it's a business error with a specific reason
-          if (error.error && error.error.reason) {
-            // Show the specific reason from the API response
-            this.toastr.error(error.error.reason);
-          } else {
-            // Fallback to generic error message
-            this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
-          }
-          
-          this.isSaving = false;
-        }
-      });
+            this.toastr.success(
+              this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED')
+            );
+            this.router.navigate(['/services']);
+            this.isSaving = false;
+          },
+          error: (error: any) => {
+            console.error('Error creating request event permit:', error);
+
+            // Check if it's a business error with a specific reason
+            if (error.error && error.error.reason) {
+              // Show the specific reason from the API response
+              this.toastr.error(error.error.reason);
+            } else {
+              // Fallback to generic error message
+              this.toastr.error(
+                this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+              );
+            }
+
+            this.isSaving = false;
+          },
+        });
       this.subscriptions.push(sub);
-
     } catch (error: any) {
       console.error('Error in onSubmit:', error);
-      
+
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
         // Show the specific reason from the API response
         this.toastr.error(error.error.reason);
       } else {
         // Fallback to generic error message
-        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+        this.toastr.error(
+          this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+        );
       }
-      
+
       this.isSaving = false;
     }
   }
-
-
 
   isStepActive(step: number): boolean {
     return this.currentStep === step;
@@ -965,18 +1160,17 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     // Only validate if user is actively trying to proceed, not during initial load
     console.log();
     if (this.isLoading || !this.firstStepForm || !this.isFormInitialized) {
-
       return this.currentStep < this.totalSteps;
     }
     return this.currentStep < this.totalSteps && this.validateCurrentStep();
   }
 
-
   public handleNextClick(): void {
     this.submitted = true;
     this.firstStepForm.markAllAsTouched();
 
-    const isValidStep1 = this.firstStepForm.valid && !this.firstStepForm.hasError('dateRange');
+    const isValidStep1 =
+      this.firstStepForm.valid && !this.firstStepForm.hasError('dateRange');
     console.log(this.firstStepForm.value);
 
     if (this.currentStep === 1) {
@@ -988,12 +1182,13 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     } else {
       this.currentStep++;
     }
-  };
-
+  }
 
   private renewRequiresOldPermValidator = (group: FormGroup) => {
     const reNewAd = group.get('reNewAd')?.value as boolean;
-    const oldPermNumber = (group.get('oldPermNumber')?.value ?? '').toString().trim();
+    const oldPermNumber = (group.get('oldPermNumber')?.value ?? '')
+      .toString()
+      .trim();
     if (reNewAd && !oldPermNumber) {
       return { oldPermRequired: true };
     }
@@ -1005,9 +1200,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       newAd: mode === 'new',
       reNewAd: mode === 'renew',
     });
-    this.advertForm.updateValueAndValidity({ onlySelf: false, emitEvent: false });
-  };
-
+    this.advertForm.updateValueAndValidity({
+      onlySelf: false,
+      emitEvent: false,
+    });
+  }
 
   addLocation(): void {
     const v = (this.newLocationInput || '').trim();
@@ -1015,7 +1212,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     if (!this.adLocations.includes(v)) this.adLocations.push(v);
     this.newLocationInput = '';
   }
-
 
   removeLocation(i: number): void {
     this.adLocations.splice(i, 1);
@@ -1036,7 +1232,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const adAttachType = AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
+    const adAttachType =
+      AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
     if (this.hasMissingRequiredAttachments(adAttachType)) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
       return;
@@ -1047,9 +1244,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     const mainId = Number(v.mainApplyServiceId ?? 0);
 
-    const adAttachments = this.getValidAttachments(adAttachType).map(a => ({
+    const adAttachments = this.getValidAttachments(adAttachType).map((a) => ({
       ...a,
-      masterId: a.masterId || mainId
+      masterId: a.masterId || mainId,
     }));
 
     const ad: any = {
@@ -1081,25 +1278,26 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       // reNewAd: v.reNewAd === true ? true : false,
       // oldPermNumber: v.oldPermNumber ?? null,
 
-      requestEventPermitId: v.requestEventPermitId != null ? Number(v.requestEventPermitId) : null,
+      requestEventPermitId:
+        v.requestEventPermitId != null ? Number(v.requestEventPermitId) : null,
 
       attachments: adAttachments,
 
       requestAdvertisementTargets: (v.targetTypeIds || []).map((id: any) => ({
         mainApplyServiceId: mainId,
         lkpTargetTypeId: Number(id),
-        othertxt: null
+        othertxt: null,
       })),
 
       requestAdvertisementAdMethods: (v.adMethodIds || []).map((id: any) => ({
         mainApplyServiceId: mainId,
         lkpAdMethodId: Number(id),
-        othertxt: null
+        othertxt: null,
       })),
 
-      requestAdvertisementAdLocations: this.adLocations.map(loc => ({
+      requestAdvertisementAdLocations: this.adLocations.map((loc) => ({
         mainApplyServiceId: mainId,
-        location: loc
+        location: loc,
       })),
     };
 
@@ -1117,13 +1315,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       // newAd: true,
       // reNewAd: false,
       targetTypeIds: [],
-      adMethodIds: []
+      adMethodIds: [],
     });
     this.adLocations = [];
     this.submitted = false;
     this.toastr.success(this.translate.instant('SUCCESS.AD_ADDED'));
   }
-
 
   removeAdvertisement(i: number): void {
     this.requestAdvertisements.splice(i, 1);
@@ -1155,7 +1352,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   //   control.setValue(iso);
   //   control.markAsDirty();
   // }
-
 
   onLocalDateChange(event: Event, controlName: string): void {
     const control = this.firstStepForm.get(controlName);
@@ -1249,8 +1445,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     return `${hours}:${minutes}`;
   }
 
-
-
   getTimeOnly(value: string): string {
     if (!value) return '';
     const date = new Date(value);
@@ -1258,9 +1452,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const minutes = date.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   }
-
-
-
 
   // timeRangeValidator(startKey: string, endKey: string): ValidatorFn {
   //   return (formGroup: AbstractControl): ValidationErrors | null => {
@@ -1282,7 +1473,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     if (!value) return null;
-    
+
     const uaeMobilePattern = /^5[0-9]{8}$/;
     return uaeMobilePattern.test(value) ? null : { pattern: true };
   }
@@ -1331,6 +1522,4 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     }
   }
-
-
 }

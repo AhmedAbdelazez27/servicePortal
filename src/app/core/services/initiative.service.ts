@@ -11,6 +11,7 @@ import {
   InitiativeDetailsDto,
   CreateInitiativeDetailsDto,
   UpdateInitiativeDetailsDto,
+  FilterById,
 } from '../dtos/UserSetting/initiatives/initiative.dto';
 
 @Injectable({
@@ -26,8 +27,17 @@ export class InitiativeService {
     return this.http.post<InitiativePagedResponse>(`${this.apiUrl}/GetAll`, parameters);
   }
 
-  getById(id: number): Observable<InitiativeDto> {
-    return this.http.get<InitiativeDto>(`${this.apiUrl}/Get/${id}`);
+  //getById(id: number): Observable<InitiativeDto> {
+  //  return this.http.get<InitiativeDto>(`${this.apiUrl}/Get/${id}`);
+  //}
+
+
+  getById(params: FilterById): Observable<InitiativeDto> {
+    if (!params.id) {
+      throw new Error('id must not be null');
+    }
+    const apiUrl = `${this.apiUrl}/Get/${params.id}/${params.regionName}`;
+    return this.http.get<InitiativeDto>(apiUrl);
   }
 
   createAsync(initiative: CreateInitiativeDto): Observable<InitiativeDto> {

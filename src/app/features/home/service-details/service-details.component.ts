@@ -30,7 +30,7 @@ export class ServiceDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private translationService: TranslationService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.serviceId = this.route.snapshot.paramMap.get('id');
@@ -51,9 +51,10 @@ export class ServiceDetailsComponent implements OnInit {
       next: (response: any) => {
         this.service = response || null;
         if (this.service?.attachmentsConfigs) {
-          this.service.attachmentsConfigs = this.service.attachmentsConfigs.sort(
-            (a: any, b: any) => a.id - b.id
-          );
+          this.service.attachmentsConfigs =
+            this.service.attachmentsConfigs.sort(
+              (a: any, b: any) => a.id - b.id
+            );
         }
 
         this.loading = false;
@@ -135,7 +136,7 @@ export class ServiceDetailsComponent implements OnInit {
   }
 
   onRequestService(): void {
-    console.log("rrrrrrrrr");
+    console.log('rrrrrrrrr');
 
     if (this.service) {
       // Check if this is Fasting and Distribution Tent service (ID = 1)
@@ -153,11 +154,11 @@ export class ServiceDetailsComponent implements OnInit {
       // Check if this is Distribution Site Permit Application (ID = 1001)
       else if (this.service.serviceId === 1001) {
         this.router.navigate(['/distribution-site-permit']);
-      }
-      else if (this.service.serviceId === 2) {
-        this.router.navigate(['/services-requests/charity-event-permit-request']);
-      }
-      else if (this.service.serviceId === 6) {
+      } else if (this.service.serviceId === 2) {
+        this.router.navigate([
+          '/services-requests/charity-event-permit-request',
+        ]);
+      } else if (this.service.serviceId === 6) {
         this.router.navigate(['/services-requests/request-event-permits']);
       }
       // Navigate to generic service request page
@@ -165,5 +166,14 @@ export class ServiceDetailsComponent implements OnInit {
         this.router.navigate(['/service-request', this.service.serviceId]);
       }
     }
+  }
+  getActiveAttachments() {
+    if (!this.service || !this.service.attachmentsConfigs) {
+      return [];
+    }
+
+    return this.service.attachmentsConfigs.filter(
+      (attachment) => attachment.active === true
+    );
   }
 }
