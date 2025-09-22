@@ -331,11 +331,11 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
         this.attachments = resp.attachments || [];
 
         this.findTargetWorkFlowStep();
-        if (this.targetWorkFlowStep) {
+        // if (this.targetWorkFlowStep) {
           this.loadWorkFlowComments();
-        } else {
-          this.initializeCommentsTable([]);
-        }
+        // } else {
+        //   this.initializeCommentsTable([]);
+        // }
       },
       error: () => {
         this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
@@ -362,12 +362,14 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     const rows: any[] = [];
     (this.workFlowSteps || []).forEach(step => {
       const comments = step.workFlowComments || [];
-      comments.forEach(c => {
-        rows.push({
-          ...c,
-          stepDepartmentName: step.departmentName,
-          stepServiceStatus: step.serviceStatusName
-        });
+      comments.forEach((c:any) => {
+         if (c?.commentTypeId == 2) {
+           rows.push({
+             ...c,
+             stepDepartmentName: step.departmentName,
+             stepServiceStatus: step.serviceStatusName
+           });
+         }
       });
     });
 

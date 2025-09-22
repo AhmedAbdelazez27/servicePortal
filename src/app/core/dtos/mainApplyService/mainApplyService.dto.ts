@@ -56,6 +56,7 @@ export class mainApplyServiceDto {
   requestPlaint: RequestPlaintDto | null = null;
   charityEventPermit: CharityEventPermitDto | null = null;
   requestComplaint: RequestComplaintDto | null = null;
+  serviceStatusName ?: any;
 }
 export class ServiceDto {
   serviceId: number | null = null;

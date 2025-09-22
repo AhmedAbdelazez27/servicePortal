@@ -11,24 +11,24 @@
       </div>
 
 
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a routerLink="/request">{{ 'NAVIGATION.REQUEST' | translate }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'VIEW_FASTING_TENT.VIEW_TITLE' | translate }}</li>
-          </ol>
-        </nav>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/request">{{ 'NAVIGATION.REQUEST' | translate }}</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ 'VIEW_FASTING_TENT.VIEW_TITLE' | translate }}</li>
+        </ol>
+      </nav>
       <!-- Main Content -->
       <div *ngIf="!isLoading && mainApplyService">
 
 
         <div class="service-info-card mb-4">
-        
+
 
           <div class="w-100">
             <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
               <h4 class="title mb-2">{{ 'VIEW_FASTING_TENT.VIEW_TITLE' | translate }}</h4>
-              <button *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7" type="button" class="btn btn-gold" data-bs-toggle="modal"
-                data-bs-target="#commentModal">
+              <button *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7" type="button"
+                class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#commentModal">
                 <i class="fas fa-plus me-2"></i>
                 {{ 'COMMON.ADD_COMMENT' | translate }}
               </button>
@@ -486,7 +486,7 @@
                           (actionClick)="onCommentsTableAction($event)" (cellClicked)="onTableCellClick($event)">
                         </app-generic-data-table>
                       </div> -->
-  <div class="comments-container">
+                      <div class="comments-container">
                         <div class="comment-item" *ngFor="let comment of allWorkFlowComments">
                           <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
                             <div>
@@ -496,11 +496,12 @@
                               </small>
                             </div>
                           </div>
-                           <div class="comment-area">
+                          <div class="comment-area">
                             {{ comment.comment }}
                           </div>
-                           <div>
-                             <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"  data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
+                          <div>
+                            <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"
+                              data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
                                 fill="none">
                                 <g clip-path="url(#clip0_560_1674)">
@@ -524,9 +525,9 @@
 
 
 
-                       <div *ngIf="!targetWorkFlowStep" class="alert alert-warning">
+                      <!-- <div *ngIf="!targetWorkFlowStep" class="alert alert-warning">
                         {{ 'COMMON.NO_WORKFLOW_STEP_FOUND' | translate }}
-                      </div>
+                      </div> -->
 
                     </div>
                   </div>
@@ -578,18 +579,20 @@
               <div>
                 <div *ngFor="let config of commentAttachmentConfigs">
 
-                  <div *ngIf="!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0" class="upload-area"
-                    (dragover)="onCommentDragOver($event)" (dragleave)="onCommentDragLeave($event)"
+                  <div *ngIf="!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0"
+                    class="upload-area" (dragover)="onCommentDragOver($event)" (dragleave)="onCommentDragLeave($event)"
                     (drop)="onCommentDrop($event, config.id!)" [class.drag-over]="isCommentDragOver"
                     [class.border-danger]="isCommentAttachmentMandatory(config.id!) && (!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0) && commentValidationSubmitted"
                     [class.border-success]="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0">
                     <input type="file" class="d-none" [id]="'comment-file-' + config.id"
-                      (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+                      (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      multiple>
                     <label [for]="'comment-file-' + config.id" class="upload-label">
                       <i class="fas fa-cloud-upload-alt mb-2"></i>
                       <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
                       <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
-                      <small class="text-muted d-block mt-1">{{ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate }}</small>
+                      <small class="text-muted d-block mt-1">{{ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate
+                        }}</small>
                     </label>
                   </div>
 
@@ -598,27 +601,24 @@
                     class="uploaded-files-list">
                     <!-- Hidden file input for "Add More Files" functionality -->
                     <input type="file" class="d-none" [id]="'comment-file-more-' + config.id"
-                      (change)="onCommentFileSelected($event, config.id!)"
-                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
-                    
+                      (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      multiple>
+
                     <div class="d-flex align-items-center justify-content-between mb-2">
                       <h6 class="mb-0">{{ getCommentAttachmentName(config) }}</h6>
-                      <button type="button" class="btn btn-sm btn-gold" 
-                        (click)="addMoreFiles(config.id!)">
+                      <button type="button" class="btn btn-sm btn-gold" (click)="addMoreFiles(config.id!)">
                         <i class="fas fa-plus me-1"></i>{{ 'Common.MORE_FILES' | translate }}
                       </button>
                     </div>
-                    
+
                     <div class="file-list">
-                      <div *ngFor="let file of commentSelectedFiles[config.id!]; let fileIndex = index" 
+                      <div *ngFor="let file of commentSelectedFiles[config.id!]; let fileIndex = index"
                         class="file-item d-flex align-items-center gap-2 p-2 border rounded mb-2">
                         <div class="file-preview me-2">
-                          <img *ngIf="commentFilePreviews[config.id!]?.[fileIndex] && file.type?.startsWith('image/')" 
-                            [src]="commentFilePreviews[config.id!]?.[fileIndex]" 
-                            class="img-thumbnail uploaded-img-small"
-                            [alt]="file.name">
-                          <i *ngIf="!file.type?.startsWith('image/')" 
-                            class="fas fa-file-alt text-primary fa-lg"></i>
+                          <img *ngIf="commentFilePreviews[config.id!]?.[fileIndex] && file.type?.startsWith('image/')"
+                            [src]="commentFilePreviews[config.id!]?.[fileIndex]"
+                            class="img-thumbnail uploaded-img-small" [alt]="file.name">
+                          <i *ngIf="!file.type?.startsWith('image/')" class="fas fa-file-alt text-primary fa-lg"></i>
                         </div>
                         <div class="file-info flex-grow-1">
                           <div class="file-name">{{ file.name }}</div>

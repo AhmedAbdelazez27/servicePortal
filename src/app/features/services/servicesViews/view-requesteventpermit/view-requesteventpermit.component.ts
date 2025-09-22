@@ -337,11 +337,11 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
         this.attachments = resp.attachments || [];
 
         this.findTargetWorkFlowStep();
-        if (this.targetWorkFlowStep) {
+        // if (this.targetWorkFlowStep) {
           this.loadWorkFlowComments();
-        } else {
-          this.initializeCommentsTable([]);
-        }
+        // } else {
+        //   this.initializeCommentsTable([]);
+        // }
 
         this.isLoading = false;
       },
@@ -370,12 +370,14 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   private loadWorkFlowComments(): void {
     const rows: any[] = [];
     (this.workFlowSteps || []).forEach(step => {
-      (step.workFlowComments || []).forEach(c => {
-        rows.push({
-          ...c,
-          stepDepartmentName: step.departmentName,
-          stepServiceStatus: step.serviceStatusName
-        });
+      (step.workFlowComments || []).forEach((c:any) => {
+         if (c?.commentTypeId == 2) { 
+           rows.push({
+             ...c,
+             stepDepartmentName: step.departmentName,
+             stepServiceStatus: step.serviceStatusName
+           });
+         }
       });
     });
 

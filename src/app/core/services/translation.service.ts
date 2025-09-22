@@ -41,5 +41,6 @@ export class TranslationService {
   toggleLanguage() {
     const newLang = this.currentLang === 'en' ? 'ar' : 'en';
     this.setLanguage(newLang);
+    location.reload();
   }
 }

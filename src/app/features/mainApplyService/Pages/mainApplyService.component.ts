@@ -76,7 +76,7 @@ export class MainApplyServiceComponent {
     this.GetHomeTotalRequestSummaryPortal();
     this.buildColumnDefs();
     this.rowActions = [
-      { label: this.translate.instant('Common.ViewInfo'), icon: 'icon-frame-view', action: 'onViewInfo' },
+      { label: this.translate.instant('COMMON.ViewInfo'), icon: 'icon-frame-view', action: 'onViewInfo' },
       // { label: this.translate.instant('Common.requestComplaint'), icon: 'icon-frame-view', action: 'onRequestComplaint' },
     ];
    
@@ -218,7 +218,7 @@ export class MainApplyServiceComponent {
        { headerName: this.translate.instant('mainApplyServiceResourceName.permitNumber'), field: 'permitNumber', width: 200 },
       { 
         headerName: this.translate.instant('mainApplyServiceResourceName.statues'), 
-        field: 'lastStatusEN', 
+        field: 'serviceStatusName', 
         width: 200,
         cellRenderer: (params: any) => {
           const statusClass = this.getStatusClass(params.data.serviceStatus);
@@ -352,7 +352,7 @@ export class MainApplyServiceComponent {
                     { label: this.translate.instant('mainApplyServiceResourceName.EventNameAdv'), key: 'eventName' },
                     { label: this.translate.instant('mainApplyServiceResourceName.applydate'), key: 'applyDatestr' },
                     { label: this.translate.instant('mainApplyServiceResourceName.permitNumber'), key: 'permitNumber' },
-                    { label: this.translate.instant('mainApplyServiceResourceName.statues'), key: 'lastStatusEN' },
+                    { label: this.translate.instant('mainApplyServiceResourceName.statues'), key: 'serviceStatusName' },
                   ],
                   data: data.map((item: any, index: number) => ({
                     ...item,

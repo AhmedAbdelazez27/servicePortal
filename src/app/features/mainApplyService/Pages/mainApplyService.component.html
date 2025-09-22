@@ -388,7 +388,7 @@
       <td>
         <span class="td-title">{{ 'mainApplyServiceResourceName.statues' | translate }}</span>
         <div [ngClass]="getStatusClass(row?.serviceStatus)">
-          {{ row?.lastStatusEN || '-' }}
+          {{ row?.serviceStatusName || '-' }}
         </div>
       </td>
 
@@ -415,7 +415,7 @@
             <li>
               <button class="dropdown-item"
                       (click)="onTableAction({ action: 'onViewInfo', row })">
-                {{ 'Common.ViewInfo' | translate }}
+                {{ 'COMMON.ViewInfo' | translate }}
               </button>
             </li>
            

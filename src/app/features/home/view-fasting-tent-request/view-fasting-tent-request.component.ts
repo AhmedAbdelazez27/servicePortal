@@ -64,7 +64,7 @@ export enum ServiceStatus {
 })
 export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
   // Tab management
-  currentTab: number = 1;
+  currentTab: number = 1; 
   totalTabs: number = 7; // Added workflow steps tab and workflow comments tab
 
   // Data properties
@@ -294,9 +294,14 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         this.attachments = response.attachments || [];
         
         this.findTargetWorkFlowStep();
-        if (this.targetWorkFlowStep) {
+        // if (this.targetWorkFlowStep) {
+        //   console.log("truuuuuuuue");
+          
           this.loadWorkFlowComments();
-        }
+        // }else{
+        //   console.log("faaaaaaaaaaaaaalsssssse");
+          
+        // }
         
         // Initialize map when data is loaded and coordinates are available
         if (this.fastingTentService?.location?.locationCoordinates) {
@@ -336,14 +341,18 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       this.workFlowSteps.forEach(step => {
         if (step.workFlowComments && Array.isArray(step.workFlowComments)) {
           step.workFlowComments.forEach(comment => {
-            this.allWorkFlowComments.push({
-              ...comment,
-              stepDepartmentName: step.departmentName, // Include step department info
-              stepServiceStatus: step.serviceStatusName
-            });
+            if (comment?.commentTypeId == 2) {
+              this.allWorkFlowComments.push({
+                ...comment,
+                stepDepartmentName: step.departmentName, // Include step department info
+                stepServiceStatus: step.serviceStatusName
+              });
+            }
           });
         }
       });
+      console.log("allWorkFlowComments = ",this.allWorkFlowComments);
+      
     }
     
     // Sort comments by lastModified date (newest first)
