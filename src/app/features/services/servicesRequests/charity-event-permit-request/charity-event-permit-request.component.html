@@ -195,25 +195,23 @@
                                             {{ 'CHARITY_EVENT.TELEPHONE1' | translate }} <span
                                                 class="text-danger">*</span>
                                         </label>
-                                        
+
                                         <!-- Mobile Number Input with UAE Flag and 971 prefix -->
-                                        <div class="mobile-input-container" style="border : none !important;" [class.is-invalid]="(submitted || firstStepForm.get('telephone1')?.touched) && firstStepForm.get('telephone1')?.errors">
+                                        <div class="mobile-input-container" style="border : none !important;"
+                                            [class.is-invalid]="(submitted || firstStepForm.get('telephone1')?.touched) && firstStepForm.get('telephone1')?.errors">
                                             <div class="mobile-prefix-container">
-                                                <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                                                <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png"
+                                                    alt="UAE Flag" class="uae-flag-image">
                                                 <span class="mobile-prefix">971</span>
                                             </div>
-                                            <input 
-                                                type="tel" 
-                                                class="form-control mobile-number-input" 
-                                                formControlName="telephone1"
-                                                placeholder="565666666"
-                                                maxlength="9"
-                                                (keypress)="restrictMobileInput($event)"
-                                                (input)="onTelephone1Input()"
+                                            <input type="tel" class="form-control mobile-number-input"
+                                                formControlName="telephone1" placeholder="565666666" maxlength="9"
+                                                (keypress)="restrictMobileInput($event)" (input)="onTelephone1Input()"
                                                 (blur)="onTelephone1Blur()">
                                         </div>
-                                        
-                                        <div *ngIf="(submitted || firstStepForm.get('telephone1')?.touched) && firstStepForm.get('telephone1')?.errors" class="invalid-feedback">
+
+                                        <div *ngIf="(submitted || firstStepForm.get('telephone1')?.touched) && firstStepForm.get('telephone1')?.errors"
+                                            class="invalid-feedback">
                                             <div *ngIf="firstStepForm.get('telephone1')?.hasError('required')">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                             </div>
@@ -228,25 +226,23 @@
                                             {{ 'CHARITY_EVENT.TELEPHONE2' | translate }} <span
                                                 class="text-danger">*</span>
                                         </label>
-                                        
+
                                         <!-- Mobile Number Input with UAE Flag and 971 prefix -->
-                                        <div class="mobile-input-container" style="border : none !important;" [class.is-invalid]="(submitted || firstStepForm.get('telephone2')?.touched) && firstStepForm.get('telephone2')?.errors">
+                                        <div class="mobile-input-container" style="border : none !important;"
+                                            [class.is-invalid]="(submitted || firstStepForm.get('telephone2')?.touched) && firstStepForm.get('telephone2')?.errors">
                                             <div class="mobile-prefix-container">
-                                                <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                                                <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png"
+                                                    alt="UAE Flag" class="uae-flag-image">
                                                 <span class="mobile-prefix">971</span>
                                             </div>
-                                            <input 
-                                                type="tel" 
-                                                class="form-control mobile-number-input" 
-                                                formControlName="telephone2"
-                                                placeholder="565666666"
-                                                maxlength="9"
-                                                (keypress)="restrictMobileInput($event)"
-                                                (input)="onTelephone2Input()"
+                                            <input type="tel" class="form-control mobile-number-input"
+                                                formControlName="telephone2" placeholder="565666666" maxlength="9"
+                                                (keypress)="restrictMobileInput($event)" (input)="onTelephone2Input()"
                                                 (blur)="onTelephone2Blur()">
                                         </div>
-                                        
-                                        <div *ngIf="(submitted || firstStepForm.get('telephone2')?.touched) && firstStepForm.get('telephone2')?.errors" class="invalid-feedback">
+
+                                        <div *ngIf="(submitted || firstStepForm.get('telephone2')?.touched) && firstStepForm.get('telephone2')?.errors"
+                                            class="invalid-feedback">
                                             <div *ngIf="firstStepForm.get('telephone2')?.hasError('required')">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                             </div>
@@ -340,7 +336,8 @@
                                             bindValue="id" [multiple]="false" [closeOnSelect]="true" [clearable]="true"
                                             [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
                                             class="ng-select-custom"
-                                            [ngClass]="{'is-invalid': partnerForm.get('type')?.touched && partnerForm.get('type')?.invalid}">
+                                            [ngClass]="{'is-invalid': partnerForm.get('type')?.touched && partnerForm.get('type')?.invalid}"
+                                            (change)="onPartnerTypeChange()">
                                         </ng-select>
                                         <div class="invalid-feedback"
                                             *ngIf="partnerForm.get('type')?.touched && partnerForm.get('type')?.errors">
@@ -351,8 +348,7 @@
                                     <!-- License Issuer (required) -->
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">
-                                            {{ 'PARTNERS.LICENSE_ISSUER' | translate }} <span
-                                                class="text-danger">*</span>
+                                            {{ 'PARTNERS.LICENSE_ISSUER' | translate }} 
                                         </label>
                                         <input class="form-control" formControlName="licenseIssuer"
                                             [class.is-invalid]="partnerForm.get('licenseIssuer')?.touched && partnerForm.get('licenseIssuer')?.invalid">
@@ -365,8 +361,7 @@
                                     <!-- License Number (required) -->
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">
-                                            {{ 'PARTNERS.LICENSE_NUMBER' | translate }} <span
-                                                class="text-danger">*</span>
+                                            {{ 'PARTNERS.LICENSE_NUMBER' | translate }} 
                                         </label>
                                         <input class="form-control" formControlName="licenseNumber"
                                             [class.is-invalid]="partnerForm.get('licenseNumber')?.touched && partnerForm.get('licenseNumber')?.invalid">
@@ -379,8 +374,7 @@
                                     <!-- License Expiry Date (required) -->
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">
-                                            {{ 'PARTNERS.LICENSE_EXPIRY' | translate }} <span
-                                                class="text-danger">*</span>
+                                            {{ 'PARTNERS.LICENSE_EXPIRY' | translate }}
                                         </label>
                                         <input type="date" class="form-control" formControlName="licenseExpiryDate"
                                             [class.is-invalid]="partnerForm.get('licenseExpiryDate')?.touched && partnerForm.get('licenseExpiryDate')?.invalid">
@@ -397,8 +391,17 @@
                                             formControlName="contactDetails"></textarea>
                                     </div>
 
-                                                                        <!-- Partner Attachments (AttachmentsConfigType.Partner) -->
-                                    <div class="col-12 mt-4">
+                                    <div class="col-xl-12 mb-3">
+                                        <label class="form-label">
+                                            {{ 'FASTING_TENT_REQ.jobRequirementsDetails' | translate }}
+                                        </label>
+                                        <input type="text" class="form-control"
+                                            formControlName="jobRequirementsDetails">
+
+                                    </div>
+
+                                    <!-- Partner Attachments (AttachmentsConfigType.Partner) -->
+                                    <div *ngIf="showPartnerAttachments" class="col-12 mt-4">
                                         <h6 class="mb-3">{{ 'PARTNERS.ATTACHMENTS' | translate }}</h6>
 
                                         <div class="table-responsive">
@@ -412,58 +415,64 @@
                                                 </thead>
 
                                                 <tbody>
-                                                    <tr
+                                                    <ng-container
                                                         *ngFor="let cfg of state(AttachmentsConfigType.Partner).configs">
-                                                        <td>
-                                                            {{ getAttachmentName(AttachmentsConfigType.Partner, cfg.id!)
-                                                            }}
-                                                        </td>
+                                                        <tr *ngIf="isPartnerAttachmentAllowed(cfg.id!)">
 
-                                                        <td>
-                                                            <!-- Upload area -->
-                                                            <div *ngIf="!hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
-                                                                class="upload-area" (dragover)="onDragOver($event)"
-                                                                (dragleave)="onDragLeave($event)"
-                                                                (drop)="onDrop($event, AttachmentsConfigType.Partner, cfg.id!)"
-                                                                [class.drag-over]="isDragOver">
+                                                            <td>
+                                                                <!-- {{ cfg.id}} -->
+                                                                {{ getAttachmentName(AttachmentsConfigType.Partner,
+                                                                cfg.id!)
+                                                                }}
+                                                            </td>
 
-                                                                <input type="file" class="d-none"
-                                                                    [id]="'file-partner-' + cfg.id"
-                                                                    (change)="onFileSelected($event, AttachmentsConfigType.Partner, cfg.id!)"
-                                                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                            <td>
+                                                                <!-- Upload area -->
+                                                                <div *ngIf="!hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                    class="upload-area" (dragover)="onDragOver($event)"
+                                                                    (dragleave)="onDragLeave($event)"
+                                                                    (drop)="onDrop($event, AttachmentsConfigType.Partner, cfg.id!)"
+                                                                    [class.drag-over]="isDragOver">
 
-                                                                <label [for]="'file-partner-' + cfg.id"
-                                                                    class="upload-label">
-                                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                                    <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' |
-                                                                        translate }}</span>
-                                                                </label>
-                                                            </div>
+                                                                    <input type="file" class="d-none"
+                                                                        [id]="'file-partner-' + cfg.id"
+                                                                        (change)="onFileSelected($event, AttachmentsConfigType.Partner, cfg.id!)"
+                                                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
 
-                                                            <!-- Preview -->
-                                                            <div *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
-                                                                class="file-preview">
-                                                                <span class="file-name">
-                                                                    {{ selectedFileName(AttachmentsConfigType.Partner,
-                                                                    cfg.id!) }}
-                                                                </span>
+                                                                    <label [for]="'file-partner-' + cfg.id"
+                                                                        class="upload-label">
+                                                                        <i class="fas fa-cloud-upload-alt"></i>
+                                                                        <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' |
+                                                                            translate }}</span>
+                                                                    </label>
+                                                                </div>
 
-                                                                <img style="width: 150px; height: 100px;" *ngIf="getPreview(AttachmentsConfigType.Partner, cfg.id!)
-                          && state(AttachmentsConfigType.Partner).selected[cfg.id!].type?.startsWith('image/')"
-                                                                    [src]="getPreview(AttachmentsConfigType.Partner, cfg.id!)"
-                                                                    class="preview-image">
-                                                            </div>
-                                                        </td>
+                                                                <!-- Preview -->
+                                                                <div *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                    class="file-preview">
+                                                                    <span class="file-name">
+                                                                        {{
+                                                                        selectedFileName(AttachmentsConfigType.Partner,
+                                                                        cfg.id!) }}
+                                                                    </span>
 
-                                                        <td>
-                                                            <button
-                                                                *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
-                                                                type="button" class="btn btn-sm btn-danger"
-                                                                (click)="removeFile(AttachmentsConfigType.Partner, cfg.id!)">
-                                                                {{ 'COMMON.REMOVE' | translate }}
-                                                            </button>
-                                                        </td>
-                                                    </tr>
+                                                                    <img style="width: 150px; height: 100px;" *ngIf="getPreview(AttachmentsConfigType.Partner, cfg.id!)
+                              && state(AttachmentsConfigType.Partner).selected[cfg.id!].type?.startsWith('image/')"
+                                                                        [src]="getPreview(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                        class="preview-image">
+                                                                </div>
+                                                            </td>
+
+                                                            <td>
+                                                                <button
+                                                                    *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)"
+                                                                    type="button" class="btn btn-sm btn-danger"
+                                                                    (click)="removeFile(AttachmentsConfigType.Partner, cfg.id!)">
+                                                                    {{ 'COMMON.REMOVE' | translate }}
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </ng-container>
                                                 </tbody>
 
                                             </table>
@@ -832,7 +841,8 @@
                                                                 cfg.id!) }}
                                                             </span>
 
-                                                            <img style="width: 150px; height: 100px;" *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
+                                                            <img style="width: 150px; height: 100px;"
+                                                                *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
                           && state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).selected[cfg.id!].type.startsWith('image/')"
                                                                 [src]="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
                                                                 class="preview-image">
@@ -893,7 +903,7 @@
                                                 <td>{{ len(ad.requestAdvertisementTargets) }}</td>
                                                 <td>{{ len(ad.requestAdvertisementAdMethods) }}</td>
                                                 <td>{{ len(ad.requestAdvertisementAdLocations) }}</td>
-                                                <td> 
+                                                <td>
                                                     <button type="button" class="btn btn-sm btn-danger"
                                                         (click)="removeAdvertisement(i)">
                                                         {{ 'COMMON.REMOVE' | translate }}
@@ -917,7 +927,7 @@
                                                 <th>{{ 'COMMON.ACTIONS' | translate }}</th>
                                             </tr>
                                         </thead>
-                                        <tbody> 
+                                        <tbody>
                                             <tr
                                                 *ngFor="let config of state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).configs">
                                                 <td>{{
@@ -948,7 +958,8 @@
                                                             selectedFileName(AttachmentsConfigType.DeclarationOfCharityEffectiveness,
                                                             config.id!) }}
                                                         </span>
-                                                        <img  style="width: 150px; height: 100px;" *ngIf="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
+                                                        <img style="width: 150px; height: 100px;"
+                                                            *ngIf="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
                       && state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).selected[config.id!].type.startsWith('image/')"
                                                             [src]="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
                                                             class="preview-image">

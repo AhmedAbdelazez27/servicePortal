@@ -179,6 +179,7 @@ export interface PagedResultDto<T> {
 export interface Select2Item {
   id: string | number;
   text: string;
+  label ?:any
 }
 
 export interface Select2RequestDto {
@@ -186,6 +187,7 @@ export interface Select2RequestDto {
   take: number;
   searchTerm?: string;
   userId?: string;
+  isAvailable ?: boolean;
 }
 
 export interface Select2Result {

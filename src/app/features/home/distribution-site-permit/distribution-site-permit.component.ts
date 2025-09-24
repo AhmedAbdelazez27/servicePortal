@@ -38,6 +38,7 @@ import {
   AttachmentsConfigDto,
   AttachmentsConfigType,
 } from '../../../core/dtos/attachments/attachments-config.dto';
+import { FastingTentPartnerDto } from '../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
 
 @Component({
   selector: 'app-distribution-site-permit',
@@ -95,6 +96,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   showPartnerAttachments = false;
 
   private subscriptions: Subscription[] = [];
+  invalidEndDate: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -137,10 +139,10 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       userId: [currentUser?.id || '', Validators.required],
       locationType: ['', Validators.required],
       locationTypeId: [null, Validators.required],
-      ownerName: [''],
+      // ownerName: [''],
       regionName: ['', Validators.required],
       streetName: ['', ],
-      groundNo: [''],
+      // groundNo: [''],
       address: [''],
       startDate: ['', [Validators.required, this.startDateNotPastValidator()]],
       endDate: ['', [Validators.required, this.endDateAfterStartDateValidator()]],
@@ -155,13 +157,14 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       distributionSiteCoordinators: ['', Validators.required], // renamed and only this field
     });
 
-    this.partnersForm = this.fb.group({
-      name: [''],
-      type: [null],
-      licenseIssuer: [''],
-      licenseExpiryDate: [''],
-      licenseNumber: [''],
-      contactDetails: [''],
+  this.partnersForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(200)]],
+      type: [null, [Validators.required]],
+      licenseIssuer: ['', [Validators.maxLength(200)]],
+      licenseExpiryDate: [null],
+      licenseNumber: ['', [Validators.maxLength(100)]],
+      contactDetails: ['', [Validators.maxLength(1000)]],
+      jobRequirementsDetails: [''],
     });
 
     // Subscribe to form changes
@@ -171,6 +174,11 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   initializePartnerTypes(): void {
     this.partnerTypes = this.distributionSiteRequestService.getPartnerTypes();
   }
+
+    isSupplierOrCompany(type: PartnerType | null | undefined): boolean {
+      return type === PartnerType.Supplier || type === PartnerType.Company;
+    }
+  
 
   setupFormValueChanges(): void {
     // Subscribe to all form changes to trigger validation updates
@@ -195,7 +203,12 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
         const startDate = this.mainInfoForm.get('startDate')?.value;
         const endDate = endDateControl.value;
         if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
-          this.toastr.error(this.translate.instant('FASTING_TENT.END_DATE_BEFORE_START_MESSAGE'));
+          this.invalidEndDate = true ;
+          this.toastr.error(this.translate.instant('VALIDATION.END_DATE_BEFORE_START'));
+          this.cdr.detectChanges();
+    
+        }else{
+          this.invalidEndDate = false;
         }
       });
       this.subscriptions.push(endDateSub);
@@ -617,24 +630,115 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   }
 
   // Partners management
-  addPartner(): void {
-    if (this.partnersForm.valid) {
-      const partnerType = this.partnersForm.get('type')?.value;
-      const partnerAttachments = this.getPartnerAttachmentsForType(partnerType);
-      
-      const newPartner: DistributionSitePartnerDto = {
-        ...this.partnersForm.value,
-        mainApplyServiceId: 0, // Will be set by backend
-        attachments: partnerAttachments
-      };
-      
-      this.partners.push(newPartner);
-      this.partnersForm.reset();
-      this.showPartnerAttachments = false;
-      this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
-    } else {
-      this.toastr.error(this.translate.instant('VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS'));
+addPartner(): void {
+    this.partnersForm.markAllAsTouched();   // <-- علشان تظهر رسائل الأخطاء
+    this.cdr.detectChanges();
+
+    const partnerType: PartnerType | null = this.partnersForm.get('type')?.value ?? null;
+
+    // ====== تحضير قيم الحقول ======
+    const name = (this.partnersForm.get('name')?.value ?? '').toString().trim();
+    const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
+    const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
+    const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
+    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
+
+    // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
+    // Name: required + max 200
+    if (!name) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME'));
+      return;
     }
+    if (name.length > 200) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME')} (<= 200)`);
+      return;
+    }
+
+    // Type: لازم قيمة صحيحة من enum (IsInEnum)
+    const validTypes = [PartnerType.Person, PartnerType.Supplier, PartnerType.Company, PartnerType.Government];
+    if (partnerType === null || !validTypes.includes(partnerType)) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_TYPE'));
+      return;
+    }
+
+    // LicenseIssuer: max 200 (لو متعبّي)
+    if (licenseIssuer && licenseIssuer.length > 200) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.LICENSE_ISSUER')} (<= 200)`);
+      return;
+    }
+
+    // LicenseNumber: max 100 (لو متعبّي)
+    if (licenseNumber && licenseNumber.length > 100) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.LICENSE_NUMBER')} (<= 100)`);
+      return;
+    }
+
+    // ContactDetails: max 1000 (لو متعبّي)
+    if (contactDetails && contactDetails.length > 1000) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
+      return;
+    }
+
+    // ====== البيزنيس (الأولوية ليه) ======
+    // Supplier/Company ⇒ بيانات الرخصة required + مرفق الرخصة (2057) required
+    if (partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
+      const missingFields: string[] = [];
+      if (!licenseIssuer) missingFields.push(this.translate.instant('FASTING_TENT_REQ.LICENSE_ISSUER'));
+      if (!licenseExpiry) missingFields.push(this.translate.instant('FASTING_TENT_REQ.LICENSE_EXPIRY_DATE'));
+      if (!licenseNumber) missingFields.push(this.translate.instant('FASTING_TENT_REQ.LICENSE_NUMBER'));
+
+      if (missingFields.length > 0) {
+        this.toastr.error(this.translate.instant('VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS') + ': ' + missingFields.join(', '));
+        return;
+      }
+
+      // مرفق الرخصة 2057
+      const hasLicenseAttachment =
+        !!this.partnerSelectedFiles[partnerType]?.[2057] ||
+        (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2057 && a.fileBase64 && a.fileName) ?? false);
+
+      if (!hasLicenseAttachment) {
+        const cfg = this.partnerAttachmentConfigs.find(c => c.id === 2057);
+        const name = cfg ? this.getAttachmentName(cfg) : 'License';
+        this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + name);
+        return;
+      }
+    }
+
+    // Person ⇒ مرفق الهوية (2056) required
+    if (partnerType === PartnerType.Person) {
+      const hasIdAttachment =
+        !!this.partnerSelectedFiles[partnerType]?.[2056] ||
+        (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2056 && a.fileBase64 && a.fileName) ?? false);
+
+      if (!hasIdAttachment) {
+        const cfg = this.partnerAttachmentConfigs.find(c => c.id === 2056);
+        const name = cfg ? this.getAttachmentName(cfg) : 'ID';
+        this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + name);
+        return;
+      }
+    }
+
+    // ====== تمّر، ابني الـ Partner ======
+    const partnerAttachments = this.getPartnerAttachmentsForType(partnerType);
+
+    const newPartner: FastingTentPartnerDto = {
+      ...this.partnersForm.value,
+      name, // ناخد النسخة الـ trimmed
+      licenseIssuer,
+      licenseExpiryDate: licenseExpiry || null,
+      licenseNumber,
+      contactDetails,
+      mainApplyServiceId: 0,
+      attachments: partnerAttachments
+    };
+
+    this.partners.push(newPartner);
+    this.partnersForm.reset();
+    this.showPartnerAttachments = false;
+    this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
+    // console.log("partners ",this.partners);
+    
   }
 
   removePartner(index: number): void {
@@ -890,10 +994,10 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
         userId: currentUser.id,
         locationType: this.getSelectedLocationTypeName(),
         locationTypeId: formData.locationTypeId,
-        ownerName: formData.ownerName,
+        // ownerName: formData.ownerName,
         regionName: formData.regionName,
         streetName: formData.streetName,
-        groundNo: formData.groundNo,
+        // groundNo: formData.groundNo,
         address: formData.address,
         startDate: formData.startDate,
         endDate: formData.endDate,

@@ -76,16 +76,16 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Selected scenario
   selectedScenario: 'iftar' | 'distribution' | null = null;
-  
+
   // Location selection method tracking
   lastSelectionSource: 'dropdown' | 'map' | null = null;
   locationAvailabilityStatus: 'checking' | 'available' | 'unavailable' | null = null;
   isCheckingAvailability = false;
-  
+
   // Location data
   selectedLocationDetails: LocationDetailsDto | null = null;
   interactiveMapLocations: LocationMapDto[] = [];
-  
+
   // Map variables
   map: any;
   markers: any[] = [];
@@ -170,7 +170,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     this.dateDetailsForm = this.fb.group({
       startDate: ['', [Validators.required, this.startDateNotPastValidator()]],
       endDate: ['', [Validators.required, this.endDateAfterStartDateValidator()]],
-      tentDate: [{ value: '', disabled: true }], // renamed and disabled
+      // tentDate: [{ value: '', disabled: true }], // renamed and disabled
     });
 
     this.supervisorForm = this.fb.group({
@@ -180,13 +180,15 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     });
 
     this.partnersForm = this.fb.group({
-      name: [''],
-      type: [null],
-      licenseIssuer: [''],
-      licenseExpiryDate: [''],
-      licenseNumber: [''],
-      contactDetails: [''],
+      name: ['', [Validators.required, Validators.maxLength(200)]],
+      type: [null, [Validators.required]],
+      licenseIssuer: ['', [Validators.maxLength(200)]],
+      licenseExpiryDate: [null],
+      licenseNumber: ['', [Validators.maxLength(100)]],
+      contactDetails: ['', [Validators.maxLength(1000)]],
+      jobRequirementsDetails: [''],
     });
+
 
     // Subscribe to tent location type changes
     this.setupFormValueChanges();
@@ -194,6 +196,10 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   initializePartnerTypes(): void {
     this.partnerTypes = this.fastingTentRequestService.getPartnerTypes();
+  }
+
+  isSupplierOrCompany(type: PartnerType | null | undefined): boolean {
+    return type === PartnerType.Supplier || type === PartnerType.Company;
   }
 
   setupFormValueChanges(): void {
@@ -245,7 +251,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   loadInitialData(): void {
     this.isLoading = true;
-    
+
     const currentUser = this.authService.getCurrentUser();
     if (currentUser?.id) {
       this.mainInfoForm.patchValue({
@@ -260,21 +266,21 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       forkJoin(essentialOperations).subscribe({
         next: ([tentTypes]) => {
           this.tentLocationTypes = tentTypes || [];
-          
+
           // Log the structure of each tent type for debugging
           this.tentLocationTypes.forEach((type, index) => {
             // console.log(`Tent Type ${index}:`, type);
           });
-          
+
           this.isLoading = false;
           this.isFormInitialized = true;
-          
+
           // Load location data immediately on page load
           this.loadLocationDataOnInit();
-          
+
           // Load attachment configs
           this.loadAttachmentConfigs();
-          
+
           // Load partner attachment configs
           this.loadPartnerAttachmentConfigs();
         },
@@ -339,11 +345,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   loadLocationDataOnInit(): void {
     // console.log('Loading location data on component initialization...');
-    
+
     // Load both dropdown options and map data immediately
     this.loadLocationOptions();
     this.loadInteractiveMap();
-    
+
     // Initialize map after data is loaded
     setTimeout(() => {
       this.initializeMap();
@@ -481,7 +487,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   validateMainInfoTab(showToastr = false): boolean {
     const form = this.mainInfoForm;
-    
+
     // Check tent location type (required)
     const tentLocationType = form.get('tentLocationType')?.value;
     if (!tentLocationType) {
@@ -490,18 +496,18 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     // Check location selection - either dropdown or map must have a valid selection
     const hasDropdownSelection = form.get('locationId')?.value;
     const hasMapSelection = this.selectedLocationDetails && this.lastSelectionSource === 'map';
-    
+
     if (!hasDropdownSelection && !hasMapSelection) {
       if (showToastr) {
         this.toastr.error(this.translate.instant('VALIDATION.LOCATION_REQUIRED'));
       }
       return false;
     }
-    
+
     // Check if location availability check is in progress
     if (this.locationAvailabilityStatus === 'checking') {
       if (showToastr) {
@@ -509,7 +515,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     // Check if location is available
     if (this.locationAvailabilityStatus === 'unavailable') {
       if (showToastr) {
@@ -517,7 +523,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     // Location must be available to proceed
     if (this.locationAvailabilityStatus !== 'available') {
       if (showToastr) {
@@ -525,13 +531,13 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     return true;
   }
 
   validateDateDetailsTab(showToastr = false): boolean {
     const form = this.dateDetailsForm;
-    
+
     // Check start date (required)
     const startDate = form.get('startDate')?.value;
     if (!startDate || (typeof startDate === 'string' && startDate.trim() === '')) {
@@ -540,7 +546,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     // Check end date (required)
     const endDate = form.get('endDate')?.value;
     if (!endDate || (typeof endDate === 'string' && endDate.trim() === '')) {
@@ -554,7 +560,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time to start of day for comparison
     const startDateObj = new Date(startDate);
-    
+
     if (startDateObj < today) {
       if (showToastr) {
         this.toastr.error(this.translate.instant('FASTING_TENT.START_DATE_PAST_MESSAGE'));
@@ -570,7 +576,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     // Validate maximum duration (optional business rule - can be adjusted)
     const daysDiff = Math.ceil((endDateObj.getTime() - startDateObj.getTime()) / (1000 * 60 * 60 * 24));
     if (daysDiff > 365) { // Max 1 year duration
@@ -585,7 +591,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   validateSupervisorTab(showToastr = false): boolean {
     const form = this.supervisorForm;
-    
+
     // Check supervisor name (required, minimum 2 characters)
     const supervisorName = form.get('supervisorName')?.value;
     if (!supervisorName || (typeof supervisorName === 'string' && supervisorName.trim() === '')) {
@@ -600,7 +606,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     // Check job title (required, minimum 2 characters)
     const jopTitle = form.get('jopTitle')?.value;
     if (!jopTitle || (typeof jopTitle === 'string' && jopTitle.trim() === '')) {
@@ -615,7 +621,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     // Check supervisor mobile (required, minimum 7 characters, valid phone format)
     const supervisorMobile = form.get('supervisorMobile')?.value;
     if (!supervisorMobile || (typeof supervisorMobile === 'string' && supervisorMobile.trim() === '')) {
@@ -624,7 +630,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     // Validate UAE mobile number format (9 digits starting with 5)
     const uaeMobilePattern = /^5[0-9]{8}$/;
     if (!uaeMobilePattern.test(supervisorMobile)) {
@@ -633,30 +639,30 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
       return false;
     }
-    
+
     return true;
   }
 
   validatePartnersTab(showToastr = false): boolean {
     // Partners tab is optional and should be considered completed when visited
     // This allows users to proceed without adding partners (since it's not mandatory)
-    
+
     if (!this.visitedTabs.has(4)) {
       return false;
     }
-    
+
     // If user has visited the tab, consider it completed (optional tab)
     // User can choose not to add partners, which is valid
     if (this.partners.length === 0) {
       return true;
     }
-    
+
     // Validate partner attachments if there are mandatory ones for the selected partner type
     if (this.showPartnerAttachments) {
       const selectedPartnerType = this.partnersForm.get('type')?.value;
       if (selectedPartnerType) {
         const mandatoryConfigs = this.getPartnerAttachmentConfigsForType(selectedPartnerType).filter(config => config.mendatory);
-        
+
         for (const config of mandatoryConfigs) {
           const hasFile = this.partnerSelectedFiles[selectedPartnerType]?.[config.id!];
           if (!hasFile) {
@@ -676,10 +682,10 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   onTentLocationTypeChange(event: any): void {
     // console.log('onTentLocationTypeChange called with event:', event);
     // console.log('Available tentLocationTypes:', this.tentLocationTypes);
-    
+
     // Extract the ID from the event - ng-select passes the full object when bindValue="id" is used
     let eventId: number;
-    
+
     if (typeof event === 'object' && event !== null && event.id) {
       // Event is the full object
       eventId = event.id;
@@ -697,19 +703,19 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       this.clearLocationSelection();
       return;
     }
-    
+
     // console.log('Final event ID:', eventId);
-    
+
     const selectedType = this.tentLocationTypes.find(type => type.id === eventId);
     // console.log('Selected type:', selectedType);
-    
+
     // Check if we have a valid selection
     if (!selectedType || !eventId) {
       // console.log('No valid type selected, clearing scenario');
       this.clearLocationSelection();
       return;
     }
-    
+
     // Reset location selection when tent type changes
     this.clearLocationSelection();
   }
@@ -720,6 +726,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       skip: 0,
       take: 100,
       searchTerm: '',
+      isAvailable : true,
+      orderByValue: null
     };
 
     const sub = this.fastingTentRequestService.getLocationSelect2(request).subscribe({
@@ -745,7 +753,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const sub = this.fastingTentRequestService.getInteractiveMap().subscribe({
       next: (locations) => {
         this.interactiveMapLocations = locations || [];
-        
+
         // Log each location for debugging
         this.interactiveMapLocations.forEach((location, index) => {
           // console.log(`Location ${index + 1}:`, {
@@ -756,7 +764,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           //   address: location.address
           // });
         });
-        
+
         this.initializeMap();
       },
       error: (error) => {
@@ -777,7 +785,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     } else {
       locationId = Number(location);
     }
-    
+
     if (!locationId) {
       this.clearLocationFields();
       this.locationAvailabilityStatus = null;
@@ -787,7 +795,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
     // Set the selection source and clear map-specific selection
     this.lastSelectionSource = 'dropdown';
-    
+
     this.checkLocationAvailabilityAndLoad(locationId, 'dropdown');
   }
 
@@ -811,14 +819,14 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const sub = this.fastingTentRequestService.checkLocationAvailability(availabilityDto).subscribe({
       next: (isAvailable) => {
         this.isCheckingAvailability = false;
-        
+
         if (isAvailable) {
           this.locationAvailabilityStatus = 'available';
           this.loadLocationDetails(locationId);
         } else {
           this.locationAvailabilityStatus = 'unavailable';
           this.clearLocationFields();
-          
+
           // Clear the form control if location is not available
           if (source === 'dropdown') {
             this.mainInfoForm.patchValue({ locationId: null });
@@ -937,11 +945,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     // Use a longer timeout and multiple checks to ensure DOM is ready
     let attempts = 0;
     const maxAttempts = 10;
-    
+
     const checkAndInitialize = () => {
       const mapElement = document.getElementById('distributionMap');
       attempts++;
-      
+
       if (mapElement) {
         // console.log('Map element found, initializing map...');
         this.setupMap();
@@ -953,7 +961,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         this.toastr.error('Failed to initialize map: map container not found');
       }
     };
-    
+
     setTimeout(checkAndInitialize, 100);
   }
 
@@ -980,14 +988,14 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         minZoom: 5,
         crossOrigin: true,
       });
-      
+
       // Add error handler for tile loading issues
       tileLayer.on('tileerror', (error) => {
         // console.warn('Tile loading error:', error);
         // Fallback to alternative tile server
         this.addFallbackTileLayer();
       });
-      
+
       tileLayer.addTo(this.map);
 
       // console.log('Map initialized successfully, adding markers...');
@@ -1003,7 +1011,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         if (this.map) {
           // console.log('Forcing map invalidateSize...');
           this.map.invalidateSize();
-          
+
           // Check if tiles are loaded
           const tileLayersLoaded = this.checkTileLayersLoaded();
           if (!tileLayersLoaded) {
@@ -1034,7 +1042,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       maxZoom: 19,
       minZoom: 5,
     }).addTo(this.map);
-    
+
     this.toastr.info('Using fallback map tiles');
   }
 
@@ -1042,12 +1050,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     try {
       const mapContainer = document.getElementById('distributionMap');
       if (!mapContainer) return false;
-      
+
       const leafletTiles = mapContainer.querySelectorAll('.leaflet-tile');
       const loadedTiles = mapContainer.querySelectorAll('.leaflet-tile-loaded');
-      
+
       // console.log(`Tile check: ${loadedTiles.length} loaded out of ${leafletTiles.length} total tiles`);
-      
+
       // If we have some tiles and at least 50% are loaded, consider it successful
       return leafletTiles.length > 0 && (loadedTiles.length / leafletTiles.length) >= 0.5;
     } catch (error) {
@@ -1059,6 +1067,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   addMapMarkers(): void {
     this.markers = [];
     // console.log(`Adding markers for ${this.interactiveMapLocations.length} locations`);
+    const t = (k: string) => this.translate.instant(k);
+
 
     if (this.interactiveMapLocations.length === 0) {
       // console.warn('No locations available to add markers');
@@ -1092,7 +1102,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           }
 
           const markerColor = location.isAvailable ? '#28a745' : '#dc3545'; // Green for available, red for unavailable
-          
+
           const markerIcon = L.divIcon({
             className: 'custom-marker',
             html: `<div style="background-color: ${markerColor}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); cursor: pointer;"></div>`,
@@ -1104,10 +1114,10 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
             .addTo(this.map)
             .bindPopup(`
               <div>
-                <h6>${location.locationName || 'Unknown Location'}</h6>
-                <p><strong>Address:</strong> ${location.address || 'N/A'}</p>
-                <p><strong>Region:</strong> ${location.region || 'N/A'}</p>
-                <p><strong>Status:</strong> ${location.isAvailable ? 'Available' : 'Not Available'}</p>
+                <h6>${location.locationName || t('COMMON.UNKNOWN_LOCATION')}</h6>
+                <p><strong>${t('FASTING_TENT_REQ.ADDRESS')}:</strong> ${location.address ||  t('COMMON.N_A')}</p>
+                <p><strong>${t('FASTING_TENT_REQ.REGION_NAME')}:</strong> ${location.region ||  t('COMMON.N_A')}</p>
+                <p><strong>${t('COMMON.STATUS')}:</strong> ${location.isAvailable ? t('COMMON.AVAILABLE') : t('COMMON.NOT_AVAILABLE')}</p>
               </div>
             `)
             .on('click', () => {
@@ -1129,12 +1139,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     });
 
     // console.log(`Markers summary: ${markersAdded} added, ${markersSkipped} skipped`);
-    
+
     if (markersAdded === 0) {
-      this.toastr.warning('No valid locations could be displayed on the map');
+      // this.toastr.warning('No valid locations could be displayed on the map');
     } else {
-      this.toastr.success(`${markersAdded} locations loaded on the map`);
-      
+      // this.toastr.success(`${markersAdded} locations loaded on the map`);
+
       // Fit map to show all markers if we have any
       if (this.markers.length > 0) {
         const group = new L.FeatureGroup(this.markers);
@@ -1229,35 +1239,128 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   onMapLocationClick(location: LocationMapDto): void {
     // console.log('Map location clicked:', location);
-    
+
     // Set the selection source and clear dropdown selection
     this.lastSelectionSource = 'map';
     this.clearDropdownSelection();
-    
+
     // Always check availability even if the location appears available on the map
     this.checkLocationAvailabilityAndLoad(location.id, 'map');
   }
 
   // Partners management
+  // Partners management
   addPartner(): void {
-    if (this.partnersForm.valid) {
-      const partnerType = this.partnersForm.get('type')?.value;
-      const partnerAttachments = this.getPartnerAttachmentsForType(partnerType);
-      
-      const newPartner: FastingTentPartnerDto = {
-        ...this.partnersForm.value,
-        mainApplyServiceId: 0, // Will be set by backend
-        attachments: partnerAttachments
-      };
-      
-      this.partners.push(newPartner);
-      this.partnersForm.reset();
-      this.showPartnerAttachments = false;
-      this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
-    } else {
-      this.toastr.error(this.translate.instant('VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS'));
+    this.partnersForm.markAllAsTouched();   // <-- علشان تظهر رسائل الأخطاء
+    this.cdr.detectChanges();
+
+    const partnerType: PartnerType | null = this.partnersForm.get('type')?.value ?? null;
+
+    // ====== تحضير قيم الحقول ======
+    const name = (this.partnersForm.get('name')?.value ?? '').toString().trim();
+    const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
+    const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
+    const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
+    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
+
+    // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
+    // Name: required + max 200
+    if (!name) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME'));
+      return;
     }
+    if (name.length > 200) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME')} (<= 200)`);
+      return;
+    }
+
+    // Type: لازم قيمة صحيحة من enum (IsInEnum)
+    const validTypes = [PartnerType.Person, PartnerType.Supplier, PartnerType.Company, PartnerType.Government];
+    if (partnerType === null || !validTypes.includes(partnerType)) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_TYPE'));
+      return;
+    }
+
+    // LicenseIssuer: max 200 (لو متعبّي)
+    if (licenseIssuer && licenseIssuer.length > 200) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.LICENSE_ISSUER')} (<= 200)`);
+      return;
+    }
+
+    // LicenseNumber: max 100 (لو متعبّي)
+    if (licenseNumber && licenseNumber.length > 100) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.LICENSE_NUMBER')} (<= 100)`);
+      return;
+    }
+
+    // ContactDetails: max 1000 (لو متعبّي)
+    if (contactDetails && contactDetails.length > 1000) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
+      return;
+    }
+
+    // ====== البيزنيس (الأولوية ليه) ======
+    // Supplier/Company ⇒ بيانات الرخصة required + مرفق الرخصة (2057) required
+    if (partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
+      const missingFields: string[] = [];
+      if (!licenseIssuer) missingFields.push(this.translate.instant('FASTING_TENT_REQ.LICENSE_ISSUER'));
+      if (!licenseExpiry) missingFields.push(this.translate.instant('FASTING_TENT_REQ.LICENSE_EXPIRY_DATE'));
+      if (!licenseNumber) missingFields.push(this.translate.instant('FASTING_TENT_REQ.LICENSE_NUMBER'));
+
+      if (missingFields.length > 0) {
+        this.toastr.error(this.translate.instant('VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS') + ': ' + missingFields.join(', '));
+        return;
+      }
+
+      // مرفق الرخصة 2057
+      const hasLicenseAttachment =
+        !!this.partnerSelectedFiles[partnerType]?.[2057] ||
+        (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2057 && a.fileBase64 && a.fileName) ?? false);
+
+      if (!hasLicenseAttachment) {
+        const cfg = this.partnerAttachmentConfigs.find(c => c.id === 2057);
+        const name = cfg ? this.getAttachmentName(cfg) : 'License';
+        this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + name);
+        return;
+      }
+    }
+
+    // Person ⇒ مرفق الهوية (2056) required
+    if (partnerType === PartnerType.Person) {
+      const hasIdAttachment =
+        !!this.partnerSelectedFiles[partnerType]?.[2056] ||
+        (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2056 && a.fileBase64 && a.fileName) ?? false);
+
+      if (!hasIdAttachment) {
+        const cfg = this.partnerAttachmentConfigs.find(c => c.id === 2056);
+        const name = cfg ? this.getAttachmentName(cfg) : 'ID';
+        this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + name);
+        return;
+      }
+    }
+
+    // ====== تمّر، ابني الـ Partner ======
+    const partnerAttachments = this.getPartnerAttachmentsForType(partnerType);
+
+    const newPartner: FastingTentPartnerDto = {
+      ...this.partnersForm.value,
+      name, // ناخد النسخة الـ trimmed
+      licenseIssuer,
+      licenseExpiryDate: licenseExpiry || null,
+      licenseNumber,
+      contactDetails,
+      mainApplyServiceId: 0,
+      attachments: partnerAttachments
+    };
+
+    this.partners.push(newPartner);
+    this.partnersForm.reset();
+    this.showPartnerAttachments = false;
+    this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
+    console.log("partners ",this.partners);
+    
   }
+
 
   removePartner(index: number): void {
     this.partners.splice(index, 1);
@@ -1336,7 +1439,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   onPartnerDrop(event: DragEvent, configId: number, partnerType: PartnerType): void {
     event.preventDefault();
     this.isDragOver = false;
-    
+
     const files = event.dataTransfer?.files;
     if (files?.[0]) {
       this.handlePartnerFileUpload(files[0], configId, partnerType);
@@ -1357,11 +1460,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     }
 
     this.partnerSelectedFiles[partnerType][configId] = file;
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
       this.partnerFilePreviews[partnerType][configId] = e.target?.result as string;
-      
+
       const attachmentIndex = this.partnerAttachments[partnerType]?.findIndex(a => a.attConfigID === configId);
       if (attachmentIndex !== -1 && this.partnerAttachments[partnerType]) {
         this.partnerAttachments[partnerType][attachmentIndex] = {
@@ -1373,7 +1476,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       } else {
         // console.warn('[handlePartnerFileUpload] No partner attachment found for configId:', configId, 'partnerType:', partnerType);
       }
-      
+
       this.cdr.detectChanges();
     };
     reader.readAsDataURL(file);
@@ -1386,7 +1489,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (this.partnerFilePreviews[partnerType]) {
       delete this.partnerFilePreviews[partnerType][configId];
     }
-    
+
     const attachmentIndex = this.partnerAttachments[partnerType]?.findIndex(a => a.attConfigID === configId);
     if (attachmentIndex !== -1 && this.partnerAttachments[partnerType]) {
       this.partnerAttachments[partnerType][attachmentIndex] = {
@@ -1395,7 +1498,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         fileName: ''
       };
     }
-    
+
     this.cdr.detectChanges();
   }
 
@@ -1412,7 +1515,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   onDrop(event: DragEvent, configId: number): void {
     event.preventDefault();
     this.isDragOver = false;
-    
+
     const files = event.dataTransfer?.files;
     if (files?.[0]) {
       this.handleFileUpload(files[0], configId);
@@ -1426,11 +1529,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     }
 
     this.selectedFiles[configId] = file;
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
       this.filePreviews[configId] = e.target?.result as string;
-      
+
       const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
       if (attachmentIndex !== -1) {
         this.attachments[attachmentIndex] = {
@@ -1442,7 +1545,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       } else {
         // console.warn('[handleFileUpload] No attachment found for configId:', configId); // DEBUG
       }
-      
+
       // Trigger change detection for submit button state
       this.cdr.detectChanges();
     };
@@ -1452,24 +1555,24 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   validateFile(file: File): boolean {
     const maxSize = 5 * 1024 * 1024; // 5MB
     const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    
+
     if (file.size > maxSize) {
       this.toastr.error(this.translate.instant('VALIDATION.FILE_TOO_LARGE'));
       return false;
     }
-    
+
     if (!allowedTypes.includes(file.type)) {
       this.toastr.error(this.translate.instant('VALIDATION.INVALID_FILE_TYPE'));
       return false;
     }
-    
+
     return true;
   }
 
   removeFile(configId: number): void {
     delete this.selectedFiles[configId];
     delete this.filePreviews[configId];
-    
+
     const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
     if (attachmentIndex !== -1) {
       this.attachments[attachmentIndex] = {
@@ -1478,7 +1581,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         fileName: ''
       };
     }
-    
+
     // Trigger change detection for submit button state
     this.cdr.detectChanges();
   }
@@ -1493,28 +1596,28 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (this.isSaving) {
       return;
     }
-    
+
     this.submitted = true;
-    
+
     if (!this.canSubmit(true)) {
       // Toastr will show only here
       return;
     }
 
     this.isSaving = true;
-    
+
     try {
       const formData = this.mainInfoForm.getRawValue();
       const dateDetailsData = this.dateDetailsForm.getRawValue();
       const supervisorData = this.supervisorForm.getRawValue();
       const currentUser = this.authService.getCurrentUser();
-      
+
       if (!currentUser?.id) {
         this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
         this.isSaving = false;
         return;
       }
-      
+
       const validAttachments = this.attachments.filter(a => a.fileBase64 && a.fileName);
       // console.log('[onSubmit] All attachments:', this.attachments); // DEBUG
       // console.log('[onSubmit] Valid attachments:', validAttachments); // DEBUG
@@ -1535,7 +1638,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         supervisorName: supervisorData.supervisorName,
         jopTitle: supervisorData.jopTitle,
         supervisorMobile: `971${supervisorData.supervisorMobile}`, // Add 971 prefix
-        tentDate: dateDetailsData.tentDate || null,
+        // tentDate: dateDetailsData.tentDate || null,
         serviceType: ServiceType.TentPermission, // Always send as enum value
         distributionSiteCoordinators: formData.distributionSiteCoordinators,
         attachments: validAttachments,
@@ -1550,7 +1653,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error creating fasting tent request:', error);
-          
+
           // Check if it's a business error with a specific reason
           if (error.error && error.error.reason) {
             // Show the specific reason from the API response
@@ -1559,15 +1662,15 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
             // Fallback to generic error message
             this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
           }
-          
+
           this.isSaving = false;
         }
       });
       this.subscriptions.push(sub);
-      
+
     } catch (error: any) {
       console.error('Error in onSubmit:', error);
-      
+
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
         // Show the specific reason from the API response
@@ -1576,7 +1679,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         // Fallback to generic error message
         this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
       }
-      
+
       this.isSaving = false;
     }
   }
@@ -1586,14 +1689,14 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (!this.attachmentConfigs || this.attachmentConfigs.length === 0) {
       return true;
     }
-    
+
     const mandatoryAttachments = this.attachmentConfigs.filter(config => config.mendatory);
-    
+
     // If no mandatory attachments, tab is valid
     if (mandatoryAttachments.length === 0) {
       return true;
     }
-    
+
     for (const config of mandatoryAttachments) {
       const attachment = this.attachments.find(a => a.attConfigID === config.id);
       if (!attachment || !attachment.fileBase64 || !attachment.fileName) {
@@ -1626,7 +1729,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (this.currentTab !== this.totalTabs || this.isSaving || !this.isFormInitialized) {
       return false;
     }
-    
+
     return this.validateMainInfoTab(showToastr) && this.validateDateDetailsTab(showToastr) && this.validateSupervisorTab(showToastr) && this.validatePartnersTab(showToastr) && this.validateAttachments(showToastr);
   }
 
@@ -1783,7 +1886,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (!control.value) {
       return null; // Let required validator handle empty values
     }
-    
+
     // Validate 9 digits starting with 5
     const uaeMobileRegex = /^5[0-9]{8}$/;
     return uaeMobileRegex.test(control.value) ? null : { invalidUaeMobile: true };
@@ -1793,15 +1896,15 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   restrictMobileInput(event: KeyboardEvent): void {
     const allowedChars = /[0-9]/;
     const key = event.key;
-    
+
     // Allow backspace, delete, tab, escape, enter, and arrow keys
-    if (event.key === 'Backspace' || event.key === 'Delete' || event.key === 'Tab' || 
-        event.key === 'Escape' || event.key === 'Enter' || 
-        event.key === 'ArrowLeft' || event.key === 'ArrowRight' || 
-        event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+    if (event.key === 'Backspace' || event.key === 'Delete' || event.key === 'Tab' ||
+      event.key === 'Escape' || event.key === 'Enter' ||
+      event.key === 'ArrowLeft' || event.key === 'ArrowRight' ||
+      event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       return;
     }
-    
+
     if (!allowedChars.test(key)) {
       event.preventDefault();
     }

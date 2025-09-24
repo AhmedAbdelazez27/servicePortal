@@ -816,7 +816,11 @@
     "OPEN_IN_GOOGLE_MAPS": "فتح في خرائط جوجل",
     "TERMS_AND_CONDITIONS": "الشروط والأحكام",
     "PRIVACY_POLICY": "سياسة الخصوصية",
-    "AND": "و"
+    "AND": "و",
+     "AVAILABLE" : " متاح",
+    "NOT_AVAILABLE":"غير متاح",
+    "N_A":"غير متوفر",
+    "UNKNOWN_LOCATION":"موقع غير معروف"
   },
   "SHARED": {
     "FORMS": {
@@ -1408,6 +1412,7 @@
     "DATE_DETAILS_TITLE": "تفاصيل التاريخ",
     "DATE_DETAILS_DESC": "حدد التواريخ والأذونات",
     "SUPERVISOR_INFO": "معلومات المشرف",
+    "jobRequirementsDetails": " تفاصيل العمل المطلوب ",
     "SUPERVISOR_INFO_DESC": "قدم تفاصيل الاتصال ومعلومات المشرف",
     "PARTNERS": "الشركاء",
     "PARTNERS_OPTIONAL_SHORT": "إضافة المؤسسات الشريكة إذا كان ذلك ينطبق",

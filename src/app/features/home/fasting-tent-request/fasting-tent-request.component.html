@@ -19,10 +19,9 @@
                     <div class="main-container h-100">
                         <!-- Tab 1: Main Information -->
                         <div class="step-navigation-item">
-                            <div class="step-container" 
-                                 [class.active]="isTabActive(1)" 
-                                 [class.completed]="isTabCompleted(1)"
-                                 [class.invalid]="currentTab > 1 && !isTabCompleted(1)">
+                            <div class="step-container" [class.active]="isTabActive(1)"
+                                [class.completed]="isTabCompleted(1)"
+                                [class.invalid]="currentTab > 1 && !isTabCompleted(1)">
                                 <div class="step-bg"></div>
                                 <div class="step">
                                     <span *ngIf="!isTabCompleted(1)">1</span>
@@ -31,23 +30,21 @@
                             </div>
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
-                                <span class="step-title" 
-                                      (click)="goToTab(1)"
-                                      [class.text-success]="isTabCompleted(1)"
-                                      [class.text-danger]="currentTab > 1 && !isTabCompleted(1)"
-                                      [class.text-primary]="isTabActive(1)">
+                                <span class="step-title" (click)="goToTab(1)" [class.text-success]="isTabCompleted(1)"
+                                    [class.text-danger]="currentTab > 1 && !isTabCompleted(1)"
+                                    [class.text-primary]="isTabActive(1)">
                                     {{ 'FASTING_TENT_REQ.TAB1_TITLE' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.MAIN_INFO_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.MAIN_INFO_DESC'
+                                    | translate }}</small>
                             </div>
                         </div>
 
                         <!-- Tab 2: Date Details -->
                         <div class="step-navigation-item">
-                            <div class="step-container" 
-                                 [class.active]="isTabActive(2)" 
-                                 [class.completed]="isTabCompleted(2)"
-                                 [class.invalid]="currentTab > 2 && !isTabCompleted(2)">
+                            <div class="step-container" [class.active]="isTabActive(2)"
+                                [class.completed]="isTabCompleted(2)"
+                                [class.invalid]="currentTab > 2 && !isTabCompleted(2)">
                                 <div class="step-bg"></div>
                                 <div class="step">
                                     <span *ngIf="!isTabCompleted(2)">2</span>
@@ -56,23 +53,21 @@
                             </div>
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
-                                <span class="step-title" 
-                                      (click)="goToTab(2)"
-                                      [class.text-success]="isTabCompleted(2)"
-                                      [class.text-danger]="currentTab > 2 && !isTabCompleted(2)"
-                                      [class.text-primary]="isTabActive(2)">
+                                <span class="step-title" (click)="goToTab(2)" [class.text-success]="isTabCompleted(2)"
+                                    [class.text-danger]="currentTab > 2 && !isTabCompleted(2)"
+                                    [class.text-primary]="isTabActive(2)">
                                     {{ 'FASTING_TENT_REQ.DATE_DETAILS_TITLE' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.DATE_DETAILS_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{
+                                    'FASTING_TENT_REQ.DATE_DETAILS_DESC' | translate }}</small>
                             </div>
                         </div>
 
                         <!-- Tab 3: Supervisor Information -->
                         <div class="step-navigation-item">
-                            <div class="step-container" 
-                                 [class.active]="isTabActive(3)" 
-                                 [class.completed]="isTabCompleted(3)"
-                                 [class.invalid]="currentTab > 3 && !isTabCompleted(3)">
+                            <div class="step-container" [class.active]="isTabActive(3)"
+                                [class.completed]="isTabCompleted(3)"
+                                [class.invalid]="currentTab > 3 && !isTabCompleted(3)">
                                 <div class="step-bg"></div>
                                 <div class="step">
                                     <span *ngIf="!isTabCompleted(3)">3</span>
@@ -81,23 +76,21 @@
                             </div>
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
-                                <span class="step-title" 
-                                      (click)="goToTab(3)"
-                                      [class.text-success]="isTabCompleted(3)"
-                                      [class.text-danger]="currentTab > 3 && !isTabCompleted(3)"
-                                      [class.text-primary]="isTabActive(3)">
+                                <span class="step-title" (click)="goToTab(3)" [class.text-success]="isTabCompleted(3)"
+                                    [class.text-danger]="currentTab > 3 && !isTabCompleted(3)"
+                                    [class.text-primary]="isTabActive(3)">
                                     {{ 'FASTING_TENT_REQ.SUPERVISOR_INFO' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.SUPERVISOR_INFO_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{
+                                    'FASTING_TENT_REQ.SUPERVISOR_INFO_DESC' | translate }}</small>
                             </div>
                         </div>
 
                         <!-- Tab 4: Partners -->
                         <div class="step-navigation-item">
-                            <div class="step-container partners-tab" 
-                                 [class.active]="isTabActive(4)" 
-                                 [class.completed]="isTabCompleted(4)"
-                                 [class.invalid]="currentTab > 4 && !isTabCompleted(4)">
+                            <div class="step-container partners-tab" [class.active]="isTabActive(4)"
+                                [class.completed]="isTabCompleted(4)"
+                                [class.invalid]="currentTab > 4 && !isTabCompleted(4)">
                                 <div class="step-bg"></div>
                                 <div class="step">
                                     <span *ngIf="!isTabCompleted(4)">4</span>
@@ -106,23 +99,21 @@
                             </div>
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
-                                <span class="step-title" 
-                                      (click)="goToTab(4)"
-                                      [class.text-success]="isTabCompleted(4)"
-                                      [class.text-danger]="currentTab > 4 && !isTabCompleted(4)"
-                                      [class.text-primary]="isTabActive(4)">
+                                <span class="step-title" (click)="goToTab(4)" [class.text-success]="isTabCompleted(4)"
+                                    [class.text-danger]="currentTab > 4 && !isTabCompleted(4)"
+                                    [class.text-primary]="isTabActive(4)">
                                     {{ 'FASTING_TENT_REQ.PARTNERS' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.PARTNERS_OPTIONAL_SHORT' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{
+                                    'FASTING_TENT_REQ.PARTNERS_OPTIONAL_SHORT' | translate }}</small>
                             </div>
                         </div>
 
                         <!-- Tab 5: Attachments -->
                         <div class="step-navigation-item">
-                            <div class="step-container" 
-                                 [class.active]="isTabActive(5)" 
-                                 [class.completed]="isTabCompleted(5)"
-                                 [class.invalid]="currentTab === 5 && !isTabCompleted(5)">
+                            <div class="step-container" [class.active]="isTabActive(5)"
+                                [class.completed]="isTabCompleted(5)"
+                                [class.invalid]="currentTab === 5 && !isTabCompleted(5)">
                                 <div class="step-bg"></div>
                                 <div class="step">
                                     <span *ngIf="!isTabCompleted(5)">5</span>
@@ -130,14 +121,13 @@
                                 </div>
                             </div>
                             <div class="step-content-wrapper">
-                                <span class="step-title" 
-                                      (click)="goToTab(5)"
-                                      [class.text-success]="isTabCompleted(5)"
-                                      [class.text-danger]="currentTab === 5 && !isTabCompleted(5)"
-                                      [class.text-primary]="isTabActive(5)">
+                                <span class="step-title" (click)="goToTab(5)" [class.text-success]="isTabCompleted(5)"
+                                    [class.text-danger]="currentTab === 5 && !isTabCompleted(5)"
+                                    [class.text-primary]="isTabActive(5)">
                                     {{ 'FASTING_TENT_REQ.ATTACHMENTS' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'FASTING_TENT_REQ.ATTACHMENTS_DESC' | translate }}</small>
+                                <small class="d-block text-muted step-description">{{
+                                    'FASTING_TENT_REQ.ATTACHMENTS_DESC' | translate }}</small>
                             </div>
                         </div>
                     </div>
@@ -146,26 +136,24 @@
                 <!-- Content Area -->
                 <div class="col-lg-9 mb-4">
                     <div class="main-container h-100">
-                        
+
                         <!-- Tab 1: Main Information -->
                         <div *ngIf="currentTab === 1" class="step-content">
                             <h5 class="mb-4">{{ 'FASTING_TENT_REQ.MAIN_INFO' | translate }}</h5>
-                            
+
                             <form [formGroup]="mainInfoForm">
                                 <div class="row">
                                     <!-- Request Type Dropdown -->
                                     <div class="col-xl-12 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.REQUEST_TYPE' | translate }} <span class="text-danger">*</span></label>
-                                        <ng-select 
-                                            formControlName="tentLocationType"
-                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
-                                            bindLabel="text"
-                                            bindValue="id"
-                                            [items]="tentLocationTypes"
-                                            [clearable]="true"
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.REQUEST_TYPE' | translate }}
+                                            <span class="text-danger">*</span></label>
+                                        <ng-select formControlName="tentLocationType"
+                                            [placeholder]="'COMMON.SELECT_OPTION' | translate" bindLabel="text"
+                                            bindValue="id" [items]="tentLocationTypes" [clearable]="true"
                                             [class.is-invalid]="submitted && mainInfoForm.get('tentLocationType')?.errors">
                                         </ng-select>
-                                        <div *ngIf="submitted && mainInfoForm.get('tentLocationType')?.errors" class="invalid-feedback d-block">
+                                        <div *ngIf="submitted && mainInfoForm.get('tentLocationType')?.errors"
+                                            class="invalid-feedback d-block">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
@@ -173,59 +161,75 @@
                                     <!-- Location Selection Options - Always Available -->
                                     <div class="col-xl-12 mb-4">
                                         <h6 class="mb-3">{{ 'FASTING_TENT_REQ.LOCATION_SELECTION' | translate }}</h6>
-                                        
+
                                         <!-- Dropdown Selection -->
                                         <div class="mb-4">
-                                            <label class="form-label">{{ 'FASTING_TENT_REQ.LOCATION_TYPE' | translate }} <span class="text-danger">*</span></label>
-                                            <ng-select 
-                                                formControlName="locationId"
-                                                [placeholder]="'COMMON.SELECT_OPTION' | translate"
-                                                bindLabel="text"
-                                                bindValue="id"
-                                                [items]="locationOptions"
-                                                [clearable]="true"
+                                            <label class="form-label">{{ 'FASTING_TENT_REQ.LOCATION_TYPE' | translate }}
+                                                <span class="text-danger">*</span></label>
+                                            <ng-select formControlName="locationId"
+                                                [placeholder]="'COMMON.SELECT_OPTION' | translate" bindLabel="text"
+                                                bindValue="id" [items]="locationOptions" [clearable]="true"
                                                 (change)="onDropdownLocationSelect($event)"
                                                 [class.is-invalid]="submitted && mainInfoForm.get('locationId')?.errors"
                                                 [loading]="isCheckingAvailability && lastSelectionSource === 'dropdown'">
-                                               
+
                                             </ng-select>
-                                            <div *ngIf="submitted && mainInfoForm.get('locationId')?.errors" class="invalid-feedback d-block">
+                                            <div *ngIf="submitted && mainInfoForm.get('locationId')?.errors"
+                                                class="invalid-feedback d-block">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                             </div>
-                                            <div *ngIf="locationAvailabilityStatus && lastSelectionSource === 'dropdown'" class="mt-2">
-                                                <div *ngIf="locationAvailabilityStatus === 'available'" class="alert alert-success p-2">
-                                                    <i class="fas fa-check-circle me-2"></i>{{ 'SUCCESS.LOCATION_AVAILABLE' | translate }}
+                                            <div *ngIf="locationAvailabilityStatus && lastSelectionSource === 'dropdown'"
+                                                class="mt-2">
+                                                <div *ngIf="locationAvailabilityStatus === 'available'"
+                                                    class="alert alert-success p-2">
+                                                    <i class="fas fa-check-circle me-2"></i>{{
+                                                    'SUCCESS.LOCATION_AVAILABLE' | translate }}
                                                 </div>
-                                                <div *ngIf="locationAvailabilityStatus === 'unavailable'" class="alert alert-danger p-2">
-                                                    <i class="fas fa-times-circle me-2"></i>{{ 'ERRORS.LOCATION_NOT_AVAILABLE' | translate }}
+                                                <div *ngIf="locationAvailabilityStatus === 'unavailable'"
+                                                    class="alert alert-danger p-2">
+                                                    <i class="fas fa-times-circle me-2"></i>{{
+                                                    'ERRORS.LOCATION_NOT_AVAILABLE' | translate }}
                                                 </div>
-                                                <div *ngIf="locationAvailabilityStatus === 'checking'" class="alert alert-info p-2">
-                                                    <i class="fas fa-spinner fa-spin me-2"></i>{{ 'COMMON.CHECKING_AVAILABILITY' | translate }}
+                                                <div *ngIf="locationAvailabilityStatus === 'checking'"
+                                                    class="alert alert-info p-2">
+                                                    <i class="fas fa-spinner fa-spin me-2"></i>{{
+                                                    'COMMON.CHECKING_AVAILABILITY' | translate }}
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- Map Selection -->
                                         <div class="mb-4">
-                                            <label class="form-label">{{ 'FASTING_TENT_REQ.SELECT_FROM_MAP' | translate }} <span class="text-danger">*</span></label>
-                                            <div id="distributionMap" style="height: 400px; border: 1px solid #ddd; border-radius: 4px;"
-                                                 [class.border-danger]="submitted && lastSelectionSource === 'map' && !selectedLocationDetails"
-                                                 [class.border-success]="selectedLocationDetails && lastSelectionSource === 'map'"></div>
+                                            <label class="form-label">{{ 'FASTING_TENT_REQ.SELECT_FROM_MAP' | translate
+                                                }} <span class="text-danger">*</span></label>
+                                            <div id="distributionMap"
+                                                style="height: 400px; border: 1px solid #ddd; border-radius: 4px;"
+                                                [class.border-danger]="submitted && lastSelectionSource === 'map' && !selectedLocationDetails"
+                                                [class.border-success]="selectedLocationDetails && lastSelectionSource === 'map'">
+                                            </div>
                                             <small class="text-muted d-block mt-2">
                                                 {{ 'SHARED.MAP.INSTRUCTIONS_FASTING_TENT' | translate }}
                                             </small>
-                                            <div *ngIf="submitted && (!selectedLocationDetails || (lastSelectionSource !== 'dropdown' && !mainInfoForm.get('locationId')?.value))" class="text-danger small mt-1">
+                                            <div *ngIf="submitted && (!selectedLocationDetails || (lastSelectionSource !== 'dropdown' && !mainInfoForm.get('locationId')?.value))"
+                                                class="text-danger small mt-1">
                                                 {{ 'VALIDATION.LOCATION_REQUIRED' | translate }}
                                             </div>
-                                            <div *ngIf="locationAvailabilityStatus && lastSelectionSource === 'map'" class="mt-2">
-                                                <div *ngIf="locationAvailabilityStatus === 'available'" class="alert alert-success p-2">
-                                                    <i class="fas fa-check-circle me-2"></i>{{ 'SUCCESS.LOCATION_AVAILABLE' | translate }}
+                                            <div *ngIf="locationAvailabilityStatus && lastSelectionSource === 'map'"
+                                                class="mt-2">
+                                                <div *ngIf="locationAvailabilityStatus === 'available'"
+                                                    class="alert alert-success p-2">
+                                                    <i class="fas fa-check-circle me-2"></i>{{
+                                                    'SUCCESS.LOCATION_AVAILABLE' | translate }}
                                                 </div>
-                                                <div *ngIf="locationAvailabilityStatus === 'unavailable'" class="alert alert-danger p-2">
-                                                    <i class="fas fa-times-circle me-2"></i>{{ 'ERRORS.LOCATION_NOT_AVAILABLE' | translate }}
+                                                <div *ngIf="locationAvailabilityStatus === 'unavailable'"
+                                                    class="alert alert-danger p-2">
+                                                    <i class="fas fa-times-circle me-2"></i>{{
+                                                    'ERRORS.LOCATION_NOT_AVAILABLE' | translate }}
                                                 </div>
-                                                <div *ngIf="locationAvailabilityStatus === 'checking'" class="alert alert-info p-2">
-                                                    <i class="fas fa-spinner fa-spin me-2"></i>{{ 'COMMON.CHECKING_AVAILABILITY' | translate }}
+                                                <div *ngIf="locationAvailabilityStatus === 'checking'"
+                                                    class="alert alert-info p-2">
+                                                    <i class="fas fa-spinner fa-spin me-2"></i>{{
+                                                    'COMMON.CHECKING_AVAILABILITY' | translate }}
                                                 </div>
                                             </div>
                                         </div>
@@ -234,38 +238,52 @@
                                     <!-- Auto-populated Location Fields (Read-only) -->
                                     <div *ngIf="selectedLocationDetails" class="col-xl-12">
                                         <h6 class="mb-3">{{ 'SHARED.LOCATION.DETAILS' | translate }}</h6>
-                                        
+
                                         <div class="row">
                                             <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT_REQ.OWNER_NAME' | translate }}</label>
-                                                <input type="text" class="form-control" formControlName="ownerName" readonly>
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.OWNER_NAME' | translate
+                                                    }}</label>
+                                                <input type="text" class="form-control" formControlName="ownerName"
+                                                    readonly>
                                             </div>
-                                            
-                                            <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT_REQ.REGION_NAME' | translate }}</label>
-                                                <input type="text" class="form-control" formControlName="regionName" readonly>
-                                            </div>
-                                            
-                                            <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT_REQ.STREET_NAME' | translate }}</label>
-                                                <input type="text" class="form-control" formControlName="streetName" readonly>
-                                            </div>
-                                            
-                                            <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT_REQ.GROUND_NO' | translate }}</label>
-                                                <input type="text" class="form-control" formControlName="groundNo" readonly>
-                                            </div>
-                                            
-                                            <div class="col-xl-12 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT_REQ.ADDRESS' | translate }}</label>
-                                                <input type="text" class="form-control" formControlName="address" readonly>
-                                            </div>
-                                            
 
-                                            <div class="col-xl-12 mb-3" *ngIf="selectedLocationDetails?.locationPhotoPath">
-                                                <label class="form-label">{{ 'SHARED.LOCATION.PHOTO' | translate }}</label>
+                                            <div class="col-xl-6 mb-3">
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.REGION_NAME' | translate
+                                                    }}</label>
+                                                <input type="text" class="form-control" formControlName="regionName"
+                                                    readonly>
+                                            </div>
+
+                                            <div class="col-xl-6 mb-3">
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.STREET_NAME' | translate
+                                                    }}</label>
+                                                <input type="text" class="form-control" formControlName="streetName"
+                                                    readonly>
+                                            </div>
+
+                                            <div class="col-xl-6 mb-3">
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.GROUND_NO' | translate
+                                                    }}</label>
+                                                <input type="text" class="form-control" formControlName="groundNo"
+                                                    readonly>
+                                            </div>
+
+                                            <div class="col-xl-12 mb-3">
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.ADDRESS' | translate
+                                                    }}</label>
+                                                <input type="text" class="form-control" formControlName="address"
+                                                    readonly>
+                                            </div>
+
+
+                                            <div class="col-xl-12 mb-3"
+                                                *ngIf="selectedLocationDetails?.locationPhotoPath">
+                                                <label class="form-label">{{ 'SHARED.LOCATION.PHOTO' | translate
+                                                    }}</label>
                                                 <div>
-                                                    <img [src]="selectedLocationDetails.locationPhotoPath" alt="Location Photo" class="img-fluid location-photo-hover" style="max-height: 200px;">
+                                                    <img [src]="selectedLocationDetails.locationPhotoPath"
+                                                        alt="Location Photo" class="img-fluid location-photo-hover"
+                                                        style="max-height: 200px;">
                                                 </div>
                                             </div>
                                         </div>
@@ -282,30 +300,34 @@
                         <!-- Tab 2: Date Details -->
                         <div *ngIf="currentTab === 2" class="step-content">
                             <h5 class="mb-4">{{ 'FASTING_TENT_REQ.DATE_DETAILS_TITLE' | translate }}</h5>
-                            
+
                             <form [formGroup]="dateDetailsForm">
                                 <div class="row">
                                     <!-- Start Date -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.START_DATE' | translate }} <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" formControlName="startDate" 
-                                               [class.is-invalid]="dateDetailsForm.get('startDate')?.invalid && (dateDetailsForm.get('startDate')?.touched || submitted)"
-                                               [class.is-valid]="dateDetailsForm.get('startDate')?.valid && (dateDetailsForm.get('startDate')?.touched || submitted)">
-                                        <div *ngIf="dateDetailsForm.get('startDate')?.invalid && (dateDetailsForm.get('startDate')?.touched || submitted)" class="invalid-feedback">
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.START_DATE' | translate }} <span
+                                                class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" formControlName="startDate"
+                                            [class.is-invalid]="dateDetailsForm.get('startDate')?.invalid && (dateDetailsForm.get('startDate')?.touched || submitted)"
+                                            [class.is-valid]="dateDetailsForm.get('startDate')?.valid && (dateDetailsForm.get('startDate')?.touched || submitted)">
+                                        <div *ngIf="dateDetailsForm.get('startDate')?.invalid && (dateDetailsForm.get('startDate')?.touched || submitted)"
+                                            class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                         <div *ngIf="isStartDatePast()" class="text-danger small mt-1">
                                             {{ 'VALIDATION.START_DATE_PAST' | translate }}
                                         </div>
                                     </div>
-                                    
+
                                     <!-- End Date -->
                                     <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.END_DATE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.END_DATE' | translate }} <span
+                                                class="text-danger">*</span></label>
                                         <input type="date" class="form-control" formControlName="endDate"
-                                               [class.is-invalid]="dateDetailsForm.get('endDate')?.invalid && (dateDetailsForm.get('endDate')?.touched || submitted)"
-                                               [class.is-valid]="dateDetailsForm.get('endDate')?.valid && (dateDetailsForm.get('endDate')?.touched || submitted)">
-                                        <div *ngIf="dateDetailsForm.get('endDate')?.invalid && (dateDetailsForm.get('endDate')?.touched || submitted)" class="invalid-feedback">
+                                            [class.is-invalid]="dateDetailsForm.get('endDate')?.invalid && (dateDetailsForm.get('endDate')?.touched || submitted)"
+                                            [class.is-valid]="dateDetailsForm.get('endDate')?.valid && (dateDetailsForm.get('endDate')?.touched || submitted)">
+                                        <div *ngIf="dateDetailsForm.get('endDate')?.invalid && (dateDetailsForm.get('endDate')?.touched || submitted)"
+                                            class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                         <div *ngIf="isEndDateBeforeStart()" class="text-danger small mt-1">
@@ -314,10 +336,12 @@
                                     </div>
 
                                     <!-- Tent Setup Date -->
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SETUP_DATE' | translate }}</label>
-                                        <input type="date" class="form-control" formControlName="tentDate" [disabled]="true">
-                                    </div>
+                                    <!-- <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SETUP_DATE' | translate
+                                            }}</label>
+                                        <input type="date" class="form-control" formControlName="tentDate"
+                                            [disabled]="true">
+                                    </div> -->
 
                                 </div>
                             </form>
@@ -326,48 +350,51 @@
                         <!-- Tab 3: Supervisor Information -->
                         <div *ngIf="currentTab === 3" class="step-content">
                             <h5 class="mb-4">{{ 'FASTING_TENT_REQ.SUPERVISOR_INFO' | translate }}</h5>
-                            
+
                             <form [formGroup]="supervisorForm">
                                 <div class="row">
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SUPERVISOR_NAME' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SUPERVISOR_NAME' | translate }}
+                                            <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" formControlName="supervisorName"
-                                               [class.is-invalid]="submitted && supervisorForm.get('supervisorName')?.errors">
-                                        <div *ngIf="submitted && supervisorForm.get('supervisorName')?.errors" class="invalid-feedback">
+                                            [class.is-invalid]="submitted && supervisorForm.get('supervisorName')?.errors">
+                                        <div *ngIf="submitted && supervisorForm.get('supervisorName')?.errors"
+                                            class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.JOB_TITLE' | translate }} <span class="text-danger">*</span></label>
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.JOB_TITLE' | translate }} <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" class="form-control" formControlName="jopTitle"
-                                               [class.is-invalid]="submitted && supervisorForm.get('jopTitle')?.errors">
-                                        <div *ngIf="submitted && supervisorForm.get('jopTitle')?.errors" class="invalid-feedback">
+                                            [class.is-invalid]="submitted && supervisorForm.get('jopTitle')?.errors">
+                                        <div *ngIf="submitted && supervisorForm.get('jopTitle')?.errors"
+                                            class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SUPERVISOR_MOBILE' | translate }} <span class="text-danger">*</span></label>
-                                        
+                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SUPERVISOR_MOBILE' | translate }}
+                                            <span class="text-danger">*</span></label>
+
                                         <!-- Mobile Number Input with UAE Flag and 971 prefix -->
-                                        <div class="mobile-input-container"  style="border : none !important;" [class.is-invalid]="(submitted || supervisorForm.get('supervisorMobile')?.touched) && supervisorForm.get('supervisorMobile')?.errors">
+                                        <div class="mobile-input-container" style="border : none !important;"
+                                            [class.is-invalid]="(submitted || supervisorForm.get('supervisorMobile')?.touched) && supervisorForm.get('supervisorMobile')?.errors">
                                             <div class="mobile-prefix-container">
-                                                <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag" class="uae-flag-image">
+                                                <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png"
+                                                    alt="UAE Flag" class="uae-flag-image">
                                                 <span class="mobile-prefix">971</span>
                                             </div>
-                                            <input 
-                                                type="tel" 
-                                                class="form-control mobile-number-input" 
-                                                formControlName="supervisorMobile"
-                                                placeholder="565666666"
-                                                maxlength="9"
+                                            <input type="tel" class="form-control mobile-number-input"
+                                                formControlName="supervisorMobile" placeholder="565666666" maxlength="9"
                                                 (keypress)="restrictMobileInput($event)"
-                                                (input)="onSupervisorMobileInput()"
-                                                (blur)="onSupervisorMobileBlur()">
+                                                (input)="onSupervisorMobileInput()" (blur)="onSupervisorMobileBlur()">
                                         </div>
-                                        
-                                        <div *ngIf="(submitted || supervisorForm.get('supervisorMobile')?.touched) && supervisorForm.get('supervisorMobile')?.errors" class="invalid-feedback">
+
+                                        <div *ngIf="(submitted || supervisorForm.get('supervisorMobile')?.touched) && supervisorForm.get('supervisorMobile')?.errors"
+                                            class="invalid-feedback">
                                             <div *ngIf="supervisorForm.get('supervisorMobile')?.hasError('required')">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                             </div>
@@ -383,124 +410,225 @@
                         <!-- Tab 4: Partners -->
                         <div *ngIf="currentTab === 4" class="step-content">
                             <h5 class="mb-4">{{ 'FASTING_TENT_REQ.PARTNERS' | translate }}</h5>
-                            
+
                             <form [formGroup]="partnersForm">
                                 <div class="row">
+
+                                    <!-- Partner Name -->
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.PARTNER_NAME' | translate }}</label>
-                                        <input type="text" class="form-control" formControlName="name">
-                                    </div>
-                                    
-                                    <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.PARTNER_TYPE' | translate }}</label>
-                                        <ng-select 
-                                            formControlName="type"
-                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
-                                            bindLabel="text"
-                                            bindValue="id"
-                                            [items]="partnerTypes"
-                                            [clearable]="true"
-                                            (change)="onPartnerTypeChange()">
-                                        </ng-select>
-                                    </div>
-                                    
-                                    <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.LICENSE_ISSUER' | translate }}</label>
-                                        <input type="text" class="form-control" formControlName="licenseIssuer">
-                                    </div>
-                                    
-                                    <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.LICENSE_EXPIRY_DATE' | translate }}</label>
-                                        <input type="date" class="form-control" formControlName="licenseExpiryDate">
-                                    </div>
-                                    
-                                    <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.LICENSE_NUMBER' | translate }}</label>
-                                        <input type="text" class="form-control" formControlName="licenseNumber">
-                                    </div>
-                                    
-                                    <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.CONTACT_DETAILS' | translate }}</label>
-                                        <input type="text" class="form-control" formControlName="contactDetails">
-                                    </div>
-                                    
-                                    <!-- Partner Attachments Section -->
-                                    <div *ngIf="showPartnerAttachments" class="col-xl-12 mb-4">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate }}</th>
-                                                        <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
-                                                        <th>{{ 'COMMON.ACTIONS' | translate }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr *ngFor="let config of getPartnerAttachmentConfigsForType(partnersForm.get('type')?.value); let i = index">
-                                                        <td>
-                                                            {{ getAttachmentName(config) }}
-                                                            <span *ngIf="config.mendatory" class="text-danger ms-1">*</span>
-                                                        </td>
-                                                        <td>
-                                                            <div *ngIf="!partnerSelectedFiles[partnersForm.get('type')?.value]?.[config.id!]" 
-                                                                 class="upload-area"
-                                                                 (dragover)="onPartnerDragOver($event)"
-                                                                 (dragleave)="onPartnerDragLeave($event)"
-                                                                 (drop)="onPartnerDrop($event, config.id!, partnersForm.get('type')?.value)"
-                                                                 [class.drag-over]="isDragOver"
-                                                                 [class.border-danger]="config.mendatory && partnersForm.get('type')?.value && !partnerSelectedFiles[partnersForm.get('type')?.value][config.id!] && (currentTab === 4 || submitted)"
-                                                                 [class.border-success]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]">
-                                                                <input type="file" 
-                                                                       class="d-none" 
-                                                                       [id]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id"
-                                                                       (change)="onPartnerFileSelected($event, config.id!, partnersForm.get('type')?.value)"
-                                                                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                                                                <label [for]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id" class="upload-label">
-                                                                    <i class="fas fa-cloud-upload-alt mb-2"></i>
-                                                                    <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
-                                                                    <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
-                                                                </label>
-                                                            </div>
-                                                            
-                                                            <div *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]" class="uploaded-file">
-                                                                <div class="d-flex align-items-center">
-                                                                    <i class="fas fa-file me-2 text-success"></i>
-                                                                    <span class="file-name">{{ partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].name }}</span>
-                                                                </div>
-                                                                <div *ngIf="partnerFilePreviews[partnersForm.get('type')?.value][config.id!]" class="mt-2">
-                                                                    <img [src]="partnerFilePreviews[partnersForm.get('type')?.value][config.id!]" 
-                                                                         class="img-thumbnail" 
-                                                                         style="max-height: 100px; max-width: 100px;"
-                                                                         *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].type.startsWith('image/')"
-                                                                         [alt]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].name">
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <button *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]" 
-                                                                    type="button" 
-                                                                    class="btn btn-sm btn-danger" 
-                                                                    (click)="removePartnerFile(config.id!, partnersForm.get('type')?.value)">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                                <path d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z" fill="#5B5B5B"/>
-                                                                <path d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z" fill="#5B5B5B"/>
-                                                                <path d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z" fill="#5B5B5B"/>
-                                                                </svg>
-                                                                {{ 'COMMON.REMOVE' | translate }}
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <label class="form-label">
+                                            {{ 'FASTING_TENT_REQ.PARTNER_NAME' | translate }} <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" formControlName="name" maxlength="200">
+                                        <div class="form-text text-danger"
+                                            *ngIf="partnersForm.get('name')?.touched && partnersForm.get('name')?.errors as e">
+                                            <div *ngIf="e['required']">{{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                            </div>
+                                            <div *ngIf="e['maxlength']">{{ 'VALIDATION.MAX_LENGTH_EXCEEDED' | translate
+                                                }} (<= 200)</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="col-xl-12 mb-4">
-                                        <button type="button" class="btn btn-primary" (click)="addPartner()">
-                                            {{ 'FASTING_TENT_REQ.ADD_PARTNER' | translate }}
-                                        </button>
-                                    </div>
-                                </div>
+
+                                        <!-- Partner Type -->
+                                        <div class="col-xl-6 mb-3">
+                                            <label class="form-label">
+                                                {{ 'FASTING_TENT_REQ.PARTNER_TYPE' | translate }} <span
+                                                    class="text-danger">*</span>
+                                            </label>
+                                            <ng-select formControlName="type"
+                                                [placeholder]="'COMMON.SELECT_OPTION' | translate" bindLabel="label"
+                                                bindValue="id" [items]="partnerTypes" [clearable]="true"
+                                                (change)="onPartnerTypeChange()">
+                                            </ng-select>
+                                            <div class="form-text text-danger"
+                                                *ngIf="partnersForm.get('type')?.touched && partnersForm.get('type')?.errors?.['required']">
+                                                {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                            </div>
+                                        </div>
+
+                                        <!-- License Issuer -->
+                                        <div class="col-xl-6 mb-3">
+                                            <label class="form-label">
+                                                {{ 'FASTING_TENT_REQ.LICENSE_ISSUER' | translate }}
+                                                <span *ngIf="isSupplierOrCompany(partnersForm.get('type')?.value)"
+                                                    class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" formControlName="licenseIssuer"
+                                                maxlength="200">
+                                            <!-- required (شرطي) للمورد/الشركة -->
+                                            <div class="form-text text-danger" *ngIf="isSupplierOrCompany(partnersForm.get('type')?.value)
+                  && !partnersForm.get('licenseIssuer')?.value
+                  && partnersForm.get('licenseIssuer')?.touched">
+                                                {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                            </div>
+                                            <!-- maxlength -->
+                                            <div class="form-text text-danger"
+                                                *ngIf="partnersForm.get('licenseIssuer')?.touched && partnersForm.get('licenseIssuer')?.errors?.['maxlength']">
+                                                {{ 'VALIDATION.MAX_LENGTH_EXCEEDED' | translate }} (<= 200) </div>
+                                            </div>
+
+                                            <!-- License Expiry Date -->
+                                            <div class="col-xl-6 mb-3">
+                                                <label class="form-label">
+                                                    {{ 'FASTING_TENT_REQ.LICENSE_EXPIRY_DATE' | translate }}
+                                                    <span *ngIf="isSupplierOrCompany(partnersForm.get('type')?.value)"
+                                                        class="text-danger">*</span>
+                                                </label>
+                                                <input type="date" class="form-control"
+                                                    formControlName="licenseExpiryDate">
+                                                <div class="form-text text-danger" *ngIf="isSupplierOrCompany(partnersForm.get('type')?.value)
+                  && !partnersForm.get('licenseExpiryDate')?.value
+                  && partnersForm.get('licenseExpiryDate')?.touched">
+                                                    {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                                </div>
+                                            </div>
+
+                                            <!-- License Number -->
+                                            <div class="col-xl-6 mb-3">
+                                                <label class="form-label">
+                                                    {{ 'FASTING_TENT_REQ.LICENSE_NUMBER' | translate }}
+                                                    <span *ngIf="isSupplierOrCompany(partnersForm.get('type')?.value)"
+                                                        class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="form-control" formControlName="licenseNumber"
+                                                    maxlength="100">
+                                                <!-- required (شرطي) للمورد/الشركة -->
+                                                <div class="form-text text-danger" *ngIf="isSupplierOrCompany(partnersForm.get('type')?.value)
+                                                        && !partnersForm.get('licenseNumber')?.value
+                                                        && partnersForm.get('licenseNumber')?.touched">
+                                                    {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                                </div>
+                                                <!-- maxlength -->
+                                                <div class="form-text text-danger"
+                                                    *ngIf="partnersForm.get('licenseNumber')?.touched && partnersForm.get('licenseNumber')?.errors?.['maxlength']">
+                                                    {{ 'VALIDATION.MAX_LENGTH_EXCEEDED' | translate }} (<= 100) </div>
+                                                </div>
+
+                                                <!-- Contact Details -->
+                                                <div class="col-xl-6 mb-3">
+                                                    <label class="form-label">
+                                                        {{ 'FASTING_TENT_REQ.CONTACT_DETAILS' | translate }}
+                                                    </label>
+                                                    <input type="text" class="form-control"
+                                                        formControlName="contactDetails" maxlength="1000">
+                                                    <div class="form-text text-danger"
+                                                        *ngIf="partnersForm.get('contactDetails')?.touched && partnersForm.get('contactDetails')?.errors?.['maxlength']">
+                                                        {{ 'VALIDATION.MAX_LENGTH_EXCEEDED' | translate }}{{' (= 1000)'}}
+                                                            </div>
+                                                </div>
+
+                                                <div class="col-xl-12 mb-3">
+                                                    <label class="form-label">
+                                                        {{ 'FASTING_TENT_REQ.jobRequirementsDetails' | translate }}
+                                                    </label>
+                                                    <input type="text" class="form-control"
+                                                        formControlName="jobRequirementsDetails" >
+                                                    
+                                                </div>
+
+
+                                                    <!-- Partner Attachments Section -->
+                                                    <div *ngIf="showPartnerAttachments" class="col-xl-12 mb-4">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>{{ 'ATTACHMENTS.DOCUMENT_TYPE' | translate
+                                                                            }}</th>
+                                                                        <th>{{ 'ATTACHMENTS.FILE' | translate }}</th>
+                                                                        <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr
+                                                                        *ngFor="let config of getPartnerAttachmentConfigsForType(partnersForm.get('type')?.value); let i = index">
+                                                                        <td>
+                                                                            {{ getAttachmentName(config) }}
+                                                                            <span *ngIf="config.mendatory"
+                                                                                class="text-danger ms-1">*</span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div *ngIf="!partnerSelectedFiles[partnersForm.get('type')?.value]?.[config.id!]"
+                                                                                class="upload-area"
+                                                                                (dragover)="onPartnerDragOver($event)"
+                                                                                (dragleave)="onPartnerDragLeave($event)"
+                                                                                (drop)="onPartnerDrop($event, config.id!, partnersForm.get('type')?.value)"
+                                                                                [class.drag-over]="isDragOver"
+                                                                                [class.border-danger]="config.mendatory && partnersForm.get('type')?.value && !partnerSelectedFiles[partnersForm.get('type')?.value][config.id!] && (currentTab === 4 || submitted)"
+                                                                                [class.border-success]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]">
+                                                                                <input type="file" class="d-none"
+                                                                                    [id]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id"
+                                                                                    (change)="onPartnerFileSelected($event, config.id!, partnersForm.get('type')?.value)"
+                                                                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                                                <label
+                                                                                    [for]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id"
+                                                                                    class="upload-label">
+                                                                                    <i
+                                                                                        class="fas fa-cloud-upload-alt mb-2"></i>
+                                                                                    <div>{{
+                                                                                        'ATTACHMENTS.DRAG_DROP_OR_CLICK'
+                                                                                        | translate }}</div>
+                                                                                    <small class="text-muted">{{
+                                                                                        'ATTACHMENTS.SUPPORTED_FORMATS'
+                                                                                        | translate }}</small>
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <div *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]"
+                                                                                class="uploaded-file">
+                                                                                <div class="d-flex align-items-center">
+                                                                                    <i
+                                                                                        class="fas fa-file me-2 text-success"></i>
+                                                                                    <span class="file-name">{{
+                                                                                        partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].name
+                                                                                        }}</span>
+                                                                                </div>
+                                                                                <div *ngIf="partnerFilePreviews[partnersForm.get('type')?.value][config.id!]"
+                                                                                    class="mt-2">
+                                                                                    <img [src]="partnerFilePreviews[partnersForm.get('type')?.value][config.id!]"
+                                                                                        class="img-thumbnail"
+                                                                                        style="max-height: 100px; max-width: 100px;"
+                                                                                        *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].type.startsWith('image/')"
+                                                                                        [alt]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!].name">
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <button
+                                                                                *ngIf="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]"
+                                                                                type="button"
+                                                                                class="btn btn-sm btn-danger"
+                                                                                (click)="removePartnerFile(config.id!, partnersForm.get('type')?.value)">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="24" height="24"
+                                                                                    viewBox="0 0 24 24" fill="none">
+                                                                                    <path
+                                                                                        d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z"
+                                                                                        fill="#5B5B5B" />
+                                                                                    <path
+                                                                                        d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z"
+                                                                                        fill="#5B5B5B" />
+                                                                                    <path
+                                                                                        d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z"
+                                                                                        fill="#5B5B5B" />
+                                                                                </svg>
+                                                                                {{ 'COMMON.REMOVE' | translate }}
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-xl-12 mb-4">
+                                                        <button type="button" class="btn btn-primary"
+                                                            (click)="addPartner()">
+                                                            {{ 'FASTING_TENT_REQ.ADD_PARTNER' | translate }}
+                                                        </button>
+                                                    </div>
+                                                </div>
                             </form>
 
                             <!-- Partners Table -->
@@ -524,11 +652,19 @@
                                             <td>{{ partner.licenseNumber || '-' }}</td>
                                             <td>{{ partner.contactDetails || '-' }}</td>
                                             <td>
-                                                <button type="button" class="btn btn-sm btn-danger" (click)="removePartner(i)" style="padding: 12px !important;">
-                                                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                    <path d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z" fill="white"/>
-                                                    <path d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z" fill="white"/>
-                                                    <path d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z" fill="white"/>
+                                                <button type="button" class="btn btn-sm btn-danger"
+                                                    (click)="removePartner(i)" style="padding: 12px !important;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none">
+                                                        <path
+                                                            d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z"
+                                                            fill="white" />
+                                                        <path
+                                                            d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z"
+                                                            fill="white" />
+                                                        <path
+                                                            d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z"
+                                                            fill="white" />
                                                     </svg>
                                                 </button>
                                             </td>
@@ -545,14 +681,17 @@
                         <!-- Tab 5: Attachments -->
                         <div *ngIf="currentTab === 5" class="step-content">
                             <h5 class="mb-4">{{ 'FASTING_TENT_REQ.ATTACHMENTS' | translate }}</h5>
-                            
+
                             <!-- Validation Status Indicator -->
-                            <div class="alert" [class.alert-success]="isTabCompleted(5)" [class.alert-warning]="!isTabCompleted(5)" class="mb-3">
+                            <div class="alert" [class.alert-success]="isTabCompleted(5)"
+                                [class.alert-warning]="!isTabCompleted(5)" class="mb-3">
                                 <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
-                                <span *ngIf="isTabCompleted(5)" class="">{{ 'VALIDATION.ALL_REQUIRED_ATTACHMENTS_UPLOADED' | translate }}</span> 
-                                <span *ngIf="!isTabCompleted(5)" class="gold"> {{ 'VALIDATION.PLEASE_UPLOAD_REQUIRED_ATTACHMENTS' | translate }}</span>
+                                <span *ngIf="isTabCompleted(5)" class="">{{
+                                    'VALIDATION.ALL_REQUIRED_ATTACHMENTS_UPLOADED' | translate }}</span>
+                                <span *ngIf="!isTabCompleted(5)" class="gold"> {{
+                                    'VALIDATION.PLEASE_UPLOAD_REQUIRED_ATTACHMENTS' | translate }}</span>
                             </div>
-                            
+
                             <div class="table-responsive">
                                 <div class="table table-striped">
                                     <!-- <div>
@@ -565,24 +704,23 @@
                                         <div *ngFor="let config of attachmentConfigs; let i = index">
                                             <div>
                                                 {{ config.nameEn || config.name | translate }}
-                                                <span *ngIf="isAttachmentMandatory(config.id!)" class="text-danger ms-1">*</span>
-                                                <div *ngIf="isAttachmentMandatory(config.id!) && selectedFiles[config.id!]" class="text-success small">
-                                                    <i class="fas fa-check-circle"></i> {{ 'VALIDATION.UPLOADED' | translate }}
+                                                <span *ngIf="isAttachmentMandatory(config.id!)"
+                                                    class="text-danger ms-1">*</span>
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && selectedFiles[config.id!]"
+                                                    class="text-success small">
+                                                    <i class="fas fa-check-circle"></i> {{ 'VALIDATION.UPLOADED' |
+                                                    translate }}
                                                 </div>
                                             </div>
                                             <div>
                                                 <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
-                                                     (dragover)="onDragOver($event)"
-                                                     (dragleave)="onDragLeave($event)"
-                                                     (drop)="onDrop($event, config.id!)"
-                                                     [class.drag-over]="isDragOver"
-                                                     [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)"
-                                                     [class.border-success]="selectedFiles[config.id!]">
-                                                    <input type="file" 
-                                                           class="d-none" 
-                                                           [id]="'file-' + config.id"
-                                                           (change)="onFileSelected($event, config.id!)"
-                                                           [accept]="supportedAttachmentFormats">
+                                                    (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                                                    (drop)="onDrop($event, config.id!)" [class.drag-over]="isDragOver"
+                                                    [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)"
+                                                    [class.border-success]="selectedFiles[config.id!]">
+                                                    <input type="file" class="d-none" [id]="'file-' + config.id"
+                                                        (change)="onFileSelected($event, config.id!)"
+                                                        [accept]="supportedAttachmentFormats">
                                                     <label [for]="'file-' + config.id" class="upload-label">
                                                         <i class="fas fa-cloud-upload-alt"></i>
                                                         <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
@@ -590,45 +728,58 @@
                                                 </div>
                                                 <div *ngIf="selectedFiles[config.id!]" class="uploaded-file">
                                                     <div class="d-flex align-items-center gap-2">
-                                                         <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')" 
-                                                         [src]="filePreviews[config.id!]" 
-                                                         class="img-thumbnail uploaded-img"  >
-                                                         
+                                                        <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')"
+                                                            [src]="filePreviews[config.id!]"
+                                                            class="img-thumbnail uploaded-img">
+
                                                         <div>
-                                                            <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
-                                                            <small class="text-muted d-block">{{ (selectedFiles[config.id!].size / 1024).toFixed(1) }} KB</small>
+                                                            <span class="file-name">{{ selectedFiles[config.id!].name
+                                                                }}</span>
+                                                            <small class="text-muted d-block">{{
+                                                                (selectedFiles[config.id!].size / 1024).toFixed(1) }}
+                                                                KB</small>
                                                         </div>
                                                     </div>
-                                                     <button *ngIf="selectedFiles[config.id!]" 
-                                                        type="button" 
-                                                        class="btn-remove-uploaded-file" 
+                                                    <button *ngIf="selectedFiles[config.id!]" type="button"
+                                                        class="btn-remove-uploaded-file"
                                                         (click)="removeFile(config.id!)">
-                                                   
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z" fill="#5B5B5B"/>
-                                                        <path d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z" fill="#5B5B5B"/>
-                                                        <path d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z" fill="#5B5B5B"/>
+
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                            viewBox="0 0 24 24" fill="none">
+                                                            <path
+                                                                d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z"
+                                                                fill="#5B5B5B" />
+                                                            <path
+                                                                d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z"
+                                                                fill="#5B5B5B" />
+                                                            <path
+                                                                d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z"
+                                                                fill="#5B5B5B" />
                                                         </svg>
-                                                </button>
-                                                   
+                                                    </button>
+
                                                 </div>
-                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)" class="mt-2">
-                                                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                    <g clip-path="url(#clip0_4_1622)">
-                                                        <path d="M12 14.9997C11.7348 14.9997 11.4804 14.8944 11.2929 14.7069C11.1054 14.5193 11 14.265 11 13.9997V5.99975C11 5.73453 11.1054 5.48018 11.2929 5.29264C11.4804 5.10511 11.7348 4.99975 12 4.99975C12.2652 4.99975 12.5196 5.10511 12.7071 5.29264C12.8946 5.48018 13 5.73453 13 5.99975V13.9997C13 14.265 12.8946 14.5193 12.7071 14.7069C12.5196 14.8944 12.2652 14.9997 12 14.9997ZM12.793 23.7598C14.953 22.8918 22 19.4787 22 12.0427V6.87175C22.0011 5.82076 21.6706 4.79622 21.0554 3.94406C20.4403 3.09191 19.5719 2.45559 18.574 2.12575L12.315 0.0507496C12.1107 -0.0182186 11.8893 -0.0182186 11.685 0.0507496L5.426 2.12575C4.42811 2.45559 3.55975 3.09191 2.9446 3.94406C2.32946 4.79622 1.99889 5.82076 2 6.87175V12.0427C2 18.6047 9.005 22.6188 11.153 23.6928C11.4247 23.8224 11.7084 23.9252 12 23.9998C12.2712 23.9443 12.5366 23.864 12.793 23.7598ZM17.944 4.02375C18.5425 4.22217 19.0633 4.60413 19.4324 5.11538C19.8015 5.62664 20.0001 6.24119 20 6.87175V12.0427C20 18.2257 13.913 21.1537 12.047 21.9037C10.159 20.9597 4 17.4587 4 12.0427V6.87175C3.99992 6.24119 4.19852 5.62664 4.56761 5.11538C4.93669 4.60413 5.45748 4.22217 6.056 4.02375L12 2.05375L17.944 4.02375ZM12 16.9998C11.8022 16.9998 11.6089 17.0584 11.4444 17.1683C11.28 17.2782 11.1518 17.4343 11.0761 17.6171C11.0004 17.7998 10.9806 18.0009 11.0192 18.1948C11.0578 18.3888 11.153 18.567 11.2929 18.7069C11.4327 18.8467 11.6109 18.9419 11.8049 18.9805C11.9989 19.0191 12.2 18.9993 12.3827 18.9236C12.5654 18.8479 12.7216 18.7198 12.8315 18.5553C12.9414 18.3909 13 18.1975 13 17.9998C13 17.7345 12.8946 17.4802 12.7071 17.2926C12.5196 17.1051 12.2652 16.9998 12 16.9998Z" fill="#374957"/>
-                                                    </g>
-                                                    <defs>
-                                                        <clipPath id="clip0_4_1622">
-                                                        <rect width="24" height="24" fill="white"/>
-                                                        </clipPath>
-                                                    </defs>
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)"
+                                                    class="mt-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none">
+                                                        <g clip-path="url(#clip0_4_1622)">
+                                                            <path
+                                                                d="M12 14.9997C11.7348 14.9997 11.4804 14.8944 11.2929 14.7069C11.1054 14.5193 11 14.265 11 13.9997V5.99975C11 5.73453 11.1054 5.48018 11.2929 5.29264C11.4804 5.10511 11.7348 4.99975 12 4.99975C12.2652 4.99975 12.5196 5.10511 12.7071 5.29264C12.8946 5.48018 13 5.73453 13 5.99975V13.9997C13 14.265 12.8946 14.5193 12.7071 14.7069C12.5196 14.8944 12.2652 14.9997 12 14.9997ZM12.793 23.7598C14.953 22.8918 22 19.4787 22 12.0427V6.87175C22.0011 5.82076 21.6706 4.79622 21.0554 3.94406C20.4403 3.09191 19.5719 2.45559 18.574 2.12575L12.315 0.0507496C12.1107 -0.0182186 11.8893 -0.0182186 11.685 0.0507496L5.426 2.12575C4.42811 2.45559 3.55975 3.09191 2.9446 3.94406C2.32946 4.79622 1.99889 5.82076 2 6.87175V12.0427C2 18.6047 9.005 22.6188 11.153 23.6928C11.4247 23.8224 11.7084 23.9252 12 23.9998C12.2712 23.9443 12.5366 23.864 12.793 23.7598ZM17.944 4.02375C18.5425 4.22217 19.0633 4.60413 19.4324 5.11538C19.8015 5.62664 20.0001 6.24119 20 6.87175V12.0427C20 18.2257 13.913 21.1537 12.047 21.9037C10.159 20.9597 4 17.4587 4 12.0427V6.87175C3.99992 6.24119 4.19852 5.62664 4.56761 5.11538C4.93669 4.60413 5.45748 4.22217 6.056 4.02375L12 2.05375L17.944 4.02375ZM12 16.9998C11.8022 16.9998 11.6089 17.0584 11.4444 17.1683C11.28 17.2782 11.1518 17.4343 11.0761 17.6171C11.0004 17.7998 10.9806 18.0009 11.0192 18.1948C11.0578 18.3888 11.153 18.567 11.2929 18.7069C11.4327 18.8467 11.6109 18.9419 11.8049 18.9805C11.9989 19.0191 12.2 18.9993 12.3827 18.9236C12.5654 18.8479 12.7216 18.7198 12.8315 18.5553C12.9414 18.3909 13 18.1975 13 17.9998C13 17.7345 12.8946 17.4802 12.7071 17.2926C12.5196 17.1051 12.2652 16.9998 12 16.9998Z"
+                                                                fill="#374957" />
+                                                        </g>
+                                                        <defs>
+                                                            <clipPath id="clip0_4_1622">
+                                                                <rect width="24" height="24" fill="white" />
+                                                            </clipPath>
+                                                        </defs>
                                                     </svg>
-                                                    {{ 'COMMON.ACTIONS' | translate }}: 
+                                                    {{ 'COMMON.ACTIONS' | translate }}:
                                                     {{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}
                                                 </div>
                                             </div>
                                             <div>
-                                               
+
                                             </div>
                                         </div>
                                     </div>
@@ -638,37 +789,29 @@
 
                         <!-- Navigation Buttons -->
                         <div class="d-flex justify-content-between mt-4">
-                            <button type="button" 
-                                    class="btn btn-secondary" 
-                                    (click)="previousTab()" 
-                                    [disabled]="currentTab === 1">
+                            <button type="button" class="btn btn-secondary" (click)="previousTab()"
+                                [disabled]="currentTab === 1">
                                 {{ 'COMMON.PREVIOUS' | translate }}
                             </button>
-                            
+
                             <div>
-                                <button *ngIf="currentTab < totalTabs" 
-                                        type="button" 
-                                        class="btn btn-primary" 
-                                        (click)="nextTab()"
-                                        [disabled]="!canProceedToNext()"
-                                        [title]="!canProceedToNext() ? ('VALIDATION.COMPLETE_REQUIRED_FIELDS' | translate) : ''">
+                                <button *ngIf="currentTab < totalTabs" type="button" class="btn btn-primary"
+                                    (click)="nextTab()" [disabled]="!canProceedToNext()"
+                                    [title]="!canProceedToNext() ? ('VALIDATION.COMPLETE_REQUIRED_FIELDS' | translate) : ''">
                                     {{ 'COMMON.NEXT' | translate }}
                                     <i *ngIf="canProceedToNext()" class="fas fa-arrow-right ms-2"></i>
                                 </button>
-                                
-                                <button *ngIf="currentTab === totalTabs" 
-                                        type="button" 
-                                        class="btn btn-success" 
-                                        (click)="onSubmit()"
-                                        [disabled]="!canSubmit() || isSaving"
-                                        [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
+
+                                <button *ngIf="currentTab === totalTabs" type="button" class="btn btn-success"
+                                    (click)="onSubmit()" [disabled]="!canSubmit() || isSaving"
+                                    [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
                                     <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
                                     {{ 'COMMON.SUBMIT' | translate }}
                                     <i *ngIf="!isSaving && canSubmit()" class="fas fa-check ms-2"></i>
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Validation feedback for current tab
                         <div *ngIf="currentTab < totalTabs && !canProceedToNext()" class="alert alert-warning mt-3">
                             <i class="fas fa-exclamation-triangle me-2"></i>

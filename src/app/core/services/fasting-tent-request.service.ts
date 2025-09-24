@@ -25,8 +25,11 @@ export class FastingTentRequestService {
   private readonly BASE_URL = `${environment.apiBaseUrl}${ApiEndpoints.FastingTentRequest.Base}`;
   private readonly LOCATION_URL = `${environment.apiBaseUrl}${ApiEndpoints.Location.Base}`;
   private readonly LOOKUP_URL = `${environment.apiBaseUrl}`;
+  lang ?: string ;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.lang =localStorage.getItem('lang') || "en";
+  }
 
   // FastingTentRequest CRUD operations
   create(dto: CreateFastingTentRequestDto): Observable<FastingTentRequestDto> {
@@ -69,7 +72,6 @@ export class FastingTentRequestService {
       'Content-Type': 'application/json',
       'Apikey': 'Apikeytest' 
     });
-    console.log('Making API call to Location Select2:', `${this.LOCATION_URL}${ApiEndpoints.Location.Select2}`);
     
     return this.http.post<Select2Result>(
       `${this.LOCATION_URL}${ApiEndpoints.Location.Select2}`,
@@ -162,11 +164,13 @@ export class FastingTentRequestService {
 
   // Helper method to get partner types as dropdown options
   getPartnerTypes(): Select2Item[] {
+      const isAr = this.lang === 'ar'; 
+
     return [
-      { id: 1, text: 'Person' },
-      { id: 2, text: 'Government' },
-      { id: 3, text: 'Supplier' },
-      { id: 4, text: 'Company' }
+      { id: 1, text: 'Person', label: isAr ? 'شخص'         : 'Person'  },
+      { id: 2, text: 'Government', label: isAr ? 'جهة حكومية'  : 'Government' },
+      { id: 3, text: 'Supplier', label: isAr ? 'مورد'        : 'Supplier'  },
+      { id: 4, text: 'Company' , label: isAr ? 'شركة'        : 'Company' }
     ];
   }
 }

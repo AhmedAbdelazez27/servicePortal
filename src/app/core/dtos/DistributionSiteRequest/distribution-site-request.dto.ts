@@ -183,6 +183,7 @@ export interface PagedResultDto<T> {
 export interface Select2Item {
   id: string | number;
   text: string;
+  label ?:any;
 }
 
 export interface Select2RequestDto {

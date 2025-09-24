@@ -14,7 +14,7 @@ import { PlaintReasonsDto, RequestPlaintAttachmentDto, RequestPlaintEvidenceDto,
 import { CharityEventPermitRequestService } from '../../../../core/services/charity-event-permit-request.service';
 import { arrayMinLength, dateRangeValidator } from '../../../../shared/customValidators';
 import { RequestAdvertisement } from '../../../../core/dtos/charity-event-permit/charity-event-permit.dto';
-import { PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
+import { FastingTentAttachmentDto, FastingTentPartnerDto, PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -116,11 +116,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   advertisementMethodType: any[] = [];
   donationChannelsLookup: any[] = [];
   partnerTypes: any[] = [
-  { id: PartnerType.Person,     label: 'Person' },
-  { id: PartnerType.Government, label: 'Government' },
-  { id: PartnerType.Supplier,   label: 'Supplier' },
-  { id: PartnerType.Company,    label: 'Company' },
-];
+    { id: PartnerType.Person, label: 'Person' },
+    { id: PartnerType.Government, label: 'Government' },
+    { id: PartnerType.Supplier, label: 'Supplier' },
+    { id: PartnerType.Company, label: 'Company' },
+  ];
   partners: any[] = [];
   partnerForm!: FormGroup;
   adsStepIndex = 3;
@@ -133,6 +133,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     { id: 'en', text: 'English' },
   ];
   service: any;
+  showPartnerAttachments = false;
 
 
   constructor(
@@ -307,17 +308,20 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   // start partners
   initPartnerForm(): void {
     this.partnerForm = this.fb.group({
-      name: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
       type: this.fb.control<number | null>(null, { validators: [Validators.required] }),
 
       // required
-      licenseIssuer: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-      licenseExpiryDate: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+      licenseIssuer: this.fb.control('', { validators: [Validators.required, Validators.maxLength(200)], nonNullable: true }),
+      licenseExpiryDate: this.fb.control(null, [Validators.maxLength(100)]),
       licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
       // optional
-      contactDetails: this.fb.control<string | null>(null),
+      contactDetails: this.fb.control<string | null>(null, [Validators.maxLength(1000)]),
       mainApplyServiceId: this.fb.control<number | null>(null),
+
+
+      name: ['', [Validators.required, Validators.maxLength(200)]],
+      jobRequirementsDetails: [''],
     });
   }
 
@@ -339,21 +343,154 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
   //   this.partnerForm.reset();
   // } 
-   addPartner(): void {
-    this.partnerForm.markAllAsTouched();
-    if (this.partnerForm.invalid) return;
+  isSupplierOrCompany(type: PartnerType | null | undefined): boolean {
+    return type === PartnerType.Supplier || type === PartnerType.Company;
+  }
+
+  // addPartner(): void {
+  //   this.partnerForm.markAllAsTouched();
+  //   if (this.partnerForm.invalid) return;
+  //   const partnerAttachType = AttachmentsConfigType.Partner;
+  //   if (this.hasMissingRequiredAttachments(partnerAttachType)) {
+  //     this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
+  //     return;
+  //   }
+
+  //   const v = this.partnerForm.getRawValue();
+
+  //   const partnerAttachments = this.getValidAttachments(partnerAttachType).map(a => ({
+  //     ...a,
+  //     masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
+  //   }));
+
+  //   this.partners.push({
+  //     name: v.name!,
+  //     type: v.type!,
+  //     licenseIssuer: v.licenseIssuer!,
+  //     licenseExpiryDate: v.licenseExpiryDate!,
+  //     licenseNumber: v.licenseNumber!,
+  //     contactDetails: v.contactDetails ?? null,
+  //     mainApplyServiceId: v.mainApplyServiceId ?? null,
+  //     attachments: partnerAttachments,
+  //   });
+  //   console.log(this.partners);
+  //   this.resetAttachments(partnerAttachType);
+  //   this.partnerForm.reset();
+  // }
+
+
+  addPartner(): void {
+    this.partnerForm.markAllAsTouched();   // <-- علشان تظهر رسائل الأخطاء
+    this.cdr.detectChanges();
+
+    const partnerType: PartnerType | null = this.partnerForm.get('type')?.value ?? null;
+
+    // ====== تحضير قيم الحقول ======
+    const name = (this.partnerForm.get('name')?.value ?? '').toString().trim();
+    const licenseIssuer = (this.partnerForm.get('licenseIssuer')?.value ?? '').toString().trim();
+    const licenseExpiry = (this.partnerForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
+    const licenseNumber = (this.partnerForm.get('licenseNumber')?.value ?? '').toString().trim();
+    const contactDetails = (this.partnerForm.get('contactDetails')?.value ?? '').toString().trim();
+
+    // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
+    // Name: required + max 200
+    if (!name) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME'));
+      return;
+    }
+    if (name.length > 200) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME')} (<= 200)`);
+      return;
+    }
+
+    // Type: لازم قيمة صحيحة من enum (IsInEnum)
+    const validTypes = [PartnerType.Person, PartnerType.Supplier, PartnerType.Company, PartnerType.Government];
+    if (partnerType === null || !validTypes.includes(partnerType)) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_TYPE'));
+      return;
+    }
+
+    // LicenseIssuer: max 200 (لو متعبّي)
+    if (licenseIssuer && licenseIssuer.length > 200) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.LICENSE_ISSUER')} (<= 200)`);
+      return;
+    }
+
+    // LicenseNumber: max 100 (لو متعبّي)
+    if (licenseNumber && licenseNumber.length > 100) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.LICENSE_NUMBER')} (<= 100)`);
+      return;
+    }
+
+    // ContactDetails: max 1000 (لو متعبّي)
+    if (contactDetails && contactDetails.length > 1000) {
+      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
+      return;
+    }
+
+    // ====== البيزنيس (الأولوية ليه) ======
+    // Supplier/Company ⇒ بيانات الرخصة required + مرفق الرخصة (2057) required
+    if (partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
+      const missingFields: string[] = [];
+      if (!licenseIssuer) missingFields.push(this.translate.instant('FASTING_TENT_REQ.LICENSE_ISSUER'));
+      if (!licenseExpiry) missingFields.push(this.translate.instant('FASTING_TENT_REQ.LICENSE_EXPIRY_DATE'));
+      if (!licenseNumber) missingFields.push(this.translate.instant('FASTING_TENT_REQ.LICENSE_NUMBER'));
+
+      if (missingFields.length > 0) {
+        this.toastr.error(this.translate.instant('VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS') + ': ' + missingFields.join(', '));
+        return;
+      }
+
+      // مرفق الرخصة 2057
+      // const hasLicenseAttachment =
+      //   !!this.partnerSelectedFiles[partnerType]?.[2057] ||
+      //   (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2057 && a.fileBase64 && a.fileName) ?? false);
+
+      // if (!hasLicenseAttachment) {
+      //   const cfg = this.partnerAttachmentConfigs.find(c => c.id === 2057);
+      //   const name = cfg ? this.getAttachmentName(cfg) : 'License';
+      //   this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + name);
+      //   return;
+      // }
+    }
+
+    // Person ⇒ مرفق الهوية (2056) required
+    // if (partnerType === PartnerType.Person) {
+    //   const hasIdAttachment =
+    //     !!this.partnerSelectedFiles[partnerType]?.[2056] ||
+    //     (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2056 && a.fileBase64 && a.fileName) ?? false);
+
+    //   if (!hasIdAttachment) {
+    //     const cfg = this.partnerAttachmentConfigs.find(c => c.id === 2056);
+    //     const name = cfg ? this.getAttachmentName(cfg) : 'ID';
+    //     this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + name);
+    //     return;
+    //   }
+    // }
+
+
+    // ====== submit action 
     const partnerAttachType = AttachmentsConfigType.Partner;
     if (this.hasMissingRequiredAttachments(partnerAttachType)) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
       return;
     }
-
     const v = this.partnerForm.getRawValue();
 
     const partnerAttachments = this.getValidAttachments(partnerAttachType).map(a => ({
       ...a,
       masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
     }));
+    console.log("partnerAttachments = ", partnerAttachments);
+
+    if (partnerType === PartnerType.Person || partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
+
+      if (! partnerAttachments.length) {
+        this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') );
+        return;
+      }
+    }
+
 
     this.partners.push({
       name: v.name!,
@@ -362,12 +499,32 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       licenseExpiryDate: v.licenseExpiryDate!,
       licenseNumber: v.licenseNumber!,
       contactDetails: v.contactDetails ?? null,
+      jobRequirementsDetails: v.jobRequirementsDetails ?? null,
       mainApplyServiceId: v.mainApplyServiceId ?? null,
       attachments: partnerAttachments,
     });
     console.log(this.partners);
     this.resetAttachments(partnerAttachType);
     this.partnerForm.reset();
+
+
+    this.showPartnerAttachments = false;
+    this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
+    console.log("partners ", this.partners);
+
+  }
+
+  onPartnerTypeChange(): void {
+    const selectedPartnerType = this.partnerForm.get('type')?.value;
+    if (selectedPartnerType && (selectedPartnerType === PartnerType.Person || selectedPartnerType === PartnerType.Supplier || selectedPartnerType === PartnerType.Company)) {
+      this.showPartnerAttachments = true;
+    } else {
+      this.showPartnerAttachments = false;
+    }
+  }
+  isPartnerAttachmentAllowed(cfgId: number): boolean {
+    const type = this.partnerForm.get('type')?.value;
+    return (cfgId === 2056 && type === 1) || (cfgId === 2057 && (type === 3 || type === 4));
   }
 
   removePartner(i: number): void {
@@ -707,7 +864,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           licenseNumber: p.licenseNumber ?? null,
           contactDetails: p.contactDetails ?? null,
           mainApplyServiceId: p.mainApplyServiceId ?? null,
-          attachments :p.attachments
+          attachments: p.attachments
         })),
       };
       console.log("payload = ", payload);
@@ -722,7 +879,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => {
           console.error('Error creating charity event permit request:', error);
-          
+
           // Check if it's a business error with a specific reason
           if (error.error && error.error.reason) {
             // Show the specific reason from the API response
@@ -731,7 +888,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
             // Fallback to generic error message
             this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
           }
-          
+
           this.isSaving = false;
         }
       });
@@ -739,7 +896,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
     } catch (error: any) {
       console.error('Error in onSubmit:', error);
-      
+
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
         // Show the specific reason from the API response
@@ -748,7 +905,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         // Fallback to generic error message
         this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
       }
-      
+
       this.isSaving = false;
     }
   }
@@ -931,7 +1088,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   uaeMobileValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     if (!value) return null;
-    
+
     const uaeMobilePattern = /^5[0-9]{8}$/;
     return uaeMobilePattern.test(value) ? null : { pattern: true };
   }

@@ -4,7 +4,6 @@
   "TOGGLE_LANG": "Switch to Arabic",
   "PAGE_NOT_FOUND": "Oops! Page not found.",
   "BACK_HOME": "Back to Home",
-
   "TOAST": {
     "TITLE": {
       "SUCCESS": "Success",
@@ -654,7 +653,6 @@
     "PARTNER_ADDED": "Partner added successfully",
     "PARTNER_REMOVED": "Partner removed successfully"
   },
-
   "ERRORS": {
     "SERVICE_ID_NOT_FOUND": "Service ID not found",
     "FAILED_LOAD_SERVICE_DETAILS": "Failed to load service details. Please try again.",
@@ -685,7 +683,6 @@
   "WARNINGS": {
     "REASON_ALREADY_ADDED": "This reason has already been added."
   },
-
   "COMMON": {
     "LOADING": "Loading...",
     "LOADING_DATA": "Loading data, please wait...",
@@ -831,9 +828,12 @@
     "NO_PARTNERS": "No Partners",
     "TERMS_AND_CONDITIONS": "Terms & Conditions",
     "PRIVACY_POLICY": "Privacy Policy",
-    "AND": "and"
+    "AND": "and",
+    "AVAILABLE": "Available",
+    "NOT_AVAILABLE": "Not Available",
+    "N_A": "N_A",
+    "UNKNOWN_LOCATION": "Unknown Location"
   },
-
   "SHARED": {
     "FORMS": {
       "SUPERVISOR_INFO": "Supervisor Information",
@@ -960,8 +960,6 @@
       "REJECTED": "Rejected"
     }
   },
-
-
   "REGIONS": {
     "TITLE": "Regions Management",
     "ADD_NEW": "Add New Region",
@@ -1043,7 +1041,6 @@
       "TENT_SETUP_DATE": "Tent Setup Date"
     }
   },
-
   "mainApplyServiceResourceName": {
     "title": "Request",
     "accep": "Approve",
@@ -1623,13 +1620,11 @@
     "STATUS_RETURN_FOR_MODIFICATIONS": "Return for Modifications",
     "STATUS_UNKNOWN": "Unknown Status"
   },
-
   "COMMENTS": {
     "ENTER_COMMENT": "Please enter a comment",
     "COMMENT_ADDED": "Comment added successfully",
     "ERROR_ADDING_COMMENT": "Error adding comment"
   },
-
   "DIST_SITE": {
     "TITLE": "Distribution Site Permit",
     "DESCRIPTION": "Apply for a distribution site permit by completing the required information, selecting location coordinates on the map, and uploading necessary documents.",
@@ -1707,6 +1702,7 @@
     "MAP_DESCRIPTION": "Choose a location directly from the map",
     "REQUEST_TYPE": "Request Type",
     "LOCATION_TYPE": "Location Type",
+    "jobRequirementsDetails": "Job Requirements Details",
     "OWNER_NAME": "Owner Name",
     "OWNER_NAME_PLACEHOLDER": "Enter the owner's full name",
     "REGION_NAME": "Region Name",
