@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
@@ -20,7 +20,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
 
-    currentLang: string = 'en';
+  currentLang: string = 'en';
   notifications: NotificationDto[] = [];
   unseenCount = 0;
   loading = false;
@@ -28,7 +28,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentUserName: string = '';
   private userData: any = null;
   private destroy$ = new Subject<void>();
-    private isSubscribed = false; // Prevent duplicate subscriptions
+  private isSubscribed = false; // Prevent duplicate subscriptions
 
 
 
@@ -119,11 +119,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.notificationService.clearNotifications();
     this.isNotificationDropdownOpen = false;
     this.isSubscribed = false; // Reset subscription flag
-    
+
     // Clear cached user data
     this.userData = null;
     this.currentUserName = '';
-    
+
     this.authService.logout();
     this.toastr.success(
       this.translate.instant('AUTH.MESSAGES.LOGOUT_SUCCESS'),
@@ -139,17 +139,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isLoggedIn()) {
       // Get current user's name
       this.loadCurrentUserName();
-      
+
       // Only subscribe to notifications if not already subscribed
       if (!this.isSubscribed) {
         this.subscribeToNotifications();
         this.isSubscribed = true;
       }
-      
+
       // ✅ NEW OPTIMIZED APPROACH: Session-based initialization
       // This will only initialize once per user session, not on every page navigation
       this.ensureUserSessionInitialized();
-      
+
       // ✅ Setup page focus listener for smart refreshing (only when cache is stale)
       this.setupPageFocusListener();
     }
@@ -165,7 +165,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       const isSessionInitialized = this.notificationService.isSessionInitialized();
       const currentUserId = this.authService.getUserId();
       const serviceUserId = this.notificationService.getCurrentUserId();
-      
+
       // Only initialize if not already initialized for this user
       if (!isSessionInitialized || currentUserId !== serviceUserId) {
         await this.notificationService.initializeUserSession();
@@ -229,13 +229,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
    */
   async toggleNotificationDropdown(): Promise<void> {
     this.isNotificationDropdownOpen = !this.isNotificationDropdownOpen;
-    
+
     // ✅ Only ensure notifications are loaded when opening dropdown
     if (this.isNotificationDropdownOpen) {
       try {
         // First ensure session is initialized
         await this.ensureUserSessionInitialized();
-        
+
         // Uses cache-first approach - only fetches if cache is empty or stale (5+ minutes old)
         await this.notificationService.ensureNotificationsLoaded();
       } catch (error) {
@@ -259,7 +259,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         // Error marking notification as seen
       }
     }
-    
+
     // Handle notification click - you can add navigation logic here
     this.handleNotificationClick(notification);
   }
@@ -270,14 +270,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private handleNotificationClick(notification: NotificationDto): void {
     // Close the dropdown
     this.closeNotificationDropdown();
-    
+
     // You can add navigation logic based on notification type
     // For example, navigate to specific pages based on workFlowStepsId
     if (notification.workFlowStepsId) {
       // Navigate based on workflow step
       // this.router.navigate(['/service-details', notification.workFlowStepsId]);
     }
-    
+
     // Show a toast message for now
     this.toastr.info(
       `Notification: ${this.getNotificationTitle(notification)}`,
@@ -289,9 +289,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (!this.notifications) {
       return;
     }
-    
+
     const unseenNotifications = this.notifications.filter(n => !n.isSeen);
-    
+
     for (const notification of unseenNotifications) {
       try {
         const notificationId = notification.notificationId || notification.id;
@@ -357,7 +357,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   onDocumentClick(event: Event): void {
     const target = event.target as HTMLElement;
     const notificationContainer = target.closest('.notification-container');
-    
+
     // Close dropdown if clicking outside the notification container
     if (!notificationContainer && this.isNotificationDropdownOpen) {
       this.closeNotificationDropdown();
@@ -370,11 +370,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   onViewAllNotifications(): void {
     // Close the dropdown
     this.closeNotificationDropdown();
-    
+
     // Navigate to a notifications page or show all notifications
     // You can implement this based on your routing structure
     this.router.navigate(['/notifications']);
-    
+
     // Alternative: Show a toast message if no dedicated page exists
     // this.toastr.info('Viewing all notifications', 'Notifications');
   }
@@ -382,5 +382,37 @@ export class NavbarComponent implements OnInit, OnDestroy {
   toggleLang() {
     this.translation.toggleLanguage();
   }
+
+  @ViewChild('navbarCollapse') navbarCollapse!: ElementRef<HTMLDivElement>;
+
+  closeNavbar() {
+    if (window.innerWidth < 992 && this.navbarCollapse) {
+      const el = this.navbarCollapse.nativeElement;
+      if (!el.classList.contains('show')) return;
+
+
+      const startHeight = el.scrollHeight;
+      el.style.height = startHeight + 'px';
+      el.style.overflow = 'hidden';
+      el.style.transition = 'height 300ms ease';
+
+      void el.offsetHeight;
+
+      el.style.height = '0px';
+
+      const onEnd = () => {
+        el.style.removeProperty('height');
+        el.style.removeProperty('overflow');
+        el.style.removeProperty('transition');
+        el.classList.remove('show');
+        el.removeEventListener('transitionend', onEnd);
+      };
+      el.addEventListener('transitionend', onEnd);
+
+      const toggler = document.querySelector<HTMLButtonElement>('.navbar-toggler[aria-controls="navbarSupportedContent"]');
+      if (toggler) toggler.setAttribute('aria-expanded', 'false');
+    }
+  }
+
 
 }
