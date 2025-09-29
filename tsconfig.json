@@ -16,7 +16,10 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "ES2022",
+
+    "resolveJsonModule": true,               //  to import JSON as  Modules
+    "allowSyntheticDefaultImports": true     // to easy use default import
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -1,55 +1,44 @@
-// src/app/app.config.ts
 import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import { ToastrModule } from 'ngx-toastr';
-import { provideAnimations } from '@angular/platform-browser/animations'; // ✅ هذا هو المهم لتفعيل animation
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { provideToastr } from 'ngx-toastr';
+
 import { routes } from './app.routes';
 import { apiKeyInterceptor } from './core/interceptors/api-key.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { BundledJsonTranslateLoader } from './i18n/bundled-json-translate-loader';
 
-// 👇️ Factory لتحميل ملفات الترجمة
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(
+      withFetch(),
       withInterceptors([apiKeyInterceptor, authInterceptor])
     ),
     provideAnimations(),
+
     importProvidersFrom(
-      BrowserAnimationsModule, 
-      NgSelectModule,
       TranslateModule.forRoot({
         defaultLanguage: 'en',
-        loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
-        }
+        loader: { provide: TranslateLoader, useClass: BundledJsonTranslateLoader }
       }),
-      NgxSpinnerModule.forRoot({
-        type: 'ball-spin-clockwise-fade-rotating'
-      }),
-      ToastrModule.forRoot({
-        positionClass: 'toast-top-right', 
-        timeOut: 3000,
-        progressBar: true,
-        progressAnimation: 'increasing',
-        closeButton: true,
-        enableHtml: true,
-        preventDuplicates: true
-      })
-    )
+      NgxSpinnerModule.forRoot({ type: 'ball-spin-clockwise-fade-rotating' })
+    ),
+
+    provideToastr({
+      positionClass: 'toast-top-right',
+      timeOut: 3000,
+      progressBar: true,
+      progressAnimation: 'increasing',
+      closeButton: true,
+      enableHtml: true,
+      preventDuplicates: true
+    })
   ]
 };
