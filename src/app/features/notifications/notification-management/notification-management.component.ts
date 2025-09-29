@@ -209,7 +209,6 @@ export class NotificationManagementComponent implements OnInit, OnDestroy {
     const skip = this.currentPage * this.pageSize;
     
     const request: GetAllNotificationRequestDto = {
-      userId: userId,
       skip: skip,
       take: this.pageSize
     };
@@ -238,7 +237,6 @@ export class NotificationManagementComponent implements OnInit, OnDestroy {
 
   testApiCall(userId: string) {
     const request: GetAllNotificationRequestDto = {
-      userId: userId,
       skip: this.currentPage * this.pageSize,
       take: this.pageSize
     };
@@ -346,7 +344,7 @@ export class NotificationManagementComponent implements OnInit, OnDestroy {
     }
     
     // Get total unseen count from backend
-    this.notificationApiService.getUnseenNotificationsCount(userId)
+    this.notificationApiService.getUnseenNotificationsCount()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (unseenCount) => {

@@ -3,7 +3,8 @@ export class ApiEndpoints {
     Base: '/User',
     GetAll: '/GetAll',
     GetById: (id: string) => `/User/${id}`,
-    Delete: (id: string) => `/User/Delete/${id}`,
+    //Delete: (id: string) => `/User/Delete/${id}`,
+    Delete: '/Delete',
     GetUsersSelect2List: '/User/GetUsersSelect2List',
     GetUserPermissionList: (id: string) => `/Permission/GetAll/${id}`,
     AssignActionPermission: '/Permission/CreateUserPermission',
@@ -18,12 +19,14 @@ export class ApiEndpoints {
     UAEPassBaseURL: '/UAEPass',
     GetLoginInfo: '/Login',
     GetUAEPAssInfo: '/Register',
+    GetMyProfile: '/GetMyProfile',
 
   };
 
   static readonly Roles = {
     Base: '/Roles',
     GetPaginated: '/Roles',
+    GetAll: '/GetAll',
     GetById: (id: string) => `/${id}`,
     Delete: (id: string) => `/Delete/${id}`,
     Unassign: '/UnAssignRole',
@@ -249,8 +252,7 @@ export class ApiEndpoints {
       `/GetAidRequestsZakat/${headerId}/${entityId}`,
     GetAidRequestsStudyDetailById: (headerId: string, entityId: string) =>
       `/GetAidRequestsStudy/${headerId}/${entityId}`,
-    GetQuotationHeaderDetailById: (headerId: string, entityId: string) =>
-      `/GetQuotationHeader/${headerId}/${entityId}`,
+    GetQuotationHeaderDetailById: (headerId: string, entityId: string) =>`/GetQuotationHeader/${headerId}/${entityId}`,
   };
 
   static readonly SocialCasesReports = {
@@ -390,7 +392,8 @@ export class ApiEndpoints {
     GetById: (id: string) => `/Notifications/Get/${id}`,
     Create: '/Notifications/Create',
     MarkAsSeen: (id: string) => `/Notifications/MarkAsSeen/${id}`,
-    GetUnseenCount: (userId: string) => `/Notifications/GetUnseenCount/${userId}`,
+    //GetUnseenCount: (userId: string) => `/Notifications/GetUnseenCount/${userId}`,
+    GetUnseenCount: '/GetUnseenCount',
     SendToDepartment: '/Notifications/SendToDepartment'
   };
 
@@ -409,7 +412,7 @@ export class ApiEndpoints {
     //getURLCredention: {
     //  clientId: 'sandbox_stage',
     //  //  redirectUri: 'http://compassint.ddns.net:2040/login'
-    //  redirectUri: 'http://localhost:51999/login',
+    //  redirectUri: 'http://localhost:4200/login',
     //  clientsecret: 'HnlHOJTkTb66Y5H'
     //},
 

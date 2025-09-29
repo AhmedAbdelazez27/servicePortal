@@ -1623,7 +1623,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       // console.log('[onSubmit] Valid attachments:', validAttachments); // DEBUG
       const createDto: CreateFastingTentRequestDto = {
         mainApplyServiceId: 0,
-        userId: currentUser.id,
         locationType: this.getSelectedLocationTypeName(),
         locationTypeId: formData.tentLocationType,
         ownerName: formData.ownerName,

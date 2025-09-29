@@ -66,7 +66,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       }
 
       // Fetch complete user data to get both Arabic and English names
-      this.userService.getUserById(currentUser.id).subscribe({
+      this.userService.getUserProfileById().subscribe({
         next: (userData) => {
           if (userData) {
             this.userData = userData; // Cache the user data

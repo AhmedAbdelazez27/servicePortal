@@ -74,14 +74,12 @@ export class LocationService {
 
   // Check if location is available
   checkIfLocationAvailableAsync(
-    locationId: number,
-    userId: string
+    locationId: number
   ): Observable<boolean> {
     return this.http.post<boolean>(
       `${this.BASE_URL}${ApiEndpoints.Location.CheckAvailable}`,
       {
-        locationId,
-        userId,
+        locationId
       }
     );
   }

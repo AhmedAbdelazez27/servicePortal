@@ -1,74 +1,96 @@
 <section>
-    <div class="container">
-        
-        <div class="d-flex gap-4 justify-content-center mb-6">
-            <!-- <img src="./../../../../assets/images/login-logo.png" class="login-logo"/> -->
-            <img src="./../../../assets/images/council-logo.png" class="login-logo"/>
-        </div>
+  <div class="container">
 
-        <div class="row">
-            <div class="col-lg-3"></div>
-            <div class="col-lg-6">
-                <div class="login-box mb-6">
-                    <form [formGroup]="form" (ngSubmit)="submit()">
-                        <div class="mb-4">
-                            <label for="userName" class="form-label">{{ 'AUTH.LOGIN.EMAIL_ADDRESS' | translate }}</label>
-                            <input type="email" class="form-control" id="userName" placeholder="{{ 'AUTH.LOGIN.EMAIL_PLACEHOLDER' | translate }}"
-                                formControlName="userName"
-                                [ngClass]="{ 'is-invalid': form.get('userName')?.invalid && (form.get('userName')?.touched || submitted) }" />
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="password" class="form-label">{{ 'AUTH.LOGIN.PASSWORD' | translate }}</label>
-                            <input type="password" class="form-control" id="password" placeholder="{{ 'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate }}"
-                                formControlName="password"
-                                [ngClass]="{ 'is-invalid': form.get('password')?.invalid && (form.get('password')?.touched || submitted) }" />
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="checkDefault">
-                                <label class="form-check-label" for="checkDefault">
-                                    {{ 'AUTH.LOGIN.REMEMBER_ME' | translate }}
-                                </label>
-                            </div>
-                            <a class="black underline" (click)="routeToForgetPassword()">{{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}</a>
-                        </div>
-
-                        <button class="btn btn-login mb-6" type="submit">
-                            {{ 'AUTH.LOGIN.LOGIN_BUTTON' | translate }}
-                        </button>
-                    </form>
-
-                    <button class="btn btn-uae-pass mb-4" type="submit" (click)="loginByUAEPass()">
-                        <img src="./../../../../assets/images/pass.png" />
-                        {{ 'AUTH.LOGIN.UAE_PASS_LOGIN' | translate }}
-                    </button>
-
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="gold mb-0">{{ 'AUTH.LOGIN.DONT_HAVE_ACCOUNT' | translate }}</h5>
-                    </div>
-
-                    <div class="registration-buttons mt-4">
-                        <!-- <div class="d-flex gap-3">
-                            <button class="btn btn-registration flex-fill" type="button" (click)="routeToInstitutionRegistration()">
-                                {{ 'AUTH.LOGIN.REGISTRATION_INSTITUTIONS' | translate }}
-                            </button>
-                            <button class="btn btn-registration flex-fill" type="button" (click)="routeToIndividualRegistration()">
-                                {{ 'AUTH.LOGIN.REGISTRATION_INDIVIDUALS' | translate }}
-                            </button>
-                        </div> -->
-                        <div class="d-flex gap-3 justify-content-center">
-                            <a class="btn" href="javascript:void(0)" (click)="routeToInstitutionRegistration()">
-                                {{ 'AUTH.LOGIN.REGISTRATION_INSTITUTIONS' | translate }}
-                            </a>
-                            <a class="btn" href="javascript:void(0)" (click)="routeToIndividualRegistration()">
-                                {{ 'AUTH.LOGIN.REGISTRATION_INDIVIDUALS' | translate }}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="d-flex gap-4 justify-content-center mb-6">
+      <!-- <img src="./../../../../assets/images/login-logo.png" class="login-logo"/> -->
+      <img src="./../../../assets/images/council-logo.png" class="login-logo" />
     </div>
+
+    <div class="row">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6">
+        <div class="login-box mb-6">
+          <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="mb-4">
+              <label for="userName" class="form-label">{{ 'AUTH.LOGIN.EMAIL_ADDRESS' | translate }}</label>
+              <input type="email" class="form-control" id="userName" placeholder="{{ 'AUTH.LOGIN.EMAIL_PLACEHOLDER' | translate }}"
+                     formControlName="userName"
+                     [ngClass]="{ 'is-invalid': form.get('userName')?.invalid && (form.get('userName')?.touched || submitted) }" />
+            </div>
+
+            <div class="mb-4">
+              <label for="password" class="form-label">{{ 'AUTH.LOGIN.PASSWORD' | translate }}</label>
+              <input type="password" class="form-control" id="password" placeholder="{{ 'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate }}"
+                     formControlName="password"
+                     [ngClass]="{ 'is-invalid': form.get('password')?.invalid && (form.get('password')?.touched || submitted) }" />
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="checkDefault">
+                <label class="form-check-label" for="checkDefault">
+                  {{ 'AUTH.LOGIN.REMEMBER_ME' | translate }}
+                </label>
+              </div>
+              <a class="black underline" (click)="routeToForgetPassword()">{{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}</a>
+            </div>
+
+            <button class="btn btn-login mb-6" type="submit">
+              {{ 'AUTH.LOGIN.LOGIN_BUTTON' | translate }}
+            </button>
+          </form>
+
+          <button class="btn btn-uae-pass mb-4" type="submit" (click)="loginByUAEPass()">
+            <img src="./../../../../assets/images/pass.png" />
+            {{ 'AUTH.LOGIN.UAE_PASS_LOGIN' | translate }}
+          </button>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="gold mb-0">{{ 'AUTH.LOGIN.DONT_HAVE_ACCOUNT' | translate }}</h5>
+          </div>
+
+          <div class="registration-buttons mt-4">
+            <!-- <div class="d-flex gap-3">
+                <button class="btn btn-registration flex-fill" type="button" (click)="routeToInstitutionRegistration()">
+                    {{ 'AUTH.LOGIN.REGISTRATION_INSTITUTIONS' | translate }}
+                </button>
+                <button class="btn btn-registration flex-fill" type="button" (click)="routeToIndividualRegistration()">
+                    {{ 'AUTH.LOGIN.REGISTRATION_INDIVIDUALS' | translate }}
+                </button>
+            </div> -->
+            <div class="d-flex gap-3 justify-content-center">
+              <a class="btn" href="javascript:void(0)" (click)="routeToInstitutionRegistration()">
+                {{ 'AUTH.LOGIN.REGISTRATION_INSTITUTIONS' | translate }}
+              </a>
+              <a class="btn" href="javascript:void(0)" (click)="routeToIndividualRegistration()">
+                {{ 'AUTH.LOGIN.REGISTRATION_INDIVIDUALS' | translate }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
+
+
+<div class="modal fade" id="notVerifiedUser" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header border-0 p-2">
+      </div>
+      <div class="modal-body text-center">
+        <div class="heading" data-wow-duration="1s">
+          <h2 class="m-0 mb-2" style="color: #ff007d">
+            {{ 'Common.notVerifiedUserMessage' | translate }}
+          </h2>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-center border-0">
+        <button type="button" class="btn btn-gold" (click)="logout()">
+          {{ 'Common.Close' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

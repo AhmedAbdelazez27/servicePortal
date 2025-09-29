@@ -233,7 +233,6 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
       }
 
       const createDto: CreateRequestComplaintDto = {
-        userId: currentUser.id,
         complaintType: formData.complaintType,
         contactNumber: `971${formData.contactNumber}`, // Add 971 prefix
         applicantName: formData.applicantName,

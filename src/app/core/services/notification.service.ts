@@ -437,7 +437,6 @@ export class NotificationService {
     this.loadingSubject.next(true);
     
     const request: GetAllNotificationRequestDto = {
-      userId: userId,
       skip: skip,
       take: take
     };
@@ -490,7 +489,7 @@ export class NotificationService {
       }),
       catchError(error => {
         // Try with registerId as fallback
-        return this.notificationApiService.getAllNotifications({...requestWithRegisterId, userId: userId}).pipe(
+        return this.notificationApiService.getAllNotifications({...requestWithRegisterId}).pipe(
           switchMap(result => {
             // Handle both 'items' and 'data' properties from API response
             const notificationsArray = result?.data || (result as any)?.items || [];
@@ -541,7 +540,6 @@ export class NotificationService {
     this.loadingSubject.next(true);
     
     const request: GetAllNotificationRequestDto = {
-      userId: userId,
       isSeen: isSeen,
       skip: skip,
       take: take
@@ -588,7 +586,7 @@ export class NotificationService {
    * Load unseen notifications count
    */
   private loadUnseenCount(userId: string): Observable<number> {
-    return this.notificationApiService.getUnseenNotificationsCount(userId).pipe(
+    return this.notificationApiService.getUnseenNotificationsCount().pipe(
       switchMap(count => {
         this.unseenCountSubject.next(count || 0);
         return [count || 0];
@@ -666,7 +664,6 @@ export class NotificationService {
     }
 
     const request: GetAllNotificationRequestDto = {
-      userId: targetUserId,
       skip: 0,
       take: 100 // Get more notifications for the view all page
     };

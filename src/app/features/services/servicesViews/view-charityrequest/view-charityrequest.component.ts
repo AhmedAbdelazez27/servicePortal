@@ -158,7 +158,7 @@ type CharityEventPermitDto = {
 
 type MainApplyServiceView = {
   id: number;
-  userId: string;
+  //userId: string;
   serviceId: number;
   applyDate: string;
   applyNo: string;
@@ -899,7 +899,7 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
         workFlowServiceType: this.fb.control<number | null>(1, { validators: [Validators.required] }),
 
         requestDate: this.fb.control(new Date().toISOString(), { validators: [Validators.required], nonNullable: true }),
-        userId: this.fb.control(currentUser?.id ?? '', { validators: [Validators.required], nonNullable: true }),
+       // userId: this.fb.control(currentUser?.id ?? '', { validators: [Validators.required], nonNullable: true }),
 
         // provider: this.fb.control<string | null>(null),
 
@@ -1075,7 +1075,7 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
       workFlowServiceType: Number(this.mainApplyService?.serviceId) as any,
 
       requestDate: toRFC3339(v.requestDate)!,
-      userId: v.userId,
+      //userId: v.userId,
 
       // provider: v.provider ?? null,
       adTitle: v.adTitle,
@@ -1126,7 +1126,6 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
           serviceType: 1,
           workFlowServiceType: 1,
           requestDate: new Date().toISOString(),
-          userId: v.userId,
           // adLang: 'ar',
           // newAd: true,
           // reNewAd: false,

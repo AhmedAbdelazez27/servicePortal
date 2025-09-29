@@ -88,7 +88,6 @@ export class DistributionSiteRequestService {
       'Content-Type': 'application/json',
       'Apikey': 'Apikeytest' 
     });
-    console.log('Making API call to CheckAvailable:', `${this.LOCATION_URL}${ApiEndpoints.Location.CheckAvailable}`);
     
     return this.http.post<boolean>(
       `${this.LOCATION_URL}${ApiEndpoints.Location.CheckAvailable}`,

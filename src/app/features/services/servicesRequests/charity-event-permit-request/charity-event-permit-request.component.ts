@@ -253,9 +253,9 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
     const currentUser = this.authService.getCurrentUser();
     if (currentUser?.id) {
-      this.firstStepForm.patchValue({
-        userId: currentUser.id
-      });
+      //this.firstStepForm.patchValue({
+      //  userId: currentUser.id
+      //});
 
       // Load essential data first (user entity and main service options)
       const essentialOperations = [
@@ -1016,7 +1016,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       workFlowServiceType: Number(v.workFlowServiceType) as any,
 
       requestDate: toRFC3339(v.requestDate)!,
-      userId: v.userId,
+     // userId: v.userId,
 
       provider: v.provider ?? null,
       adTitle: v.adTitle,

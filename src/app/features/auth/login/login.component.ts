@@ -1,32 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
-import { SpinnerService } from '../../../core/services/spinner.service';
+import { CommonModule } from '@angular/common';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
+
+import { AuthService } from '../../../core/services/auth.service';
+import { SpinnerService } from '../../../core/services/spinner.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { TranslationService } from '../../../core/services/translation.service copy';
 import { LoginUAEPassDto } from '../../../core/dtos/uaepass.dto';
-import { Subject, takeUntil } from 'rxjs';
 import { ApiEndpoints } from '../../../core/constants/api-endpoints';
+
 type ModalMode = 'login' | 'signUpInstitution' | 'signUpIndividual';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
-  form !: FormGroup;
-  submitted: boolean = false;
+export class LoginComponent implements OnInit, OnDestroy {
+  form!: FormGroup;
+  submitted = false;
   uaePassParams = new LoginUAEPassDto();
   lang: string | null = null;
   destroy$ = new Subject<boolean>();
   modalMode: ModalMode = 'login';
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -46,170 +51,77 @@ export class LoginComponent {
   }
 
 
+
   ngOnInit() {
-    this.lang = localStorage.getItem('lang');
-
     this.route.queryParams.subscribe(params => {
-      this.uaePassParams = {
-        code: params['code'],
-        state: params['state'],
-        lang: this.lang
-      };
+      const code = params['code'];
+      const state = params['state'];
+      this.uaePassParams = { code, state, lang: this.lang };
+      if (code != undefined || state != undefined) {
+        if (this.isValidCodeState(this.uaePassParams)) {
+          this.spinnerService.show();
+          this.getUAEPassInfo(this.uaePassParams);
+        } else {
+          const redirectUri = window.location.origin + '/login';
+          const logoutURL =
+            'https://stg-id.uaepass.ae/idshub/logout?redirect_uri=' +
+            encodeURIComponent(redirectUri);
 
-    
-      if (this.isValidCodeState(this.uaePassParams)) {
-        this.getUAEPassInfo(this.uaePassParams);
-      } else {
-        console.log('Code or state is invalid. API call not made.');
+          this.translate
+            .get(['COMMON.UAEPassCancelRequest'])
+            .subscribe(translations => {
+              this.toastr.error(translations['COMMON.UAEPassCancelRequest']);
+            });
+
+          setTimeout(() => {
+            window.location.href = logoutURL;
+            this.spinnerService.hide();
+          }, 2000);
+        }
       }
     });
   }
 
+  /** Normal username/password login */
   submit(): void {
     this.submitted = true;
     if (this.form.invalid) return;
+
     this.spinnerService.show();
-
     this.auth.login(this.form.value).subscribe({
-      next: (res) => {
-        this.auth.saveToken(res?.token);
-        const decodedData = this.auth.decodeToken();
-        
-
-        
-        if (decodedData) {
-          // Store permissions if they exist (optional)
-          if (decodedData.Permissions) {
-            const permissions = decodedData.Permissions;
-            localStorage.setItem('permissions', JSON.stringify(permissions));
-          }
-          
-          // Store pages/roles if they exist (optional)
-          if (decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
-            localStorage.setItem('pages', JSON.stringify(decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']));
-          }
-          
-          // Extract and store user ID (required)
-          let userId = this.extractUserIdFromToken(decodedData);
-          
-          if (userId) {
-            localStorage.setItem('userId', userId);
-            console.log('User ID stored:', userId);
-          } else {
-            console.error('Could not extract user ID from token. Available claims:', Object.keys(decodedData));
-            this.toastr.error(this.translate.instant('AUTH.MESSAGES.TOKEN_EXTRACTION_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
-            this.spinnerService.hide();
-            return;
-          }
-        } else {
-          console.error('Failed to decode token');
-          this.toastr.error(this.translate.instant('AUTH.MESSAGES.INVALID_TOKEN_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
-          this.spinnerService.hide();
-          return;
-        }
-
-        this.toastr.success(this.translate.instant('AUTH.MESSAGES.LOGIN_SUCCESS'), this.translate.instant('TOAST.TITLE.SUCCESS'));
-        this.spinnerService.hide();
-        
-        // 🔔 Initialize notification session after successful login
-        this.initializeNotificationSession();
-        
-        this.router.navigate(['/home']);
-      },
+      next: res => this.handleLoginSuccess(res),
       error: () => {
         this.toastr.error(this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'), this.translate.instant('TOAST.TITLE.ERROR'));
-        this.spinnerService.hide();
-      },
-      complete: () => {
         this.spinnerService.hide();
       }
     });
   }
-
-  /**
-   * Initialize notification session after successful login
-   */
-  private async initializeNotificationSession(): Promise<void> {
-    try {
-      console.log('🔔 Login: Initializing notification session after login...');
-      
-      // Initialize user notification session (this will only run once per session)
-      await this.notificationService.initializeUserSession();
-      
-      console.log('🔔 Login: Notification session initialized successfully');
-    } catch (error) {
-      console.error('🔔 Login: Error initializing notification session:', error);
-      // Don't show error to user as this shouldn't block the login flow
-    }
-  }
-
-  private extractUserIdFromToken(decodedData: any): string | null {
-    // Try multiple possible claim names for user ID
-    const possibleUserIdClaims = [
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier',
-      'nameidentifier',
-      'sub',
-      'user_id',
-      'userId',
-      'id',
-      'uid',
-      'userid'
-    ];
-
-    for (const claim of possibleUserIdClaims) {
-      if (decodedData[claim]) {
-        console.log(`Found user ID in claim: ${claim} = ${decodedData[claim]}`);
-        return decodedData[claim].toString();
-      }
-    }
-
-    // If no standard claims found, try to find any claim that looks like a user ID
-    for (const [key, value] of Object.entries(decodedData)) {
-      if (typeof value === 'string' && value.length > 0 && value.length < 50) {
-        // Check if it looks like a user ID (alphanumeric, no special chars except - and _)
-        if (/^[a-zA-Z0-9_-]+$/.test(value)) {
-          console.log(`Potential user ID found in claim: ${key} = ${value}`);
-          return value;
-        }
-      }
-    }
-
-    return null;
-  }
-
 
   loginByUAEPass(): void {
     this.modalMode = 'login';
     this.redirectToUAEPass();
   }
 
-  routeToForgetPassword(){
+  routeToForgetPassword(): void {
     this.router.navigate(['/forgot-password']);
   }
 
-  routeToInstitutionRegistration() {
+  routeToInstitutionRegistration(): void {
     this.modalMode = 'signUpInstitution';
     this.redirectToUAEPass();
   }
 
-  routeToIndividualRegistration() {
+  routeToIndividualRegistration(): void {
     this.modalMode = 'signUpIndividual';
     this.redirectToUAEPass();
   }
 
-  isValidCodeState(params: any): boolean {
-    return !!(params.code && params.state && params.code.trim() !== '' && params.state.trim() !== '');
-  }
-
-  private generateRandomState(): string {
-    return Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15);
-  }
-
   private redirectToUAEPass(): void {
-    const config = ApiEndpoints.UAE_PASS_CONFIG.getURLCredention; // Change to production when needed
-    const baseUrl = ApiEndpoints.UAE_PASS_CONFIG.baseUrl; // Change to production when needed
-    const state = this.generateRandomState();
+    this.spinnerService.show();
+
+    const config = ApiEndpoints.UAE_PASS_CONFIG.getURLCredention;
+    const baseUrl = ApiEndpoints.UAE_PASS_CONFIG.baseUrl;
+
     const uaePassURL =
       `${baseUrl}/authorize` +
       `?response_type=code` +
@@ -226,19 +138,17 @@ export class LoginComponent {
     window.location.href = uaePassURL;
   }
 
-  getUAEPassInfo(params: LoginUAEPassDto) {
-   
-    this.spinnerService.show();
+  getUAEPassInfo(params: LoginUAEPassDto): void {
     const storedState = sessionStorage.getItem('uae_pass_state');
     if (storedState && storedState !== params.state) {
       this.toastr.error('Security validation failed', 'Error');
       this.spinnerService.hide();
       return;
     }
+
     const storedMode = sessionStorage.getItem('uae_pass_mode') as ModalMode;
-    if (storedMode) {
-      this.modalMode = storedMode;
-    }
+    if (storedMode) this.modalMode = storedMode;
+
     switch (this.modalMode) {
       case 'login':
         this.handleUAEPassLogin(params);
@@ -249,10 +159,8 @@ export class LoginComponent {
       case 'signUpIndividual':
         this.handleUAEPassIndividualSignup(params);
         break;
-      default:
-        console.error('Invalid modal mode:', this.modalMode);
-        this.spinnerService.hide();
     }
+
     sessionStorage.removeItem('uae_pass_mode');
     sessionStorage.removeItem('uae_pass_state');
   }
@@ -263,11 +171,10 @@ export class LoginComponent {
       .subscribe({
         next: (res) => {
           this.handleLoginSuccess(res);
+          this.spinnerService.hide();
         },
         error: (err) => {
           this.handleUAEPassError(err);
-        },
-        complete: () => {
           this.spinnerService.hide();
         }
       });
@@ -277,33 +184,31 @@ export class LoginComponent {
     this.auth.saveToken(res?.token);
     const decodedData = this.auth.decodeToken();
 
-    if (decodedData) {
-      if (decodedData.Permissions) {
-        localStorage.setItem('permissions', JSON.stringify(decodedData.Permissions));
-      }
+    if (!decodedData) {
+      this.toastr.error(this.translate.instant('AUTH.MESSAGES.INVALID_TOKEN_ERROR'));
+      return;
+    }
 
-      if (decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
-        localStorage.setItem('pages', JSON.stringify(decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']));
-      }
+    if (decodedData.Permissions) {
+      localStorage.setItem('permissions', JSON.stringify(decodedData.Permissions));
+    }
 
-      const userId = this.extractUserIdFromToken(decodedData);
-      if (userId) {
-        localStorage.setItem('userId', userId);
-      } else {
-        this.toastr.error(this.translate.instant('AUTH.MESSAGES.TOKEN_EXTRACTION_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
-        this.spinnerService.hide();
-        return;
-      }
+    if (decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
+      localStorage.setItem('pages', JSON.stringify(decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']));
+    }
+
+    const userId = this.extractUserIdFromToken(decodedData);
+    if (userId) {
+      localStorage.setItem('userId', userId);
     } else {
-      this.toastr.error(this.translate.instant('AUTH.MESSAGES.INVALID_TOKEN_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+      this.toastr.error(this.translate.instant('AUTH.MESSAGES.TOKEN_EXTRACTION_ERROR'));
       this.spinnerService.hide();
       return;
     }
 
-    this.toastr.success(this.translate.instant('AUTH.MESSAGES.LOGIN_SUCCESS'), this.translate.instant('TOAST.TITLE.SUCCESS'));
-    this.spinnerService.hide();
+    this.toastr.success(this.translate.instant('AUTH.MESSAGES.LOGIN_SUCCESS'));
     this.initializeNotificationSession();
-
+     this.spinnerService.hide(); 
     this.router.navigate(['/home']);
   }
 
@@ -312,59 +217,99 @@ export class LoginComponent {
     this.auth.GetUAEPassInfo(params)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (res) => {
+        next: res => {
           localStorage.setItem('UAEPassInfo', JSON.stringify(res));
-          this.spinnerService.hide();
           this.router.navigate(['/register/institution']);
+          this.spinnerService.hide();
         },
-        error: (err) => {
+        error: err => {
           this.handleUAEPassError(err);
-        },
-        complete: () => {
           this.spinnerService.hide();
         }
       });
   }
 
-  /**
-   * Handle UAE Pass individual signup
-   */
   private handleUAEPassIndividualSignup(params: LoginUAEPassDto): void {
     this.auth.GetUAEPassInfo(params)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (res) => {
+        next: res => {
           localStorage.setItem('UAEPassInfo', JSON.stringify(res));
-          this.spinnerService.hide();
           this.router.navigate(['/register/individual']);
+          this.spinnerService.hide();
         },
-        error: (err) => {
+        error: err => {
           this.handleUAEPassError(err);
-        },
-        complete: () => {
           this.spinnerService.hide();
         }
       });
   }
 
   private handleUAEPassError(err: any): void {
-    const message = err.error?.message || err.error?.reason || 'UAE Pass authentication failed';
-    this.toastr.error(this.translate.instant(message), this.translate.instant('TOAST.TITLE.ERROR'));
+    const errormessage = err.error.reason;
+    const notVerifiedText = this.translate.instant('COMMON.notVerifiedUser');
+    const message = err.error.message || err.error.reason || 'UAE Pass authentication failed';
+    alert(message);
 
-    // Redirect to UAE Pass logout
-    const redirectUri = window.location.origin + '/login';
-    const logoutURL = `${ApiEndpoints.UAE_PASS_CONFIG.baseUrl}/logout?redirect_uri=${encodeURIComponent(redirectUri)}`;
-
-    setTimeout(() => {
-      window.location.href = logoutURL;
-    }, 2000); // Give user time to read the error message
-
+    if (message === notVerifiedText) {
+      const modalElement = document.getElementById('notVerifiedUser');
+      if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+      }
+    } else {
+      this.toastr.error(this.translate.instant(message), this.translate.instant('TOAST.TITLE.ERROR'));
+      this.redirectToLogout();
+    }
     this.spinnerService.hide();
   }
 
-  ngOnDestroy() {
+  private redirectToLogout(): void {
+    const redirectUri = window.location.origin + '/login';
+    const logoutURL = `${ApiEndpoints.UAE_PASS_CONFIG.baseUrl}/logout?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    setTimeout(() => (window.location.href = logoutURL), 2000);
+  }
+
+  private async initializeNotificationSession(): Promise<void> {
+    try {
+      await this.notificationService.initializeUserSession();
+    } catch (error) {
+      console.error('Notification session init error:', error);
+    }
+  }
+
+  private extractUserIdFromToken(decodedData: any): string | null {
+    const possibleClaims = [
+      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier',
+      'nameidentifier',
+      'sub',
+      'user_id',
+      'userId',
+      'id',
+      'uid',
+      'userid'
+    ];
+    for (const claim of possibleClaims) {
+      if (decodedData[claim]) return decodedData[claim].toString();
+    }
+    return null;
+  }
+
+  private generateRandomState(): string {
+    return Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
+  }
+
+  isValidCodeState(params: any): boolean {
+    return !!(params.code && params.state && params.code.trim() !== '' && params.state.trim() !== '');
+  }
+
+  ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
   }
-}
 
+  logout(): void {
+    this.redirectToLogout();
+  }
+}

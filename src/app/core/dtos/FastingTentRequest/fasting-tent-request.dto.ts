@@ -29,7 +29,6 @@ export interface FastingTentRequestDto {
 
 export interface CreateFastingTentRequestDto {
   mainApplyServiceId?: number; // will send as 0
-  userId: string;
   locationType?: string;
   locationTypeId: number;
   ownerName?: string;
@@ -158,7 +157,7 @@ export interface LocationDetailsDto {
 
 export interface CheckLocationAvailabilityDto {
   locationId: number;
-  userId: string;
+  //userId: string;
 }
 
 export interface GetAllFastingTentRequestParameter {

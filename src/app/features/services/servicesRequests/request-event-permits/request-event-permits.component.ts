@@ -217,10 +217,10 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           nonNullable: true,
         }),
 
-        userId: this.fb.control<string>('', {
-          validators: [Validators.required, Validators.maxLength(450)],
-          nonNullable: true,
-        }),
+        //userId: this.fb.control<string>('', {
+        //  validators: [Validators.required, Validators.maxLength(450)],
+        //  nonNullable: true,
+        //}),
 
         requestSide: this.fb.control<string>('', {
           validators: [Validators.required, Validators.maxLength(200)],
@@ -351,10 +351,10 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           validators: [Validators.required],
           nonNullable: true,
         }),
-        userId: this.fb.control(currentUser?.id ?? '', {
-          validators: [Validators.required],
-          nonNullable: true,
-        }),
+        //userId: this.fb.control(currentUser?.id ?? '', {
+        //  validators: [Validators.required],
+        //  nonNullable: true,
+        //}),
 
         // provider: this.fb.control<string | null>(null),
 
@@ -406,9 +406,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     const currentUser = this.authService.getCurrentUser();
     if (currentUser?.id) {
-      this.firstStepForm.patchValue({
-        userId: currentUser.id,
-      });
+      //this.firstStepForm.patchValue({
+      //  userId: currentUser.id,
+      //});
 
       // Load essential data first (user entity and main service options)
       const essentialOperations = [
@@ -989,7 +989,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     // 1)required
     (
       [
-        ['userId', 450],
+       // ['userId', 450],
         ['requestSide', 200],
         ['supervisingSide', 200],
         ['eventName', 200],
@@ -1144,7 +1144,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       return false;
 
     const mustHave = [
-      'userId',
+     // 'userId',
       'requestSide',
       'supervisingSide',
       'eventName',
@@ -1400,7 +1400,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       workFlowServiceType: Number(v.workFlowServiceType) as any,
 
       requestDate: toRFC3339(v.requestDate)!,
-      userId: v.userId,
+    //  userId: v.userId,
 
       // provider: v.provider ?? null,
       adTitle: v.adTitle,
@@ -1452,7 +1452,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       serviceType: 1,
       workFlowServiceType: 1,
       requestDate: new Date().toISOString(),
-      userId: v.userId,
+     // userId: v.userId,
       // adLang: 'ar',
       // newAd: true,
       // reNewAd: false,

@@ -205,7 +205,7 @@ export class EditProfileComponent implements OnInit {
       this.spinnerService.show();
 
       // Load user data and dropdowns
-      const userResponse = await this.userService.getUserById(this.userId).toPromise();
+      const userResponse = await this.userService.getUserProfileById().toPromise();
       this.loadDropdownData();
       
       if (userResponse) {

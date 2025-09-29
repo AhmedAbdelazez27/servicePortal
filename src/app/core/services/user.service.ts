@@ -12,6 +12,7 @@ import { ApiEndpoints } from '../constants/api-endpoints';
 export class UserService {
 
   private readonly BASE_URL = `${environment.apiBaseUrl}`;
+  private readonly UserBASE_URL = `${environment.apiBaseUrl}${ApiEndpoints.User.Base}`;
 
   constructor(private http: HttpClient) { }
 
@@ -32,12 +33,22 @@ export class UserService {
     return this.http.get(`${this.BASE_URL}${ApiEndpoints.User.GetById(id)}`);
   }
 
+  getUserProfileById(): Observable<any> {
+    const apiUrl = `${this.UserBASE_URL}${ApiEndpoints.User.GetMyProfile}`;
+    return this.http.get<any>(apiUrl);
+  }
+
   getUserTypes(): Observable<any> {
     return this.http.get(`${this.BASE_URL}${ApiEndpoints.User.Base}${ApiEndpoints.User.UserType}`);
   }
 
-  deleteUser(id: string): Observable<any> {
-    return this.http.post(`${this.BASE_URL}${ApiEndpoints.User.Delete(id)}`, {});
+  //deleteUser(id: string): Observable<any> {
+  //  return this.http.post(`${this.BASE_URL}${ApiEndpoints.User.Delete(id)}`, {});
+  //}
+
+  deleteUser(id: string) {
+    const apiUrl = `${this.UserBASE_URL}${ApiEndpoints.User.Delete}`;
+    return this.http.post(apiUrl, id);
   }
 
   getUsersForSelect2(payload: {

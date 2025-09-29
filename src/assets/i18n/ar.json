@@ -817,10 +817,13 @@
     "TERMS_AND_CONDITIONS": "الشروط والأحكام",
     "PRIVACY_POLICY": "سياسة الخصوصية",
     "AND": "و",
-     "AVAILABLE" : " متاح",
-    "NOT_AVAILABLE":"غير متاح",
-    "N_A":"غير متوفر",
-    "UNKNOWN_LOCATION":"موقع غير معروف"
+    "AVAILABLE": " متاح",
+    "NOT_AVAILABLE": "غير متاح",
+    "N_A": "غير متوفر",
+    "UNKNOWN_LOCATION": "موقع غير معروف",
+    "UAEPassCancelRequest": "قام المستخدم بإلغاء تسجيل الدخول",
+    "notVerifiedUser": "الاكونت غير صحيح",
+    "notVerifiedUserMessage": " أنت غير مؤهل للوصول إلى هذه الخدمة. إما أن حسابك لم تتم ترقيته أو لديك حساب زائر. يرجى الاتصال بـ بيت الشارقة لتتمكن من الوصول إلى الخدمة"
   },
   "SHARED": {
     "FORMS": {

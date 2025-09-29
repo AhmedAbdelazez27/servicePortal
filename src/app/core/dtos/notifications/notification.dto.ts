@@ -47,7 +47,7 @@ export interface SendNotificationToDepartmentDto {
 }
 
 export interface GetAllNotificationRequestDto {
-  userId: string;
+ // userId: string;
   isSeen?: boolean;
   skip: number;
   take: number;

@@ -832,7 +832,10 @@
     "AVAILABLE": "Available",
     "NOT_AVAILABLE": "Not Available",
     "N_A": "N_A",
-    "UNKNOWN_LOCATION": "Unknown Location"
+    "UNKNOWN_LOCATION": "Unknown Location",
+    "UAEPassCancelRequest": "User cancelled the login",
+    "notVerifiedUser": "Account is not verified",
+    "notVerifiedUserMessage": "You are not eligible to access this service. Your account is either not upgraded or you have a visitor account. Please contact Admin to access the services."
   },
   "SHARED": {
     "FORMS": {

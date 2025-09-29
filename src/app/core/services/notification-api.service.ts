@@ -19,6 +19,7 @@ import {
 })
 export class NotificationApiService {
   private readonly BASE_URL = environment.apiBaseUrl;
+  private readonly NotificationBASE_URL = `${environment.apiBaseUrl}${ApiEndpoints.Notifications.Base}`;
 
   constructor(private http: HttpClient) {}
 
@@ -64,10 +65,15 @@ export class NotificationApiService {
   /**
    * Get unseen notifications count for a user
    */
-  getUnseenNotificationsCount(userId: string): Observable<number> {
-    return this.http.get<number>(
-      `${this.BASE_URL}${ApiEndpoints.Notifications.GetUnseenCount(userId)}`
-    );
+  //getUnseenNotificationsCount(userId: string): Observable<number> {
+  //  return this.http.get<number>(
+  //    `${this.BASE_URL}${ApiEndpoints.Notifications.GetUnseenCount(userId)}`
+  //  );
+  //}
+
+  getUnseenNotificationsCount(): Observable<number>  {
+    const apiUrl = `${this.NotificationBASE_URL}${ApiEndpoints.Notifications.GetUnseenCount}`;
+    return this.http.get<number>(apiUrl);
   }
 
   /**

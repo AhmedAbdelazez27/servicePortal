@@ -162,7 +162,7 @@ export interface LocationDetailsDto {
 
 export interface CheckLocationAvailabilityDto {
   locationId: number;
-  userId: string;
+ // userId: string;
 }
 
 export interface GetAllDistributionSiteRequestParameter {

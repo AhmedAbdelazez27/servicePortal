@@ -1146,7 +1146,6 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
           serviceType: 1,
           workFlowServiceType: 1,
           requestDate: new Date().toISOString(),
-          userId: v.userId,
           // adLang: 'ar',
           // newAd: true,
           // reNewAd: false,

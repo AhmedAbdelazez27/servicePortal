@@ -13,7 +13,6 @@ export interface RequestComplaintDto {
 }
 
 export interface CreateRequestComplaintDto {
-  userId: string | null;
   complaintType: number;
   contactNumber: string;
   applicantName: string;

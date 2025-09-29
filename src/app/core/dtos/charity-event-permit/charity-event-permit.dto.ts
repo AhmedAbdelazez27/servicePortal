@@ -57,7 +57,7 @@ export interface RequestAdvertisement {
   serviceType: number;          
   workFlowServiceType: number;  
   requestDate: string;           
-  userId: string;
+  //userId: string;
   provider: string | null;
   adTitle: string;
   adLang: 'ar' | 'en';
