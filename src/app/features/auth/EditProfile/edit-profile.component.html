@@ -67,7 +67,22 @@
                   </div>
                   
                   <div class="profile-photo-upload" *ngIf="isBasicInfoEditMode" (click)="triggerProfilePhotoInput()">
-                    <div class="photo-placeholder">
+                    <!-- Show current photo with overlay when in edit mode -->
+                    <div class="photo-with-overlay" *ngIf="profilePhotoPreview">
+                      <img 
+                        class="profile-img" 
+                        [src]="profilePhotoPreview" 
+                        [alt]="'EDIT_PROFILE.PROFILE_PHOTO' | translate" />
+                      <div class="photo-edit-overlay">
+                        <div class="camera-icon">
+                          <i class="fas fa-camera" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>{{ 'EDIT_PROFILE.CHANGE_PHOTO' | translate }}</div>
+                      </div>
+                    </div>
+                    
+                    <!-- Show placeholder only when no photo exists -->
+                    <div class="photo-placeholder" *ngIf="!profilePhotoPreview">
                       <div class="text-center">
                         <div class="camera-icon">
                           <i class="fas fa-camera" style="font-size: 2rem;"></i>
@@ -75,6 +90,7 @@
                         <div>{{ 'EDIT_PROFILE.UPLOAD_PHOTO' | translate }}</div>
                       </div>
                     </div>
+                    
                     <input 
                       type="file" 
                       id="profilePhotoInput"
@@ -164,69 +180,8 @@
                   </div>
 
                   <!-- Institution User Fields -->
+                  
                   <div class="gr-1" *ngIf="isInstitutionUser()">
-                    <div class="data-1">
-                      <h2>{{ 'REGISTRATION.FOUNDATION_TYPE' | translate }}</h2>
-                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('foundationType')?.value || '-' }}</p>
-                      <input 
-                        *ngIf="isBasicInfoEditMode"
-                        type="text" 
-                        class="form-control" 
-                        formControlName="foundationType"
-                        [class.is-invalid]="isFieldInvalid('foundationType')"
-                        placeholder="{{ 'REGISTRATION.ENTER_FOUNDATION_TYPE' | translate }}">
-                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('foundationType')">
-                        {{ getFieldError('foundationType') }}
-                      </div>
-                    </div>
-
-                    <div class="data-1">
-                      <h2>{{ 'REGISTRATION.FOUNDATION_NAME' | translate }}</h2>
-                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('foundationName')?.value || '-' }}</p>
-                      <input 
-                        *ngIf="isBasicInfoEditMode"
-                        type="text" 
-                        class="form-control" 
-                        formControlName="foundationName"
-                        [class.is-invalid]="isFieldInvalid('foundationName')"
-                        placeholder="{{ 'REGISTRATION.ENTER_FOUNDATION_NAME' | translate }}">
-                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('foundationName')">
-                        {{ getFieldError('foundationName') }}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="gr-1" *ngIf="isInstitutionUser()">
-                    <div class="data-1">
-                      <h2>{{ 'REGISTRATION.LICENSE_NUMBER' | translate }}</h2>
-                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('licenseNumber')?.value || '-' }}</p>
-                      <input 
-                        *ngIf="isBasicInfoEditMode"
-                        type="text" 
-                        class="form-control" 
-                        formControlName="licenseNumber"
-                        [class.is-invalid]="isFieldInvalid('licenseNumber')"
-                        placeholder="{{ 'REGISTRATION.ENTER_LICENSE_NUMBER' | translate }}">
-                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('licenseNumber')">
-                        {{ getFieldError('licenseNumber') }}
-                      </div>
-                    </div>
-
-                    <div class="data-1">
-                      <h2>{{ 'REGISTRATION.LICENSE_END_DATE' | translate }}</h2>
-                      <p *ngIf="!isBasicInfoEditMode">{{ profileForm.get('licenseEndDate')?.value || '-' }}</p>
-                      <input 
-                        *ngIf="isBasicInfoEditMode"
-                        type="date" 
-                        class="form-control" 
-                        formControlName="licenseEndDate"
-                        [class.is-invalid]="isFieldInvalid('licenseEndDate')"
-                        [min]="today">
-                      <div class="invalid-feedback" *ngIf="isBasicInfoEditMode && isFieldInvalid('licenseEndDate')">
-                        {{ getFieldError('licenseEndDate') }}
-                      </div>
-                    </div>
-
                     <div class="data-1">
                       <h2>{{ 'REGISTRATION.ENTITY' | translate }}</h2>
                       <p *ngIf="!isBasicInfoEditMode">
@@ -239,6 +194,7 @@
                         [placeholder]="'REGISTRATION.SELECT_ENTITY' | translate"
                         [items]="entities"
                         bindLabel="text"
+                        class="w-100"
                         bindValue="id"
                         [loading]="entitiesLoading"
                         (scrollToEnd)="onEntitiesScrollToEnd()">

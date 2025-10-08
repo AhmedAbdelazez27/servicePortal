@@ -316,7 +316,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           validators: [Validators.min(0)],
         }),
 
-        beneficiaryIdNumber: this.fb.control<string | null>(null),
+        beneficiaryIdNumber: this.fb.control<string | null>(null, {
+          validators: [this.emiratesIdValidator.bind(this)],
+        }),
 
         donationCollectionChannelIds: this.fb.control<number[]>([1], {
           validators: [arrayMinLength(1)],
@@ -1620,7 +1622,64 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     return uaeMobilePattern.test(value) ? null : { pattern: true };
   }
 
+  // Emirates ID validation
+  emiratesIdValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    
+    // If not individual request type, no validation needed
+    if (!this.isIndividualRequestType()) {
+      return null;
+    }
+
+    // If individual request type and field is empty, it's required
+    if (!value || value.toString().trim() === '') {
+      return { required: true };
+    }
+
+    // Check if exactly 15 digits (only numbers) - Emirates ID format
+    const cleanValue = value.toString().trim();
+    const emiratesIdPattern = /^\d{15}$/;
+    
+    if (!emiratesIdPattern.test(cleanValue)) {
+      return { pattern: true };
+    }
+
+    return null;
+  }
+
+  // Check if request type is individual (حالة فردية)
+  isIndividualRequestType(): boolean {
+    const requestTypeId = this.firstStepForm?.get('lkpRequestTypeId')?.value;
+    
+    // Find the selected request type
+    const selectedType = this.requestTypes.find(type => type.id === requestTypeId);
+    
+    // Check if the text contains "فردية" or "individual" (case insensitive)
+    if (selectedType && selectedType.text) {
+      const text = selectedType.text.toLowerCase();
+      return text.includes('فردية') || text.includes('individual') || text.includes('فردي');
+    }
+    
+    return false;
+  }
+
+  // Method to handle request type change
+  onRequestTypeChange(): void {
+    // Re-validate beneficiary ID field when request type changes
+    const beneficiaryControl = this.firstStepForm.get('beneficiaryIdNumber');
+    if (beneficiaryControl) {
+      beneficiaryControl.updateValueAndValidity();
+    }
+  }
+
   restrictMobileInput(event: KeyboardEvent): void {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9]/.test(char)) {
+      event.preventDefault();
+    }
+  }
+
+  restrictToNumbers(event: KeyboardEvent): void {
     const char = String.fromCharCode(event.which);
     if (!/[0-9]/.test(char)) {
       event.preventDefault();

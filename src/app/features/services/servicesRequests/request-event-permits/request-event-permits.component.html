@@ -193,7 +193,7 @@
                         'is-invalid':
                           firstStepForm.get('lkpRequestTypeId')?.touched &&
                           firstStepForm.get('lkpRequestTypeId')?.invalid
-                      }">
+                      }" (change)="onRequestTypeChange()">
                     </ng-select>
                     <div class="invalid-feedback" *ngIf="
                         firstStepForm.get('lkpRequestTypeId')?.touched &&
@@ -202,7 +202,25 @@
                       {{ "VALIDATION.REQUIRED_FIELD" | translate }}
                     </div>
                   </div>
-
+ <!-- Beneficiary ID Number - Show only for individual request type -->
+ <div class="col-xl-6 mb-4" *ngIf="isIndividualRequestType()">
+  <label class="form-label">{{
+    "event.beneficiaryIdNumber" | translate
+    }} <span class="text-danger">*</span></label>
+  <input type="text" class="form-control" formControlName="beneficiaryIdNumber" 
+         placeholder="784-____-_______-_"
+         maxlength="15"
+         (keypress)="restrictToNumbers($event)"
+         [class.is-invalid]="firstStepForm.get('beneficiaryIdNumber')?.touched && firstStepForm.get('beneficiaryIdNumber')?.invalid" />
+  <div class="invalid-feedback" *ngIf="firstStepForm.get('beneficiaryIdNumber')?.touched && firstStepForm.get('beneficiaryIdNumber')?.errors">
+    <div *ngIf="firstStepForm.get('beneficiaryIdNumber')?.hasError('required')">
+      {{ "VALIDATION.REQUIRED_FIELD" | translate }}
+    </div>
+    <div *ngIf="firstStepForm.get('beneficiaryIdNumber')?.hasError('pattern')">
+      {{ "VALIDATION.INVALID_EMIRATES_ID" | translate }}
+    </div>
+  </div>
+</div>
                   <!-- Event Location -->
                   <div class="col-xl-6 mb-4">
                     <label class="form-label">
@@ -241,6 +259,7 @@
                       {{ "VALIDATION.REQUIRED_FIELD" | translate }}
                     </div>
                   </div>
+                    
                   <!-- Start / End -->
                   <div class="col-xl-6 mb-4">
                     <label class="form-label">
@@ -552,13 +571,7 @@
                     </div>
                   </div>
 
-                  <!-- Beneficiary ID Number -->
-                  <div class="col-xl-6 mb-4">
-                    <label class="form-label">{{
-                      "event.beneficiaryIdNumber" | translate
-                      }}</label>
-                    <input class="form-control" formControlName="beneficiaryIdNumber" />
-                  </div>
+               
 
                   <!-- Donation Channels (multi) ng-select -->
                   <div class="col-xl-12 mb-4">

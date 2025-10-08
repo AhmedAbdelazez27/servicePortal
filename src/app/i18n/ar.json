@@ -370,6 +370,7 @@
     "DOCUMENTS": "المستندات والمرفقات",
     "CONTACT_ADDRESS_INFO": "معلومات الاتصال والعنوان",
     "UPLOAD_PHOTO": "رفع صورة",
+    "CHANGE_PHOTO": "تغيير الصورة",
     "PROFILE_PHOTO": "صورة الملف الشخصي",
     "EXISTING_FILE": "الملف الحالي",
     "NEW_FILE": "ملف جديد",
@@ -578,6 +579,7 @@
     "INVALID_FILE_TYPE": "نوع ملف غير صالح. مسموح فقط بملفات JPEG، PNG، PDF، DOC، DOCX",
     "INVALID_PHONE": "يرجى إدخال رقم هاتف صحيح",
     "INVALID_PHONE_FORMAT": "يرجى إدخال تنسيق رقم هاتف صحيح",
+    "INVALID_EMIRATES_ID": "رقم الهوية الإماراتية يجب أن يكون 15 رقم",
     "INVALID_EMAIL": "يرجى إدخال عنوان بريد إلكتروني صحيح",
     "PLEASE_COMPLETE_REQUIRED_FIELDS": "يرجى إكمال جميع الحقول المطلوبة",
     "PLEASE_WAIT_CHECKING_AVAILABILITY": "يرجى الانتظار أثناء فحص التوفر...",
@@ -871,7 +873,8 @@
       "NO_PARTNERS_ADDED": "لم يتم إضافة أي شركاء حتى الآن",
       "NO_PARTNERS": "لا توجد شركاء متاحون",
       "ADD_PARTNER": "إضافة شريك",
-      "PARTNER_ATTACHMENTS": "مرفقات الشريك"
+      "PARTNER_ATTACHMENTS": "مرفقات الشريك" ,
+       "ATTACHMENTS" :"اضافة مرفق"
     },
     "ATTACHMENTS": {
       "TITLE": "المرفقات",

@@ -36,8 +36,8 @@ export class InitiativeService {
     if (!params.id) {
       throw new Error('id must not be null');
     }
-    const apiUrl = `${this.apiUrl}/Get/${params.id}/${params.regionName}`;
-    return this.http.get<InitiativeDto>(apiUrl);
+    const apiUrl = `${this.apiUrl}/Get`;
+    return this.http.post<InitiativeDto>(apiUrl, params);
   }
 
   createAsync(initiative: CreateInitiativeDto): Observable<InitiativeDto> {

@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router
   ) {
-    this.showLoader();
+    //this.showLoader();
    }
 
   ngOnInit(): void {

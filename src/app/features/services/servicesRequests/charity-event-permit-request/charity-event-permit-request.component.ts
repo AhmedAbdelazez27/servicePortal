@@ -253,9 +253,9 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
     const currentUser = this.authService.getCurrentUser();
     if (currentUser?.id) {
-      //this.firstStepForm.patchValue({
-      //  userId: currentUser.id
-      //});
+      this.firstStepForm.patchValue({
+        userId: currentUser.id
+      });
 
       // Load essential data first (user entity and main service options)
       const essentialOperations = [

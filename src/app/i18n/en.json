@@ -1,1977 +1,3959 @@
 {
+
   "HELLO": "Welcome",
+
   "LANGUAGE": "Language",
+
   "TOGGLE_LANG": "Switch to Arabic",
+
   "PAGE_NOT_FOUND": "Oops! Page not found.",
+
   "BACK_HOME": "Back to Home",
+
   "TOAST": {
+
     "TITLE": {
+
       "SUCCESS": "Success",
+
       "ERROR": "Error",
+
       "WARNING": "Warning",
+
       "INFO": "Information"
+
     },
+
     "VALIDATION_ERROR": "Please correct the validation errors",
+
     "REGION_CREATED": "Region created successfully",
+
     "REGION_CREATE_FAILED": "Failed to create region",
+
     "REGION_UPDATED": "Region updated successfully",
+
     "REGION_UPDATE_FAILED": "Failed to update region",
+
     "REGION_DELETED": "Region deleted successfully",
+
     "REGION_DELETE_FAILED": "Failed to delete region"
+
   },
+
   "APP": {
+
     "MESSAGES": {
+
       "OPERATION_SUCCESS": "Operation completed successfully",
+
       "OPERATION_ERROR": "An error occurred during the operation"
+
     }
+
   },
+
   "NOTIFICATIONS": {
+
     "TITLE": "Notifications",
+
     "NO_NOTIFICATIONS": "No notifications",
+
     "LOADING": "Loading notifications...",
+
     "MARK_ALL_READ": "Mark all as read",
+
     "VIEW_ALL": "View all notifications",
+
     "VIEW_ALL_MESSAGE": "View all notifications feature coming soon!",
+
     "REFRESH": "Refresh notifications",
+
     "NEW_NOTIFICATION": "New notification",
+
     "MANAGEMENT": {
+
       "TITLE": "Notification Management",
+
       "SUBTITLE": "Manage and view all your notifications"
+
     },
+
     "FIELDS": {
+
       "TITLE": "Title",
+
       "TITLE_AR": "Title (Arabic)",
+
       "MESSAGE": "Message",
+
       "MESSAGE_AR": "Message (Arabic)",
+
       "DATE": "Date",
+
       "STATUS": "Status",
+
       "SERVICE_STATUS": "Service Status",
+
       "EMPLOYEE_ID": "Employee ID",
+
       "WORKFLOW_STEP": "Workflow Step",
+
       "REGISTER_ID": "Register ID",
+
       "LINK": "Link",
+
       "LAST_MODIFIED": "Last Modified"
+
     },
+
     "STATUS": {
+
       "SEEN": "Seen",
+
       "UNSEEN": "Unseen"
+
     },
+
     "STATS": {
+
       "TOTAL": "Total",
+
       "UNSEEN": "Unseen",
+
       "SEEN": "Seen",
+
       "THIS_PAGE": "This Page",
+
       "PAGE": "Page"
+
     },
+
     "TABLE": {
+
       "TITLE": "Notifications List"
+
     },
+
     "ACTIONS": {
+
       "VIEW": "View Details",
+
       "MARK_AS_SEEN": "Mark as Seen",
+
       "DELETE": "Delete",
+
       "REFRESH": "Refresh",
+
       "OPEN_LINK": "Open Link"
+
     },
+
     "MODAL": {
+
       "TITLE": "Notification Details"
+
     },
+
     "EMPTY": {
+
       "TITLE": "No Notifications Found",
+
       "DESCRIPTION": "You don't have any notifications at the moment. Check back later for updates."
+
     },
+
     "MESSAGES": {
+
       "MARKED_AS_SEEN": "Notification marked as seen",
+
       "ALREADY_SEEN": "Notification is already marked as seen",
+
       "DELETED_SUCCESSFULLY": "Notification deleted successfully",
+
       "CONFIRM_DELETE": "Are you sure you want to delete this notification? This action cannot be undone.",
+
       "DELETE_NOT_IMPLEMENTED": "Delete functionality is not yet implemented on the server"
+
     },
+
     "ERRORS": {
+
       "LOAD_FAILED": "Failed to load notifications",
+
       "MARK_SEEN_FAILED": "Failed to mark notification as seen",
+
       "DELETE_FAILED": "Failed to delete notification",
+
       "USER_NOT_FOUND": "User not found. Please log in again."
+
     },
+
     "FILTERS": {
+
       "SEARCH_PLACEHOLDER": "Search notifications...",
+
       "PAGE_SIZE": "items per page"
+
     }
+
   },
+
   "AUTH": {
+
     "LOGIN": {
+
       "TITLE": "Login",
+
       "EMAIL_ADDRESS": "Email address",
+
       "EMAIL_PLACEHOLDER": "Enter Your Email Address",
+
       "PASSWORD": "Password",
+
       "PASSWORD_PLACEHOLDER": "Enter Your Password",
+
       "REMEMBER_ME": "Remember me",
+
       "FORGOT_PASSWORD": "Forgot Password?",
+
       "LOGIN_BUTTON": "Login",
+
       "UAE_PASS_LOGIN": "Login with UAE Pass",
-      "DONT_HAVE_ACCOUNT": "Don't Have Account",
+
+      "DONT_HAVE_ACCOUNT": "Don't Have Account ?",
+
       "CREATE_NEW_ACCOUNT": "Create New Account",
+
       "REGISTRATION_INSTITUTIONS": "Registration of Institutions",
+
       "REGISTRATION_INDIVIDUALS": "Registration of Individuals"
+
     },
+
     "FORGOT_PASSWORD": {
+
       "TITLE": "Forgot Password",
+
       "DESCRIPTION": "OTP will be sent to your email, Please Enter your email",
+
       "EMAIL_ADDRESS": "Email Address",
+
       "EMAIL_PLACEHOLDER": "Enter your email",
+
       "SEND_BUTTON": "Send",
+
       "VALID_EMAIL_ERROR": "Please enter a valid email"
+
     },
+
     "VERIFY_OTP": {
+
       "TITLE": "OTP",
+
       "DESCRIPTION": "One Time Password will be sent to your email",
+
       "EXPIRES_IN": "OTP will expire in",
+
       "VERIFY_BUTTON": "Verify OTP",
+
       "DIDNT_RECEIVE": "Didn't receive OTP?",
+
       "RESEND_OTP": "Resend OTP"
+
     },
+
     "RESET_PASSWORD": {
+
       "TITLE": "Reset Password",
+
       "DESCRIPTION": "Enter your new password",
+
       "PASSWORD": "Password",
+
       "PASSWORD_PLACEHOLDER": "Enter Password",
+
       "CONFIRM_PASSWORD": "Confirm Password",
+
       "CONFIRM_PASSWORD_PLACEHOLDER": "Enter Confirm Password",
+
       "PASSWORD_GUIDELINES": "Password must be at least 8 characters long and contain uppercase, lowercase, number and special character",
+
       "PASSWORD_REQUIRED": "Password is required",
+
       "PASSWORD_MIN_LENGTH": "Password must be at least 8 characters long",
+
       "PASSWORD_PATTERN": "Password must contain uppercase, lowercase, number and special character",
+
       "CONFIRM_PASSWORD_REQUIRED": "Confirm password is required",
+
       "PASSWORDS_MATCH": "Passwords match",
+
       "CONFIRM_BUTTON": "Confirm"
+
     },
+
     "MESSAGES": {
+
       "LOGIN_SUCCESS": "Login successful",
+
       "LOGIN_FAILED": "Login failed. Please check your credentials.",
+
       "TOKEN_EXTRACTION_ERROR": "Unable to extract user information from token",
+
       "INVALID_TOKEN_ERROR": "Invalid token received from server",
+
       "OTP_VERIFY_SUCCESS": "OTP verified successfully",
+
       "OTP_VERIFY_FAILED": "OTP verification failed",
+
       "PASSWORD_RESET_SUCCESS": "Password reset successfully",
+
       "PASSWORD_RESET_FAILED": "Password reset failed",
+
       "CORRECT_EMAIL": "Please enter a correct email address",
+
       "NO_DATA": "No data found",
+
       "SUCCESS": "Success",
+
       "ERROR": "Error",
+
       "LOGOUT_SUCCESS": "You have been logged out successfully"
+
     }
+
   },
+
   "PROFILE": {
+
     "BASIC_INFO": "Basic Information",
+
     "NAME_EN": "English Name",
+
     "ENTER_NAME_EN": "Enter English Name",
+
     "NAME_AR": "Arabic Name",
+
     "ENTER_NAME_AR": "Enter Arabic Name",
+
     "ENGLISH_NAME": "English Name",
+
     "ENTER_ENGLISH_NAME": "Enter English Name",
+
     "ARABIC_NAME": "Arabic Name",
+
     "ENTER_ARABIC_NAME": "Enter Arabic Name",
+
     "USERNAME": "Username",
+
     "ENTER_USERNAME": "Enter Username",
+
     "GENDER": "Gender",
+
     "SELECT_GENDER": "Select Gender",
+
     "CIVIL_ID": "Civil ID",
+
     "ENTER_CIVIL_ID": "Enter Civil ID",
+
     "CONTACT_INFO": "Contact Information",
+
     "EMAIL": "Email",
+
     "ENTER_EMAIL": "Enter Email",
+
     "MOBILE": "Mobile",
+
     "ENTER_MOBILE": "Enter Mobile",
+
     "TELEPHONE": "Telephone",
+
     "ENTER_TELEPHONE": "Enter Telephone",
+
     "ADDRESS_INFO": "Address Information",
+
     "COUNTRY": "Country",
+
     "SELECT_COUNTRY": "Select Country",
+
     "CITY": "City",
+
     "SELECT_CITY": "Select City",
+
     "ADDRESS": "Address",
+
     "ENTER_ADDRESS": "Enter Address",
+
     "PO_BOX": "P.O. Box",
+
     "ENTER_PO_BOX": "Enter P.O. Box",
+
     "DOCUMENTS": "Documents",
+
     "CLICK_TO_UPLOAD": "Click to upload",
+
     "FILE_TYPES": "PDF, JPG, PNG files are allowed",
+
     "ATTACHMENT_REQUIRED": "Attachment is required",
+
     "CHANGE_PASSWORD": "Change Password",
+
     "NEW_PASSWORD": "New Password",
+
     "ENTER_NEW_PASSWORD": "Enter New Password",
+
     "CONFIRM_NEW_PASSWORD": "Confirm New Password",
+
     "PASSWORDS_MATCH": "Passwords match",
+
     "PASSWORD_OPTIONAL": "Leave password fields empty if you don't want to change your password",
+
     "UPDATE_PROFILE": "Update Profile",
+
     "UPDATING": "Updating...",
+
     "CANCEL": "Cancel",
+
     "USER_NOT_FOUND": "User not found. Please log in again.",
+
     "LOAD_USER_ERROR": "Failed to load user data",
+
     "UPDATE_SUCCESS": "Profile updated successfully",
+
     "UPDATE_ERROR": "Failed to update profile",
+
     "GENERAL_ERROR": "An error occurred while updating profile",
+
     "COUNTRIES_LOAD_ERROR": "Failed to load countries",
+
     "CITIES_LOAD_ERROR": "Failed to load cities",
+
     "GENDER_LOAD_ERROR": "Failed to load gender options",
+
     "ATTACHMENT_CONFIG_ERROR": "Failed to load attachment configurations",
+
     "FILE_SIZE_ERROR": "File size should not exceed 5MB",
+
     "FILE_TYPE_ERROR": "Only JPEG, PNG, GIF, and PDF files are allowed",
+
     "VALIDATION_ERROR": "Please fill all required fields correctly"
+
   },
+
   "CONTACT": {
+
     "TITLE": "Contact Us",
+
     "CONTACT_INFORMATION": "Contact Information",
+
     "SEND_MESSAGE": "Send Message",
+
     "SUCCESS_MESSAGE": "Your message has been sent successfully! We will get back to you soon.",
+
     "ERROR_MESSAGE": "Failed to send message. Please try again later.",
+
     "NAME_REQUIRED": "Name is required",
+
     "EMAIL_REQUIRED": "Email is required",
+
     "EMAIL_INVALID": "Please enter a valid email",
+
     "MOBILE_REQUIRED": "Mobile number is required",
+
     "MOBILE_INVALID": "Please enter a valid UAE mobile number",
+
     "MESSAGE_REQUIRED": "Message is required",
+
     "NAME_PLACEHOLDER": "Name",
+
     "EMAIL_PLACEHOLDER": "Email",
+
     "MOBILE_PLACEHOLDER": "Mobile Number",
+
     "TITLE_PLACEHOLDER": "Title",
+
     "MESSAGE_PLACEHOLDER": "Message",
+
     "ADDRESS": "Charity Coordination Council - Ajman, Al Rumailah , Shurafa Tower 2",
+
     "PHONE": "067116111",
+
     "EMAIL": "Info@ccc.gov.ae",
+
     "SEND": "Send",
+
     "SENDING": "Sending..."
+
   },
+
   "REGISTRATION": {
+
     "TERMS_TITLE": "Terms & Conditions",
+
     "ACCEPT_TERMS": "I have read and agree to the",
+
     "I_AGREE": "I agree",
+
     "I_DISAGREE": "I do not agree",
+
     "INDIVIDUAL": {
+
       "TITLE": "Individual Registration"
+
     },
+
     "INSTITUTION": {
+
       "TITLE": "Institution Registration"
+
     },
+
     "TOASTR": {
+
       "COUNTRIES_LOAD_ERROR": "Failed to load countries",
+
       "ENTITIES_LOAD_ERROR": "Failed to load entities",
+
       "CITIES_LOAD_ERROR": "Failed to load cities",
+
       "GENDER_LOAD_ERROR": "Failed to load gender options",
+
       "ATTACHMENT_CONFIG_ERROR": "Failed to load attachment configurations",
+
       "FILE_SIZE_ERROR": "File size should not exceed 5MB",
+
       "FILE_TYPE_ERROR": "Only JPEG, PNG, GIF, and PDF files are allowed",
+
       "IMAGE_TYPE_ERROR": "Only JPEG, PNG, and GIF image files are allowed",
+
       "VALIDATION_ERROR": "Please fill all required fields correctly",
+
       "REGISTRATION_SUCCESS": "Registration completed successfully!",
+
       "REGISTRATION_ERROR": "Registration failed. Please try again.",
+
       "GENERAL_ERROR": "An error occurred during registration"
+
     },
+
     "BASIC_INFO": "Basic Information",
+
     "NAME_EN": "English Name",
+
     "ENTER_NAME_EN": "Enter English Name",
+
     "NAME_AR": "Arabic Name",
+
     "ENTER_NAME_AR": "Enter Arabic Name",
+
     "ENGLISH_NAME": "English Name",
+
     "ENTER_ENGLISH_NAME": "Enter English Name",
+
     "ARABIC_NAME": "Arabic Name",
+
     "ENTER_ARABIC_NAME": "Enter Arabic Name",
+
     "USERNAME": "Username",
+
     "ENTER_USERNAME": "Enter Username",
+
     "GENDER": "Gender",
+
     "SELECT_GENDER": "Select Gender",
+
     "CIVIL_ID": "Civil ID",
+
     "ENTER_CIVIL_ID": "Enter Civil ID",
+
     "ID_NUMBER_ISSUE_DATE": "ID Number Issue Date",
+
     "ID_NUMBER_EXPIRY_DATE": "ID Number Expiry Date",
+
     "DATE_OF_BIRTH": "Date of Birth",
+
     "FOUNDATION_TYPE": "Foundation Type",
+
     "ENTER_FOUNDATION_TYPE": "Enter Foundation Type",
+
     "SELECT_FOUNDATION_TYPE": "Select Foundation Type",
+
     "ENTITY": "Entity",
+
     "SELECT_ENTITY": "Select Entity",
+
     "FOUNDATION_NAME": "Foundation Name",
+
     "ENTER_FOUNDATION_NAME": "Enter Foundation Name",
+
     "LICENSE_NUMBER": "License Number",
+
     "ENTER_LICENSE_NUMBER": "Enter License Number",
+
     "LICENSE_END_DATE": "License End Date",
+
     "SELECT_LICENSE_END_DATE": "Select License End Date",
+
     "LICENSE_DATE_FUTURE": "License end date must be in the future",
+
     "CONTACT_INFO": "Contact Information",
+
     "EMAIL": "Email",
+
     "ENTER_EMAIL": "Enter Email",
+
     "MOBILE": "Mobile",
+
     "ENTER_MOBILE": "Enter Mobile",
+
     "TELEPHONE": "Telephone",
+
     "ENTER_TELEPHONE": "Enter Telephone",
+
     "ADDRESS_INFO": "Address Information",
+
     "COUNTRY": "Country",
+
     "SELECT_COUNTRY": "Select Country",
+
     "CITY": "City",
+
     "SELECT_CITY": "Select City",
+
     "ADDRESS": "Address",
+
     "ENTER_ADDRESS": "Enter Address",
+
     "PO_BOX": "P.O. Box",
+
     "ENTER_PO_BOX": "Enter P.O. Box",
+
     "EMERGENCY_CONTACT": "Emergency Contact",
+
     "ENTER_EMERGENCY_CONTACT": "Enter Emergency Contact",
+
     "EMERGENCY_CONTACT_NAME": "Emergency Contact Name",
+
     "ENTER_EMERGENCY_CONTACT_NAME": "Enter Emergency Contact Name",
+
     "DOCUMENTS": "Documents",
+
     "CLICK_TO_UPLOAD": "Click to upload",
+
     "FILE_TYPES": "PDF, JPG, PNG files are allowed",
+
     "ATTACHMENT_REQUIRED": "Attachment is required",
+
     "CREATE_PASSWORD": "Create Password",
+
     "ENTER_PASSWORD": "Enter Password",
+
     "CONFIRM_PASSWORD": "Confirm Password",
+
     "PASSWORDS_MATCH": "Passwords match",
+
     "CREATE_ACCOUNT": "Create Account",
+
     "CREATING": "Creating...",
+
     "CANCEL": "Cancel",
+
     "PENDING": {
+
       "TITLE": "Registration Submitted Successfully",
+
       "SUBTITLE": "Your registration has been submitted and is pending admin approval",
+
       "INFO_TITLE": "What happens next?",
+
       "INFO_MESSAGE": "Your registration request has been successfully submitted. Our administrative team will review your information and documents. You will receive an email notification once your account is approved.",
+
       "PROCESS_TITLE": "Registration Process",
+
       "STEP_1_TITLE": "Registration Submitted",
+
       "STEP_1_DESC": "Your registration form and documents have been successfully submitted to our system.",
+
       "STEP_2_TITLE": "Admin Review",
+
       "STEP_2_DESC": "Our administrative team will review your information and verify all submitted documents.",
+
       "STEP_3_TITLE": "Account Approval",
+
       "STEP_3_DESC": "Once approved, you will receive an email notification and can log in to access the portal.",
+
       "CONTACT_TITLE": "Need Help?",
+
       "CONTACT_MESSAGE": "If you have any questions about your registration or need assistance, please contact our support team:",
+
       "EMAIL": "Email",
+
       "PHONE": "Phone",
+
       "GO_TO_LOGIN": "Go to Login",
+
       "GO_TO_HOME": "Go to Home"
+
     }
+
   },
+
   "EDIT_PROFILE": {
+
     "TITLE": "Edit Profile",
+
     "SUBTITLE": "Update your account information and documents",
+
     "LOADING": "Loading...",
+
     "LOADING_PROFILE": "Loading your profile information...",
+
     "USER_NOT_FOUND": "User not found. Please log in again.",
+
     "LOAD_ERROR": "Failed to load profile data",
+
     "PROFILE": "Profile",
+
     "EDIT": "Edit",
+
     "SAVE": "Save",
+
     "SAVING": "Saving...",
+
     "CANCEL": "Cancel",
+
     "BASIC_INFO_SAVED": "Basic information saved successfully",
+
     "CONTACT_ADDRESS_SAVED": "Contact and address information saved successfully",
+
     "DOCUMENTS": "Documents & Attachments",
+
     "CONTACT_ADDRESS_INFO": "Contact & Address Information",
+
     "UPLOAD_PHOTO": "Upload Photo",
+
+    "CHANGE_PHOTO": "Change Photo",
+
     "PROFILE_PHOTO": "Profile Photo",
+
     "EXISTING_FILE": "Current File",
+
     "NEW_FILE": "New File",
+
     "REMOVE_EXISTING_FILE": "Remove current file",
+
     "CLICK_TO_UPLOAD_NEW": "Click to upload new file",
+
     "CHANGE_PASSWORD": "Change Password",
+
     "PASSWORD_OPTIONAL": "Leave blank if you don't want to change your password",
+
     "CURRENT_PASSWORD": "Current Password",
+
     "ENTER_CURRENT_PASSWORD": "Enter Current Password",
+
     "NEW_PASSWORD": "New Password",
+
     "ENTER_NEW_PASSWORD": "Enter New Password",
+
     "CONFIRM_NEW_PASSWORD": "Confirm New Password",
+
     "SAVE_PASSWORD": "Save Password",
+
     "UPDATING": "Updating...",
+
     "VALIDATION_ERROR": "Please correct the errors below",
+
     "UPDATE_SUCCESS": "Profile updated successfully!",
+
     "UPDATE_ERROR": "Failed to update profile. Please try again.",
+
     "PASSWORD_CHANGED": "Password changed successfully!",
+
     "PASSWORD_CHANGE_ERROR": "Failed to change password. Please check your current password.",
+
     "ATTACHMENT_SAVE_WARNING": "Profile updated, but some attachments may not have been saved.",
+
     "MANDATORY_ATTACHMENT_WARNING": "This is a mandatory attachment and cannot be deleted. You can only update it.",
+
     "CONFIRM_DELETE_ATTACHMENT": "Are you sure you want to delete this attachment? This action cannot be undone.",
+
     "ATTACHMENT_MARKED_FOR_DELETION": "Attachment marked for deletion. Click 'Save' to confirm.",
+
     "ATTACHMENTS_DELETED": "Attachments deleted successfully!",
+
     "ATTACHMENT_DELETE_ERROR": "Failed to delete attachment. Please try again.",
+
     "ATTACHMENTS_UPDATED": "Attachments updated successfully!",
+
     "REQUIRED_ATTACHMENTS_ERROR": "Please upload all required attachments.",
+
     "MASTER_ID_MISSING": "Master ID is missing from user data. Please refresh the page and try again.",
+
     "CLICK_TO_UPDATE": "Click to update file",
+
     "MANDATORY": "Mandatory",
+
     "OPTIONAL": "Optional",
+
     "DELETE_ATTACHMENT": "Delete attachment",
+
     "MANDATORY_CANNOT_DELETE": "Mandatory attachments cannot be deleted",
+
     "UPDATE_ATTACHMENT": "Update attachment",
+
     "ATTACHMENT_STATUS": {
+
       "UPDATED": "Updated",
+
       "NEW": "New",
+
       "EXISTING": "Existing",
+
       "NONE": "None"
+
     },
+
     "FILE": "File",
+
     "KILOBYTES": "KB",
+
     "FILE_PREVIEW": "File preview",
+
     "LOGO": "Logo",
+
     "ENTER_EDIT_MODE_FIRST": "Please enter edit mode first to upload files",
+
     "PROFILE_PHOTO_UPDATE_ERROR": "Failed to update profile photo. Please try again.",
+
     "PROFILE_PHOTO_UPDATED": "Profile photo updated successfully!",
+
     "ATTACHMENTS_SAVED": "Attachments saved successfully!",
+
     "ATTACHMENT_SAVE_ERROR": "Failed to save attachments. Please try again."
+
   },
+
   "VALIDATION": {
+
     "REQUIRED": "This field is required",
+
     "EMAIL": "Please enter a valid email address",
+
     "MINLENGTH": "Minimum length is {{length}} characters",
+
     "PATTERN": "Please enter a valid format",
+
     "PASSWORD_MISMATCH": "Passwords do not match",
+
     "TAB_STATUS": "Tab Status",
+
     "ALL_REQUIRED_FIELDS_COMPLETED": "All required fields completed",
+
     "ALL_REQUIRED_ATTACHMENTS_UPLOADED": "All required attachments uploaded",
+
     "PLEASE_UPLOAD_REQUIRED_ATTACHMENTS": "Please upload all required attachments",
+
     "UPLOADED": "Uploaded",
+
     "COMPLETE_REQUIRED_FIELDS_TO_CONTINUE": "Please complete all required fields to continue",
+
     "COMPLETE_ALL_REQUIRED_FIELDS_TO_SUBMIT": "Please complete all required fields to submit",
+
     "PHONE_MIN_LENGTH": "Phone number must be at least 7 digits",
+
     "REQUIRED_FIELD": "This field is required",
+
     "FORM_INVALID": "Please fill in all required fields correctly",
+
     "FILE_TOO_LARGE": "File size must not exceed 5MB",
+
     "INVALID_FILE_TYPE": "Invalid file type. Only JPEG, PNG, PDF, DOC, DOCX files are allowed",
+
     "INVALID_PHONE": "Please enter a valid phone number",
+
     "INVALID_PHONE_FORMAT": "Please enter a valid phone number format",
+    "INVALID_EMIRATES_ID": "Emirates ID must be exactly 15 digits",
+
     "INVALID_EMAIL": "Please enter a valid email address",
+
     "PLEASE_COMPLETE_REQUIRED_FIELDS": "Please complete all required fields",
+
     "PLEASE_WAIT_CHECKING_AVAILABILITY": "Please wait while checking availability...",
+
     "LOCATION_NOT_AVAILABLE": "The selected location is not available",
+
     "PLEASE_SELECT_VALID_LOCATION": "Please select a valid location",
+
     "END_DATE_AFTER_START_DATE": "End date must be after start date",
+
     "CONSECUTIVE_DOTS": "Email cannot contain consecutive dots",
+
     "LEADING_TRAILING_DOTS": "Email cannot start or end with dots",
+
     "INVALID_DOMAIN": "Invalid email domain format",
+
     "LOCATION_REQUIRED": "Please select a location",
+
     "SELECT_LOCATION_METHOD": "Please select a location selection method",
+
     "ATTACHMENT_REQUIRED": "Attachment is required",
+
     "MIN_ONE_PARTNER": "Please add at least one partner.",
+
     "DATE_RANGE": "End date must be after or equal to the start date.",
+
     "DATE_RANGE_TOO_LONG": "Date range cannot exceed 1 year",
+
     "MIN_ONE_TARGET": "Select at least one target type.",
+
     "MIN_ONE_METHOD": "Select at least one advertising method.",
+
     "MIN_ONE_LOCATION": "Add at least one location.",
+
     "MIN_LENGTH_2": "Minimum length is 2 characters",
+
     "EMAIL_REQUIRED": "Email is required",
+
     "EMAIL_INVALID": "Please enter a valid email address",
+
     "PASSWORD_REQUIRED": "Password is required",
+
     "PASSWORD_MIN_LENGTH": "Password must be at least 8 characters",
+
     "PASSWORD_PATTERN": "Password must contain uppercase, lowercase, number and special character",
+
     "CONFIRM_PASSWORD_REQUIRED": "Confirm password is required",
+
     "PASSWORDS_DONT_MATCH": "Passwords do not match",
+
     "START_DATE_PAST": "Start date cannot be before today.",
+
     "END_DATE_BEFORE_START": "End date must be the same as or after the start date.",
+
     "PHONE_PATTERN": "Please enter a valid phone number.",
+
     "PHONE_LENGTH": "Please enter a valid phone number with 7 to 20 digits.",
+
     "MIN_ONE_CHANNEL": "Select at least one channel.",
+
     "START_DATE_PAST_MESSAGE": "Start date cannot be in the past. Please select a valid future date.",
+
     "END_DATE_BEFORE_START_MESSAGE": "End date must be after start date. Please select a valid end date.",
+
     "ACCEPT_TERMS": "You must accept the terms and conditions"
+
   },
+
   "SERVICES": {
+
     "TITLE": "Services",
+
     "DETAILS": "Service Details",
+
     "LOADING": "Loading...",
+
     "LOADING_DETAILS": "Loading service details...",
+
     "TRY_AGAIN": "Try Again",
+
     "DETAILS_SECTION": "Details",
+
     "NO_DESCRIPTION": "No detailed description available for this service.",
+
     "REFERENCE_NUMBER": "Service Reference Number",
+
     "SERVICE_TYPE": "Service Type",
+
     "SERVICE_STEPS": "Service Steps",
+
     "STEP": "Step",
+
     "ATTRIBUTES": "Attributes",
+
     "VALUE": "Value",
+
     "NO_VALUES": "No values available for this attribute",
+
     "REQUIRED_DOCUMENTS": "Required Documents",
+
     "PROCEED_CTA": "Ready to proceed with this service? Click here to start your request.",
+
     "NO_SERVICES_FOUND": "No services found",
+
     "SEARCH": "Search",
+
     "SEARCH_PLACEHOLDER": "Search services...",
+
     "FILTER": "Filter",
+
     "SORT_BY": "Sort by",
+
     "SORT_NAME": "Name",
+
     "SORT_TYPE": "Type",
+
     "SORT_CATEGORY": "Category",
+
     "APPLY_FILTERS": "Apply Filters",
+
     "CLEAR_FILTERS": "Clear Filters",
+
     "SERVICE_CATEGORY": "Category",
+
     "SERVICE_DESCRIPTION": "Description",
+
     "SERVICE_DURATION": "Duration",
+
     "SERVICE_COST": "Cost",
+
     "SERVICE_STATUS": "Status",
+
     "VIEW_DETAILS": "View Details",
+
     "START_REQUEST": "Start Request"
+
   },
+
   "HOME": {
+
     "WELCOME": "Welcome",
+
     "FEATURED_SERVICES": "Featured Services",
+
     "RECENT_ACTIVITIES": "Recent Activities",
+
     "QUICK_ACCESS": "Quick Access",
+
     "POPULAR_SERVICES": "Popular Services",
+
     "NEWS_AND_UPDATES": "News & Updates",
+
     "VIEW_ALL_SERVICES": "View All Services",
+
     "VIEW_ALL_NEWS": "View All News",
+
     "LEARN_MORE": "Learn More",
+
     "GET_STARTED": "Get Started",
+
     "WELCOME_MESSAGE": "Welcome to the CCC Services Portal",
+
     "WELCOME_SUBTITLE": "Access government services easily and efficiently",
+
     "SERVICES_COUNT": "Available Services",
+
     "USERS_COUNT": "Active Users",
+
     "REQUESTS_COUNT": "Total Requests",
+
     "READ_MORE": "Read More",
+
     "SERVICES": "Services",
+
     "MORE": "More",
+
     "SHOW_ALL_SERVICES": "Show All Services",
+
     "SHOW_ALL_INITIATIVES": "Show All Initiatives",
+
     "CAROUSEL": {
+
       "SLIDE_1_TITLE": "Ajman Volunteer Team and Al-Ihsan Charity launch the \"Our Eid is More Beautiful With You\" initiative to bring happiness to orphans.",
+
       "SLIDE_2_TITLE": "Ajman Volunteer Team and Al-Ihsan Charity launch the \"Our Eid is More Beautiful With You\" initiative to bring happiness to orphans.",
+
       "SLIDE_3_TITLE": "Ajman Volunteer Team and Al-Ihsan Charity launch the \"Our Eid is More Beautiful With You\" initiative to bring happiness to orphans."
+
     },
+
     "SERVICE_CARDS": {
+
       "NO_DESCRIPTION": "No description available",
+
       "LOADING": "Loading...",
+
       "NO_SERVICES": "No services available at the moment."
+
     },
+
     "CAMPAIGNS": {
+
       "TITLE": "Featured Campaigns",
+
       "FOOD_AID": "Food Aid Campaign",
+
       "ORPHAN_SUPPORT": "Orphan Support Campaign",
+
       "EMERGENCY_HEALTHCARE": "Emergency Healthcare",
+
       "SHELTER_SUPPORT": "Shelter Support",
+
       "REQUIRED_AMOUNT": "Required Amount",
+
       "COLLECTED_AMOUNT": "Collected Amount"
+
     },
+
     "INITIATIVES": {
+
       "TITLE": "Our Initiatives",
+
       "INITIATIVE": "Initiative",
+
       "INITIATIVE_1": "Initiative 1",
+
       "INITIATIVE_2": "Initiative 2",
+
       "INITIATIVE_3": "Initiative 3",
+
       "DESCRIPTION": "Description",
+
       "DESCRIPTION_1": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+
       "DESCRIPTION_2": "Box without image.",
+
       "DESCRIPTION_3": "Another example with image and content.",
+
       "NO_INITIATIVES": "No Initiatives Available",
+
       "NO_INITIATIVES_DESCRIPTION": "There are currently no initiatives available. Please check back later."
+
     },
+
     "NO_HERO_SECTIONS": "No hero sections available at the moment.",
+
     "HERO_SECTION": {
+
       "TITLE": "Hero Section Details",
+
       "DESCRIPTION": "View detailed information about this hero section",
+
       "NO_IMAGE": "No image available",
+
       "NO_DESCRIPTION": "No description available",
+
       "EXTERNAL_LINK": "External Link",
+
       "ADDITIONAL_INFO": "Additional Information",
+
       "IMAGE_ALT": "Hero section image"
+
     }
+
   },
+
   "REQUEST_PLAINT": {
+
     "TITLE": "Request a Grievance",
+
     "DESCRIPTION": "Submit your grievance request by filling out the form below with all required information and supporting documents.",
+
     "STEP1_TITLE": "Main Information",
+
     "STEP2_TITLE": "Plaint Reasons",
+
     "STEP3_TITLE": "Evidence",
+
     "STEP4_TITLE": "Justifications",
+
     "STEP5_TITLE": "Attachments",
+
     "MAIN_INFO": "Main Information",
+
     "REQUEST_NO": "Request Number",
+
     "REQUEST_DATE": "Request Date",
+
     "MAIN_APPLY_SERVICE": "Related Main Service",
+
     "REQUESTING_ENTITY": "Requesting Entity",
+
     "DETAILS": "Details",
+
     "DETAILS_PLACEHOLDER": "Describe your grievance in detail...",
+
     "NOTES": "Notes",
+
     "NOTES_PLACEHOLDER": "Any additional notes or comments...",
+
     "PLAINT_REASONS": "Plaint Reasons",
+
     "SELECT_REASON": "Select Reason",
+
     "REASON": "Reason",
+
     "EVIDENCE": "Evidence",
+
     "ENTER_EVIDENCE": "Enter Evidence",
+
     "EVIDENCE_PLACEHOLDER": "Provide evidence supporting your grievance...",
+
     "JUSTIFICATIONS": "Justifications",
+
     "JUSTIFICATIONS_OPTIONAL": "Justifications are optional but recommended to strengthen your case.",
+
     "ENTER_JUSTIFICATION": "Enter Justification",
+
     "JUSTIFICATION": "Justification",
+
     "JUSTIFICATION_PLACEHOLDER": "Provide justification for your grievance...",
+
     "ATTACHMENTS": "Required Documents",
+
     "NO_ENTITIES_AVAILABLE": "No entities available for this user"
+
   },
+
   "REQUEST_COMPLAINT": {
+
     "TITLE": "Request Complaint",
+
     "DESCRIPTION": "Submit your complaint request with detailed information",
+
     "MAIN_INFO": "Complaint Information",
+
     "REQUEST_DATE": "Request Date",
+
     "COMPLAINT_TYPE": "Complaint Type",
+
     "APPLICANT_NAME": "Applicant Name",
+
     "CONTACT_NUMBER": "Contact Number",
+
     "EMAIL": "Email",
+
     "DETAILS": "Details",
+
     "NOTES": "Notes",
+
     "APPLICANT_NAME_PLACEHOLDER": "Enter applicant name",
+
     "CONTACT_NUMBER_PLACEHOLDER": "Enter contact number",
+
     "EMAIL_PLACEHOLDER": "Enter email address",
+
     "DETAILS_PLACEHOLDER": "Describe your complaint in detail",
+
     "NOTES_PLACEHOLDER": "Additional notes (optional)",
+
     "NO_TYPES_AVAILABLE": "No complaint types available",
+
     "MOCK_COMPLAINT": "Complaint",
+
     "MOCK_SUGGESTION": "Suggestion",
+
     "MOCK_THANKS": "Thanks"
+
   },
+
   "ATTACHMENTS_GENERAL": {
+
     "TITLE": "Attachments",
+
     "DOCUMENT_TYPE": "Document Type",
+
     "FILE": "File",
+
     "DRAG_DROP_OR_CLICK": "Drag & drop files here or click to select",
+
     "SUPPORTED_FORMATS": "Supported formats: PDF, DOC, DOCX, JPG, PNG (max 5MB)",
+
     "DRAG_DROP_FILES": "Drag and drop files here",
+
     "OR": "or",
+
     "BROWSE_FILES": "Browse files"
+
   },
+
   "ATTACHMENTS": {
+
     "TITLE": "Attachments",
+
     "DOCUMENT_TYPE": "Document Type",
+
     "FILE": "File",
+
     "DRAG_DROP_OR_CLICK": "Drag & drop files here or click to select",
+
     "SUPPORTED_FORMATS": "Supported formats: PDF, DOC, DOCX, JPG, PNG (max 5MB)",
+
     "DRAG_DROP_FILES": "Drag and drop files here",
+
     "OR": "or",
+
     "BROWSE_FILES": "Browse files",
+
     "ADD_MORE": "Add More Files",
+
     "MULTIPLE_FILES_ALLOWED": "Multiple files can be selected at once"
+
   },
+
   "SUCCESS": {
+
     "REQUEST_PLAINT_CREATED": "Your grievance request has been submitted successfully!",
+
     "REQUEST_COMPLAINT_CREATED": "Complaint request created successfully",
+
     "FASTING_TENT_REQUEST_CREATED": "Fasting tent request submitted successfully!",
+
     "DISTRIBUTION_SITE_REQUEST_CREATED": "Distribution site permit request submitted successfully!",
+
     "LOCATION_AVAILABLE": "Location is available",
+
     "LOCATION_SELECTED": "Location selected successfully",
+
     "PARTNER_ADDED": "Partner added successfully",
+
     "PARTNER_REMOVED": "Partner removed successfully"
+
   },
+
   "ERRORS": {
+
     "SERVICE_ID_NOT_FOUND": "Service ID not found",
+
     "FAILED_LOAD_SERVICE_DETAILS": "Failed to load service details. Please try again.",
+
     "FAILED_LOAD_SERVICES": "Failed to load services. Please try again.",
+
     "UNKNOWN_DEPARTMENT": "Unknown Department",
+
     "USER_NOT_FOUND": "User not found. Please log in again.",
+
     "FAILED_LOAD_DATA": "Failed to load data. Please try again.",
+
     "FAILED_CREATE_REQUEST_PLAINT": "Failed to create grievance request. Please try again.",
+
     "FAILED_CREATE_REQUEST_COMPLAINT": "Failed to create complaint request",
+
     "FAILED_LOAD_COMPLAINT_TYPES": "Failed to load complaint types",
+
     "AUTHENTICATION_REQUIRED": "Authentication required. Please login again.",
+
     "FAILED_CREATE_FASTING_TENT_REQUEST": "Failed to create fasting tent request. Please try again.",
+
     "FAILED_CREATE_DISTRIBUTION_SITE_REQUEST": "Failed to create distribution site permit request. Please try again.",
+
     "FAILED_LOAD_LOCATIONS": "Failed to load locations. Please try again.",
+
     "FAILED_LOAD_INITIATIVES": "Failed to load initiatives. Please try again.",
+
     "INITIATIVE_ID_NOT_FOUND": "Initiative ID not found.",
+
     "FAILED_LOAD_INITIATIVE_DETAILS": "Failed to load initiative details. Please try again.",
+
     "FAILED_LOAD_MAP": "Failed to load interactive map. Please try again.",
+
     "FAILED_CHECK_AVAILABILITY": "Failed to check location availability. Please try again.",
+
     "FAILED_LOAD_LOCATION_DETAILS": "Failed to load location details. Please try again.",
+
     "LOCATION_NOT_AVAILABLE": "This location is not available.",
+
     "FAILED_LOAD_CHARITY_ORGANIZATIONS": "Failed to load charity organizations. Please try again.",
+
     "FAILED_LOAD_POLLS": "Failed to load surveys. Please try again.",
+
     "FAILED_LOAD_HERO_SECTIONS": "Failed to load hero sections. Please try again.",
+
     "FAILED_LOAD_HERO_SECTION": "Failed to load hero section details. Please try again.",
+
     "INVALID_ID": "Invalid ID provided."
+
   },
+
   "WARNINGS": {
+
     "REASON_ALREADY_ADDED": "This reason has already been added."
+
   },
+
   "COMMON": {
+
     "LOADING": "Loading...",
+
     "LOADING_DATA": "Loading data, please wait...",
+
     "ERROR": "Error",
+
     "ERROR_OCCURRED": "An error occurred while loading the data.",
+
     "REFRESH": "Refresh",
+
     "VIEW": "View",
+
     "OPEN_IN_GOOGLE_MAPS": "Open in Google Maps",
+
     "BACK_TO_INITIATIVES": "Back to Initiatives",
+
     "BACK_TO_HOME": "Back to Home",
+
     "VISIT_LINK": "Visit Link",
+
     "VIEW_ORDER": "View Order",
+
     "STATUS": "Status",
+
     "ACTIVE": "Active",
+
     "INACTIVE": "Inactive",
+
     "Action": "Action",
+
     "ViewInfo": "Show Details",
+
     "ShowInfo": "Show Details",
+
     "StudyDetails": "Study Details",
+
     "Clear": "Clear",
+
     "Search": "Apply",
+
     "Data": " Search Result",
+
     "Close": "Close",
+
     "NoData": "No data available to display",
+
     "SearchTitle": "Filter",
+
     "Select": "-- Select --",
+
     "PrintExcel": "Export to Excel",
+
     "Total": "Total",
+
     "Print": " Print PDF",
+
     "Required": "This Field is Required",
+
     "ViewHistoryInfo": "Beneficiary History",
+
     "ViewPaymentInfo": "Guarantee Disbursements",
+
     "ViewContractInfo": "Contracts",
+
     "users": "Users",
+
     "screens": "Screens",
+
     "entities": "Entities",
+
     "edit": "Edit",
+
     "deletd": "Delete",
+
     "cancel": "Cancel",
+
     "addNew": "Add New",
+
     "save": "Save",
+
     "role": "Roles",
+
     "permissions": "Permissions",
+
     "dept": "Department",
+
     "userdept": "Users in Department",
+
     "deleteWarning": "Are you sure you want delete",
+
     "requestComplaint": "Request Complaint",
+
     "MORE_FILES": "Add More Files",
+
     "DESCRIPTION": "Description",
+
     "TARGET_GROUP": "Target Group",
+
     "REQUEST_SERVICE": "Request Service",
+
     "LOADING_COMMENTS": "Loading comments...",
+
     "LOADING_ATTACHMENTS": "Loading attachments...",
+
     "AUTO_GENERATED": "Auto Generated",
+
     "SELECT_OPTION": "Select an option",
+
     "ADD": "Add",
+
     "REMOVE": "Remove",
+
     "ACTIONS": "Actions",
+
     "PREVIOUS": "Previous",
+
     "NEXT": "Next",
+
     "SUBMIT": "Submit",
+
     "CANCEL": "Cancel",
+
     "OPTIONAL": "Optional",
+
     "ADD_PARTNER": "Add Partner",
+
     "CHECKING_AVAILABILITY": "Checking availability...",
+
     "SUCCESS": "Success",
+
     "DELETE": "Delete",
+
     "BACK": "Back",
+
     "SERVICE_INFO": "Service Information",
+
     "APPLICATION_NO": "Application Number",
+
     "APPLICATION_DATE": "Application Date",
+
     "PERMIT_NUMBER": "Permit Number",
+
     "TAB": "Tab",
+
     "OF": "of",
+
     "GO_BACK": "Go Back",
+
     "DATA_NOT_FOUND": "Data not found",
+
     "COMMENT": "Comment",
+
     "COMMENTS": "Comments",
+
     "DEPARTMENT": "Department",
+
     "FILES": "Files",
+
     "VIEW_ATTACHMENT": "View Attachment",
+
     "WORKFLOW_COMMENTS": "Workflow Comments",
+
     "WORKFLOW_COMMENTS_DESC": "View and add workflow comments",
+
     "ADD_COMMENT": "Resend request",
+
     "NO_WORKFLOW_STEP_FOUND": "No workflow step found for adding comments",
+
     "ENTER_COMMENT": "Enter comment",
+
     "ATTACHMENTS": "Attachments",
+
     "NO_ATTACHMENTS": "No attachments",
+
     "NO_ATTACHMENTS_FOUND": "No attachments found",
+
     "ERROR_LOADING_DATA": "Error loading data",
+
     "ERROR_LOADING_ATTACHMENTS": "Error loading attachments",
+
     "CLOSE": "Close",
+
     "DOWNLOAD": "Download",
+
     "UPLOADED_ON": "Uploaded on",
+
     "INVALID_ID": "Invalid ID",
+
     "NAME": "Name",
+
     "TYPE": "Type",
+
     "LICENSE_NUMBER": "License Number",
+
     "LICENSE_ISSUER": "License Issuer",
+
     "LICENSE_EXPIRY": "License Expiry",
+
     "CONTACT_DETAILS": "Contact Details",
+
     "INVALID_PARTNER_ID": "Invalid partner ID",
+
     "ERROR_DETAILS": "Error Details",
+
     "SUGGESTIONS": "Suggestions",
+
     "RETRY": "Retry",
+
     "REFRESH_PAGE": "Refresh Page",
+
     "CHECK_SERVICE": "Check Service",
+
     "CONTACT_SUPPORT": "Contact Support",
+
     "COPY_ERROR": "Copy Error Details",
+
     "NETWORK_ERROR": "Network error occurred",
+
     "UNAUTHORIZED_ACCESS": "Unauthorized access",
+
     "NO_VALID_ID_URL": "No valid ID provided in the URL",
+
     "ERROR_DETAILS_COPIED": "Error details copied to clipboard",
+
     "FAILED_COPY_ERROR": "Failed to copy error details",
+
     "NO_COORDINATES_AVAILABLE": "No location coordinates available to display on map",
+
     "MAP_CONTAINER_NOT_FOUND": "Map container not found",
+
     "MAP_CONTAINER_NO_DIMENSIONS": "Map container has no dimensions",
+
     "NO_LOCATION_COORDINATES": "No location coordinates available",
+
     "FAILED_ADD_MARKER": "Failed to add location marker",
+
     "FAILED_INITIALIZE_MAP": "Failed to initialize map",
+
     "USING_FALLBACK_TILES": "Using fallback map tiles",
+
     "ATTACHMENT": "Attachment",
+
     "UNKNOWN": "Unknown",
+
     "INDIVIDUAL": "Individual",
+
     "ORGANIZATION": "Organization",
+
     "GOVERNMENT": "Government",
+
     "LOGIN_AGAIN_SESSION_EXPIRED": "You may need to log in again or your session may have expired.",
+
     "TEMPORARY_ISSUE_TRY_AGAIN": "This is usually a temporary issue. Try again in a few minutes.",
+
     "CHECK_INTERNET_CONNECTION": "Check your internet connection and try again.",
+
     "CONTACT_SUPPORT_IF_PERSISTS": "If this problem persists, please contact support with the error details.",
+
     "LOGIN_AGAIN_ACCESS_SERVICE": "Please log in again to access this service.",
+
     "PERMIT_NOT_FOUND_VERIFY_ID": "The requested distribution site permit could not be found. Please verify the ID or contact support.",
+
     "UNABLE_CONNECT_SERVER": "Unable to connect to the server. Please check your internet connection and try again.",
+
     "SERVER_ISSUES_TRY_LATER": "The server is experiencing issues. Please try again later or contact support if the problem persists.",
+
     "UNEXPECTED_ERROR_TRY_AGAIN": "An unexpected error occurred. Please try again or contact support if the problem persists.",
+
     "COMMENT_TYPE": "Comment Type",
+
     "DOCUMENT_TYPE": "Document Type",
+
     "FILE": "File",
+
     "TARGET_TYPE": "Target Type",
+
     "LOCATION": "Location",
+
     "METHOD": "Method",
+
     "NO_ADS": "No Ads",
+
     "NO_PARTNERS": "No Partners",
+
     "TERMS_AND_CONDITIONS": "Terms & Conditions",
+
     "PRIVACY_POLICY": "Privacy Policy",
+
     "AND": "and",
+
     "AVAILABLE": "Available",
+
     "NOT_AVAILABLE": "Not Available",
+
     "N_A": "N_A",
+
     "UNKNOWN_LOCATION": "Unknown Location",
+
     "UAEPassCancelRequest": "User cancelled the login",
+
     "notVerifiedUser": "Account is not verified",
+
     "notVerifiedUserMessage": "You are not eligible to access this service. Your account is either not upgraded or you have a visitor account. Please contact Admin to access the services."
+
   },
+
   "SHARED": {
+
     "FORMS": {
+
       "SUPERVISOR_INFO": "Supervisor Information",
+
       "SUPERVISOR_NAME": "Supervisor Name",
+
       "SUPERVISOR_NAME_PLACEHOLDER": "Enter supervisor's full name",
+
       "SUPERVISOR_MOBILE": "Supervisor Mobile",
+
       "SUPERVISOR_MOBILE_PLACEHOLDER": "Enter supervisor's mobile number",
+
       "JOB_TITLE": "Job Title",
+
       "JOB_TITLE_PLACEHOLDER": "Enter job title or position",
+
       "PARTNER_NAME": "Partner Name",
+
       "PARTNER_NAME_PLACEHOLDER": "Enter partner name",
+
       "PARTNER_TYPE": "Partner Type",
+
       "LICENSE_ISSUER": "License Issuer",
+
       "LICENSE_ISSUER_PLACEHOLDER": "Enter license issuer",
+
       "LICENSE_NUMBER": "License Number",
+
       "LICENSE_NUMBER_PLACEHOLDER": "Enter license number",
+
       "LICENSE_EXPIRY_DATE": "License Expiry Date",
+
       "CONTACT_DETAILS": "Contact Details",
+
       "CONTACT_DETAILS_PLACEHOLDER": "Enter contact details",
+
       "START_DATE": "Start Date",
+
       "END_DATE": "End Date",
+
       "OWNER_NAME": "Owner Name",
+
       "OWNER_NAME_PLACEHOLDER": "Enter the owner's full name",
+
       "REGION_NAME": "Region Name",
+
       "STREET_NAME": "Street Name",
+
       "STREET_NAME_PLACEHOLDER": "Enter the street name",
+
       "GROUND_NO": "Ground Number",
+
       "GROUND_NO_PLACEHOLDER": "Enter ground/plot number",
+
       "ADDRESS": "Address",
+
       "ADDRESS_PLACEHOLDER": "Enter the full address",
+
       "NOTES": "Notes",
+
       "NOTES_PLACEHOLDER": "Additional notes or comments",
+
       "REQUEST_TYPE": "Request Type",
+
       "LOCATION_TYPE": "Location Type",
+
       "TENT_DATE": "Tent Date",
+
       "CONSULTANT_FROM_AJMAN": "Consultant from Ajman",
+
       "CONSULTANT_APPROVED_FROM_POLICE": "Consultant approved from Police",
+
       "TENT_IS_SET_UP": "Tent is set up"
+
     },
+
     "PARTNERS": {
+
       "TITLE": "Partners",
+
       "OPTIONAL": "Partners (Optional)",
+
       "OPTIONAL_DESC": "Add partner organizations if applicable",
+
       "NO_PARTNERS_ADDED": "No partners have been added yet",
+
       "NO_PARTNERS": "No partners available",
+
       "ADD_PARTNER": "Add Partner",
-      "PARTNER_ATTACHMENTS": "Partner Attachments"
+
+      "PARTNER_ATTACHMENTS": "Partner Attachments",
+
+           "ATTACHMENTS" :"  Add Attachment"
+
     },
+
     "ATTACHMENTS": {
+
       "TITLE": "Attachments",
+
       "DESC": "Upload required documents and attachments",
+
       "VIEW_DESC": "View uploaded documents",
+
       "NO_ATTACHMENTS": "No attachments available",
+
       "ATTACHMENT": "Attachment",
+
       "FILE": "File",
+
       "DRAG_DROP_FILES": "Drag and drop files here",
+
       "OR": "or",
+
       "BROWSE_FILES": "Browse files",
+
       "SUPPORTED_FORMATS": "Supported formats: PDF, DOC, DOCX, JPG, PNG (max 5MB)"
+
     },
+
     "LOCATION": {
+
       "DETAILS": "Location Details",
+
       "DESC": "View location information and map",
+
       "PHOTO": "Location Photo",
+
       "NAME": "Location Name",
+
       "OWNER": "Location Owner",
+
       "ADDRESS": "Location Address",
+
       "ON_MAP": "Location on Map",
+
       "NO_INFO": "No location information available",
+
       "SELECT_ON_MAP": "Select Location on Map",
+
       "SELECTED_LOCATION": "Selected Location",
+
       "SELECTED_COORDINATES": "Selected Coordinates"
+
     },
+
     "MAP": {
+
       "LOADING_ISSUE": "Map Loading Issue",
+
       "LOADING_ERROR": "Failed to load map. Please try refreshing the page.",
+
       "TRY_AGAIN": "Try Again",
+
       "CREATION_FAILED": "Failed to create map",
+
       "TILES_FAILED": "Failed to load map tiles",
+
       "INSTRUCTIONS_DISTRIBUTION": "Click on the map to select the distribution site location",
+
       "INSTRUCTIONS_FASTING_TENT": "Green markers: Available locations | Red markers: Unavailable locations",
+
       "COORDINATE_ERRORS": {
+
         "INVALID_SEPARATOR": "Invalid coordinate format: {{0}}",
+
         "INVALID_COUNT": "Expected 2 coordinates, got {{0}}",
+
         "INVALID_NUMBERS": "Coordinates are not valid numbers",
+
         "INVALID_ZERO": "Coordinates 0,0 might be invalid",
+
         "INVALID_RANGE": "Coordinates outside valid ranges",
+
         "INVALID_UAE": "Location coordinates outside UAE bounds"
+
       }
+
     },
+
     "TABS": {
+
       "BASIC_INFORMATION": "Basic Information",
+
       "BASIC_INFO_DESC": "View request basic information",
+
       "MAIN_INFO": "Main Information",
+
       "DATE_DETAILS": "Date Details",
+
       "DATE_DETAILS_DESC": "View dates and configuration details",
+
       "SUPERVISOR_INFO_TAB": "Supervisor Information",
+
       "SUPERVISOR_INFO_DESC": "Provide supervisor contact details and information",
+
       "PARTNERS_TAB": "Partners",
+
       "ATTACHMENTS_TAB": "Attachments"
+
     }
+
   },
+
   "VIEW_DISTRIBUTION_SITE": {
+
     "TITLE": "View Distribution Site Permit",
+
     "DESCRIPTION": "View and manage distribution site permit details",
+
     "TABS": {
+
       "BASIC_INFO": "Basic Information",
+
       "LOCATION_INFO": "Location Information",
+
       "DATE_INFO": "Date Information",
+
       "SUPERVISOR_INFO": "Supervisor Information",
+
       "PARTNERS_INFO": "Partners Information",
+
       "WORKFLOW_STEPS": "Process Steps",
+
       "WORKFLOW_COMMENTS": "Workflow Comments"
+
     },
+
     "ACTIONS": {
+
       "BACK": "Back to List",
+
       "PRINT": "Print Details",
+
       "EXPORT": "Export PDF"
+
     },
+
     "STATUS": {
+
       "ACTIVE": "Active",
+
       "PENDING": "Pending",
+
       "APPROVED": "Approved",
+
       "REJECTED": "Rejected"
+
     }
+
   },
+
   "REGIONS": {
+
     "TITLE": "Regions Management",
+
     "ADD_NEW": "Add New Region",
+
     "EDIT": "Edit Region",
+
     "VIEW": "View Region",
+
     "REGION_NAME": "Region Name",
+
     "REGION_NAME_EN": "Region Name (English)",
+
     "ENTER_REGION_NAME": "Enter Region Name",
+
     "ENTER_REGION_NAME_EN": "Enter Region Name in English",
+
     "SEARCH_NAME": "Search by Name",
+
     "SEARCH_PLACEHOLDER": "Search regions...",
+
     "STATUS": "Status",
+
     "ACTIVE": "Active",
+
     "CREATE": "Create",
+
     "UPDATE": "Update",
+
     "CANCEL": "Cancel",
+
     "CLOSE": "Close",
+
     "DELETE_CONFIRMATION": "Are you sure you want to delete this region?"
+
   },
+
   "LOCATIONS": {
+
     "TITLE": "Locations Management",
+
     "ADD_NEW": "Add New Location",
+
     "EDIT": "Edit Location",
+
     "VIEW": "View Location",
+
     "LOCATION_NAME": "Location Name",
+
     "LOCATION_ADDRESS": "Location Address",
+
     "ENTER_LOCATION_NAME": "Enter Location Name",
+
     "ENTER_LOCATION_ADDRESS": "Enter Location Address",
+
     "SEARCH_NAME": "Search by Name",
+
     "SEARCH_PLACEHOLDER": "Search locations...",
+
     "STATUS": "Status",
+
     "ACTIVE": "Active",
+
     "CREATE": "Create",
+
     "UPDATE": "Update",
+
     "CANCEL": "Cancel",
+
     "CLOSE": "Close",
+
     "DELETE_CONFIRMATION": "Are you sure you want to delete this location?"
+
   },
+
   "CONTACT_INFORMATION": {
+
     "TITLE": "Contact Information",
+
     "EDIT": "Edit Contact Information",
+
     "VIEW": "View Contact Information",
+
     "NAME": "Name",
+
     "EMAIL": "Email Address",
+
     "PHONE": "Phone Number",
+
     "ADDRESS": "Address",
+
     "SAVE": "Save",
+
     "CANCEL": "Cancel",
+
     "UPDATE_SUCCESS": "Contact information updated successfully",
+
     "DELETE_SUCCESS": "Contact information deleted successfully",
+
     "FIELD_TITLE": "Subject",
+
     "MESSAGE": "Message",
+
     "CREATED_DATE": "Created Date"
+
   },
+
   "ERROR": {
+
     "FETCH_REGIONS": "Failed to fetch regions"
+
   },
+
   "DISTRIBUTION_SITE": {
+
     "TITLE": "Distribution Site Permit",
+
     "DESCRIPTION": "Apply for a distribution site permit to distribute goods and services",
+
     "FORM": {
+
       "MAIN_INFO_DESC": "Enter the main information about the distribution site",
+
       "DATE_DETAILS_DESC": "Specify the start and end dates for the distribution site"
+
     }
+
   },
+
   "FASTING_TENT": {
+
     "TITLE": "Fasting Tent and Food Distribution",
+
     "DESCRIPTION": "Submit your request to set up a fasting tent or distribution site by completing the required information and documents.",
+
     "VIEW_TITLE": "View Fasting Tent Request",
+
     "FORM": {
+
       "MAIN_INFO_DESC": "Enter basic details and location",
+
       "DATE_DETAILS_DESC": "Set up dates and permissions",
+
       "LOCATION_SELECTION": "Location Selection",
+
       "SELECT_FROM_DROPDOWN": "Select from dropdown",
+
       "SELECT_FROM_MAP": "Select from map",
+
       "DROPDOWN_DESCRIPTION": "Choose a location from a predefined list",
+
       "MAP_DESCRIPTION": "Choose a location directly from the map",
+
       "SETUP_DATE": "Setup Date",
+
       "TENT_SETUP_DATE": "Tent Setup Date"
+
     }
+
   },
+
   "mainApplyServiceResourceName": {
+
     "title": "Request",
+
     "accep": "Approve",
+
     "Active": "Active",
+
     "activeaccount": "Activate Account",
+
     "activeaddress": "Address",
+
     "activedate": "Date *",
+
     "activelang": "Language",
+
     "activelangs": "Language *",
+
     "activetype": "Type",
+
     "Activetypes": "Type *",
+
     "Add": "Add new",
+
     "addcomm": "Add comment",
+
     "AddDept": "Add Department",
+
     "address": "Address",
+
     "Address1": "Address",
+
     "addressactive": "Activity Address *",
+
     "addressLocation": "address location",
+
     "addressout": "Address outside UAE",
+
     "addressoutside": "Address outside UAE",
+
     "addresss": "Address",
+
     "addsuce": "Added Successfully",
+
     "AdLang": "AdLang",
+
     "AdMethod": "AdMethod",
+
     "Admin": "المسؤول",
+
     "AdminTel": "هاتف المسؤول",
+
     "AdTitle": "AdTitle",
+
     "agree": "Request approved",
+
     "Allowed Number": "Allowed Number",
+
     "Allowed_Number": "Allowed Number",
+
     "AlternateName": "اسم البديل",
+
     "AmEndTime": "وقت الانتهاء صباحا",
+
     "AmStartTime": "وقت البدء صباحا",
+
     "Ana": "Ename",
+
     "Aname": "Arabic Name",
+
     "appd": "Applicant data",
+
     "applycountry": "Request country",
+
     "applydate": "Request date",
+
     "applyord": "Requests",
+
     "Applystat": "Request status",
+
     "att": "attachements",
+
     "Attname": "Attachement Name",
+
     "attprop": "Attachement Setup",
+
     "atttitle": "Attachement Search",
+
     "AvailableNumber": "Available Number",
+
     "birthblace": "Birth Place",
+
     "birthdate": "Date of Birth",
+
     "birthdatet": "Date of Birth *",
+
     "boxno": "Box No",
+
     "BrNCHct": "Sub Category",
+
     "buttonupdate": "Is the tent set up?",
+
     "can": "Customization canceled",
+
     "cancel": "Cancel ",
+
     "canotdel": "Cannot delete under process request",
+
     "Chairtytitle": "Charity Event Request",
+
     "char1": "Char",
+
     "chars": "Char",
+
     "choosedept": "Kindly select department",
+
     "Choosefile": "Kindly select file",
+
     "Choosefileup": "Kindly select file",
+
     "city": "City",
+
     "CityNAME": "City_NAME",
+
     "CoEx": "رقم اللجنه موجود من قبل",
+
     "CoExN": "اسم اللجنه موجود من قبل",
+
     "comm": "اللجنه",
+
     "commentdel": "Comment Deleted",
+
     "Comments": "Comments",
+
     "commet": "Comment",
+
     "CommitteeDatestr": "تاريخ اللجنه",
+
     "CommitteeName": "اسم اللجنه",
+
     "CommitteeNo": "رقم اللجنه",
+
     "Commserach": "بحث اللجان",
+
     "confirm": "Confirm",
+
     "confirmpass": "Confirm Password *",
+
     "ConsultantName": "ConsultantName",
+
     "ConsultantNumber": "ConsultantNumber",
+
     "country": "Country",
+
     "COUNTRYNAME": "COUNTRY_NAME",
+
     "del": "Delete",
+
     "DelegateName": "اسم المندوب",
+
     "deleted": "Deleted Successfully",
+
     "deletefile": "Delete file",
+
     "Departments": "User Groups",
+
     "Dept": "User Groups",
+
     "DeptAname": "Department name - Arabic",
+
     "DeptEname": "Department Name - Eng",
+
     "DeptTitle": "Department Search",
+
     "details": "Details",
+
     "disagree": "Request rejected",
+
     "disagreereas": "Request rejected and the rejection reason recorded",
+
     "DistributionRequest": "طلب تصريح موقع توزيع",
+
     "dnexist": "User Groups already exist",
+
     "done": "Done",
+
     "done2": "Done",
+
     "download": "download",
+
     "edatee": "Expiry date",
+
     "element": "Elements",
+
     "elements": "Elements",
+
     "email": "Email",
+
     "Email11": "الايميل",
+
     "empname": "Employee name",
+
     "empnamee": "Employee name *",
+
     "empreq": "Request employee hire",
+
     "Ename": "Name - Eng",
+
     "EndDate": "EndDate",
+
     "EndDatestr": "تاريخ انتهاء الفعاليه",
+
     "endtime": "Expiry date",
+
     "enfoundname": "Enter organization name",
+
     "enteractivedate": "enter event date",
+
     "enteractivelang": "enter event language",
+
     "Enteractivetype": "enter event type",
+
     "enteraddress": "enter address",
+
     "EnterAddressLoca": "Enter Location Address",
+
     "enteraddresss": "enter event name",
+
     "EnterAllowedNo": "Enter Allowed Number",
+
     "enterAmEndTime": "ادخل وقت الانتهاء صباحا",
+
     "enterAmStartTime": "ادخل وقت البدء صباحا",
+
     "enterattname": "enter file name",
+
     "enterbirdhdate": "enter birth date",
+
     "EnterCommitteeName": "ادخل اسم اللجنه",
+
     "EnterCommitteeNo": "ادخل رقم اللجنه",
+
     "entercommstr": "ادخل تاريخ اللجنه",
+
     "enterd": "enter expiry date",
+
     "EnterDeptName": "enter department name",
+
     "enteredate": "enter tent end date",
+
     "enteredates": "enter end time",
+
     "enterempname": "enter employee name",
+
     "EnterEndDate": "Enter End Date",
+
     "enterEndDatestr": "ادخل تاريخ انتهاء الفعاليه",
+
     "EnterEntity": "Enter Entity",
+
     "EnterEntityIdLoca": "Enter Entity value",
+
     "enterEventLocation": "ادخل موقع الفعاليه",
+
     "enterEventName": "ادخل اسم الفعاليه",
+
     "enterfoudtype": "enter organization type",
+
     "enterfoundname": "enter organization name",
+
     "enterfountype": "enter organization type",
+
     "enterid": "enter Emirates ID",
+
     "enterjob": "Enter job",
+
     "enterlandno": "enter plot no",
+
     "enterlandowner": "enter land owner name",
+
     "enterlicno": "enter license no",
+
     "enterlinu": "enter license no",
+
     "EnterLkpPermitTypeId": "ادخل نوع التصريح",
+
     "EnterLkpRequestTypeId": "ادخل نوع الطلب",
+
     "EnterLoacName": "enter Location Name",
+
     "enterLocation": "enter location",
+
     "EnterLocationCoordinates": "Enter Location Coordinates",
+
     "enterlocationdate": "enter birth place",
+
     "EnterLocationName": "Location Name",
+
     "EnterLocationNo": "enter Location Nomber",
+
     "EnterLocationOwner": "Enter Location Owner",
+
     "enterlocationtype": "enter location type",
+
     "EnterLocationTypeLoca": "Enter Location Type Location",
+
     "enterlocationtypes": "enter location type",
+
     "entermaritials": "enter marital status",
+
     "entername": "enter name",
+
     "enternationality": "enter nationality",
+
     "enterpass": "enter password",
+
     "enterPmEndTime": "ادخل وقت الانتهاء مساء",
+
     "enterPmStartTime": "ادخل وقت البدء مساء",
+
     "enterq": "enter qualification",
+
     "enterreason": "enter reason",
+
     "enterregion": "enter area",
+
     "EnterRegionArabicName": "Enter Region Name",
+
     "EnterRegionEnglishName": "Region Name",
+
     "EnterRegionLoca": "Enter the Region Location",
+
     "EnterRegionMaxCount": "Enter Region Max Locations Count",
+
     "enterregname": "enter area name",
+
     "enterrequest": "enter request",
+
     "EnterRequestMainApplyServiceId": "ادخل الطلب",
+
     "enterRequestSide": "ادخل الجهه الطالبه للتصريح",
+
     "entersal": "enter salary",
+
     "entersdate": "enter tent start date",
+
     "enterspe": "enter specialization",
+
     "EnterStartDate": "Enter Start Date",
+
     "enterStartDatestr": "ادخل تاريخ بدء الفعاليه",
+
     "enterstime": "enter start time",
+
     "EnterStreet": "Enter Street Location",
+
     "enterstreetname": "enter street name",
+
     "enterSupervisingSide": "ادخل الجهه المشرفه على الفعاليه",
+
     "enterSupervisorMobile": "enter Supervisor Mobile",
+
     "enterSupervisorName": "enter Supervisor Name",
+
     "entert": "enter type",
+
     "entertype": "enter type",
+
     "enterusername": "enter username",
+
     "enterworkloc": "enter work location",
+
     "Entities": "Entities",
+
     "Entity": "Entity",
+
     "EntityChose": "choise Entity",
+
     "EntityId": "Not free",
+
     "EntityIdlocat": "Entity value",
+
     "Entityserach": "Entity Serach",
+
     "entr": "يجب ادخال الجمعيه",
+
     "Entrattname": "enter file name",
+
     "error": "error occurred .. Please retry",
+
     "errorbringdatat": "error while showing data",
+
     "errortryagain": "error occurred .. Please retry",
+
     "etimed": "end time",
+
     "EventLocation": "موقع الفعاليه",
+
     "EventName": "اسم الفعاليه",
+
     "EventNameAdv": "Description",
+
     "existname": "same name exist",
+
     "existuser": "same username exist",
+
     "faliadate": "activity date",
+
     "fasttent": "breakfast tent permit",
+
     "fax": "fax",
+
     "fcancel": "Cancel ",
+
     "foundationscreen": "organization information",
+
     "foundconftitle": "account search",
+
     "founddata": "organization information",
+
     "foundname": "organization name",
+
     "foundnamed": "organization name *",
+
     "foundtype": "Organiztion Name",
+
     "foundtyprr": "Organization Name *",
+
     "fountype": "Organization Name *",
+
     "gender": "Gender",
+
     "GenderName": "GenderNameEN",
+
     "homesquare": "Home Square",
+
     "id": "Emirates ID",
+
     "institutereg": "Organization Registration",
+
     "instname": "Organization name *",
+
     "IsConsultantApprovedFromPolice": "IsConsultantApprovedFromPolice",
+
     "IsConsultantFromAjman": "IsConsultantFromAjman",
+
     "jobb": "job",
+
     "jobtitle": "job name",
+
     "kimaed": "tent end date",
+
     "kimasd": "tent start date",
+
     "LableForUpdateButton": "Has the tent been completed?",
+
     "landno": "plot no",
+
     "landowner": "land owner name",
+
     "landownernam": "land owner name *",
+
     "lang": "EN",
+
     "lenghtno": "password should be more than 5 Char ",
+
     "level": "Level",
+
     "licenceenddate": "Licnese expiry date",
+
     "licenseno": "License No",
+
     "licno": "License No *",
+
     "linu": "License No *",
+
     "lisenddate": "Licnese expiry date",
+
     "LkpPermitTypeId": "نوع التصريح",
+
     "LkpRequestTypeId": "نوع الطلب",
+
     "loc": "location",
+
     "LocaName": "Location Name",
+
     "LocatDitalis": "Location",
+
     "Location": "Location",
+
     "LocationCoordinates": "Location Coordinates",
+
     "LocationCoordinatesLoca": "Location Coordinates",
+
     "locationdate": "pirt place *",
+
     "locationName": "location Name",
+
     "LocationNo": "Location No",
+
     "LocationNoLoc": "Location Nomber",
+
     "LocationNotes": "Notes",
+
     "LocationOwner": "Location Owner",
+
     "LocationOwnerLoca": "Location Owner",
+
     "locations": "location *",
+
     "locationtype": "location type",
+
     "LocationType1": "Location Type",
+
     "locationtypea": "location type",
+
     "LocationTypeLoca": "Location Type",
+
     "LocaTitle": "Detailes",
+
     "ls": "lastStatusEN",
+
     "lsl": "LastStatusEN",
+
     "MainCat": "main category",
+
     "map": "Map Picker",
+
     "maritials": "Marital status *",
+
     "martialstatues": "Marital status",
+
     "maxno": "max no for search",
+
     "minno": "min no for search",
+
     "mobile": "Mobile No",
+
     "morethan": "Cannot select more than ",
+
     "name": "Name - Eng",
+
     "nationality": "nationality",
+
     "nationalityu": "nationality *",
+
     "NewAd": "NewAd",
+
     "Newbuttonupdate": "Click here",
+
     "newuser": "New user",
+
     "NewUserName": "User Name",
+
     "next": "Next",
+
     "No": "No",
+
     "noatt": "No attachement",
+
     "nodata": "no information",
+
     "nodel": "Cannot delete info",
+
     "nodelete": "Cannot delete info",
+
     "notes": "Comments",
+
     "Notes11": "الشرح",
+
     "NotesValidation": "Enter Notes",
+
     "OldPermNumber": "OldPermNumber",
+
     "Operations": "Actions",
+
     "order": "Request",
+
     "orderlevel": "Request level",
+
     "ordername": "Requester",
+
     "orderstudy": "request study",
+
     "Othertxt": "Other txt",
+
     "outtel": "Telephone",
+
     "passs": "Password *",
+
     "permitNumber": "Permit Number",
+
     "PersonalName": "PersonalNameEn",
+
     "PersonalNameAr": "PersonalNameEn",
+
     "pgender": "Gender",
+
     "placetype": "Place type",
+
     "PmEndTime": "وقت الانتهاء مساء",
+
     "PmStartTime": "وقت البدء مساء",
+
     "pna": "PersonalNameEn",
+
     "prevexp": "previous experience",
+
     "previosexp": "previous experience",
+
     "previous": "Previous",
+
     "print": "Print",
+
     "Provider": "Provider",
+
     "publicregister": "Public Registration",
+
     "qual": "Qualification *",
+
     "raname": "Arabic Name *",
+
     "rangeInvalid": "Must Be More Than 0",
+
     "reason": "Reason",
+
     "redir": "Redirect",
+
     "RefNo": "Reference No",
+
     "refu": "Reject",
+
     "refuseaccount": "Reject Account",
+
     "refusefor": "Reject for reason",
+
     "refusereason": "Rejection Reason",
+
     "region": "Area",
+
     "Region1": "Region",
+
     "RegionArabicName": "Region Name",
+
     "RegionEnglishName": "Enter Region Name",
+
     "RegionLoca": "Region",
+
     "RegionMaxCount": "Region Max Locations Count",
+
     "regionname": "Area Name",
+
     "regions": "Area",
+
     "rename": "English Name *",
+
     "Renew": "Reuqst organization Renewal",
+
     "ReNewAd": "ReNewAd",
+
     "rentertype": "Enter Type",
+
     "reqatt": "Enter requested files",
+
     "requ": "Request *",
+
     "RequestAdvertisementAdLocation": "Advertisement Location",
+
     "RequestAdvertisementAdMethod": "AdvertisementAdMethod",
+
     "RequestAdvertisementTarget": "Advertisement Target",
+
     "RequestDate": "Request Date",
+
     "RequestMainApplyServiceId": "الطلب",
+
     "RequestNo": "RequestNo",
+
     "RequestSide": "الجهه الطالبه للتصريح",
+
     "Required": "Required",
+
     "res": "The receipt of the request",
+
     "ReturnForModifications": "Return for modifications",
+
     "rid": "Emirates ID *",
+
     "rusername": "Username *",
+
     "saddress": "Address *",
+
     "salary": "Salary",
+
     "save": "Save",
+
     "saved": "Saved Successfully",
+
     "sdate": "tent start date *",
+
     "search": "Searching",
+
     "searchLocation": "Search",
+
     "sedate": "tent end date *",
+
     "selecttype": "Select type",
+
     "servd": "Service Data",
+
     "ServiceConfTitle": "Request study search",
+
     "serviceinquery": "Search request",
+
     "Servicename": "Service name",
+
     "ServiceNameAr": "ServiceNameEn",
+
     "Servicesn": "Services",
+
     "ServiceStatusNameAr": "ServiceStatusNameEn",
+
     "ServiceSteps": "ServiceStepsEN",
+
     "ServiceType": "Service type",
+
     "Servtitle": "model.Service.ServiceNameEn",
+
     "sevicet": "Service",
+
     "show": "Show",
+
     "showorders": "Show requests",
+
     "sizemore2": "File size more than 2 MB",
+
     "sjob": "Job *",
+
     "slandno": "plot no",
+
     "slandno1": "plot no *",
+
     "slaray": "Salary",
+
     "sn": "serviceNameEn",
+
     "snotes": "Comments",
+
     "sns": "ServiceNameEn",
+
     "spec": "Specialization",
+
     "specia": "Specialization *",
+
     "sregionname": "Area name *",
+
     "sscreentype": "Location Type *",
+
     "sstreetname": "Street name *",
+
     "StartDate": "StartDate",
+
     "StartDatestr": "تاريخ بدء الفعاليه",
+
     "starttime": "Start time",
+
     "statues": "Status",
+
     "stime": "Start time *",
+
     "stn": "ServiceTypeNameEN",
+
     "stopaccount": "Block account",
+
     "Street": "Street",
+
     "StreetLoca": "Street",
+
     "streetname": "Street name",
+
     "String1": "Enter Location",
+
     "SupervisingSide": "الجهه المشرفه على الفعاليه",
+
     "SupervisorMobile": "SupervisorMobile",
+
     "SupervisorName": "SupervisorName",
+
     "taksis": "Take",
+
     "TargerType": "Target Type",
+
     "TargetedAmount": "TargetedAmount",
+
     "tel": "Telephone",
+
     "tell": "Telephone",
+
     "TentDate": "Tent Setup Date",
+
     "TentIsSetUp": "Tent is set up",
+
     "TotalRegionLocation": "Total locations count",
+
     "tryagain": "Kindly retry",
+
     "Type": "Type",
+
     "typed": "type",
+
     "typee": "type *",
+
     "unsame": "the password is not matched",
+
     "upadatetoaster": "The tent was set up",
+
     "update": "Update",
+
     "UpDateAlert": "Was the tent established?",
+
     "updatetentsetup": "The tent was set up",
+
     "upload": "Loading",
+
     "upload1": "Loading",
+
     "uploadf": "Loading",
+
     "uploadsuccess": "uploaded successfully",
+
     "userdata": "User info",
+
     "username": "requester name",
+
     "UsersConfirmtitle": "Seach Public Requests",
+
     "userstatues": "Requester Status",
+
     "UserStatusName": "UserStatusNameEN",
+
     "UserTypeName": "UserTypeNameEN",
+
     "validid": "Emirates ID Exists",
+
     "workloc": "Work Place *",
+
     "Yes": "Yes",
+
     "NoPermission": "No Permission"
+
   },
+
   "COMMONCHARITY_EVENT": {
+
     "NEXT": "Next",
+
     "SELECT_OPTION": "Select..."
+
   },
+
   "VALIDATIONCHARITY_EVENT": {
+
     "RFC3339_REQUIRED": "This field is required",
+
     "REQUIRED_FIELD": "This field is required",
+
     "INVALID_EMAIL": "Please enter a valid email",
+
     "DATE_RANGE": "End date must be after or equal to start date",
+
     "MIN_ONE_CHANNEL": "Select at least one channel"
+
   },
+
   "CHARITY_EVENT": {
+
     "STEP1_TITLE": "Main Information",
+
     "REQUEST_NO": "Request No",
+
     "REQUEST_DATE": "Request Date",
+
     "EVENT_NAME": "Event Name",
+
     "EVENT_LOCATION": "Event Location",
+
     "START_DATE": "Start Date",
+
     "END_DATE": "End Date",
+
     "SUPERVISOR_NAME": "Supervisor Name",
+
     "JOB_TITLE": "Job Title",
+
     "TELEPHONE1": "Telephone 1",
+
     "TELEPHONE2": "Telephone 2",
+
     "EMAIL": "Email",
+
     "ADVERTISEMENT_TYPE": "Advertisement Type",
+
     "AD_TYPE_1": "Type 1",
+
     "AD_TYPE_2": "Type 2",
+
     "DONATION_CHANNELS": "Donation Channels",
+
     "NOTES": "Notes",
+
     "NOTES_PLACEHOLDER": "Any additional notes...",
+
     "PARTNERS_TITLE": "Partners",
+
     "ADS_STEP_TITLE": "Advertisements",
+
     "AD_TITLE": "Advertisement title",
+
     "AD_LANG": "Language",
+
     "SERVICE_TYPE": "Service type",
+
     "SERVICE_TYPE_1": "Initial permit",
+
     "SERVICE_TYPE_2": "Modification",
+
     "WORKFLOW_SERVICE_TYPE": "Workflow service type",
+
     "WORKFLOW_TYPE_1": "New request",
+
     "WORKFLOW_TYPE_2": "Follow-up",
+
     "TARGETED_AMOUNT": "Targeted amount",
+
     "AD_STATUS": "Advertisement status",
+
     "AD_NEW": "New",
+
     "AD_RENEW": "Renew",
+
     "OLD_PERM_NUMBER": "Previous permit number",
+
     "TARGET_TYPES": "Target audiences",
+
     "AD_METHODS": "Advertising channels",
+
     "AD_LOCATIONS": "Ad locations",
+
     "ADD_LOCATION_PLACEHOLDER": "Add a location and click Add",
+
     "DATE_RANGE_COL": "Date range",
+
     "TARGETS_COUNT": "Targets",
+
     "METHODS_COUNT": "Methods",
+
     "LOCATIONS_COUNT": "Locations",
+
     "PROVIDER": "Provider",
+
     "MOBILE": "Mobile number",
+
     "FAX": "Fax"
+
   },
+
   "CHARITY_ORGANIZATIONS": {
+
     "TITLE": "Charity Organizations",
+
     "DESCRIPTION": "Discover and connect with charitable organizations",
+
     "NO_ORGANIZATIONS": "No Organizations Found",
+
     "NO_ORGANIZATIONS_DESCRIPTION": "There are no charity organizations available at the moment.",
+
     "VIEW_DETAILS": "View Details",
+
     "CONTACT_INFO": "Contact Information",
+
     "LOCATION": "Location",
+
     "PHONE": "Phone",
+
     "EMAIL": "Email",
+
     "WEBSITE": "Website",
+
     "LOADING": "Loading charity organizations...",
+
     "ERROR_LOADING": "Failed to load charity organizations",
+
     "RETRY": "Try Again",
+
     "NO_CONTACT_INFO": "No contact information available"
+
   },
+
   "POLLS": {
+
     "TITLE": "surveys",
+
     "DESCRIPTION": "Participate in community surveys and surveys",
+
     "NO_POLLS": "No surveys Found",
+
     "NO_POLLS_DESCRIPTION": "There are no surveys available at the moment.",
+
     "DATE": "Date",
+
     "LOADING": "Loading surveys...",
+
     "ERROR_LOADING": "Failed to load surveys",
+
     "RETRY": "Try Again"
+
   },
+
   "NAVIGATION": {
+
     "HOME": "Home",
+
     "ABOUT_US": "About Us",
+
     "ABOUT_COUNCIL": "About the council",
+
     "GENERAL_MANAGER_MESSAGE": "General Manager's Message",
+
     "SERVICES": "Services",
+
     "REQUEST": "Request",
+
     "INITIATIVES": "Initiatives",
+
     "CHARITY_ORGANIZATIONS": "Charity Organizations",
+
     "CONTACT_US": "Contact Us",
+
     "Digital_Participation": "Digital Participation"
+
   },
+
   "INITIATIVES": {
+
     "TITLE": "Initiatives",
+
     "NO_INITIATIVES": "No Initiatives Available",
+
     "NO_INITIATIVES_DESCRIPTION": "There are currently no initiatives available. Please check back later.",
+
     "INITIATIVE_DETAILS": "Initiative Details",
+
     "DATE": "Date",
+
     "TARGET_GROUP": "Target Group",
+
     "LOCATIONS": "Locations",
+
     "LOCATION": "Location",
+
     "LOCATION_DETAILS": "Location Details",
+
     "REQUEST_SERVICE": "Request Service",
+
     "REQUEST_SERVICE_DESCRIPTION": "Interested in this initiative? Request our services to get involved.",
+
     "LOADING": "Loading initiatives...",
+
     "ERROR_LOADING": "Failed to load initiatives",
+
     "RETRY": "Try Again",
+
     "BACK_TO_INITIATIVES": "Back to Initiatives",
+
     "BACK_TO_HOME": "Back to Home",
+
     "RegionName": "Region"
+
   },
+
   "event": {
+
     "PmStartTime": "Evening Start Time",
+
     "PmEndTime": "Evening End Time",
+
     "AmStartTime": "Morning Start Time",
+
     "AmEndTime": "Morning End Time",
+
     "Admin": "Supervisor",
+
     "DelegateName": "Delegate Name",
+
     "AlternateName": "Alternate Name",
+
     "AdminTel": "Supervisor Phone",
+
     "LkpPermitTypeId": "Permit Type",
+
     "LkpRequestTypeId": "Request Type",
+
     "RequestSide": "Requesting Entity",
+
     "SupervisingSide": "Supervising Entity",
+
     "TELEPHONE": "Telephone",
+
     "beneficiaryIdNumber": "Beneficiary ID Number"
+
   },
+
   "PARTNERS": {
+
     "NAME": "Partner Name",
+
     "TYPE": "Partner Type",
+
     "LICENSE_ISSUER": "License Issuer",
+
     "LICENSE_NUMBER": "License Number",
+
     "LICENSE_EXPIRY": "License Expiry Date",
+
     "CONTACT_DETAILS": "Contact Details",
+
     "MAIN_APPLY_SERVICE": "Main Apply Service (Optional)"
+
   },
+
   "WORKFLOW": {
+
     "PROCESS_STEPS": "Workflow Process Steps",
+
     "PROCESS_STEPS_DESC": "View workflow process steps",
+
     "STEP": "Step",
+
     "COMMENTS": "Comments",
+
     "MORE_COMMENTS": "more comments",
+
     "STATUS_ACCEPT": "Accepted",
+
     "STATUS_REJECT": "Rejected",
+
     "STATUS_REJECT_FOR_REASON": "Rejected with Reason",
+
     "STATUS_WAITING": "Waiting",
+
     "STATUS_RECEIVED": "Received",
+
     "STATUS_RETURN_FOR_MODIFICATIONS": "Return for Modifications",
+
     "STATUS_UNKNOWN": "Unknown Status"
+
   },
+
   "COMMENTS": {
+
     "ENTER_COMMENT": "Please enter a comment",
+
     "COMMENT_ADDED": "Comment added successfully",
+
     "ERROR_ADDING_COMMENT": "Error adding comment"
+
   },
+
   "DIST_SITE": {
+
     "TITLE": "Distribution Site Permit",
+
     "DESCRIPTION": "Apply for a distribution site permit by completing the required information, selecting location coordinates on the map, and uploading necessary documents.",
+
     "TAB1_TITLE": "Main Information",
+
     "MAIN_INFO_DESC": "Basic site and address information",
+
     "DATE_DETAILS_TAB": "Date Details",
+
     "DATE_DETAILS_DESC": "Scheduling and setup timing",
+
     "SUPERVISOR_INFO_TAB": "Supervisor Information",
+
     "SUPERVISOR_INFO_DESC": "Provide supervisor contact details and information",
+
     "TAB2_TITLE": "Partners",
+
     "PARTNERS_OPTIONAL_SHORT": "Add partner organizations if applicable",
+
     "TAB3_TITLE": "Attachments",
+
     "ATTACHMENTS_DESC": "Upload required documents and attachments",
+
     "MAIN_INFO": "Main Information",
+
     "REQUEST_TYPE": "Request Type",
+
     "OWNER_NAME": "Owner Name",
+
     "OWNER_NAME_PLACEHOLDER": "Enter the owner's full name",
+
     "REGION_NAME": "Region Name",
+
     "STREET_NAME": "Street Name",
+
     "STREET_NAME_PLACEHOLDER": "Enter the street name",
+
     "GROUND_NO": "Ground Number",
+
     "GROUND_NO_PLACEHOLDER": "Enter ground/plot number",
+
     "ADDRESS": "Address",
+
     "ADDRESS_PLACEHOLDER": "Enter the full address",
+
     "NOTES": "Notes",
+
     "NOTES_PLACEHOLDER": "Additional notes or comments",
+
     "SELECT_LOCATION_ON_MAP": "Select Location on Map",
+
     "MAP_INSTRUCTIONS": "Click on the map to select the distribution site location",
+
     "SELECTED_COORDINATES": "Selected Coordinates",
+
     "DATE_DETAILS": "Date Details",
+
     "START_DATE": "Start Date",
+
     "END_DATE": "End Date",
+
     "CONSULTANT_FROM_AJMAN": "Consultant from Ajman",
+
     "CONSULTANT_APPROVED_FROM_POLICE": "Consultant approved from Police",
+
     "SUPERVISOR_INFO": "Supervisor Information",
+
     "SUPERVISOR_NAME": "Supervisor Name",
+
     "SUPERVISOR_NAME_PLACEHOLDER": "Enter supervisor's full name",
+
     "JOB_TITLE": "Job Title",
+
     "JOB_TITLE_PLACEHOLDER": "Enter job title or position",
+
     "SUPERVISOR_MOBILE": "Supervisor Mobile",
+
     "SUPERVISOR_MOBILE_PLACEHOLDER": "Enter supervisor's mobile number",
+
     "PARTNERS": "Partners",
+
     "NO_PARTNERS_ADDED": "No partners have been added yet",
+
     "ADD_PARTNER": "Add Partner",
+
     "PARTNER_NAME": "Partner Name",
+
     "PARTNER_NAME_PLACEHOLDER": "Enter partner name",
+
     "PARTNER_TYPE": "Partner Type",
+
     "LICENSE_ISSUER": "License Issuer",
+
     "LICENSE_ISSUER_PLACEHOLDER": "Enter license issuer",
+
     "LICENSE_EXPIRY_DATE": "License Expiry Date",
+
     "LICENSE_NUMBER": "License Number",
+
     "LICENSE_NUMBER_PLACEHOLDER": "Enter license number",
+
     "CONTACT_DETAILS": "Contact Details",
+
     "CONTACT_DETAILS_PLACEHOLDER": "Enter contact details",
+
     "ATTACHMENTS": "Attachments"
+
   },
+
   "FASTING_TENT_REQ": {
+
     "TITLE": "Fasting Tent and Food Distribution Request",
+
     "DESCRIPTION": "Submit your request to set up a fasting tent or distribution site by completing the required information and documents.",
+
     "TAB1_TITLE": "Main Information",
+
     "MAIN_INFO_DESC": "Enter basic details and location",
+
     "DATE_DETAILS_TITLE": "Date Details",
+
     "DATE_DETAILS_DESC": "Set up dates and permissions",
+
     "SUPERVISOR_INFO": "Supervisor Information",
+
     "SUPERVISOR_INFO_DESC": "Provide supervisor contact details and information",
+
     "PARTNERS": "Partners",
+
     "PARTNERS_OPTIONAL_SHORT": "Add partner organizations if applicable",
+
     "ATTACHMENTS": "Attachments",
+
     "ATTACHMENTS_DESC": "Upload required documents and attachments",
+
     "MAIN_INFO": "Main Information",
+
     "LOCATION_SELECTION": "Location Selection",
+
     "SELECT_FROM_DROPDOWN": "Select from dropdown",
+
     "SELECT_FROM_MAP": "Select from map",
+
     "DROPDOWN_DESCRIPTION": "Choose a location from a predefined list",
+
     "MAP_DESCRIPTION": "Choose a location directly from the map",
+
     "REQUEST_TYPE": "Request Type",
+
     "LOCATION_TYPE": "Location Type",
+
     "jobRequirementsDetails": "Job Requirements Details",
+
     "OWNER_NAME": "Owner Name",
+
     "OWNER_NAME_PLACEHOLDER": "Enter the owner's full name",
+
     "REGION_NAME": "Region Name",
+
     "STREET_NAME": "Street Name",
+
     "STREET_NAME_PLACEHOLDER": "Enter the street name",
+
     "GROUND_NO": "Ground Number",
+
     "GROUND_NO_PLACEHOLDER": "Enter ground/plot number",
+
     "ADDRESS": "Address",
+
     "ADDRESS_PLACEHOLDER": "Enter the full address",
+
     "NOTES": "Notes",
+
     "NOTES_PLACEHOLDER": "Additional notes or comments",
+
     "LOCATION_AVAILABILITY": "Check Location Availability",
+
     "AVAILABLE_LOCATIONS": "Available Locations",
+
     "SELECTED_LOCATION": "Selected Location",
+
     "NO_LOCATION_SELECTED": "No location selected",
+
     "CHECK_AVAILABILITY": "Check Availability",
+
     "START_DATE": "Start Date",
+
     "END_DATE": "End Date",
+
     "SETUP_DATE": "Setup Date",
+
     "TENT_SETUP_DATE": "Tent Setup Date",
+
     "TENT_DATE": "Tent Date",
+
     "CONSULTANT_FROM_AJMAN": "Consultant from Ajman",
+
     "CONSULTANT_APPROVED_FROM_POLICE": "Consultant approved from Police",
+
     "TENT_IS_SET_UP": "Tent is set up",
+
     "SUPERVISOR_NAME": "Supervisor Name",
+
     "SUPERVISOR_NAME_PLACEHOLDER": "Enter supervisor's full name",
+
     "JOB_TITLE": "Job Title",
+
     "JOB_TITLE_PLACEHOLDER": "Enter job title or position",
+
     "SUPERVISOR_MOBILE": "Supervisor Mobile",
+
     "SUPERVISOR_MOBILE_PLACEHOLDER": "Enter supervisor's mobile number",
+
     "NO_PARTNERS_ADDED": "No partners have been added yet",
+
     "ADD_PARTNER": "Add Partner",
+
     "PARTNER_NAME": "Partner Name",
+
     "PARTNER_NAME_PLACEHOLDER": "Enter partner name",
+
     "PARTNER_TYPE": "Partner Type",
+
     "LICENSE_ISSUER": "License Issuer",
+
     "LICENSE_ISSUER_PLACEHOLDER": "Enter license issuer",
+
     "LICENSE_EXPIRY_DATE": "License Expiry Date",
+
     "LICENSE_NUMBER": "License Number",
+
     "LICENSE_NUMBER_PLACEHOLDER": "Enter license number",
+
     "CONTACT_DETAILS": "Contact Details",
+
     "CONTACT_DETAILS_PLACEHOLDER": "Enter contact details"
+
   },
+
   "VIEW_FASTING_TENT": {
+
     "VIEW_TITLE": "View Fasting Tent Request",
+
     "BASIC_INFORMATION": "Basic Information",
+
     "BASIC_INFO_DESC": "View request basic information",
+
     "LOCATION_DETAILS": "Location Details",
+
     "LOCATION_DESC": "View location information and map",
+
     "DATE_DETAILS_TITLE": "Date Information",
+
     "DATE_DETAILS_DESC": "View dates and configuration details",
+
     "SUPERVISOR_INFO": "Supervisor Information",
+
     "SUPERVISOR_INFO_DESC": "View supervisor contact details",
+
     "PARTNERS": "Partners Information",
+
     "PARTNERS_DESC": "View partner organizations",
+
     "ATTACHMENTS": "Attachments",
+
     "ATTACHMENTS_DESC": "View uploaded documents",
+
     "WORKFLOW_STEPS": "Process Steps",
+
     "WORKFLOW_COMMENTS": "Workflow Comments",
+
     "MAIN_INFO": "Main Information",
+
     "REQUEST_TYPE": "Request Type",
+
     "LOCATION_TYPE": "Location Type",
+
     "OWNER_NAME": "Owner Name",
+
     "REGION_NAME": "Region Name",
+
     "STREET_NAME": "Street Name",
+
     "GROUND_NO": "Ground Number",
+
     "ADDRESS": "Address",
+
     "NOTES": "Notes",
+
     "LOCATION_INFO": "Location Information",
+
     "LOCATION_NAME": "Location Name",
+
     "LOCATION_OWNER": "Location Owner",
+
     "LOCATION_ADDRESS": "Location Address",
+
     "LOCATION_ON_MAP": "Location on Map",
+
     "NO_LOCATION_INFO": "No location information available",
+
     "DATE_INFO": "Date Information",
+
     "START_DATE": "Start Date",
+
     "END_DATE": "End Date",
+
     "TENT_SETUP_DATE": "Tent Setup Date",
+
     "TENT_DATE": "Tent Date",
+
     "CONSULTANT_FROM_AJMAN": "Consultant from Ajman",
+
     "CONSULTANT_APPROVED_FROM_POLICE": "Consultant approved from Police",
+
     "TENT_IS_SET_UP": "Tent is set up",
+
     "SUPERVISOR_NAME": "Supervisor Name",
+
     "JOB_TITLE": "Job Title",
+
     "SUPERVISOR_MOBILE": "Supervisor Mobile",
+
     "NO_PARTNERS": "No partners added",
+
     "PARTNER_NAME": "Partner Name",
+
     "PARTNER_TYPE": "Partner Type",
+
     "LICENSE_ISSUER": "License Issuer",
+
     "LICENSE_NUMBER": "License Number",
+
     "LICENSE_EXPIRY_DATE": "License Expiry Date",
+
     "CONTACT_DETAILS": "Contact Details",
+
     "NO_ATTACHMENTS": "No attachments found"
+
   },
+
   "REQUEST_EVENT_PERMIT": {
+
     "TITLE": "Project/Campaign Donation Statement",
+
     "VIEW_TITLE": "View Event/Donation Campaign Permit Request",
+
     "BASIC": "Basic Information",
+
     "REQUEST_DETAILS": "Request Details",
+
     "DATES_TIMES": "Dates & Times",
+
     "CONTACTS": "Contacts & Finance",
+
     "PARTNERS": "Partners",
+
     "ATTACHMENTS": "Attachments",
+
     "REQUEST_NO": "Internal Request No.",
+
     "REQUEST_DATE": "Request Date",
+
     "REQUEST_TYPE": "Request Type",
+
     "PERMIT_TYPE": "Permit Type",
+
     "REQUEST_SIDE": "Requesting Side",
+
     "SUPERVISING_SIDE": "Supervising Side",
+
     "EVENT_NAME": "Event Name",
+
     "EVENT_LOCATION": "Event Location",
+
     "NOTES": "Notes",
+
     "START_DATE": "Start Date/Time",
+
     "END_DATE": "End Date/Time",
+
     "AM_START": "AM Start",
+
     "AM_END": "AM End",
+
     "PM_START": "PM Start",
+
     "PM_END": "PM End",
+
     "ADMIN": "Administrator",
+
     "DELEGATE_NAME": "Delegate Name",
+
     "ALTERNATE_NAME": "Alternate Name",
+
     "ADMIN_TEL": "Admin Phone",
+
     "TELEPHONE": "Telephone",
+
     "EMAIL": "Email",
+
     "TARGETED_AMOUNT": "Targeted Amount",
+
     "BENEFICIARY_ID": "Beneficiary ID Number",
+
     "DONATION_CHANNELS": "Donation Channels",
+
     "NO_PARTNERS": "No partners",
+
     "NO_ATTACHMENTS": "No attachments",
+
     "ATTACHMENT": "Attachment",
+
     "PARTNER_ATTACHMENTS": "Partner Attachments",
+
     "ADVERTISEMENTS": "Advertisements",
+
     "AD": "Ad",
+
     "AD_START": "Ad Start",
+
     "AD_END": "Ad End",
+
     "AD_TARGETED_AMOUNT": "Ad Targeted Amount",
+
     "AD_SUPERVISOR": "Ad Supervisor",
+
     "AD_MOBILE": "Supervisor Mobile",
+
     "AD_EMAIL": "Email",
+
     "AD_FLAGS": "Ad Flags",
+
     "NEW_AD": "New Ad",
+
     "RENEW_AD": "Renewed Ad",
+
     "AD_TARGETS": "Target Audiences",
+
     "AD_LOCATIONS": "Ad Locations",
+
     "AD_METHODS": "Ad Methods",
+
     "METHOD": "Method",
+
     "TARGET_TYPE": "Target Type",
+
     "NO_ADS": "No advertisements"
+
   },
+
   "CHARITY_EVENT_PERMIT": {
+
     "TITLE": "Declaration of charity effectiveness",
+
     "VIEW_TITLE": "View Charity Event Permit",
+
     "BASIC": "Basic Information",
+
     "EVENT_DETAILS": "Event Details",
+
     "DATES": "Dates",
+
     "CONTACTS": "Contacts & Finance",
+
     "ADVERTISEMENTS": "Advertisements",
+
     "PARTNERS": "Partners",
+
     "ATTACHMENTS": "Attachments",
+
     "REQUEST_DATE": "Request Date",
+
     "ADVERTISEMENT_TYPE": "Advertisement Type",
+
     "EVENT_NAME": "Event Name",
+
     "EVENT_LOCATION": "Event Location",
+
     "NOTES": "Notes",
+
     "START_DATE": "Start Date/Time",
+
     "END_DATE": "End Date/Time",
+
     "SUPERVISOR_NAME": "Supervisor Name",
+
     "JOB_TITLE": "Job Title",
+
     "EMAIL": "Email",
+
     "TELEPHONE1": "Telephone 1",
+
     "TELEPHONE2": "Telephone 2",
+
     "DONATION_CHANNELS": "Donation Channels",
+
     "ATTACHMENT": "Attachment",
+
     "NO_ATTACHMENTS": "No attachments",
+
     "NO_PARTNERS": "No partners",
+
     "PARTNER_ATTACHMENTS": "Partner Attachments",
+
     "AD": "Ad",
+
     "NO_ADS": "No advertisements",
+
     "AD_START": "Ad Start",
+
     "AD_END": "Ad End",
+
     "AD_MOBILE": "Advertiser Mobile",
+
     "AD_EMAIL": "Advertiser Email",
+
     "AD_SUPERVISOR": "Ad Supervisor",
+
     "AD_TARGETED_AMOUNT": "Targeted Amount",
+
     "AD_FLAGS": "Ad Flags",
+
     "NEW_AD": "New Ad",
+
     "RENEW_AD": "Renewal",
+
     "AD_TARGETS": "Ad Targets",
+
     "TARGET_TYPE": "Target Type",
+
     "AD_LOCATIONS": "Ad Locations",
+
     "AD_METHODS": "Ad Methods",
+
     "METHOD": "Method",
+
     "SERVICE_NAME": "Service Name",
+
     "SERVICE_REFERENCE_NO": "Service Reference No",
+
     "SERVICE_DESCRIPTION": "Service Description",
+
     "SERVICE_INFO": "Service Information"
+
   },
+
   "VIEW_REQUESTPLAINT": {
+
     "TITLE": "View Grievance Request"
+
   },
+
   "REQUEST_INFO": {
+
     "WORKFLOW_STEPS": "Workflow Steps",
+
     "EVIDENCE": "Evidence",
+
     "JUSTIFICATIONS": "Justifications"
+
   },
+
   "VIEW_COMPLAINTREQUEST": {
+
     "TITLE": "View Complaint Request"
+
   },
+
   "NAVBAR": {
+
     "LOGIN": "Login",
+
     "CHANGE_PASSWORD": "Change Password",
+
     "PROFILE": "Profile",
+
     "LOGOUT": "Logout"
+
   },
+
   "ADD_ADVERTISEMENT": "Add Advertisement",
+
   "COUNCIL": {
+
     "TITLE": "About the Council",
+
     "P1": "The Council for the Coordination of Charitable Activities and Awqaf was established pursuant to Emiri Decree No. (9) of 2012 AD, and this council was formed under the chairmanship of His Highness Sheikh Ammar bin Humaid Al Nuaimi, Crown Prince of the Emirate of Ajman, and six members with experience and knowledge of charitable work and Awqaf and has a legal personality to the extent necessary to enable him to do To conduct legal acts in his own name.",
+
     "P2": "The council is concerned with both:",
+
     "ITEMS": [
+
       "1. Coordination with leaders of charitable societies and Awqaf funds on setting up a strategic plan in the emirate to enhance the efforts of charitable societies and Awqaf in spreading the values of solidarity and cooperation and other tolerant Islamic and humanitarian values",
+
       "2. Encouraging studies and research on the conditions of groups in need of humanitarian aid in the emirate and providing a central database related to the social groups eligible for charitable aid at the emirate level to be used for statistical and research purposes",
+
       "3. Encouraging studies and research on the conditions of groups in need of humanitarian aid in the emirate and providing a central database related to the social groups eligible for charitable aid at the emirate level to be used for statistical and research purposes",
+
       "4. Establish effective local policy and legislation to regulate the practice of charitable work in the emirate to ensure that the requirements of the laws in force in the country are met and to prevent the work and activities of charitable societies from conflict with each other",
+
       "5. Striving to organize the affairs of Awqaf in the emirate and assist it by providing it with the necessary economic and technical expertise available in the government departments of the emirate, in order to enable it to invest its money in development projects in the emirate in a manner that ensures an increase in these Awqaf funds to be used in the development of the various areas of charitable work in the emirate",
+
       "6. Creating more fruitful cooperation channels and continuous communication between charitable societies and Awqaf funds operating in the Emirate of Ajman with the aim of attracting, coordinating, and collaborating their efforts effectively to achieve their goals"
+
     ]
+
   },
+
   "MESSAGE": {
+
     "TITLE": "General Manager's Message",
+
     "NAME": "H.E. / Maryam Ali Al Maamari",
+
     "P1": "Charitable work is a characteristic of high-end societies, as it stems from the call of Allah's messengers to the Solidarity and cooperation for good and righteousness, and that the United Arab Emirates has established itself the principles of charitable work have become a part of its structure and one of the means for its advancement and its renaissance, and when we mention the humanitarian march of the UAE, we cannot forget The imprint of charitable institutions operating in the emirate of Ajman and its efforts with The rest of the other work institutions spread throughout the Emirates in establishing work Charity and making the UAE the first donor of humanitarian aid globally for five Consecutive years"
+
   },
+
   "FOOTER": {
+
     "HOME": "Home",
+
     "ABOUT_US": "About Us",
+
     "SERVICES": "Services",
+
     "INITIATIVES": "Initiatives",
+
     "CHARITY_ORGS": "Charity Organizations",
+
     "CONTACT_US": "Contact Us",
+
     "TERMS": "Terms & Conditions",
+
     "DISCLAIMER": "Disclaimer",
+
     "PRIVACY": "Privacy Policy",
+
     "COPYRIGHT_NAME": "Charitable Work Coordination Council"
+
   },
+
   "forbidden": {
+
     "title": "Access Denied",
+
     "message": "You don't have permission to access this page. If you believe this is a mistake, please contact support.",
+
     "go_home": "Back to Home",
+
     "go_back": "Go Back",
+
     "contact": "Contact Us",
+
     "hint": "If you just signed in, try refreshing the page or navigating from the main menu."
+
   },
+
   "Homepage": {
+
     "title": "Charity Coordination Council  Ajman",
+
     "Privacy": "Privacy Policy",
+
     "Disclaimer": "Disclaimer",
+
     "websitecontent": "Terms and Conditions",
+
     "ITEMS": [
+
       "1- The Council provides this website and its content and services for informational and awareness purposes and to facilitate access to related services.",
+
       "2- Under no circumstances shall the Council be held liable for any direct, indirect, incidental, consequential, special, or exceptional damages arising from the use of this website",
+
       "3- While the Council strives to regularly update the data and information published on the website, it does not guarantee that all information will always be current. Users are encouraged to verify the accuracy of information before taking any actions based on it.",
+
       "4- Website availability may be affected by interruptions, maintenance activities, or technical failures beyond the control of the Council, which shall not be held responsible for such occurrences.",
+
       "5- This website may contain links to external websites for user convenience. The Council assumes no responsibility for the content of those websites, their availability, or any problems that may result from their use.",
+
       "6- Users are responsible for taking appropriate precautions, including the use of antivirus software and keeping their security systems updated, when browsing the website or downloading any files.",
+
       "7- The Council shall not be held liable for damages resulting from hacking incidents or the misuse of user data by unauthorized third parties."
+
     ]
+
   }
+
 }
+

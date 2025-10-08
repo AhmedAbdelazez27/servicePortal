@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef } fro
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
+import { AttachmentService } from '../../../core/services/attachments/attachment.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
@@ -9,8 +10,10 @@ import { RouterModule } from '@angular/router';
 import { TranslationService } from '../../../core/services/translation.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationDto, CreateNotificationDto, CreateDepartmentNotificationDto, SendNotificationToDepartmentDto } from '../../../core/dtos/notifications/notification.dto';
+import { AttachmentsConfigType } from '../../../core/dtos/attachments/attachments-config.dto';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-navbar',
@@ -26,6 +29,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   loading = false;
   isNotificationDropdownOpen = false;
   currentUserName: string = '';
+  profilePhotoUrl: string = 'assets/images/profile-img.png'; // Default profile image
   private userData: any = null;
   private destroy$ = new Subject<void>();
   private isSubscribed = false; // Prevent duplicate subscriptions
@@ -35,6 +39,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private userService: UserService,
+    private attachmentService: AttachmentService,
     private toastr: ToastrService,
     private translate: TranslateService,
     private router: Router,
@@ -62,6 +67,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       // If we already have user data, just update the name based on current language
       if (this.userData) {
         this.updateUserNameBasedOnLanguage(this.userData);
+        this.loadProfilePhoto(this.userData);
         return;
       }
 
@@ -71,6 +77,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
           if (userData) {
             this.userData = userData; // Cache the user data
             this.updateUserNameBasedOnLanguage(userData);
+            this.loadProfilePhoto(userData);
           } else {
             this.currentUserName = 'User';
           }
@@ -86,6 +93,24 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Public method to refresh user data (useful after profile updates)
+   */
+  refreshUserData(): void {
+    this.userData = null; // Clear cache to force refresh
+    this.loadCurrentUserName();
+  }
+
+  /**
+   * Public method to refresh only the profile photo (lighter than full refresh)
+   */
+  refreshProfilePhoto(): void {
+    if (this.userData) {
+      console.log('🔄 Refreshing profile photo only...');
+      this.loadProfilePhoto(this.userData);
+    }
+  }
+
   private updateUserNameBasedOnLanguage(userData: any): void {
     const currentLang = this.currentLang || 'en';
     if (currentLang === 'ar' && userData.name) {
@@ -96,6 +121,100 @@ export class NavbarComponent implements OnInit, OnDestroy {
       // Fallback to available name
       this.currentUserName = userData.nameEn || userData.name || 'User';
     }
+  }
+
+  private loadProfilePhoto(userData: any): void {
+    console.log('🔍 Loading profile photo for user:', userData);
+    
+    // First check if attachments are in user data
+    if (userData.attachments && userData.attachments.length > 0) {
+      console.log('📎 User attachments found in userData:', userData.attachments);
+      this.findProfilePhotoInAttachments(userData.attachments, userData.userType || userData.lkpUserTypeId);
+    } else if (userData.masterId) {
+      console.log('🔍 No attachments in userData, loading from attachment service...');
+      this.loadProfilePhotoFromService(userData);
+    } else {
+      console.log('❌ No masterId found, cannot load attachments');
+    }
+  }
+
+  private findProfilePhotoInAttachments(attachments: any[], userType: number): void {
+    console.log('🔍 Looking for profile photo in attachments, userType:', userType);
+    
+    let profilePhotoAttachment;
+
+    if (userType === 1 || userType === 3) {
+      // Individual user
+      profilePhotoAttachment = attachments.find((att: any) => att.attConfigID === 7);
+      console.log('🔍 Looking for config ID 7 (individual user):', profilePhotoAttachment);
+    } else if (userType === 2) {
+      // Institution user
+      profilePhotoAttachment = attachments.find((att: any) => att.attConfigID === 2014);
+      console.log('🔍 Looking for config ID 2014 (institution user):', profilePhotoAttachment);
+    }
+
+    // If found, construct the image URL
+    if (profilePhotoAttachment && profilePhotoAttachment.imgPath) {
+      this.profilePhotoUrl = this.constructImageUrl(profilePhotoAttachment.imgPath);
+      console.log('✅ Profile photo URL set to:', this.profilePhotoUrl);
+    } else {
+      console.log('❌ No profile photo attachment found in userData');
+    }
+  }
+
+  private loadProfilePhotoFromService(userData: any): void {
+    const userType = userData.userType || userData.lkpUserTypeId;
+    const masterId = userData.masterId;
+
+    if (!masterId) {
+      console.log('❌ No masterId found');
+      return;
+    }
+
+    const masterType = userType === 2 
+      ? AttachmentsConfigType.FillInstitutionRegistrationData 
+      : AttachmentsConfigType.FillOutPublicLoginData;
+
+    console.log('🔍 Loading attachments from service - masterId:', masterId, 'type:', masterType);
+
+    this.attachmentService.getListByMasterId(masterId, masterType).subscribe({
+      next: (attachments) => {
+        console.log('📎 Attachments loaded from service:', attachments);
+        if (attachments && attachments.length > 0) {
+          this.findProfilePhotoInAttachments(attachments, userType);
+        } else {
+          console.log('❌ No attachments found from service');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error loading attachments from service:', error);
+      }
+    });
+  }
+
+  private constructImageUrl(imgPath: string): string {
+    if (!imgPath) return 'assets/images/profile-img.png';
+
+    // If it's already a full URL, return it directly
+    if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
+      return `${imgPath}?t=${Date.now()}`;
+    }
+
+    // Handle relative paths
+    const cleanPath = imgPath.startsWith('/') ? imgPath.substring(1) : imgPath;
+    
+    // Import environment at runtime
+    const baseUrl = this.getBaseUrl(cleanPath);
+    return `${baseUrl}/${cleanPath}?t=${Date.now()}`;
+  }
+
+  private getBaseUrl(path: string): string {
+    const apiBaseUrl = environment.apiBaseUrl;
+    
+    if (path.startsWith('Uploads/')) {
+      return apiBaseUrl.replace('/api', '');
+    }
+    return apiBaseUrl;
   }
 
   isLoginPage(): boolean {
@@ -137,7 +256,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.isLoggedIn()) {
-      // Get current user's name
+      // Get current user's name and photo
       this.loadCurrentUserName();
 
       // Only subscribe to notifications if not already subscribed
@@ -152,6 +271,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
       // ✅ Setup page focus listener for smart refreshing (only when cache is stale)
       this.setupPageFocusListener();
+
+      // ✅ Listen for router events to refresh profile photo after edit
+      this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
+        if (event.constructor.name === 'NavigationEnd') {
+          // Refresh user data when navigating away from edit profile
+          const url = this.router.url;
+          if (this.userData && !url.includes('/edit-profile') && !url.includes('/login')) {
+            // Refresh to get latest profile photo
+            console.log('🔄 Refreshing user data after navigation to:', url);
+            this.refreshUserData();
+          }
+        }
+      });
     }
   }
 

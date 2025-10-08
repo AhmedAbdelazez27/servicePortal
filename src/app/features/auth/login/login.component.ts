@@ -249,7 +249,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     const errormessage = err.error.reason;
     const notVerifiedText = this.translate.instant('COMMON.notVerifiedUser');
     const message = err.error.message || err.error.reason || 'UAE Pass authentication failed';
-    alert(message);
 
     if (message === notVerifiedText) {
       const modalElement = document.getElementById('notVerifiedUser');
