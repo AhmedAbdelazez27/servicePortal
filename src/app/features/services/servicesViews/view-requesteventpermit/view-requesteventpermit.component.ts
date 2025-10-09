@@ -148,6 +148,7 @@ type RequestEventPermitDto = {
   notes?: string | null;
   targetedAmount?: number | null;
   beneficiaryIdNumber?: string | null;
+  scIdentityCardReaderId?: number | null;
   requestAdvertisements?: RequestAdvertisementDto[] | null;
   donationCollectionChannels?: DonationChannel[] | null;
 };
@@ -185,6 +186,7 @@ import { AttachmentsConfigDto } from '../../../../core/dtos/mainApplyService/mai
 import { AttachmentBase64Dto, CreateWorkFlowCommentDto, WorkflowCommentsType } from '../../../../core/dtos/workFlowComments/workFlowComments.dto';
 import { AttachmentsConfigType } from '../../../../core/dtos/attachments/attachments-config.dto';
 import { AdvertisementsService } from '../../../../core/services/advertisement.service';
+import { IdentityCardReaderDto } from '../../../../core/dtos/identity-card/identity-card-reader.dto';
 
 @Component({
   selector: 'app-view-requesteventpermit',
@@ -240,6 +242,10 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   workFlowSteps: WorkFlowStepDto[] = [];
   partners: PartnerDto[] = [];
   attachments: AttachmentDto[] = [];
+
+  // Identity Card Reader
+  identityCardData: IdentityCardReaderDto | null = null;
+  isLoadingIdentityCard = false;
 
   targetWorkFlowStep: WorkFlowStepDto | null = null;
   workFlowComments: WorkFlowCommentDto[] = [];
@@ -343,12 +349,38 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
         //   this.initializeCommentsTable([]);
         // }
 
+        // Load Identity Card Data if available
+        this.loadIdentityCardData();
+
         this.isLoading = false;
       },
       error: () => {
         this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
         this.isLoading = false;
         this.router.navigate(['/']);
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
+  private loadIdentityCardData(): void {
+    const scIdentityCardReaderId = this.requestEventPermit?.scIdentityCardReaderId;
+    
+    // Only load if scIdentityCardReaderId has a valid value (not null, undefined, or 0)
+    if (!scIdentityCardReaderId || scIdentityCardReaderId <= 0) {
+      return; // No identity card data to load
+    }
+
+    this.isLoadingIdentityCard = true;
+    const sub = this._CharityEventPermitRequestService.getIdentityCardById(scIdentityCardReaderId).subscribe({
+      next: (response: IdentityCardReaderDto) => {
+        this.identityCardData = response;
+        this.isLoadingIdentityCard = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading identity card data:', error);
+        this.isLoadingIdentityCard = false;
+        // Don't show error toast - this is optional data
       }
     });
     this.subscriptions.push(sub);
@@ -579,12 +611,12 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   getRequestTypeName(): string {
     if (!this.requestEventPermit) return '-';
     return this.requestEventPermit.lkpRequestTypeName ||
-      (this.requestEventPermit.lkpRequestTypeId != null ? String(this.requestEventPermit.lkpRequestTypeId) : '-');
+      (this.requestEventPermit.lkpRequestTypeName != null ? String(this.requestEventPermit.lkpRequestTypeName) : '-');
   }
   getPermitTypeName(): string {
     if (!this.requestEventPermit) return '-';
     return this.requestEventPermit.lkpPermitTypeName ||
-      (this.requestEventPermit.lkpPermitTypeId != null ? String(this.requestEventPermit.lkpPermitTypeId) : '-');
+      (this.requestEventPermit.lkpPermitTypeName != null ? String(this.requestEventPermit.lkpPermitTypeName) : '-');
   }
 
   getStatusColor(statusId: number | null): string {

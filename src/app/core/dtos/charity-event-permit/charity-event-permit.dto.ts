@@ -104,4 +104,6 @@ export interface PermitRequestForm {
   targetedAmount: number | null;          // >= 0
   beneficiaryIdNumber: string | null;
   donationCollectionChannelIds: number[]; // min length 1
+   scIdentityCardReaderId : number | null; 
+ 
 }

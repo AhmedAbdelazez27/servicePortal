@@ -1307,7 +1307,11 @@
 
     "PARTNER_ADDED": "Partner added successfully",
 
-    "PARTNER_REMOVED": "Partner removed successfully"
+    "PARTNER_REMOVED": "Partner removed successfully",
+
+    "IDENTITY_CARD_READ": "Identity card data retrieved successfully",
+
+    "AD_ADDED": "Advertisement added successfully"
 
   },
 
@@ -1360,6 +1364,10 @@
     "FAILED_LOAD_HERO_SECTIONS": "Failed to load hero sections. Please try again.",
 
     "FAILED_LOAD_HERO_SECTION": "Failed to load hero section details. Please try again.",
+
+    "IDENTITY_CARD_NOT_FOUND": "Identity card not found. Please check the ID number.",
+
+    "FAILED_TO_READ_IDENTITY_CARD": "Failed to read identity card data. Please try again.",
 
     "INVALID_ID": "Invalid ID provided."
 
@@ -1492,6 +1500,8 @@
     "NEXT": "Next",
 
     "SUBMIT": "Submit",
+
+    "READ_CARD": "Read Card",
 
     "CANCEL": "Cancel",
 
@@ -3952,6 +3962,42 @@
       "7- The Council shall not be held liable for damages resulting from hacking incidents or the misuse of user data by unauthorized third parties."
 
     ]
+
+  },
+
+  "IDENTITY_CARD": {
+
+    "TITLE": "Beneficiary Identity Card Information",
+
+    "FULL_NAME": "Full Name",
+
+    "IDN": "Identity Card Number",
+
+    "NATIONALITY": "Nationality",
+
+    "GENDER": "Gender",
+
+    "BIRTH_DATE": "Birth Date",
+
+    "MARITAL_STATUS": "Marital Status",
+
+    "MOBILE": "Mobile Number",
+
+    "HOME_PHONE": "Home Phone",
+
+    "OCCUPATION": "Occupation",
+
+    "ADDRESS": "Address",
+
+    "ISSUE_DATE": "Issue Date",
+
+    "EXPIRY_DATE": "Expiry Date",
+
+    "PASSPORT_NO": "Passport Number",
+
+    "FAMILY_PERSONS": "Number of Family Members",
+
+    "LOADING": "Loading identity card data..."
 
   }
 

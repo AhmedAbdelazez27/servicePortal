@@ -44,6 +44,7 @@ import {
   timeRangesOk,
 } from '../../../../shared/customValidators/requestevent.validators';
 import { PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
+import { IdentityCardReaderDto } from '../../../../core/dtos/identity-card/identity-card-reader.dto';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -163,6 +164,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   ];
   service: any;
   showPartnerAttachments = false;
+  
+  // Identity Card Reader
+  identityCardData: IdentityCardReaderDto | null = null;
+  isLoadingIdentityCard = false;
+  showIdentityCardData = false;
 
 
   constructor(
@@ -1231,6 +1237,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         endDate: toISO(formData.endDate),
         adminTel: `971${formData.adminTel}`, // Add 971 prefix
         telephone: `971${formData.telephone}`, // Add 971 prefix
+        scIdentityCardReaderId: this.identityCardData?.id || null, // Add identity card reader ID
         requestAdvertisements: this.requestAdvertisements,
         attachments: mainAttachments,
         partners: (this.partners || []).map((p) => ({
@@ -1722,5 +1729,50 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       mobileControl.updateValueAndValidity();
       this.cdr.detectChanges();
     }
+  }
+
+  // Read Identity Card Data
+  readIdentityCardData(): void {
+    const idNumber = this.firstStepForm.get('beneficiaryIdNumber')?.value;
+    
+    if (!idNumber || idNumber.toString().trim() === '') {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
+      return;
+    }
+
+    // Validate Emirates ID format (15 digits)
+    const cleanValue = idNumber.toString().trim();
+    const emiratesIdPattern = /^\d{15}$/;
+    
+    if (!emiratesIdPattern.test(cleanValue)) {
+      this.toastr.error(this.translate.instant('VALIDATION.INVALID_EMIRATES_ID'));
+      return;
+    }
+
+    this.isLoadingIdentityCard = true;
+    this.identityCardData = null;
+    this.showIdentityCardData = false;
+
+    this._CharityEventPermitRequestService.readIdentityCard(cleanValue).subscribe({
+      next: (response) => {
+        this.identityCardData = response;
+        this.showIdentityCardData = true;
+        this.isLoadingIdentityCard = false;
+        this.toastr.success(this.translate.instant('SUCCESS.IDENTITY_CARD_READ'));
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error reading identity card:', error);
+        this.isLoadingIdentityCard = false;
+        
+        if (error.error && error.error.reason) {
+          this.toastr.error(error.error.reason);
+        } else if (error.status === 404) {
+          this.toastr.error(this.translate.instant('ERRORS.IDENTITY_CARD_NOT_FOUND'));
+        } else {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_TO_READ_IDENTITY_CARD'));
+        }
+      }
+    });
   }
 }

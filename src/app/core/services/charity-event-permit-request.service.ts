@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { Select2APIEndpoint } from '../constants/select2api-endpoints';
 import { FndLookUpValuesSelect2RequestDto } from '../dtos/FndLookUpValues.dto';
+import { IdentityCardReaderDto } from '../dtos/identity-card/identity-card-reader.dto';
 
 @Injectable({
     providedIn: 'root',
@@ -95,6 +96,20 @@ export class CharityEventPermitRequestService {
         return this.http.post<any>(
             `${this.BASE_URL}${ApiEndpoints.RequestEventPermits.Base}${ApiEndpoints.RequestEventPermits.Create}`,
             dto
+        );
+    }
+
+    // Read Identity Card Data by IDN
+    readIdentityCard(idn: string): Observable<IdentityCardReaderDto> {
+        return this.http.get<IdentityCardReaderDto>(
+            `${this.BASE_URL}/ScIdentityCardReader/Read/${idn}`
+        );
+    }
+
+    // Get Identity Card Data by ID
+    getIdentityCardById(id: number): Observable<IdentityCardReaderDto> {
+        return this.http.get<IdentityCardReaderDto>(
+            `${this.BASE_URL}/ScIdentityCardReader/Get/${id}`
         );
     }
 }
