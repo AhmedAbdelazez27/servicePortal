@@ -46,6 +46,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   lang:string = "";
 
   regionSelect2: any[] = [];
+  selectedRegion: any = null;
   searchSelect2Params = new FndLookUpValuesSelect2RequestDto();
 
   constructor(
@@ -74,14 +75,14 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   // 'ar', 'en'
 
   ngOnInit(): void {
-    this.fetchregionSelect2();
-
     this.initiativeId = this.route.snapshot.paramMap.get('id');
-    if (this.initiativeId) {
-      this.loadInitiativeDetails();
-    } else {
+    if (!this.initiativeId) {
       this.error = 'ERRORS.INITIATIVE_ID_NOT_FOUND';
+      return;
     }
+
+    // Fetch regions first, then load details with first region selected
+    this.fetchregionSelect2();
 
     // Add global function for map popup
     (window as any).openInGoogleMaps = (coordinates: string) => {
@@ -121,9 +122,24 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   fetchregionSelect2(): void {
+    // Set take to 600 to get all regions
+    this.searchSelect2Params.take = 600;
     this.select2Service.getRegionSelect2List(this.searchSelect2Params).subscribe({
       next: (response: any) => {
         this.regionSelect2 = response?.results || [];
+        
+        // If there's a regionName from route or previous selection, set it
+        if (this.regionName) {
+          this.setSelectedRegionFromName();
+        } else if (this.regionSelect2.length > 0) {
+          // Auto-select first region in the list
+          const firstRegion = this.regionSelect2[0];
+          this.selectedRegion = firstRegion.id;
+          this.regionName = firstRegion.text;
+          // Load details with first region
+      
+        }
+        this.loadInitiativeDetails();
       },
       error: (err: any) => {
         this.toastr.error('Failed to load Country.', 'Error');
@@ -131,15 +147,35 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     });
   }
 
+  private setSelectedRegionFromName(): void {
+    if (this.regionName && this.regionSelect2.length > 0) {
+      const foundRegion = this.regionSelect2.find(
+        (region: any) => region.text === this.regionName
+      );
+      if (foundRegion) {
+        this.selectedRegion = foundRegion.id;
+      }
+    }
+  }
+
   onRegionChange(selected: any): void {
-    this.regionName = selected.text;
+    if (selected) {
+      // ng-select (change) returns the full object
+      this.regionName = selected.text;
+      this.selectedRegion = selected.id;
+    } else {
+      this.regionName = null;
+      this.selectedRegion = null;
+    }
     // Reset map initialization to allow reinitialization with new data
     this.resetMap();
     this.loadInitiativeDetails();
   }
 
   loadInitiativeDetails(): void {
-    if (!this.initiativeId) return;
+    if (!this.initiativeId) {
+       return;
+    }
 
     this.loading = true;
     this.error = null;
@@ -147,9 +183,11 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
       id: Number(this.initiativeId),
       regionName: this.regionName || null,
     };
+    
+    
     this.initiativeService.getById(params).subscribe({
       next: (response: any) => {
-        this.initiative = response || null;
+         this.initiative = response || null;
         this.loading = false;
 
         // Initialize map after data is loaded

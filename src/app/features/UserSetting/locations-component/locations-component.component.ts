@@ -14,7 +14,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { GenericDataTableComponent } from '../../../../shared/generic-data-table/generic-data-table.component';
 import { LocationService } from '../../../core/services/UserSetting/location.service';
 import { RegionService } from '../../../core/services/UserSetting/region.service';
-import { LocationTypeService } from '../../../core/services/location-type.service';
+import { LocationTypeService } from '../../../core/services/UserSetting/location-type.service';
 import { AttachmentService } from '../../../core/services/attachments/attachment.service';
 import { SpinnerService } from '../../../core/services/spinner.service';
 import { environment } from '../../../../environments/environment';

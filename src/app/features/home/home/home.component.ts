@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit, AfterViewInit ,OnDestroy {
     private serviceSettingService: ServiceSettingService,
     private initiativeService: InitiativeService,
     private heroSectionService: HeroSectionSettingService,
-    private translationService: TranslationService,
+    public translationService: TranslationService,
     private translateService: TranslateService,
     private router: Router,
     public textService: TextProcessingService,
@@ -63,6 +63,11 @@ export class HomeComponent implements OnInit, AfterViewInit ,OnDestroy {
     this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
       this.lang = event.lang
       this.setCarouselOptions(event.lang);
+      // Reinitialize carousel when language changes to update direction
+      setTimeout(() => {
+        this.initCarouselSafely();
+        this.cdr.detectChanges();
+      }, 100);
     });
 
 
@@ -199,6 +204,10 @@ export class HomeComponent implements OnInit, AfterViewInit ,OnDestroy {
   }
 
   onInitiativeDetails(initiative: InitiativeDto): void {
+    if (!initiative || !initiative.id) {
+      return;
+    }
+    
     this.router.navigate(['/initiative-details', initiative.id]);
   }
 

@@ -63,9 +63,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.getUAEPassInfo(this.uaePassParams);
         } else {
           const redirectUri = window.location.origin + '/login';
-          const logoutURL =
-            'https://stg-id.uaepass.ae/idshub/logout?redirect_uri=' +
-            encodeURIComponent(redirectUri);
+         // const logoutURL = 'https://stg-id.uaepass.ae/idshub/logout?redirect_uri=' + encodeURIComponent(redirectUri);
+          const logoutURL = 'https://id.uaepass.ae/idshub/logout?redirect_uri=' + encodeURIComponent(redirectUri);
 
           this.translate
             .get(['COMMON.UAEPassCancelRequest'])

@@ -10,3 +10,77 @@
   overflow-wrap: break-word;  
   word-break: break-word;     
 }
+
+// Carousel RTL Direction Animations (Arabic)
+:host ::ng-deep .carousel.carousel-rtl,
+:host ::ng-deep .carousel[dir="rtl"] {
+  direction: rtl !important;
+
+  .carousel-inner {
+    direction: rtl !important;
+
+    .carousel-item-next:not(.carousel-item-start),
+    .active.carousel-item-end {
+      transform: translateX(-100%) !important;
+    }
+
+    .carousel-item-prev:not(.carousel-item-end),
+    .active.carousel-item-start {
+      transform: translateX(100%) !important;
+    }
+
+    .carousel-item-next.carousel-item-start,
+    .carousel-item-prev.carousel-item-end,
+    .carousel-item.active {
+      transform: translateX(0) !important;
+    }
+  }
+
+  // Swap control positions for RTL
+  .carousel-control-prev {
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  .carousel-control-next {
+    left: 0 !important;
+    right: auto !important;
+  }
+}
+
+// Carousel LTR Direction Animations (English)
+:host ::ng-deep .carousel.carousel-ltr,
+:host ::ng-deep .carousel[dir="ltr"] {
+  direction: ltr !important;
+
+  .carousel-inner {
+    direction: ltr !important;
+
+    .carousel-item-next:not(.carousel-item-start),
+    .active.carousel-item-end {
+      transform: translateX(100%) !important;
+    }
+
+    .carousel-item-prev:not(.carousel-item-end),
+    .active.carousel-item-start {
+      transform: translateX(-100%) !important;
+    }
+
+    .carousel-item-next.carousel-item-start,
+    .carousel-item-prev.carousel-item-end,
+    .carousel-item.active {
+      transform: translateX(0) !important;
+    }
+  }
+
+  // Normal positions for LTR
+  .carousel-control-prev {
+    left: 0 !important;
+    right: auto !important;
+  }
+
+  .carousel-control-next {
+    right: 0 !important;
+    left: auto !important;
+  }
+}

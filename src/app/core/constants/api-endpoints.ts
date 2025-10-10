@@ -407,7 +407,8 @@ export class ApiEndpoints {
 
 
   static readonly UAE_PASS_CONFIG = {
-    baseUrl: 'https://stg-id.uaepass.ae/idshub',
+   // baseUrl: 'https://stg-id.uaepass.ae/idshub',
+    baseUrl: 'https://id.uaepass.ae/idshub',
 
     //getURLCredention: {
     //  clientId: 'sandbox_stage',
@@ -416,10 +417,16 @@ export class ApiEndpoints {
     //  clientsecret: 'HnlHOJTkTb66Y5H'
     //},
 
+    //getURLCredention: {
+    //  clientId: 'ccc_web_stg',
+    //  clientsecret: 'Q9pOTvlchYARcSFL',
+    //  redirectUri: 'https://192.168.51.130:2001/login'
+    //}
+
     getURLCredention: {
-      clientId: 'ccc_web_stg',
-      clientsecret: 'Q9pOTvlchYARcSFL',
-      redirectUri: 'https://192.168.51.130:2001/login'
+      clientId: 'ajm_ccc_web_prod',
+      clientsecret: 'PXr2q2Tu8AMbK7mT',
+      redirectUri: 'https://www.ajmanccc.ae/login'
     }
   };
 }

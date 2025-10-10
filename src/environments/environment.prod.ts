@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
    //apiBaseUrl:'https://localhost:7156/api'
-      apiBaseUrl: 'https://192.168.51.4/api',
+    //  apiBaseUrl: 'https://192.168.51.4/api',
    // apiBaseUrl: 'http://compassint.ddns.net:2041/api',
-  // apiBaseUrl: 'https://Api.Ajmanccc.ae/api',
+    apiBaseUrl: 'https://Api.Ajmanccc.ae/api',
 
   firebase: {
     apiKey: "AIzaSyAB3FKe70tGitiH23qLJY7jU_gLAxzjWhc",
