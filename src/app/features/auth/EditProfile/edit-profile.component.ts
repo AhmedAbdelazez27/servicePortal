@@ -767,17 +767,19 @@ export class EditProfileComponent implements OnInit {
     this.attachmentsToDelete = {};
   }
 
-  async onSubmit(): Promise<void> {
+  async onSubmit(isChangePassword:boolean = false): Promise<void> {
     this.submitted = true;
 
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
+      console.log("test 1");
+      
       this.toastr.error(this.translate.instant('EDIT_PROFILE.VALIDATION_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
       return;
     }
 
     // Validate required attachments
-    if (!this.validateRequiredAttachments()) {
+    if (!this.validateRequiredAttachments() && !isChangePassword) {
       this.toastr.error(this.translate.instant('EDIT_PROFILE.REQUIRED_ATTACHMENTS_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
       return;
     }
