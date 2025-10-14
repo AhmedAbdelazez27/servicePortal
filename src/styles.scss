@@ -7486,3 +7486,28 @@ margin: 0 0 1rem;
     left: auto !important;
   }
 }
+
+
+
+
+@media(max-width:1280px){
+  body{
+    zoom: 0.8;
+  }
+}
+
+
+@media(max-width:1024px){
+  body{
+    zoom: 0.7;
+  }
+}
+
+
+
+@media(max-width:991px){
+  body{
+    zoom: 1;
+  }
+  
+}
