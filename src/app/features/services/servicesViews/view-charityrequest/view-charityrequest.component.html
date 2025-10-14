@@ -15,7 +15,8 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a routerLink="/request">{{ 'NAVIGATION.REQUEST' | translate }}</a></li>
-          <li class="breadcrumb-item active" aria-current="page">{{ 'CHARITY_EVENT_PERMIT.VIEW_TITLE' | translate }}
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ 'CHARITY_EVENT_PERMIT.VIEW_TITLE' | translate }}
           </li>
         </ol>
       </nav>
@@ -31,19 +32,22 @@
 
               <div class="dropdown">
                 <button class="btn btn-gold dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                  aria-expanded="false" style="padding: 12px !important;">
+                        aria-expanded="false" style="padding: 12px !important;">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M17 11H13V7C13 6.73478 12.8946 6.48043 12.7071 6.29289C12.5196 6.10536 12.2652 6 12 6C11.7348 6 11.4804 6.10536 11.2929 6.29289C11.1054 6.48043 11 6.73478 11 7V11H7C6.73478 11 6.48043 11.1054 6.29289 11.2929C6.10536 11.4804 6 11.7348 6 12C6 12.2652 6.10536 12.5196 6.29289 12.7071C6.48043 12.8946 6.73478 13 7 13H11V17C11 17.2652 11.1054 17.5196 11.2929 17.7071C11.4804 17.8946 11.7348 18 12 18C12.2652 18 12.5196 17.8946 12.7071 17.7071C12.8946 17.5196 13 17.2652 13 17V13H17C17.2652 13 17.5196 12.8946 17.7071 12.7071C17.8946 12.5196 18 12.2652 18 12C18 11.7348 17.8946 11.4804 17.7071 11.2929C17.5196 11.1054 17.2652 11 17 11Z"
-                      fill="white" />
+                    <path d="M17 11H13V7C13 6.73478 12.8946 6.48043 12.7071 6.29289C12.5196 6.10536 12.2652 6 12 6C11.7348 6 11.4804 6.10536 11.2929 6.29289C11.1054 6.48043 11 6.73478 11 7V11H7C6.73478 11 6.48043 11.1054 6.29289 11.2929C6.10536 11.4804 6 11.7348 6 12C6 12.2652 6.10536 12.5196 6.29289 12.7071C6.48043 12.8946 6.73478 13 7 13H11V17C11 17.2652 11.1054 17.5196 11.2929 17.7071C11.4804 17.8946 11.7348 18 12 18C12.2652 18 12.5196 17.8946 12.7071 17.7071C12.8946 17.5196 13 17.2652 13 17V13H17C17.2652 13 17.5196 12.8946 17.7071 12.7071C17.8946 12.5196 18 12.2652 18 12C18 11.7348 17.8946 11.4804 17.7071 11.2929C17.5196 11.1054 17.2652 11 17 11Z"
+                          fill="white" />
                   </svg>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#"
-                      *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7" data-bs-toggle="modal"
-                      data-bs-target="#commentModal">{{ 'COMMON.ADD_COMMENT' | translate }}</a></li>
-                  <li><a class="dropdown-item" href="#" *ngIf="targetWorkFlowStep" data-bs-toggle="modal"
-                      data-bs-target="#addAdvertisementModal">{{'ADD_ADVERTISEMENT' | translate}}</a></li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                       *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7" data-bs-toggle="modal"
+                       data-bs-target="#commentModal">{{ 'COMMON.ADD_COMMENT' | translate }}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#" *ngIf="targetWorkFlowStep" data-bs-toggle="modal"
+                       data-bs-target="#addAdvertisementModal">{{'ADD_ADVERTISEMENT' | translate}}</a>
+                  </li>
                 </ul>
               </div>
 
@@ -51,19 +55,28 @@
             </div>
             <div class="row">
               <div class="col-xl-6">
-                <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong> {{
-                  mainApplyService.applyNo }}</p>
+                <p class="mb-1">
+                  <strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong> {{
+                  mainApplyService.applyNo
+                  }}
+                </p>
               </div>
               <div class="col-xl-6">
-                <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong> {{
-                  formatDate(mainApplyService.applyDate) }}</p>
+                <p class="mb-1">
+                  <strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong> {{
+                  formatDate(mainApplyService.applyDate)
+                  }}
+                </p>
               </div>
               <div class="col-xl-6">
                 <span class="badge bg-primary">{{ mainApplyService.lastStatus }}</span>
               </div>
               <div class="col-xl-6" *ngIf="mainApplyService.permitNumber">
-                <p class="mb-0"><strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}:</strong> {{
-                  mainApplyService.permitNumber }}</p>
+                <p class="mb-0">
+                  <strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}:</strong> {{
+                  mainApplyService.permitNumber
+                  }}
+                </p>
               </div>
             </div>
           </div>
@@ -84,18 +97,18 @@
 
               <div class="workflow-timeline" *ngIf="workFlowSteps?.length">
                 <div *ngFor="let step of workFlowSteps; let i = index; trackBy: trackByStepId"
-                  class="workflow-step-item" [class.completed]="isStepCompleted(step.serviceStatus)"
-                  [class.rejected]="isStepRejected(step.serviceStatus)"
-                  [class.pending]="isStepPending(step.serviceStatus)"
-                  [class.last-step]="i === workFlowSteps.length - 1">
+                     class="workflow-step-item" [class.completed]="isStepCompleted(step.serviceStatus)"
+                     [class.rejected]="isStepRejected(step.serviceStatus)"
+                     [class.pending]="isStepPending(step.serviceStatus)"
+                     [class.last-step]="i === workFlowSteps.length - 1">
 
                   <div class="step-circle" [style.background-color]="getStatusColor(step.serviceStatus)"
-                    [style.border-color]="getStatusColor(step.serviceStatus)">
+                       [style.border-color]="getStatusColor(step.serviceStatus)">
                     <i [class]="getStatusIcon(step.serviceStatus)"></i>
                   </div>
 
                   <div class="step-line" *ngIf="i < workFlowSteps.length - 1"
-                    [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
+                       [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
 
                   <div>
                     <div class="step-header">
@@ -106,6 +119,10 @@
                       </div>
                     </div>
                     <h6 class="department-name">{{ step.departmentName }}</h6>
+                    <button type="button" class="btn btn-link p-0"
+                            (click)="openHistoryModal(step.workFlowHistories || [])">
+                      <i class="bi bi-clock-history me-1"></i>{{'WORKFLOW.VIEW_HISTORY' | translate}}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -133,8 +150,11 @@
                   </div>
 
                   <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">{{ 'CHARITY_EVENT_PERMIT.ADVERTISEMENT_TYPE' | translate
-                      }}</label>
+                    <label class="form-label fw-bold">
+                      {{
+ 'CHARITY_EVENT_PERMIT.ADVERTISEMENT_TYPE' | translate
+                      }}
+                    </label>
                     <div class="form-control-plaintext">
                       {{ charityEventPermit.advertisementTypeName || charityEventPermit.advertisementType || '-' }}
                     </div>
@@ -225,13 +245,19 @@
 
                   <!-- Donation channels -->
                   <div class="col-12 mb-2" *ngIf="charityEventPermit.donationCollectionChannels?.length">
-                    <label class="form-label fw-bold">{{ 'CHARITY_EVENT_PERMIT.DONATION_CHANNELS' | translate
-                      }}</label>
+                    <label class="form-label fw-bold">
+                      {{
+ 'CHARITY_EVENT_PERMIT.DONATION_CHANNELS' | translate
+                      }}
+                    </label>
                     <ul class="list-group">
                       <li class="list-group-item" *ngFor="let ch of charityEventPermit.donationCollectionChannels">
                         {{ channelName(ch) }}
-                        <span *ngIf="ch.isActive" class="badge bg-success ms-2">{{ 'COMMON.ACTIVE' | translate
-                          }}</span>
+                        <span *ngIf="ch.isActive" class="badge bg-success ms-2">
+                          {{
+ 'COMMON.ACTIVE' | translate
+                          }}
+                        </span>
                       </li>
                     </ul>
                   </div>
@@ -251,12 +277,12 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="adsHeader">
                   <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#adsSection"
-                    aria-expanded="false" aria-controls="adsSection">
+                          aria-expanded="false" aria-controls="adsSection">
                     {{ 'CHARITY_EVENT_PERMIT.ADVERTISEMENTS' | translate }}
                   </button>
                 </h2>
                 <div id="adsSection" class="accordion-collapse collapse" aria-labelledby="adsHeader"
-                  data-bs-parent="#charitySectionsAccordion">
+                     data-bs-parent="#charitySectionsAccordion">
                   <div class="accordion-body">
                     <!-- Section: Advertisements (original content preserved) -->
                     <div class="step-content">
@@ -264,18 +290,19 @@
                       <div *ngIf="charityEventPermit?.requestAdvertisements?.length; else noAds">
                         <div class="accordion" id="adsAccordion">
                           <div class="accordion-item"
-                            *ngFor="let ad of charityEventPermit!.requestAdvertisements; let i = index">
+                               *ngFor="let ad of charityEventPermit!.requestAdvertisements; let i = index">
                             <h2 class="accordion-header d-flex" [id]="'ad-h-'+i">
                               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                [attr.data-bs-target]="'#ad-c-'+i" aria-expanded="false">
+                                      [attr.data-bs-target]="'#ad-c-'+i" aria-expanded="false">
                                 <div class="d-flex flex-column">
                                   <div>
                                     {{ i + 1 }} — {{ ad.adTitle }}
                                   </div>
                                   <div class="step-status pt-1" [style.color]="getStatusColor(ad.advertisementStatus)"
-                                    style="font-weight: normal; font-size: 16px;">
+                                       style="font-weight: normal; font-size: 16px;">
                                     <i [class]="getStatusIcon(ad.advertisementStatus)" class="me-1"></i>
-                                    {{ ad.advertisementStatusName || (getStatusLabel(ad.advertisementStatus) |
+                                    {{
+ ad.advertisementStatusName || (getStatusLabel(ad.advertisementStatus) |
                                     translate)
                                     }}
                                   </div>
@@ -284,11 +311,11 @@
 
                             </h2>
                             <div [id]="'ad-c-'+i" class="accordion-collapse collapse" [attr.aria-labelledby]="'ad-h-'+i"
-                              data-bs-parent="#adsAccordion">
+                                 data-bs-parent="#adsAccordion">
                               <div class="accordion-body">
                                 <div class="ms-auto pb-1">
                                   <button type="button" class="btn btn-gold dropdown-toggle"
-                                    style="padding: 12px !important;" (click)="openAdWorkflow(ad)">
+                                          style="padding: 12px !important;" (click)="openAdWorkflow(ad)">
                                     <i class="fas fa-route me-1"></i>
                                     {{ 'WORKFLOW.PROCESS_STEPS' | translate }}
                                   </button>
@@ -296,11 +323,13 @@
                                 <div class="row">
                                   <div class="col-md-6 mb-2">
                                     <strong>{{ 'CHARITY_EVENT_PERMIT.AD_START' | translate }}:</strong> {{
-                                    formatDateTime(ad.startDate) }}
+                                    formatDateTime(ad.startDate)
+                                    }}
                                   </div>
                                   <div class="col-md-6 mb-2">
                                     <strong>{{ 'CHARITY_EVENT_PERMIT.AD_END' | translate }}:</strong> {{
-                                    formatDateTime(ad.endDate) }}
+                                    formatDateTime(ad.endDate)
+                                    }}
                                   </div>
                                   <!-- <div class="col-md-6 mb-2">
                                     <strong>{{ 'CHARITY_EVENT_PERMIT.AD_MOBILE' | translate }}:</strong> {{
@@ -327,7 +356,6 @@
                                     <span class="badge bg-warning text-dark" *ngIf="ad.reNewAd">{{
                                       'CHARITY_EVENT_PERMIT.RENEW_AD' | translate }}</span>
                                   </div> -->
-
                                   <!-- Targets -->
                                   <div class="col-12 mt-3" *ngIf="ad.requestAdvertisementTargets?.length">
                                     <h6 class="fw-bold">{{ 'CHARITY_EVENT_PERMIT.AD_TARGETS' | translate }}</h6>
@@ -343,7 +371,9 @@
                                   <div class="col-12 mt-3" *ngIf="ad.requestAdvertisementAdLocations?.length">
                                     <h6 class="fw-bold">{{ 'CHARITY_EVENT_PERMIT.AD_LOCATIONS' | translate }}</h6>
                                     <ul class="mb-0">
-                                      <li *ngFor="let loc of ad.requestAdvertisementAdLocations">{{ loc.location
+                                      <li *ngFor="let loc of ad.requestAdvertisementAdLocations">
+                                        {{
+ loc.location
                                         }}
                                       </li>
                                     </ul>
@@ -371,8 +401,6 @@
                                       </button>
                                     </div>
                                   </div> -->
-
-
                                   <!-- Ad Attachments -->
                                   <div class="col-12">
                                     <label class="form-label fw-bold">{{ 'COMMON.ATTACHMENTS' | translate }}</label>
@@ -382,8 +410,10 @@
                                         <div class="col-xl-4 col-lg-6 mb-3" *ngFor="let att of ad.attachments">
                                           <div class="attachment-box">
                                             <h6 class="card-title">
-                                              {{ att.attachmentTitle || ('REQUEST_EVENT_PERMIT.ATTACHMENT' |
-                                              translate) }}
+                                              {{
+ att.attachmentTitle || ('REQUEST_EVENT_PERMIT.ATTACHMENT' |
+                                              translate)
+                                              }}
                                             </h6>
                                             <p class="mb-3">
                                               {{ 'COMMON.UPLOADED_ON' | translate }}:
@@ -394,7 +424,8 @@
                                                 <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }}
                                               </button>
                                               <button class="btn btn-download-style" (click)="downloadAttachment(att)">
-                                                <i class="fas fa-download me-1"></i>{{ 'COMMON.DOWNLOAD' | translate
+                                                <i class="fas fa-download me-1"></i>{{
+ 'COMMON.DOWNLOAD' | translate
                                                 }}
                                               </button>
                                             </div>
@@ -403,8 +434,12 @@
                                       </div>
                                     </ng-container>
                                     <ng-template #noAdAtts>
-                                      <div class="alert alert-info py-2 mb-0">{{ 'REQUEST_EVENT_PERMIT.NO_ATTACHMENTS'
-                                        | translate }}</div>
+                                      <div class="alert alert-info py-2 mb-0">
+                                        {{
+ 'REQUEST_EVENT_PERMIT.NO_ATTACHMENTS'
+                                        | translate
+                                        }}
+                                      </div>
                                     </ng-template>
                                   </div>
                                 </div>
@@ -426,12 +461,12 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="partnersHeader">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#partnersSection" aria-expanded="false" aria-controls="partnersSection">
+                          data-bs-target="#partnersSection" aria-expanded="false" aria-controls="partnersSection">
                     {{ 'CHARITY_EVENT_PERMIT.PARTNERS' | translate }}
                   </button>
                 </h2>
                 <div id="partnersSection" class="accordion-collapse collapse" aria-labelledby="partnersHeader"
-                  data-bs-parent="#charitySectionsAccordion">
+                     data-bs-parent="#charitySectionsAccordion">
                   <div class="accordion-body">
                     <!-- Section: Partners (original content preserved) -->
 
@@ -461,12 +496,13 @@
                                 <td>{{ partner.contactDetails || '-' }}</td>
                                 <td class="text-center">
                                   <button *ngIf="partner.attachments?.length" class="btn btn-next-style"
-                                    (click)="viewPartnerAttachments(partner)">
+                                          (click)="viewPartnerAttachments(partner)">
                                     <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }} ({{
-                                    partner.attachments?.length }})
+                                    partner.attachments?.length
+                                    }})
                                   </button>
                                   <button *ngIf="!partner.attachments?.length" class="btn btn-next-style"
-                                    (click)="viewPartnerAttachments(partner)">
+                                          (click)="viewPartnerAttachments(partner)">
                                     <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }}
                                   </button>
                                 </td>
@@ -489,12 +525,12 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="attachmentsHeader">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#attachmentsSection" aria-expanded="false" aria-controls="attachmentsSection">
+                          data-bs-target="#attachmentsSection" aria-expanded="false" aria-controls="attachmentsSection">
                     {{ 'CHARITY_EVENT_PERMIT.ATTACHMENTS' | translate }}
                   </button>
                 </h2>
                 <div id="attachmentsSection" class="accordion-collapse collapse" aria-labelledby="attachmentsHeader"
-                  data-bs-parent="#charitySectionsAccordion">
+                     data-bs-parent="#charitySectionsAccordion">
                   <div class="accordion-body">
                     <!-- Section: Attachments (original content preserved) -->
                     <div class="step-content">
@@ -504,11 +540,15 @@
                           <div class="col-xl-4 col-lg-6 mb-4" *ngFor="let attachment of attachments">
                             <div class="attachment-box">
                               <h6 class="card-title">
-                                {{ attachment.attachmentTitle || ('CHARITY_EVENT_PERMIT.ATTACHMENT' | translate)
+                                {{
+ attachment.attachmentTitle || ('CHARITY_EVENT_PERMIT.ATTACHMENT' | translate)
                                 }}
                               </h6>
-                              <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}: {{
-                                formatDateTime(attachment.lastModified) }}</p>
+                              <p class="mb-4">
+                                {{ 'COMMON.UPLOADED_ON' | translate }}: {{
+                                formatDateTime(attachment.lastModified)
+                                }}
+                              </p>
                               <div class="d-flex justify-content-between mt-auto">
                                 <button class="btn btn-next-style me-2" (click)="viewAttachment(attachment)">
                                   <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }}
@@ -523,7 +563,8 @@
                       </div>
 
                       <ng-template #noAtts>
-                        <div class="alert alert-info">{{ 'CHARITY_EVENT_PERMIT.NO_ATTACHMENTS' | translate }}
+                        <div class="alert alert-info">
+                          {{ 'CHARITY_EVENT_PERMIT.NO_ATTACHMENTS' | translate }}
                         </div>
                       </ng-template>
                     </div>
@@ -534,12 +575,12 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="wfHeader">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#wfComments" aria-expanded="false" aria-controls="wfComments">
+                          data-bs-target="#wfComments" aria-expanded="false" aria-controls="wfComments">
                     {{ 'COMMON.WORKFLOW_COMMENTS' | translate }}
                   </button>
                 </h2>
                 <div id="wfComments" class="accordion-collapse collapse" data-bs-parent="#charitySectionsAccordion"
-                  aria-labelledby="wfHeader">
+                     aria-labelledby="wfHeader">
                   <div class="accordion-body">
                     <div class="step-content">
 
@@ -550,7 +591,6 @@
                           {{ 'COMMON.ADD_COMMENT' | translate }}
                         </button>
                       </div> -->
-
                       <!-- <div class="comments-container">
                                                 <div class="comment-item">
                                                     <div
@@ -624,7 +664,6 @@
                                                 </div>
 
                                             </div> -->
-
                       <!-- <app-generic-data-table [columnDefs]="commentsColumnDefs" [rowData]="allWorkFlowComments"
                           [totalCount]="allWorkFlowComments.length" [pageSize]="10" [currentPage]="0"
                           [showActionColumn]="false" [columnHeaderMap]="commentsColumnHeaderMap"
@@ -649,16 +688,14 @@
                           </div>
                           <div>
                             <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"
-                              data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
+                                    data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
-                                fill="none">
+                                   fill="none">
                                 <g clip-path="url(#clip0_560_1674)">
-                                  <path
-                                    d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
-                                    fill="#374957" />
-                                  <path
-                                    d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
-                                    fill="#374957" />
+                                  <path d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
+                                        fill="#374957" />
+                                  <path d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
+                                        fill="#374957" />
                                 </g>
                                 <defs>
                                   <clipPath id="clip0_560_1674">
@@ -666,7 +703,8 @@
                                   </clipPath>
                                 </defs>
                               </svg>
-                              {{ 'COMMON.VIEW' | translate}} </button>
+                              {{ 'COMMON.VIEW' | translate}}
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -695,8 +733,8 @@
 
 <!-- Comment Attachments Modal (kept as provided) -->
 <div class="modal fade show" tabindex="-1"
-  [ngStyle]="{ display: showAttachmentModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)' }"
-  *ngIf="showAttachmentModal">
+     [ngStyle]="{ display: showAttachmentModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)' }"
+     *ngIf="showAttachmentModal">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content border-0 rounded-4 shadow-lg">
       <div class="modal-header bg-info text-white rounded-top-4 border-0">
@@ -704,7 +742,7 @@
           <i class="fas fa-paperclip me-2"></i>{{ 'COMMON.ATTACHMENTS' | translate }}
         </h5>
         <button type="button" class="btn-close btn-close-white" aria-label="Close"
-          (click)="closeAttachmentModal()"></button>
+                (click)="closeAttachmentModal()"></button>
       </div>
       <div class="modal-body p-4">
         <div *ngIf="isLoadingAttachments" class="text-center py-5">
@@ -713,7 +751,7 @@
         </div>
 
         <div *ngIf="!isLoadingAttachments && selectedCommentAttachments.length === 0"
-          class="text-center text-muted py-4">
+             class="text-center text-muted py-4">
           <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
           <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
         </div>
@@ -723,8 +761,12 @@
             <div class="card h-100 border-0 shadow-sm hover-shadow">
               <div class="card-body text-center p-3">
                 <div class="mb-3"><i class="fas fa-file-alt fa-2x text-primary"></i></div>
-                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('CHARITY_EVENT_PERMIT.ATTACHMENT' |
-                  translate) }}</h6>
+                <h6 class="card-title small mb-2">
+                  {{
+ attachment.attachmentTitle || ('CHARITY_EVENT_PERMIT.ATTACHMENT' |
+                  translate)
+                  }}
+                </h6>
                 <div class="d-grid gap-2">
                   <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
                     <i class="fas fa-download me-1"></i>{{ 'COMMON.DOWNLOAD' | translate }}
@@ -750,8 +792,8 @@
 
 <!-- Partner Attachments Modal (kept as provided) -->
 <div class="modal fade show" tabindex="-1"
-  [ngStyle]="{ display: showPartnerAttachmentModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)' }"
-  *ngIf="showPartnerAttachmentModal">
+     [ngStyle]="{ display: showPartnerAttachmentModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)' }"
+     *ngIf="showPartnerAttachmentModal">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header   ">
@@ -760,7 +802,7 @@
           <span *ngIf="selectedPartner" class="fw-normal"> - {{ selectedPartner?.name }}</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" aria-label="Close"
-          (click)="closePartnerAttachmentModal()"></button>
+                (click)="closePartnerAttachmentModal()"></button>
       </div>
       <div class="modal-body p-4">
         <div *ngIf="isLoadingPartnerAttachments" class="text-center py-5">
@@ -769,7 +811,7 @@
         </div>
 
         <div *ngIf="!isLoadingPartnerAttachments && selectedPartnerAttachments.length === 0"
-          class="text-center text-muted py-4">
+             class="text-center text-muted py-4">
           <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
           <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
         </div>
@@ -779,8 +821,12 @@
             <div class="card h-100 border-0 shadow-sm hover-shadow">
               <div class="card-body text-center p-3">
                 <div class="mb-3"><i class="fas fa-file-alt fa-2x "></i></div>
-                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('CHARITY_EVENT_PERMIT.ATTACHMENT' |
-                  translate) }}</h6>
+                <h6 class="card-title small mb-2">
+                  {{
+ attachment.attachmentTitle || ('CHARITY_EVENT_PERMIT.ATTACHMENT' |
+                  translate)
+                  }}
+                </h6>
                 <div class="d-grid gap-2">
                   <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
                     <i class="fas fa-download me-1"></i>{{ 'COMMON.DOWNLOAD' | translate }}
@@ -817,13 +863,16 @@
           <div class="mb-3">
             <label for="commentText " class="form-label mb-2">{{ 'COMMON.COMMENT' | translate }}</label>
             <textarea class="form-control" id="commentText" rows="4" [(ngModel)]="newCommentText"
-              [ngModelOptions]="{standalone: true}" placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
-              required></textarea>
+                      [ngModelOptions]="{standalone: true}" placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
+                      required></textarea>
           </div>
 
           <div class="mb-3">
-            <label class="form-label mb-2">{{ 'COMMON.ATTACHMENTS' | translate }} ({{ 'COMMON.OPTIONAL' | translate
-              }})</label>
+            <label class="form-label mb-2">
+              {{ 'COMMON.ATTACHMENTS' | translate }} ({{
+ 'COMMON.OPTIONAL' | translate
+              }})
+            </label>
 
             <!-- Comment Attachment Configurations -->
             <div *ngIf="commentAttachmentConfigs.length > 0" class="">
@@ -831,30 +880,36 @@
                 <div *ngFor="let config of commentAttachmentConfigs">
 
                   <div *ngIf="!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0"
-                    class="upload-area" (dragover)="onCommentDragOver($event)" (dragleave)="onCommentDragLeave($event)"
-                    (drop)="onCommentDrop($event, config.id!)" [class.drag-over]="isCommentDragOver"
-                    [class.border-danger]="isCommentAttachmentMandatory(config.id!) && (!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0) && commentValidationSubmitted"
-                    [class.border-success]="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0">
+                       class="upload-area" (dragover)="onCommentDragOver($event)" (dragleave)="onCommentDragLeave($event)"
+                       (drop)="onCommentDrop($event, config.id!)" [class.drag-over]="isCommentDragOver"
+                       [class.border-danger]="isCommentAttachmentMandatory(config.id!) && (!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0) && commentValidationSubmitted"
+                       [class.border-success]="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0">
                     <input type="file" class="d-none" [id]="'comment-file-' + config.id"
-                      (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                      multiple>
+                           (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                           multiple>
                     <label [for]="'comment-file-' + config.id" class="upload-label">
                       <i class="fas fa-cloud-upload-alt mb-2"></i>
                       <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
-                      <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate
-                        }}</small>
-                      <small class="text-muted d-block mt-1">{{ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate
-                        }}</small>
+                      <small class="text-muted">
+                        {{
+ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate
+                        }}
+                      </small>
+                      <small class="text-muted d-block mt-1">
+                        {{
+ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate
+                        }}
+                      </small>
                     </label>
                   </div>
 
                   <!-- Multiple Files Display -->
                   <div *ngIf="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0"
-                    class="uploaded-files-list">
+                       class="uploaded-files-list">
                     <!-- Hidden file input for "Add More Files" functionality -->
                     <input type="file" class="d-none" [id]="'comment-file-more-' + config.id"
-                      (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                      multiple>
+                           (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                           multiple>
 
                     <div class="d-flex align-items-center justify-content-between mb-2">
                       <h6 class="mb-0">{{ getCommentAttachmentName(config) }}</h6>
@@ -865,11 +920,11 @@
 
                     <div class="file-list">
                       <div *ngFor="let file of commentSelectedFiles[config.id!]; let fileIndex = index"
-                        class="file-item d-flex align-items-center gap-2 p-2 border rounded mb-2">
+                           class="file-item d-flex align-items-center gap-2 p-2 border rounded mb-2">
                         <div class="file-preview me-2">
                           <img *ngIf="commentFilePreviews[config.id!]?.[fileIndex] && file.type?.startsWith('image/')"
-                            [src]="commentFilePreviews[config.id!]?.[fileIndex]"
-                            class="img-thumbnail uploaded-img-small" [alt]="file.name">
+                               [src]="commentFilePreviews[config.id!]?.[fileIndex]"
+                               class="img-thumbnail uploaded-img-small" [alt]="file.name">
                           <i *ngIf="!file.type?.startsWith('image/')" class="fas fa-file-alt text-primary fa-lg"></i>
                         </div>
                         <div class="file-info flex-grow-1">
@@ -877,7 +932,7 @@
                           <small class="text-muted">{{ formatFileSize(file.size) }}</small>
                         </div>
                         <button type="button" class="btn btn-sm btn-outline-danger"
-                          (click)="removeCommentFile(config.id!, fileIndex)">
+                                (click)="removeCommentFile(config.id!, fileIndex)">
                           <i class="fas fa-trash"></i>
                         </button>
                       </div>
@@ -909,7 +964,7 @@
           {{ 'COMMON.CANCEL' | translate }}
         </button>
         <button type="button" class="btn btn-gold" (click)="addWorkFlowComment()"
-          [disabled]="!newCommentText.trim() || isSavingComment">
+                [disabled]="!newCommentText.trim() || isSavingComment">
           <span *ngIf="isSavingComment" class="spinner-border spinner-border-sm me-2" role="status"></span>
           {{ 'COMMON.ADD_COMMENT' | translate }}
         </button>
@@ -921,7 +976,7 @@
 <!-- ============== modal add advertisement ============== -->
 <!-- Modal for Add Advertisement -->
 <div class="modal fade" id="addAdvertisementModal" tabindex="-1" aria-labelledby="addAdvertisementModalLabel"
-  aria-hidden="true">
+     aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -946,11 +1001,12 @@
 
           <!-- Ad Title -->
           <div class="mb-3">
-            <label for="adTitle" class="form-label">{{ 'CHARITY_EVENT.AD_TITLE' | translate }} <span
-                class="text-danger">*</span></label>
+            <label for="adTitle" class="form-label">
+              {{ 'CHARITY_EVENT.AD_TITLE' | translate }} <span class="text-danger">*</span>
+            </label>
             <input type="text" id="adTitle" class="form-control" formControlName="adTitle" required>
             <div class="invalid-feedback"
-              *ngIf="advertForm.get('adTitle')?.touched && advertForm.get('adTitle')?.invalid">
+                 *ngIf="advertForm.get('adTitle')?.touched && advertForm.get('adTitle')?.invalid">
               {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
             </div>
           </div>
@@ -961,9 +1017,9 @@
               {{ 'CHARITY_EVENT.START_DATE' | translate }} <span class="text-danger">*</span>
             </label>
             <input type="datetime-local" class="form-control" formControlName="startDate"
-              [class.is-invalid]="(advertForm.get('startDate')?.touched && advertForm.get('startDate')?.invalid) || advertForm.hasError('dateRange')">
+                   [class.is-invalid]="(advertForm.get('startDate')?.touched && advertForm.get('startDate')?.invalid) || advertForm.hasError('dateRange')">
             <div class="invalid-feedback"
-              *ngIf="advertForm.get('startDate')?.touched && advertForm.get('startDate')?.errors">
+                 *ngIf="advertForm.get('startDate')?.touched && advertForm.get('startDate')?.errors">
               {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
             </div>
           </div>
@@ -973,9 +1029,9 @@
               {{ 'CHARITY_EVENT.END_DATE' | translate }} <span class="text-danger">*</span>
             </label>
             <input type="datetime-local" class="form-control" formControlName="endDate"
-              [class.is-invalid]="(advertForm.get('endDate')?.touched && advertForm.get('endDate')?.invalid) || advertForm.hasError('dateRange')">
+                   [class.is-invalid]="(advertForm.get('endDate')?.touched && advertForm.get('endDate')?.invalid) || advertForm.hasError('dateRange')">
             <div class="invalid-feedback"
-              *ngIf="advertForm.get('endDate')?.touched && advertForm.get('endDate')?.errors">
+                 *ngIf="advertForm.get('endDate')?.touched && advertForm.get('endDate')?.errors">
               {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
             </div>
           </div>
@@ -990,9 +1046,9 @@
               {{ 'CHARITY_EVENT.TARGET_TYPES' | translate }} <span class="text-danger">*</span>
             </label>
             <ng-select formControlName="targetTypeIds" [items]="advertisementTargetType" bindLabel="text" bindValue="id"
-              [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
-              [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
-              [ngClass]="{'is-invalid': advertForm.get('targetTypeIds')?.touched && advertForm.get('targetTypeIds')?.invalid}">
+                       [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
+                       [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
+                       [ngClass]="{'is-invalid': advertForm.get('targetTypeIds')?.touched && advertForm.get('targetTypeIds')?.invalid}">
             </ng-select>
             <div class="invalid-feedback d-block" *ngIf="advertForm.get('targetTypeIds')?.hasError('minArrayLength')">
               {{ 'VALIDATION.MIN_ONE_TARGET' | translate }}
@@ -1005,9 +1061,9 @@
               {{ 'CHARITY_EVENT.AD_METHODS' | translate }} <span class="text-danger">*</span>
             </label>
             <ng-select formControlName="adMethodIds" [items]="advertisementMethodType" bindLabel="text" bindValue="id"
-              [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
-              [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
-              [ngClass]="{'is-invalid': advertForm.get('adMethodIds')?.touched && advertForm.get('adMethodIds')?.invalid}">
+                       [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
+                       [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
+                       [ngClass]="{'is-invalid': advertForm.get('adMethodIds')?.touched && advertForm.get('adMethodIds')?.invalid}">
             </ng-select>
             <div class="invalid-feedback d-block" *ngIf="advertForm.get('adMethodIds')?.hasError('minArrayLength')">
               {{ 'VALIDATION.MIN_ONE_METHOD' | translate }}
@@ -1019,16 +1075,19 @@
             <h6 class="mb-3">{{ 'CHARITY_EVENT.AD_ATTACHMENTS' | translate }}</h6>
 
             <div *ngFor="let cfg of state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).configs"
-              class="mb-3">
-              <label>{{ getAttachmentName(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
-                }}</label>
+                 class="mb-3">
+              <label>
+                {{
+ getAttachmentName(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
+                }}
+              </label>
               <div *ngIf="!hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
-                class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
-                (drop)="onDrop($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
-                [class.drag-over]="isDragOver">
+                   class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                   (drop)="onDrop($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                   [class.drag-over]="isDragOver">
                 <input type="file" class="d-none" [id]="'file-reqAd-' + cfg.id"
-                  (change)="onFileSelectednew($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                       (change)="onFileSelectednew($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                 <label [for]="'file-reqAd-' + cfg.id" class="upload-label">
                   <i class="fas fa-cloud-upload-alt"></i>
                   <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
@@ -1036,23 +1095,25 @@
               </div>
 
               <div *ngIf="hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
-                class="file-preview">
+                   class="file-preview">
                 <span class="file-name">
                   {{ selectedFileName(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!) }}
                 </span>
-                <img
-                  *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!) &&
+                <img *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!) &&
                            state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).selected[cfg.id!].type.startsWith('image/')"
-                  [src]="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
-                  class="preview-image w-100">
+                     [src]="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+                     class="preview-image w-100">
               </div>
             </div>
           </div>
 
           <!-- Add button -->
           <div class="d-flex justify-content-end mt-3">
-            <button type="button" class="btn btn-primary" (click)="addAdvertisement()">{{ 'COMMON.ADD' | translate
-              }}</button>
+            <button type="button" class="btn btn-primary" (click)="addAdvertisement()">
+              {{
+ 'COMMON.ADD' | translate
+              }}
+            </button>
           </div>
         </form>
       </div>
@@ -1062,7 +1123,7 @@
 
 <!-- Workflow Steps Modal -->
 <div class="modal fade show" tabindex="-1" *ngIf="showWfModal"
-  [ngStyle]="{ display: showWfModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)' }">
+     [ngStyle]="{ display: showWfModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)' }">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content border-0 rounded-4 shadow-lg">
 
@@ -1084,17 +1145,17 @@
 
         <div class="workflow-timeline" *ngIf="addWorkFlowSteps?.length">
           <div *ngFor="let step of addWorkFlowSteps; let i = index; trackBy: trackByStepId" class="workflow-step-item"
-            [class.completed]="isStepCompleted(step.serviceStatus)"
-            [class.rejected]="isStepRejected(step.serviceStatus)" [class.pending]="isStepPending(step.serviceStatus)"
-            [class.last-step]="i === addWorkFlowSteps.length - 1">
+               [class.completed]="isStepCompleted(step.serviceStatus)"
+               [class.rejected]="isStepRejected(step.serviceStatus)" [class.pending]="isStepPending(step.serviceStatus)"
+               [class.last-step]="i === addWorkFlowSteps.length - 1">
 
             <div class="step-circle" [style.background-color]="getStatusColor(step.serviceStatus)"
-              [style.border-color]="getStatusColor(step.serviceStatus)">
+                 [style.border-color]="getStatusColor(step.serviceStatus)">
               <i [class]="getStatusIcon(step.serviceStatus)"></i>
             </div>
 
             <div class="step-line" *ngIf="i < addWorkFlowSteps.length - 1"
-              [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
+                 [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
 
             <div>
               <div class="step-header">
@@ -1107,6 +1168,10 @@
                 </div>
               </div>
               <h6 class="department-name">{{ step.departmentName }}</h6>
+              <button type="button" class="btn btn-link p-0"
+                      (click)="openHistoryModal(step.workFlowHistories || [])">
+                <i class="bi bi-clock-history me-1"></i>{{'WORKFLOW.VIEW_HISTORY' | translate}}
+              </button>
             </div>
 
           </div>
@@ -1119,6 +1184,79 @@
         </button>
       </div>
 
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="historyModalLabel" class="modal-title">
+          {{ 'WORKFLOW.HISTORY' | translate }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeHistoryModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <ng-container *ngIf="historyForModal?.length; else noHistory">
+
+          <div class="history-timeline">
+            <div class="history-item" *ngFor="let h of historyForModal; let i = index">
+              <div class="dot"></div>
+              <div class="content">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="step-status" [style.color]="getStatusColor(h.serviceStatus)">
+                    <i [class]="getStatusIcon(h.serviceStatus)" class="me-1"></i>
+                    {{h.serviceStatusName || (getStatusLabel(h.serviceStatus) | translate)}}
+                  </div>
+                  <small class="text-muted">
+                    {{ h.historyDate | date:'medium' }}
+                  </small>
+                </div>
+
+                <div class="mb-1">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.BY' | translate }}:</small>
+                  <span>{{ h.userName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.fromDepartmentName">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.FROM_DEPT' | translate }}:</small>
+                  <span>{{ h.fromDepartmentName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.toDepartmentName">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.TO_DEPT' | translate }}:</small>
+                  <span>{{ h.toDepartmentName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="getHistoryNote(h)">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.NOTE' | translate }}:</small>
+                  <span>{{ getHistoryNote(h) }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.description">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.DESCRIPTION' | translate }}:</small>
+                  <span>{{ h.description }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #noHistory>
+          <div class="text-center text-muted py-4">
+            {{ 'WORKFLOW.NO_HISTORY' | translate }}
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeHistoryModal()">
+          {{ 'COMMON.CLOSE' | translate }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

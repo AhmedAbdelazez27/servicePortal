@@ -1352,7 +1352,10 @@
     "STATUS_WAITING": "في الانتظار",
     "STATUS_RECEIVED": "مستلم",
     "STATUS_RETURN_FOR_MODIFICATIONS": "إرجاع للتعديل",
-    "STATUS_UNKNOWN": "حالة غير معروفة"
+    "STATUS_UNKNOWN": "حالة غير معروفة",
+    "VIEW_HISTORY": "عرض السجل",
+    "HISTORY": "سجل الحالة",
+    "NO_HISTORY": "لا يوجد سجل"
   },
   "COMMENTS": {
     "ENTER_COMMENT": "يرجى إدخال تعليق",

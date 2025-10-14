@@ -45,6 +45,7 @@ import {
 } from '../../../../shared/customValidators/requestevent.validators';
 import { PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
 import { IdentityCardReaderDto } from '../../../../core/dtos/identity-card/identity-card-reader.dto';
+import { ServiceStatus } from '../../../../core/dtos/appEnum.dto';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -1774,5 +1775,102 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  getStatusColor(statusId: number | null): string {
+    if (statusId === null) return '#6c757d';
+
+    switch (statusId) {
+      case ServiceStatus.Accept:
+        return '#28a745'; // Green
+      case ServiceStatus.Reject:
+        return '#dc3545'; // Red
+      case ServiceStatus.RejectForReason:
+        return '#fd7e14'; // Orange
+      case ServiceStatus.Wait:
+        return '#ffc107'; // Yellow/Amber
+      case ServiceStatus.Received:
+        return '#17a2b8'; // Cyan/Teal
+      case ServiceStatus.ReturnForModifications:
+        return '#6f42c1'; // Purple
+      default:
+        return '#6c757d'; // Gray
+    }
+  }
+
+  getStatusIcon(statusId: number | null): string {
+    if (statusId === null) return 'fas fa-question-circle';
+
+    switch (statusId) {
+      case ServiceStatus.Accept:
+        return 'fas fa-check-circle';
+      case ServiceStatus.Reject:
+        return 'fas fa-times-circle';
+      case ServiceStatus.RejectForReason:
+        return 'fas fa-exclamation-triangle';
+      case ServiceStatus.Wait:
+        return 'fas fa-clock';
+      case ServiceStatus.Received:
+        return 'fas fa-inbox';
+      case ServiceStatus.ReturnForModifications:
+        return 'fas fa-edit';
+      default:
+        return 'fas fa-question-circle';
+    }
+  }
+
+  getStatusLabel(statusId: number | null): string {
+    if (statusId === null) return 'WORKFLOW.STATUS_UNKNOWN';
+
+    switch (statusId) {
+      case ServiceStatus.Accept:
+        return 'WORKFLOW.STATUS_ACCEPT';
+      case ServiceStatus.Reject:
+        return 'WORKFLOW.STATUS_REJECT';
+      case ServiceStatus.RejectForReason:
+        return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
+      case ServiceStatus.Wait:
+        return 'WORKFLOW.STATUS_WAITING';
+      case ServiceStatus.Received:
+        return 'WORKFLOW.STATUS_RECEIVED';
+      case ServiceStatus.ReturnForModifications:
+        return 'WORKFLOW.STATUS_RETURN_FOR_MODIFICATIONS';
+      default:
+        return 'WORKFLOW.STATUS_UNKNOWN';
+    }
+  }
+
+  historyForModal: any[] = [];
+  private historyModalInstance: any = null;
+  openHistoryModal(history: any[] = []): void {
+    this.historyForModal = (history || []).slice().sort((a, b) =>
+      new Date(b.historyDate).getTime() - new Date(a.historyDate).getTime()
+    );
+
+    const el = document.getElementById('historyModal');
+    if (el) {
+      if (this.historyModalInstance) {
+        this.historyModalInstance.dispose();
+      }
+      this.historyModalInstance = new (window as any).bootstrap.Modal(el, {
+        backdrop: 'static',
+        keyboard: false
+      });
+      this.historyModalInstance.show();
+    }
+  }
+
+  closeHistoryModal(): void {
+    if (this.historyModalInstance) {
+      this.historyModalInstance.hide();
+    }
+  }
+
+  getHistoryNote(h: any): string {
+    const lang = (this.translate?.currentLang || localStorage.getItem('lang') || 'ar').toLowerCase();
+    if (lang.startsWith('ar')) {
+      return h?.noteAr || h?.serviceStatusName || '';
+    }
+    return h?.noteEn || h?.serviceStatusName || '';
   }
 }

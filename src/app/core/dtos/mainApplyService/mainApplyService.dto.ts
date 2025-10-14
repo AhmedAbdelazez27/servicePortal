@@ -177,6 +177,8 @@ export class WorkFlowStepDto {
   stepOrder: number | null = null;
   lastModified: Date | null = null;
   workFlowComments: WorkFlowCommentDto[] = [];
+  stepName?: any | null;
+  workFlowHistories?: any | null;
 }
 export class WorkFlowCommentDto {
   paymentId: string | null = null;

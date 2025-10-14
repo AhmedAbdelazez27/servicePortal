@@ -9,3 +9,12 @@ export class AppEnum {
   serviceId1001 = "1001";
   serviceId1002 = "1002";
 }
+
+export enum ServiceStatus {
+  Accept = 1,
+  Reject = 2,
+  RejectForReason = 3,
+  Wait = 4,
+  Received = 5,
+  ReturnForModifications = 7
+}

@@ -28,19 +28,22 @@
             <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
               <h4 class="title mb-2">{{ 'VIEW_FASTING_TENT.VIEW_TITLE' | translate }}</h4>
               <button *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7" type="button"
-                class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#commentModal">
+                      class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#commentModal">
                 <i class="fas fa-plus me-2"></i>
                 {{ 'COMMON.ADD_COMMENT' | translate }}
               </button>
             </div>
             <div class="row">
               <div class="col-xl-6">
-                <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong> {{mainApplyService.applyNo}}
+                <p class="mb-1">
+                  <strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong> {{mainApplyService.applyNo}}
                 </p>
               </div>
               <div class="col-xl-6">
-                <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong>
-                  {{formatDate(mainApplyService.applyDate)}}</p>
+                <p class="mb-1">
+                  <strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong>
+                  {{formatDate(mainApplyService.applyDate)}}
+                </p>
               </div>
               <div class="col-xl-6" *ngIf="mainApplyService.permitNumber">
                 <p class="mb-0">
@@ -68,20 +71,20 @@
 
               <div class="workflow-timeline" *ngIf="workFlowSteps && workFlowSteps.length > 0">
                 <div *ngFor="let step of workFlowSteps; let i = index; trackBy: trackByStepId"
-                  class="workflow-step-item" [class.completed]="isStepCompleted(step.serviceStatus)"
-                  [class.rejected]="isStepRejected(step.serviceStatus)"
-                  [class.pending]="isStepPending(step.serviceStatus)"
-                  [class.last-step]="i === workFlowSteps.length - 1">
+                     class="workflow-step-item" [class.completed]="isStepCompleted(step.serviceStatus)"
+                     [class.rejected]="isStepRejected(step.serviceStatus)"
+                     [class.pending]="isStepPending(step.serviceStatus)"
+                     [class.last-step]="i === workFlowSteps.length - 1">
 
                   <!-- Step Circle with Icon -->
                   <div class="step-circle" [style.background-color]="getStatusColor(step.serviceStatus)"
-                    [style.border-color]="getStatusColor(step.serviceStatus)">
+                       [style.border-color]="getStatusColor(step.serviceStatus)">
                     <i [class]="getStatusIcon(step.serviceStatus)"></i>
                   </div>
 
                   <!-- Connecting Line -->
                   <div class="step-line" *ngIf="i < workFlowSteps.length - 1"
-                    [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
+                       [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
 
                   <!-- Step Content -->
                   <div>
@@ -93,6 +96,10 @@
                       </div>
                     </div>
                     <h6 class="department-name">{{step.departmentName}}</h6>
+                    <button type="button" class="btn btn-link p-0"
+                            (click)="openHistoryModal(step.workFlowHistories || [])">
+                      <i class="bi bi-clock-history me-1"></i>{{'WORKFLOW.VIEW_HISTORY' | translate}}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -194,8 +201,10 @@
                     <!-- Fallback when map fails to load -->
                     <div *ngIf="mapLoadError" class="alert alert-warning mt-3">
                       <i class="fas fa-exclamation-triangle me-2"></i>
-                      <strong>{{ 'SHARED.MAP.LOADING_ISSUE' | translate }}:</strong> {{ 'SHARED.MAP.LOADING_ERROR' |
-                      translate }}
+                      <strong>{{ 'SHARED.MAP.LOADING_ISSUE' | translate }}:</strong> {{
+ 'SHARED.MAP.LOADING_ERROR' |
+                      translate
+                      }}
                       <button type="button" class="btn btn-sm btn-outline-warning ms-2" (click)="refreshMap()">
                         <i class="fas fa-redo me-1"></i>
                         {{ 'SHARED.MAP.TRY_AGAIN' | translate }}
@@ -237,7 +246,7 @@
                   <div class="col-xl-6 mb-3">
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" [checked]="fastingTentService?.tentIsSetUp"
-                        disabled id="tentIsSetUpView">
+                             disabled id="tentIsSetUpView">
                       <label class="form-check-label" for="tentIsSetUpView">
                         {{ 'VIEW_FASTING_TENT.TENT_IS_SET_UP' | translate }}
                       </label>
@@ -246,8 +255,8 @@
                   <div class="col-xl-6 mb-3">
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox"
-                        [checked]="fastingTentService?.isConsultantApprovedFromPolice" disabled
-                        id="consultantApprovedView">
+                             [checked]="fastingTentService?.isConsultantApprovedFromPolice" disabled
+                             id="consultantApprovedView">
                       <label class="form-check-label" for="consultantApprovedView">
                         {{ 'VIEW_FASTING_TENT.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
                       </label>
@@ -256,7 +265,7 @@
                   <div class="col-xl-6 mb-3">
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox"
-                        [checked]="fastingTentService?.isConsultantFromAjman" disabled id="consultantFromAjmanView">
+                             [checked]="fastingTentService?.isConsultantFromAjman" disabled id="consultantFromAjmanView">
                       <label class="form-check-label" for="consultantFromAjmanView">
                         {{ 'VIEW_FASTING_TENT.CONSULTANT_FROM_AJMAN' | translate }}
                       </label>
@@ -278,12 +287,12 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="partnersHeader">
                   <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#partnersSection" aria-expanded="true" aria-controls="partnersSection">
+                          data-bs-target="#partnersSection" aria-expanded="true" aria-controls="partnersSection">
                     {{ 'VIEW_FASTING_TENT.PARTNERS' | translate }}
                   </button>
                 </h2>
                 <div id="partnersSection" class="accordion-collapse collapse show" aria-labelledby="partnersHeader"
-                  data-bs-parent="#fastingTentAccordion">
+                     data-bs-parent="#fastingTentAccordion">
                   <div class="accordion-body">
                     <div class="step-content">
                       <div *ngIf="partners && partners.length > 0">
@@ -310,14 +319,14 @@
                                 <td>{{partner.contactDetails || '-'}}</td>
                                 <td class="text-center">
                                   <button *ngIf="partner.attachments && partner.attachments.length > 0"
-                                    class="btn btn-next-style" data-bs-toggle="modal"
-                                    data-bs-target="#partnerAttachmentModal" (click)="viewPartnerAttachments(partner)">
+                                          class="btn btn-next-style" data-bs-toggle="modal"
+                                          data-bs-target="#partnerAttachmentModal" (click)="viewPartnerAttachments(partner)">
                                     <i class="fas fa-eye me-1"></i>
                                     {{ 'COMMON.VIEW' | translate }} ({{partner.attachments.length}})
                                   </button>
                                   <button *ngIf="!partner.attachments || partner.attachments.length === 0"
-                                    class="btn btn-next-style" data-bs-toggle="modal"
-                                    data-bs-target="#partnerAttachmentModal" (click)="fetchPartnerAttachments(partner)">
+                                          class="btn btn-next-style" data-bs-toggle="modal"
+                                          data-bs-target="#partnerAttachmentModal" (click)="fetchPartnerAttachments(partner)">
                                     <i class="fas fa-eye me-1"></i>
                                     {{ 'COMMON.VIEW' | translate }}
                                   </button>
@@ -340,22 +349,28 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="attachmentsHeader">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#attachmentsSection" aria-expanded="false" aria-controls="attachmentsSection">
+                          data-bs-target="#attachmentsSection" aria-expanded="false" aria-controls="attachmentsSection">
                     {{ 'VIEW_FASTING_TENT.ATTACHMENTS' | translate }}
                   </button>
                 </h2>
                 <div id="attachmentsSection" class="accordion-collapse collapse" aria-labelledby="attachmentsHeader"
-                  data-bs-parent="#fastingTentAccordion">
+                     data-bs-parent="#fastingTentAccordion">
                   <div class="accordion-body">
                     <div class="step-content">
                       <div *ngIf="attachments && attachments.length > 0">
                         <div class="row">
                           <div class="col-xl-4 col-lg-6 mb-4" *ngFor="let attachment of attachments">
                             <div class="attachment-box">
-                              <h6 class="card-title">{{attachment.attachmentTitle || ('COMMON.ATTACHMENT' |
-                                translate)}}</h6>
-                              <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}:
-                                {{formatDateTime(attachment.lastModified)}}</p>
+                              <h6 class="card-title">
+                                {{
+attachment.attachmentTitle || ('COMMON.ATTACHMENT' |
+                                translate)
+                                }}
+                              </h6>
+                              <p class="mb-4">
+                                {{ 'COMMON.UPLOADED_ON' | translate }}:
+                                {{formatDateTime(attachment.lastModified)}}
+                              </p>
                               <div class="d-flex justify-content-between mt-auto">
                                 <button class="btn btn-next-style me-2" (click)="viewAttachment(attachment)">
                                   <i class="fas fa-eye me-1"></i>
@@ -383,12 +398,12 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="wfHeader">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#wfComments" aria-expanded="false" aria-controls="wfComments">
+                          data-bs-target="#wfComments" aria-expanded="false" aria-controls="wfComments">
                     {{ 'COMMON.WORKFLOW_COMMENTS' | translate }}
                   </button>
                 </h2>
                 <div id="wfComments" class="accordion-collapse collapse" aria-labelledby="wfHeader"
-                  data-bs-parent="#fastingTentAccordion">
+                     data-bs-parent="#fastingTentAccordion">
                   <div class="accordion-body">
                     <div class="step-content">
 
@@ -399,7 +414,6 @@
                           {{ 'COMMON.ADD_COMMENT' | translate }}
                         </button>
                       </div> -->
-
                       <!-- Loading state -->
                       <div *ngIf="isLoadingComments" class="text-center py-5">
                         <div class="spinner-border spinner-border-sm" role="status">
@@ -501,16 +515,14 @@
                           </div>
                           <div>
                             <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"
-                              data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
+                                    data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
-                                fill="none">
+                                   fill="none">
                                 <g clip-path="url(#clip0_560_1674)">
-                                  <path
-                                    d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
-                                    fill="#374957" />
-                                  <path
-                                    d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
-                                    fill="#374957" />
+                                  <path d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
+                                        fill="#374957" />
+                                  <path d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
+                                        fill="#374957" />
                                 </g>
                                 <defs>
                                   <clipPath id="clip0_560_1674">
@@ -518,7 +530,8 @@
                                   </clipPath>
                                 </defs>
                               </svg>
-                              {{ 'COMMON.VIEW' | translate}} </button>
+                              {{ 'COMMON.VIEW' | translate}}
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -566,13 +579,16 @@
           <div class="mb-3">
             <label for="commentText" class="form-label mb-2">{{ 'COMMON.COMMENT' | translate }}</label>
             <textarea class="form-control" id="commentText" rows="4" [(ngModel)]="newCommentText"
-              [ngModelOptions]="{standalone: true}" placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
-              required></textarea>
+                      [ngModelOptions]="{standalone: true}" placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
+                      required></textarea>
           </div>
 
           <div class="mb-3">
-            <label class="form-label mb-2">{{ 'COMMON.ATTACHMENTS' | translate }} ({{ 'COMMON.OPTIONAL' | translate
-              }})</label>
+            <label class="form-label mb-2">
+              {{ 'COMMON.ATTACHMENTS' | translate }} ({{
+ 'COMMON.OPTIONAL' | translate
+              }})
+            </label>
 
             <!-- Comment Attachment Configurations -->
             <div *ngIf="commentAttachmentConfigs.length > 0" class="">
@@ -580,29 +596,32 @@
                 <div *ngFor="let config of commentAttachmentConfigs">
 
                   <div *ngIf="!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0"
-                    class="upload-area" (dragover)="onCommentDragOver($event)" (dragleave)="onCommentDragLeave($event)"
-                    (drop)="onCommentDrop($event, config.id!)" [class.drag-over]="isCommentDragOver"
-                    [class.border-danger]="isCommentAttachmentMandatory(config.id!) && (!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0) && commentValidationSubmitted"
-                    [class.border-success]="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0">
+                       class="upload-area" (dragover)="onCommentDragOver($event)" (dragleave)="onCommentDragLeave($event)"
+                       (drop)="onCommentDrop($event, config.id!)" [class.drag-over]="isCommentDragOver"
+                       [class.border-danger]="isCommentAttachmentMandatory(config.id!) && (!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0) && commentValidationSubmitted"
+                       [class.border-success]="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0">
                     <input type="file" class="d-none" [id]="'comment-file-' + config.id"
-                      (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                      multiple>
+                           (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                           multiple>
                     <label [for]="'comment-file-' + config.id" class="upload-label">
                       <i class="fas fa-cloud-upload-alt mb-2"></i>
                       <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
                       <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
-                      <small class="text-muted d-block mt-1">{{ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate
-                        }}</small>
+                      <small class="text-muted d-block mt-1">
+                        {{
+ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate
+                        }}
+                      </small>
                     </label>
                   </div>
 
                   <!-- Multiple Files Display -->
                   <div *ngIf="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0"
-                    class="uploaded-files-list">
+                       class="uploaded-files-list">
                     <!-- Hidden file input for "Add More Files" functionality -->
                     <input type="file" class="d-none" [id]="'comment-file-more-' + config.id"
-                      (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                      multiple>
+                           (change)="onCommentFileSelected($event, config.id!)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                           multiple>
 
                     <div class="d-flex align-items-center justify-content-between mb-2">
                       <h6 class="mb-0">{{ getCommentAttachmentName(config) }}</h6>
@@ -613,11 +632,11 @@
 
                     <div class="file-list">
                       <div *ngFor="let file of commentSelectedFiles[config.id!]; let fileIndex = index"
-                        class="file-item d-flex align-items-center gap-2 p-2 border rounded mb-2">
+                           class="file-item d-flex align-items-center gap-2 p-2 border rounded mb-2">
                         <div class="file-preview me-2">
                           <img *ngIf="commentFilePreviews[config.id!]?.[fileIndex] && file.type?.startsWith('image/')"
-                            [src]="commentFilePreviews[config.id!]?.[fileIndex]"
-                            class="img-thumbnail uploaded-img-small" [alt]="file.name">
+                               [src]="commentFilePreviews[config.id!]?.[fileIndex]"
+                               class="img-thumbnail uploaded-img-small" [alt]="file.name">
                           <i *ngIf="!file.type?.startsWith('image/')" class="fas fa-file-alt text-primary fa-lg"></i>
                         </div>
                         <div class="file-info flex-grow-1">
@@ -625,7 +644,7 @@
                           <small class="text-muted">{{ formatFileSize(file.size) }}</small>
                         </div>
                         <button type="button" class="btn btn-sm btn-outline-danger"
-                          (click)="removeCommentFile(config.id!, fileIndex)">
+                                (click)="removeCommentFile(config.id!, fileIndex)">
                           <i class="fas fa-trash"></i>
                         </button>
                       </div>
@@ -657,7 +676,7 @@
           {{ 'COMMON.CANCEL' | translate }}
         </button>
         <button type="button" class="btn btn-gold" (click)="addWorkFlowComment()"
-          [disabled]="!newCommentText.trim() || isSavingComment">
+                [disabled]="!newCommentText.trim() || isSavingComment">
           <span *ngIf="isSavingComment" class="spinner-border spinner-border-sm me-2" role="status"></span>
           {{ 'COMMON.ADD_COMMENT' | translate }}
         </button>
@@ -688,7 +707,7 @@
 
         <!-- No Attachments State -->
         <div *ngIf="!isLoadingAttachments && selectedCommentAttachments.length === 0"
-          class="text-center text-muted py-4">
+             class="text-center text-muted py-4">
           <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
           <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
         </div>
@@ -701,8 +720,12 @@
                 <div class="mb-3">
                   <i class="fas fa-file-alt fa-2x text-primary"></i>
                 </div>
-                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('FASTING_TENT.ATTACHMENT' |
-                  translate) }}</h6>
+                <h6 class="card-title small mb-2">
+                  {{
+ attachment.attachmentTitle || ('FASTING_TENT.ATTACHMENT' |
+                  translate)
+                  }}
+                </h6>
                 <div class="d-grid gap-2">
                   <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
                     <i class="fas fa-download me-1"></i>
@@ -729,7 +752,7 @@
 
 <!-- Partner Attachment Preview Modal -->
 <div class="modal fade" id="partnerAttachmentModal" tabindex="-1" aria-labelledby="partnerAttachmentModalLabel"
-  aria-hidden="true">
+     aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -751,7 +774,7 @@
 
         <!-- No Attachments State -->
         <div *ngIf="!isLoadingPartnerAttachments && selectedPartnerAttachments.length === 0"
-          class="text-center text-muted py-4">
+             class="text-center text-muted py-4">
           <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
           <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
         </div>
@@ -764,8 +787,12 @@
                 <div class="mb-3">
                   <i class="fas fa-file-alt fa-2x text-success"></i>
                 </div>
-                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle || ('FASTING_TENT.ATTACHMENT' |
-                  translate) }}</h6>
+                <h6 class="card-title small mb-2">
+                  {{
+ attachment.attachmentTitle || ('FASTING_TENT.ATTACHMENT' |
+                  translate)
+                  }}
+                </h6>
                 <div class="d-grid gap-2">
                   <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
                     <i class="fas fa-download me-1"></i>
@@ -783,6 +810,80 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
+          {{ 'COMMON.CLOSE' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="historyModalLabel" class="modal-title">
+          {{ 'WORKFLOW.HISTORY' | translate }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeHistoryModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <ng-container *ngIf="historyForModal?.length; else noHistory">
+
+          <div class="history-timeline">
+            <div class="history-item" *ngFor="let h of historyForModal; let i = index">
+              <div class="dot"></div>
+              <div class="content">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="step-status" [style.color]="getStatusColor(h.serviceStatus)">
+                    <i [class]="getStatusIcon(h.serviceStatus)" class="me-1"></i>
+                    {{h.serviceStatusName || (getStatusLabel(h.serviceStatus) | translate)}}
+                  </div>
+                  <small class="text-muted">
+                    {{ h.historyDate | date:'medium' }}
+                  </small>
+                </div>
+
+                <div class="mb-1">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.BY' | translate }}:</small>
+                  <span>{{ h.userName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.fromDepartmentName">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.FROM_DEPT' | translate }}:</small>
+                  <span>{{ h.fromDepartmentName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.toDepartmentName">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.TO_DEPT' | translate }}:</small>
+                  <span>{{ h.toDepartmentName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="getHistoryNote(h)">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.NOTE' | translate }}:</small>
+                  <span>{{ getHistoryNote(h) }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.description">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.DESCRIPTION' | translate }}:</small>
+                  <span>{{ h.description }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #noHistory>
+          <div class="text-center text-muted py-4">
+            {{ 'WORKFLOW.NO_HISTORY' | translate }}
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeHistoryModal()">
           {{ 'COMMON.CLOSE' | translate }}
         </button>
       </div>

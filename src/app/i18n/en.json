@@ -3259,8 +3259,10 @@
 
     "STATUS_RETURN_FOR_MODIFICATIONS": "Return for Modifications",
 
-    "STATUS_UNKNOWN": "Unknown Status"
-
+    "STATUS_UNKNOWN": "Unknown Status",
+    "VIEW_HISTORY": "View history",
+    "HISTORY": "Status history",
+    "NO_HISTORY": "No history"
   },
 
   "COMMENTS": {

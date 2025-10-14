@@ -1,89 +1,370 @@
 <div class="view-complaintrequest-container">
-    <section>
-        <div class="container services">
+  <section>
+    <div class="container services">
 
 
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-<li class="breadcrumb-item"><a routerLink="/request">{{ 'NAVIGATION.REQUEST' | translate }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ 'VIEW_COMPLAINTREQUEST.TITLE' | translate }}</li>
-                </ol>
-            </nav>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/request">{{ 'NAVIGATION.REQUEST' | translate }}</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ 'VIEW_COMPLAINTREQUEST.TITLE' | translate }}</li>
+        </ol>
+      </nav>
 
-            <div class="service-info-card mb-4">
-               
-                <div class="w-100">
-                    <h4 class="title">{{ 'VIEW_COMPLAINTREQUEST.TITLE' | translate }}</h4>
+      <div class="service-info-card mb-4">
 
-                    <div class="row">
-                        <div class="col-xl-6">
-                            <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong>
-                                {{mainApplyService.applyNo}}</p>
-                        </div>
-                        <div class="col-xl-6">
-                            <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong>
-                                {{formatDate(mainApplyService.applyDate)}}</p>
-                        </div>
-                        <div class="col-xl-6">
-                            <p class="mb-0" *ngIf="mainApplyService.permitNumber">
-                                <strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}: </strong>
-                                {{mainApplyService.permitNumber}}
-                            </p>
-                        </div>
-                        <div class="col-xl-6">
-                            <span class="badge bg-primary">{{mainApplyService.lastStatus}}</span>
-                        </div>
+        <div class="w-100">
+          <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+            <h4 class="title">{{ 'VIEW_COMPLAINTREQUEST.TITLE' | translate }}</h4>
+            <!--<button *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7" type="button" class="btn btn-gold" data-bs-toggle="modal"
+                    data-bs-target="#commentModal">
+              <i class="fas fa-plus me-2"></i>
+              {{ 'COMMON.ADD_COMMENT' | translate }}
+            </button>-->
+          </div>
+          <div class="row">
+            <div class="col-xl-6">
+              <p class="mb-1">
+                <strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong>
+                {{mainApplyService.applyNo}}
+              </p>
+            </div>
+            <div class="col-xl-6">
+              <p class="mb-1">
+                <strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong>
+                {{formatDate(mainApplyService.applyDate)}}
+              </p>
+            </div>
+            <div class="col-xl-6">
+              <p class="mb-0" *ngIf="mainApplyService.permitNumber">
+                <strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}: </strong>
+                {{mainApplyService.permitNumber}}
+              </p>
+            </div>
+            <div class="col-xl-6">
+              <span class="badge bg-primary">{{mainApplyService.lastStatus}}</span>
+            </div>
 
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+      <!-- Loading state -->
+
+      <div class="row">
+        <div class="col-lg-3 mb-4">
+          <div class="main-container h-100">
+
+            <div class="">
+              <h6 class="fw-bold mb-3 text-primary">
+                <i class="fas fa-route me-2"></i>
+                {{ 'WORKFLOW.PROCESS_STEPS' | translate }}
+              </h6>
+
+              <!-- Workflow Steps Timeline -->
+              <div class="workflow-timeline">
+                <div *ngFor="let step of workFlowSteps; let i = index; trackBy: trackByStepId"
+                     class="workflow-step-item"
+                     [class.completed]="isStepCompleted(step.serviceStatus)"
+                     [class.rejected]="isStepRejected(step.serviceStatus)"
+                     [class.pending]="isStepPending(step.serviceStatus)"
+                     [class.last-step]="i === workFlowSteps.length - 1">
+
+                  <!-- Step Circle with Icon -->
+                  <div class="step-circle"
+                       [style.background-color]="getStatusColor(step.serviceStatus)"
+                       [style.border-color]="getStatusColor(step.serviceStatus)">
+                    <i [class]="getStatusIcon(step.serviceStatus)"></i>
+                  </div>
+
+                  <!-- Connecting Line -->
+                  <div class="step-line" *ngIf="i < workFlowSteps.length - 1"
+                       [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
+
+                  <!-- Step Content -->
+                  <div class="step-content">
+                    <!-- Step Header -->
+                    <div class="step-header">
+                      <div class="step-number">
+                        {{ 'WORKFLOW.STEP' | translate }}
+                        {{step.stepOrder}}
+                      </div>
+                      <div class="step-status"
+                           [style.color]="getStatusColor(step.serviceStatus)">
+                        <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
+                        {{
+step.serviceStatusName || (getStatusLabel(step.serviceStatus) |
+                                                    translate)
+                        }}
+                      </div>
                     </div>
 
-
+                    <!-- Department Name -->
+                    <h6 class="department-name">{{step.departmentName}}</h6>
+                    <button type="button" class="btn btn-link p-0"
+                            (click)="openHistoryModal(step.workFlowHistories || [])">
+                      <i class="bi bi-clock-history me-1"></i>{{'WORKFLOW.VIEW_HISTORY' | translate}}
+                    </button>
+                  </div>
                 </div>
-
-
+              </div>
             </div>
+          </div>
+        </div>
 
-            <!-- Loading state -->
-            <div *ngIf="!mainApplyService" class="text-center py-5">
+        <div class="col-lg-9 mb-4">
+          <div id="mainInfo">
+            <div class="main-container mb-4">
+
+              <div *ngIf="!mainApplyService" class="text-center py-5">
                 <div class="spinner-border" role="status">
-                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+                  <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
                 </div>
                 <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
-            </div>
+              </div>
 
-            <!-- Main Content -->
-            <div *ngIf="mainApplyService" class="row">
+              <!-- Main Content -->
+              <div *ngIf="mainApplyService" class="row">
 
 
 
                 <!-- Complaint Request Details -->
                 <div class="col-lg-12 mb-4">
-                    <div class="main-container">
-                        <h4 class="gold mb-3">{{ 'REQUEST_COMPLAINT.DETAILS' | translate }}</h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.APPLICANT_NAME' | translate
-                                    }}</label>
-                                <p>{{ mainApplyService.requestComplaint?.applicantName || '-' }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.EMAIL' | translate }}</label>
-                                <p>{{ mainApplyService.requestComplaint?.email || '-' }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.NOTES' | translate }}</label>
-                                <p>{{ mainApplyService.requestComplaint?.notes || '-' }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.REQUEST_DATE' | translate
-                                    }}</label>
-                                <p>{{ formatDateTime(mainApplyService.requestComplaint?.requestDate) }}</p>
-                            </div>
-                        </div>
+                  <div class="main-container">
+                    <h4 class="gold mb-3">{{ 'REQUEST_COMPLAINT.DETAILS' | translate }}</h4>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label class="form-label fw-bold">
+                          {{
+ 'REQUEST_COMPLAINT.APPLICANT_NAME' | translate
+                          }}
+                        </label>
+                        <p>{{ mainApplyService.requestComplaint?.applicantName || '-' }}</p>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.EMAIL' | translate }}</label>
+                        <p>{{ mainApplyService.requestComplaint?.email || '-' }}</p>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label fw-bold">{{ 'REQUEST_COMPLAINT.NOTES' | translate }}</label>
+                        <p>{{ mainApplyService.requestComplaint?.notes || '-' }}</p>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label fw-bold">
+                          {{
+ 'REQUEST_COMPLAINT.REQUEST_DATE' | translate
+                          }}
+                        </label>
+                        <p>{{ formatDateTime(mainApplyService.requestComplaint?.requestDate) }}</p>
+                      </div>
                     </div>
+                  </div>
                 </div>
 
+              </div>
             </div>
-
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!--<div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commentModalLabel">{{ 'COMMON.ADD_COMMENT' | translate }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form [formGroup]="commentForm" (ngSubmit)="addWorkFlowComment()">
+          <div class="mb-3">
+            <label for="commentText" class="form-label mb-2">{{ 'COMMON.COMMENT' | translate }}</label>
+            <textarea class="form-control" id="commentText" rows="4" [(ngModel)]="newCommentText"
+                      [ngModelOptions]="{standalone: true}" placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
+                      required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label mb-2">
+              {{ 'COMMON.ATTACHMENTS' | translate }} ({{
+ 'COMMON.OPTIONAL' |
+                            translate
+              }})
+            </label>-->
+
+            <!-- Comment Attachment Configurations -->
+            <!--<div *ngIf="commentAttachmentConfigs.length > 0" class="">
+              <div>
+                <div *ngFor="let config of commentAttachmentConfigs">
+
+                  <div *ngIf="!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0"
+                       class="upload-area" (dragover)="onCommentDragOver($event)"
+                       (dragleave)="onCommentDragLeave($event)"
+                       (drop)="onCommentDrop($event, config.id!)" [class.drag-over]="isCommentDragOver"
+                       [class.border-danger]="isCommentAttachmentMandatory(config.id!) && (!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0) && commentValidationSubmitted"
+                       [class.border-success]="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0">
+                    <input type="file" class="d-none" [id]="'comment-file-' + config.id"
+                           (change)="onCommentFileSelected($event, config.id!)"
+                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+                    <label [for]="'comment-file-' + config.id" class="upload-label">
+                      <i class="fas fa-cloud-upload-alt mb-2"></i>
+                      <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
+                      <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
+                      <small class="text-muted d-block mt-1">{{ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate }}</small>
+                    </label>
+                  </div>-->
+
+                  <!-- Multiple Files Display -->
+                  <!--<div *ngIf="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0"
+                       class="uploaded-files-list">-->
+                    <!-- Hidden file input for "Add More Files" functionality -->
+                    <!--<input type="file" class="d-none" [id]="'comment-file-more-' + config.id"
+                           (change)="onCommentFileSelected($event, config.id!)"
+                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <h6 class="mb-0">{{ getCommentAttachmentName(config) }}</h6>
+                      <button type="button" class="btn btn-sm btn-gold"
+                              (click)="addMoreFiles(config.id!)">
+                        <i class="fas fa-plus me-1"></i>{{ 'Common.MORE_FILES' | translate }}
+                      </button>
+                    </div>
+
+                    <div class="file-list">
+                      <div *ngFor="let file of commentSelectedFiles[config.id!]; let fileIndex = index"
+                           class="file-item d-flex align-items-center gap-2 p-2 border rounded mb-2">
+                        <div class="file-preview me-2">
+                          <img *ngIf="commentFilePreviews[config.id!]?.[fileIndex] && file.type?.startsWith('image/')"
+                               [src]="commentFilePreviews[config.id!]?.[fileIndex]"
+                               class="img-thumbnail uploaded-img-small"
+                               [alt]="file.name">
+                          <i *ngIf="!file.type?.startsWith('image/')"
+                             class="fas fa-file-alt text-primary fa-lg"></i>
+                        </div>
+                        <div class="file-info flex-grow-1">
+                          <div class="file-name">{{ file.name }}</div>
+                          <small class="text-muted">{{ formatFileSize(file.size) }}</small>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                (click)="removeCommentFile(config.id!, fileIndex)">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>-->
+
+            <!-- Legacy file input (keeping for backward compatibility) -->
+            <!--<div *ngIf="commentAttachmentConfigs.length === 0" class="mb-3">
+              <input type="file" class="form-control" id="commentFiles" multiple
+                     (change)="onFileSelected($event)">
+
+              <div *ngIf="selectedFiles.length > 0" class="mt-2">
+                <div class="d-flex flex-wrap gap-2">
+                  <span *ngFor="let file of selectedFiles; let i = index"
+                        class="badge bg-light text-dark border">
+                    {{file.name}}
+                    <button type="button" class="btn-close btn-close-sm ms-2"
+                            (click)="removeSelectedFile(i)"></button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button type="button" class="btn btn-gold" (click)="addWorkFlowComment()"
+                [disabled]="!newCommentText.trim() || isSavingComment">
+          <span *ngIf="isSavingComment" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          {{ 'COMMON.ADD_COMMENT' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+
+
+<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="historyModalLabel" class="modal-title">
+          {{ 'WORKFLOW.HISTORY' | translate }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeHistoryModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <ng-container *ngIf="historyForModal?.length; else noHistory">
+
+          <div class="history-timeline">
+            <div class="history-item" *ngFor="let h of historyForModal; let i = index">
+              <div class="dot"></div>
+              <div class="content">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="step-status" [style.color]="getStatusColor(h.serviceStatus)">
+                    <i [class]="getStatusIcon(h.serviceStatus)" class="me-1"></i>
+                    {{h.serviceStatusName || (getStatusLabel(h.serviceStatus) | translate)}}
+                  </div>
+                  <small class="text-muted">
+                    {{ h.historyDate | date:'medium' }}
+                  </small>
+                </div>
+
+                <div class="mb-1">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.BY' | translate }}:</small>
+                  <span>{{ h.userName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.fromDepartmentName">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.FROM_DEPT' | translate }}:</small>
+                  <span>{{ h.fromDepartmentName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.toDepartmentName">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.TO_DEPT' | translate }}:</small>
+                  <span>{{ h.toDepartmentName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="getHistoryNote(h)">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.NOTE' | translate }}:</small>
+                  <span>{{ getHistoryNote(h) }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.description">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.DESCRIPTION' | translate }}:</small>
+                  <span>{{ h.description }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #noHistory>
+          <div class="text-center text-muted py-4">
+            {{ 'WORKFLOW.NO_HISTORY' | translate }}
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeHistoryModal()">
+          {{ 'COMMON.CLOSE' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

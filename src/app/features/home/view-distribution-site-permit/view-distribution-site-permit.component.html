@@ -1,599 +1,654 @@
 <div class="view-distribution-site-permit-container">
-    <section>
-        <div class="container ">
+  <section>
+    <div class="container ">
 
 
-            <!-- Loading state -->
-            <div *ngIf="isLoading" class="text-center py-5">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
-                </div>
-                <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+      <!-- Loading state -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+        </div>
+        <p class="mt-3">{{ 'COMMON.LOADING_DATA' | translate }}</p>
+      </div>
+
+      <!-- Error state -->
+      <div *ngIf="hasError && !isLoading" class="text-center py-5">
+        <div class="error-container">
+          <i class="fas fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+          <h4 class="text-danger mt-3">{{ 'COMMON.ERROR_OCCURRED' | translate }}</h4>
+          <p class="text-muted">{{ errorMessage }}</p>
+          <div *ngIf="errorDetails" class="alert alert-light mt-3">
+            <small class="text-muted">{{ 'COMMON.ERROR_DETAILS' | translate }}:</small>
+            <br>
+            <code>{{ errorDetails }}</code>
+          </div>
+          <div class="alert alert-info mt-3">
+            <small class="text-muted">{{ 'COMMON.SUGGESTIONS' | translate }}:</small>
+            <br>
+            <span>{{ getErrorContext() }}</span>
+          </div>
+          <div class="mt-4">
+            <button type="button" class="btn btn-primary me-2" (click)="retryLoadingData()">
+              <i class="fas fa-redo me-2"></i>{{ 'COMMON.RETRY' | translate }}
+            </button>
+            <button type="button" class="btn btn-warning me-2" (click)="refreshPage()">
+              <i class="fas fa-sync-alt me-2"></i>{{ 'COMMON.REFRESH_PAGE' | translate }}
+            </button>
+            <button type="button" class="btn btn-success me-2" (click)="checkServiceAvailability()">
+              <i class="fas fa-check-circle me-2"></i>{{ 'COMMON.CHECK_SERVICE' | translate }}
+            </button>
+            <button type="button" class="btn btn-info me-2" (click)="contactSupport()">
+              <i class="fas fa-headset me-2"></i>{{ 'COMMON.CONTACT_SUPPORT' | translate }}
+            </button>
+            <button type="button" class="btn btn-outline-secondary me-2" (click)="copyErrorDetails()">
+              <i class="fas fa-copy me-2"></i>{{ 'COMMON.COPY_ERROR' | translate }}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="goBack()">
+              <i class="fas fa-arrow-left me-2"></i>{{ 'COMMON.BACK' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/request"> {{ 'NAVIGATION.REQUEST' | translate }} </a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ 'VIEW_DISTRIBUTION_SITE.TITLE' | translate }}</li>
+        </ol>
+      </nav>
+
+      <div *ngIf="!isLoading && mainApplyService">
+        <div class="service-info-card mb-4">
+
+          <div class="w-100">
+            <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+              <h4 class="title ">{{ 'VIEW_DISTRIBUTION_SITE.TITLE' | translate }}</h4>
+              <button *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7" type="button" class="btn btn-gold" data-bs-toggle="modal"
+                      data-bs-target="#commentModal">
+                <i class="fas fa-plus me-2"></i>
+                {{ 'COMMON.ADD_COMMENT' | translate }}
+              </button>
             </div>
 
-            <!-- Error state -->
-            <div *ngIf="hasError && !isLoading" class="text-center py-5">
-                <div class="error-container">
-                    <i class="fas fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
-                    <h4 class="text-danger mt-3">{{ 'COMMON.ERROR_OCCURRED' | translate }}</h4>
-                    <p class="text-muted">{{ errorMessage }}</p>
-                    <div *ngIf="errorDetails" class="alert alert-light mt-3">
-                        <small class="text-muted">{{ 'COMMON.ERROR_DETAILS' | translate }}:</small>
-                        <br>
-                        <code>{{ errorDetails }}</code>
-                    </div>
-                    <div class="alert alert-info mt-3">
-                        <small class="text-muted">{{ 'COMMON.SUGGESTIONS' | translate }}:</small>
-                        <br>
-                        <span>{{ getErrorContext() }}</span>
-                    </div>
-                    <div class="mt-4">
-                        <button type="button" class="btn btn-primary me-2" (click)="retryLoadingData()">
-                            <i class="fas fa-redo me-2"></i>{{ 'COMMON.RETRY' | translate }}
-                        </button>
-                        <button type="button" class="btn btn-warning me-2" (click)="refreshPage()">
-                            <i class="fas fa-sync-alt me-2"></i>{{ 'COMMON.REFRESH_PAGE' | translate }}
-                        </button>
-                        <button type="button" class="btn btn-success me-2" (click)="checkServiceAvailability()">
-                            <i class="fas fa-check-circle me-2"></i>{{ 'COMMON.CHECK_SERVICE' | translate }}
-                        </button>
-                        <button type="button" class="btn btn-info me-2" (click)="contactSupport()">
-                            <i class="fas fa-headset me-2"></i>{{ 'COMMON.CONTACT_SUPPORT' | translate }}
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary me-2" (click)="copyErrorDetails()">
-                            <i class="fas fa-copy me-2"></i>{{ 'COMMON.COPY_ERROR' | translate }}
-                        </button>
-                        <button type="button" class="btn btn-secondary" (click)="goBack()">
-                            <i class="fas fa-arrow-left me-2"></i>{{ 'COMMON.BACK' | translate }}
-                        </button>
-                    </div>
-                </div>
+            <div class="row">
+              <div class="col-xl-6">
+                <p class="mb-1">
+                  <strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong>
+                  {{mainApplyService.applyNo}}
+                </p>
+              </div>
+              <div class="col-xl-6">
+                <p class="mb-1">
+                  <strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong>
+                  {{formatDate(mainApplyService.applyDate)}}
+                </p>
+              </div>
+              <div class="col-xl-6">
+                <p class="mb-0" *ngIf="mainApplyService.permitNumber">
+                  <strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}: </strong>
+                  {{mainApplyService.permitNumber}}
+                </p>
+              </div>
+              <div class="col-xl-6">
+                <span class="badge bg-primary">{{mainApplyService.lastStatus}}</span>
+              </div>
+
             </div>
+          </div>
 
-             <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a routerLink="/request"> {{ 'NAVIGATION.REQUEST' | translate }} </a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'VIEW_DISTRIBUTION_SITE.TITLE' | translate }}</li>
-          </ol>
-        </nav>
 
-            <div *ngIf="!isLoading && mainApplyService">
-                <div class="service-info-card mb-4">
-                  
-                    <div class="w-100">
-                        <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
-                            <h4 class="title ">{{ 'VIEW_DISTRIBUTION_SITE.TITLE' | translate }}</h4>
-                            <button *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7" type="button" class="btn btn-gold" data-bs-toggle="modal"
-                                data-bs-target="#commentModal">
-                                <i class="fas fa-plus me-2"></i>
-                                {{ 'COMMON.ADD_COMMENT' | translate }}
-                            </button>
-                        </div>
+        </div>
+        <!-- Main Content -->
+        <div class="row">
 
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_NO' | translate }}:</strong>
-                                    {{mainApplyService.applyNo}}</p>
-                            </div>
-                            <div class="col-xl-6">
-                                <p class="mb-1"><strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong>
-                                    {{formatDate(mainApplyService.applyDate)}}</p>
-                            </div>
-                            <div class="col-xl-6">
-                                <p class="mb-0" *ngIf="mainApplyService.permitNumber">
-                                    <strong>{{ 'COMMON.PERMIT_NUMBER' | translate }}: </strong>
-                                    {{mainApplyService.permitNumber}}
-                                </p>
-                            </div>
-                            <div class="col-xl-6">
-                                <span class="badge bg-primary">{{mainApplyService.lastStatus}}</span>
-                            </div>
+          <!-- Tabs Navigation -->
+          <div class="col-lg-3 mb-4">
+            <div class="main-container h-100">
 
-                        </div>
+              <div class="">
+                <h6 class="fw-bold mb-3 text-primary">
+                  <i class="fas fa-route me-2"></i>
+                  {{ 'WORKFLOW.PROCESS_STEPS' | translate }}
+                </h6>
+
+                <!-- Workflow Steps Timeline -->
+                <div class="workflow-timeline">
+                  <div *ngFor="let step of workFlowSteps; let i = index; trackBy: trackByStepId"
+                       class="workflow-step-item"
+                       [class.completed]="isStepCompleted(step.serviceStatus)"
+                       [class.rejected]="isStepRejected(step.serviceStatus)"
+                       [class.pending]="isStepPending(step.serviceStatus)"
+                       [class.last-step]="i === workFlowSteps.length - 1">
+
+                    <!-- Step Circle with Icon -->
+                    <div class="step-circle"
+                         [style.background-color]="getStatusColor(step.serviceStatus)"
+                         [style.border-color]="getStatusColor(step.serviceStatus)">
+                      <i [class]="getStatusIcon(step.serviceStatus)"></i>
                     </div>
 
+                    <!-- Connecting Line -->
+                    <div class="step-line" *ngIf="i < workFlowSteps.length - 1"
+                         [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
 
+                    <!-- Step Content -->
+                    <div class="step-content">
+                      <!-- Step Header -->
+                      <div class="step-header">
+                        <div class="step-number">
+                          {{ 'WORKFLOW.STEP' | translate }}
+                          {{step.stepOrder}}
+                        </div>
+                        <div class="step-status"
+                             [style.color]="getStatusColor(step.serviceStatus)">
+                          <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
+                          {{
+step.serviceStatusName || (getStatusLabel(step.serviceStatus) |
+                                                    translate)
+                          }}
+                        </div>
+                      </div>
+
+                      <!-- Department Name -->
+                      <h6 class="department-name">{{step.departmentName}}</h6>
+                      <button type="button" class="btn btn-link p-0"
+                              (click)="openHistoryModal(step.workFlowHistories || [])">
+                        <i class="bi bi-clock-history me-1"></i>{{'WORKFLOW.VIEW_HISTORY' | translate}}
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <!-- Main Content -->
-                <div class="row">
+              </div>
+            </div>
+          </div>
 
-                    <!-- Tabs Navigation -->
-                    <div class="col-lg-3 mb-4">
-                        <div class="main-container h-100">
-
-                            <div class="">
-                                <h6 class="fw-bold mb-3 text-primary">
-                                    <i class="fas fa-route me-2"></i>
-                                    {{ 'WORKFLOW.PROCESS_STEPS' | translate }}
-                                </h6>
-
-                                <!-- Workflow Steps Timeline -->
-                                <div class="workflow-timeline">
-                                    <div *ngFor="let step of workFlowSteps; let i = index; trackBy: trackByStepId"
-                                        class="workflow-step-item"
-                                        [class.completed]="isStepCompleted(step.serviceStatus)"
-                                        [class.rejected]="isStepRejected(step.serviceStatus)"
-                                        [class.pending]="isStepPending(step.serviceStatus)"
-                                        [class.last-step]="i === workFlowSteps.length - 1">
-
-                                        <!-- Step Circle with Icon -->
-                                        <div class="step-circle"
-                                            [style.background-color]="getStatusColor(step.serviceStatus)"
-                                            [style.border-color]="getStatusColor(step.serviceStatus)">
-                                            <i [class]="getStatusIcon(step.serviceStatus)"></i>
-                                        </div>
-
-                                        <!-- Connecting Line -->
-                                        <div class="step-line" *ngIf="i < workFlowSteps.length - 1"
-                                            [class.completed-line]="isStepCompleted(step.serviceStatus)"></div>
-
-                                        <!-- Step Content -->
-                                        <div class="step-content">
-                                            <!-- Step Header -->
-                                            <div class="step-header">
-                                                <div class="step-number">{{ 'WORKFLOW.STEP' | translate }}
-                                                    {{step.stepOrder}}</div>
-                                                <div class="step-status"
-                                                    [style.color]="getStatusColor(step.serviceStatus)">
-                                                    <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
-                                                    {{step.serviceStatusName || (getStatusLabel(step.serviceStatus) |
-                                                    translate)}}
-                                                </div>
-                                            </div>
-
-                                            <!-- Department Name -->
-                                            <h6 class="department-name">{{step.departmentName}}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Area -->
-                    <div class="col-lg-9 mb-4">
+          <!-- Content Area -->
+          <div class="col-lg-9 mb-4">
 
 
-                        <!-- Tab 2: Basic Information -->
+            <!-- Tab 2: Basic Information -->
 
-                        <div class="main-container mb-4">
-                            <div class="step-content mb-4">
-                                <h5 class="mb-3 gold">{{ 'SHARED.TABS.BASIC_INFORMATION' | translate }}</h5>
+            <div class="main-container mb-4">
+              <div class="step-content mb-4">
+                <h5 class="mb-3 gold">{{ 'SHARED.TABS.BASIC_INFORMATION' | translate }}</h5>
 
-                                <div class="row" *ngIf="distributionSiteService">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.LOCATION_TYPE' | translate
-                                            }}</label>
-                                        <p class="mb-0">{{distributionSiteService.locationType || '-'}}</p>
-                                    </div>
+                <div class="row" *ngIf="distributionSiteService">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">
+                      {{
+ 'SHARED.FORMS.LOCATION_TYPE' | translate
+                      }}
+                    </label>
+                    <p class="mb-0">{{distributionSiteService.locationType || '-'}}</p>
+                  </div>
 
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.SUPERVISOR_NAME' | translate
-                                            }}</label>
-                                        <p class="mb-0">{{distributionSiteService.supervisorName || '-'}}</p>
-                                    </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">
+                      {{
+ 'SHARED.FORMS.SUPERVISOR_NAME' | translate
+                      }}
+                    </label>
+                    <p class="mb-0">{{distributionSiteService.supervisorName || '-'}}</p>
+                  </div>
 
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.JOB_TITLE' | translate
-                                            }}</label>
-                                        <p class="mb-0">{{distributionSiteService.jopTitle || '-'}}</p>
-                                    </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">
+                      {{
+ 'SHARED.FORMS.JOB_TITLE' | translate
+                      }}
+                    </label>
+                    <p class="mb-0">{{distributionSiteService.jopTitle || '-'}}</p>
+                  </div>
 
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.SUPERVISOR_MOBILE' |
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">
+                      {{
+ 'SHARED.FORMS.SUPERVISOR_MOBILE' |
                                             translate
-                                            }}</label>
-                                        <p class="mb-0">{{distributionSiteService.supervisorMobile || '-'}}</p>
+                      }}
+                    </label>
+                    <p class="mb-0">{{distributionSiteService.supervisorMobile || '-'}}</p>
+                  </div>
+
+                  <div class="col-md-12 mb-3">
+                    <label class="form-label fw-bold">{{ 'SHARED.FORMS.NOTES' | translate }}</label>
+                    <p class="mb-0">{{distributionSiteService.notes || '-'}}</p>
+                  </div>
+                </div>
+
+
+              </div>
+
+
+              <!-- Tab 3: Location Details -->
+              <div class="step-content mb-4">
+                <h5 class="mb-3 gold">{{ 'SHARED.LOCATION.DETAILS' | translate }}</h5>
+
+                <div *ngIf="distributionSiteService">
+                  <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-bold">
+                        {{
+ 'SHARED.FORMS.OWNER_NAME' | translate
+                        }}
+                      </label>
+                      <p class="mb-0">{{distributionSiteService.ownerName || '-'}}</p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-bold">
+                        {{
+ 'SHARED.FORMS.REGION_NAME' | translate
+                        }}
+                      </label>
+                      <p class="mb-0">{{distributionSiteService.regionName || '-'}}</p>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                      <label class="form-label fw-bold">
+                        {{
+ 'SHARED.FORMS.ADDRESS' | translate
+                        }}
+                      </label>
+                      <p class="mb-0">{{distributionSiteService.address || '-'}}</p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-bold">
+                        {{
+ 'SHARED.FORMS.STREET_NAME' | translate
+                        }}
+                      </label>
+                      <p class="mb-0">{{distributionSiteService.streetName || '-'}}</p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-bold">
+                        {{
+ 'SHARED.FORMS.GROUND_NO' | translate
+                        }}
+                      </label>
+                      <p class="mb-0">{{distributionSiteService.groundNo || '-'}}</p>
+                    </div>
+                  </div>
+
+                  <!-- Map Display -->
+                  <div *ngIf="distributionSiteService.distributionSiteCoordinators">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <h6 class="fw-bold mb-0">{{ 'SHARED.LOCATION.ON_MAP' | translate }}</h6>
+                      <div>
+                        <button type="button" class="btn btn-gold" (click)="refreshMap()"
+                                title="Refresh Map">
+                          <i class="fas fa-sync-alt me-1"></i>
+                          {{ 'COMMON.REFRESH' | translate }}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div id="viewMap" style="height: 400px; width: 100%;" class="border rounded">
+                    </div>
+
+                    <!-- Fallback when map fails to load -->
+                    <div *ngIf="mapLoadError" class="alert alert-warning mt-3">
+                      <i class="fas fa-exclamation-triangle me-2"></i>
+                      <strong>{{ 'SHARED.MAP.LOADING_ISSUE' | translate }}:</strong> {{
+                                            'SHARED.MAP.LOADING_ERROR' | translate
+                      }}
+                      <button type="button" class="btn btn-sm btn-outline-warning ms-2"
+                              (click)="refreshMap()">
+                        <i class="fas fa-redo me-1"></i>
+                        {{ 'SHARED.MAP.TRY_AGAIN' | translate }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="!distributionSiteService" class="alert alert-info">
+                  {{ 'SHARED.LOCATION.NO_INFO' | translate }}
+                </div>
+              </div>
+
+              <!-- Tab 4: Date Information -->
+              <div class="step-content">
+                <h5 class="mb-3 gold">{{ 'SHARED.TABS.DATE_DETAILS' | translate }}</h5>
+
+                <div class="row" *ngIf="distributionSiteService">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">
+                      {{
+ 'SHARED.FORMS.START_DATE' | translate
+                      }}
+                    </label>
+                    <p class="mb-0">
+                      {{formatDate(distributionSiteService.startDate ?? null) || '-'}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">
+                      {{
+ 'SHARED.FORMS.END_DATE' | translate
+                      }}
+                    </label>
+                    <p class="mb-0">
+                      {{formatDate(distributionSiteService.endDate ?? null) || '-'}}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Toggle Switches Section -->
+                <div class="row">
+                  <!-- Consultant approved from Police Toggle -->
+                  <div class="col-xl-6 mb-3">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox"
+                             [checked]="distributionSiteService?.isConsultantApprovedFromPolice"
+                             disabled id="consultantApprovedView">
+                      <label class="form-check-label" for="consultantApprovedView">
+                        {{ 'SHARED.FORMS.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
+                      </label>
+                    </div>
+                  </div>
+                  <!-- Consultant from Ajman Toggle -->
+                  <div class="col-xl-6 mb-3">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox"
+                             [checked]="distributionSiteService?.isConsultantFromAjman" disabled
+                             id="consultantFromAjmanView">
+                      <label class="form-check-label" for="consultantFromAjmanView">
+                        {{ 'SHARED.FORMS.CONSULTANT_FROM_AJMAN' | translate }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+
+
+
+
+
+
+
+            <div class="accordion" id="accordionExample">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button " type="button" data-bs-toggle="collapse"
+                          data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    {{ 'SHARED.PARTNERS.TITLE' | translate }}
+                  </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show"
+                     data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                    <div class="step-content">
+
+                      <div *ngIf="partners && partners.length > 0">
+                        <div class="table-responsive">
+                          <table class="table new-table">
+                            <thead>
+                              <tr>
+                                <th>{{ 'COMMON.NAME' | translate }}</th>
+                                <th>{{ 'COMMON.TYPE' | translate }}</th>
+                                <th>{{ 'COMMON.LICENSE_NUMBER' | translate }}</th>
+                                <th>{{ 'COMMON.LICENSE_ISSUER' | translate }}</th>
+                                <th>{{ 'COMMON.LICENSE_EXPIRY' | translate }}</th>
+                                <th>{{ 'COMMON.CONTACT_DETAILS' | translate }}</th>
+                                <th>{{ 'COMMON.ATTACHMENTS' | translate }}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let partner of partners">
+                                <td>{{partner.name || '-'}}</td>
+                                <td>
+                                  {{
+partner.typeName ||
+                                                                    getPartnerTypeName(partner.type)
+                                  }}
+                                </td>
+                                <td>{{partner.licenseNumber || '-'}}</td>
+                                <td>{{partner.licenseIssuer || '-'}}</td>
+                                <td>
+                                  {{formatDate(partner.licenseExpiryDate) || '-'}}
+                                </td>
+                                <td>{{partner.contactDetails || '-'}}</td>
+                                <td class="text-center">
+                                  <button *ngIf="partner.attachments && partner.attachments.length > 0"
+                                          class="btn btn-next-style"
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#partnerAttachmentModal"
+                                          (click)="viewPartnerAttachments(partner)">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" viewBox="0 0 24 24"
+                                         fill="none">
+                                      <g clip-path="url(#clip0_4_888)">
+                                        <path d="M23.2715 9.41927C21.7205 6.89327 18.1925 2.65527 12.0005 2.65527C5.80854 2.65527 2.28054 6.89327 0.72954 9.41927C0.250068 10.1948 -0.00390625 11.0885 -0.00390625 12.0003C-0.00390625 12.912 0.250068 13.8058 0.72954 14.5813C2.28054 17.1073 5.80854 21.3453 12.0005 21.3453C18.1925 21.3453 21.7205 17.1073 23.2715 14.5813C23.751 13.8058 24.005 12.912 24.005 12.0003C24.005 11.0885 23.751 10.1948 23.2715 9.41927ZM21.5665 13.5343C20.2345 15.7003 17.2195 19.3453 12.0005 19.3453C6.78154 19.3453 3.76654 15.7003 2.43454 13.5343C2.14967 13.0733 1.99879 12.5421 1.99879 12.0003C1.99879 11.4584 2.14967 10.9272 2.43454 10.4663C3.76654 8.30027 6.78154 4.65527 12.0005 4.65527C17.2195 4.65527 20.2345 8.29627 21.5665 10.4663C21.8514 10.9272 22.0023 11.4584 22.0023 12.0003C22.0023 12.5421 21.8514 13.0733 21.5665 13.5343Z"
+                                              fill="#374957" />
+                                        <path d="M12 7C11.0111 7 10.0444 7.29324 9.22215 7.84265C8.39991 8.39206 7.75904 9.17295 7.3806 10.0866C7.00217 11.0002 6.90315 12.0055 7.09608 12.9755C7.289 13.9454 7.76521 14.8363 8.46447 15.5355C9.16373 16.2348 10.0546 16.711 11.0246 16.9039C11.9945 17.0969 12.9998 16.9978 13.9134 16.6194C14.827 16.241 15.6079 15.6001 16.1574 14.7779C16.7068 13.9556 17 12.9889 17 12C16.9984 10.6744 16.4711 9.40356 15.5338 8.46622C14.5964 7.52888 13.3256 7.00159 12 7ZM12 15C11.4067 15 10.8266 14.8241 10.3333 14.4944C9.83994 14.1648 9.45543 13.6962 9.22836 13.1481C9.0013 12.5999 8.94189 11.9967 9.05765 11.4147C9.1734 10.8328 9.45912 10.2982 9.87868 9.87868C10.2982 9.45912 10.8328 9.1734 11.4147 9.05764C11.9967 8.94189 12.5999 9.0013 13.1481 9.22836C13.6962 9.45542 14.1648 9.83994 14.4944 10.3333C14.8241 10.8266 15 11.4067 15 12C15 12.7957 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7957 15 12 15Z"
+                                              fill="#374957" />
+                                      </g>
+                                      <defs>
+                                        <clipPath id="clip0_4_888">
+                                          <rect width="24" height="24"
+                                                fill="white" />
+                                        </clipPath>
+                                      </defs>
+                                    </svg>
+                                    <div class="attachment-badge">
+                                      {{partner.attachments.length}}
                                     </div>
-
-                                    <div class="col-md-12 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.NOTES' | translate }}</label>
-                                        <p class="mb-0">{{distributionSiteService.notes || '-'}}</p>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-
-                            <!-- Tab 3: Location Details -->
-                            <div class="step-content mb-4">
-                                <h5 class="mb-3 gold">{{ 'SHARED.LOCATION.DETAILS' | translate }}</h5>
-
-                                <div *ngIf="distributionSiteService">
-                                    <div class="row mb-4">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold">{{ 'SHARED.FORMS.OWNER_NAME' | translate
-                                                }}</label>
-                                            <p class="mb-0">{{distributionSiteService.ownerName || '-'}}</p>
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold">{{ 'SHARED.FORMS.REGION_NAME' | translate
-                                                }}</label>
-                                            <p class="mb-0">{{distributionSiteService.regionName || '-'}}</p>
-                                        </div>
-
-                                        <div class="col-md-12 mb-3">
-                                            <label class="form-label fw-bold">{{ 'SHARED.FORMS.ADDRESS' | translate
-                                                }}</label>
-                                            <p class="mb-0">{{distributionSiteService.address || '-'}}</p>
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold">{{ 'SHARED.FORMS.STREET_NAME' | translate
-                                                }}</label>
-                                            <p class="mb-0">{{distributionSiteService.streetName || '-'}}</p>
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold">{{ 'SHARED.FORMS.GROUND_NO' | translate
-                                                }}</label>
-                                            <p class="mb-0">{{distributionSiteService.groundNo || '-'}}</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Map Display -->
-                                    <div *ngIf="distributionSiteService.distributionSiteCoordinators">
-                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <h6 class="fw-bold mb-0">{{ 'SHARED.LOCATION.ON_MAP' | translate }}</h6>
-                                            <div>
-                                                <button type="button" class="btn btn-gold" (click)="refreshMap()"
-                                                    title="Refresh Map">
-                                                    <i class="fas fa-sync-alt me-1"></i>
-                                                    {{ 'COMMON.REFRESH' | translate }}
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div id="viewMap" style="height: 400px; width: 100%;" class="border rounded">
-                                        </div>
-
-                                        <!-- Fallback when map fails to load -->
-                                        <div *ngIf="mapLoadError" class="alert alert-warning mt-3">
-                                            <i class="fas fa-exclamation-triangle me-2"></i>
-                                            <strong>{{ 'SHARED.MAP.LOADING_ISSUE' | translate }}:</strong> {{
-                                            'SHARED.MAP.LOADING_ERROR' | translate }}
-                                            <button type="button" class="btn btn-sm btn-outline-warning ms-2"
-                                                (click)="refreshMap()">
-                                                <i class="fas fa-redo me-1"></i>
-                                                {{ 'SHARED.MAP.TRY_AGAIN' | translate }}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div *ngIf="!distributionSiteService" class="alert alert-info">
-                                    {{ 'SHARED.LOCATION.NO_INFO' | translate }}
-                                </div>
-                            </div>
-
-                            <!-- Tab 4: Date Information -->
-                            <div class="step-content">
-                                <h5 class="mb-3 gold">{{ 'SHARED.TABS.DATE_DETAILS' | translate }}</h5>
-
-                                <div class="row" *ngIf="distributionSiteService">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.START_DATE' | translate
-                                            }}</label>
-                                        <p class="mb-0">{{formatDate(distributionSiteService.startDate ?? null) || '-'}}
-                                        </p>
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">{{ 'SHARED.FORMS.END_DATE' | translate
-                                            }}</label>
-                                        <p class="mb-0">{{formatDate(distributionSiteService.endDate ?? null) || '-'}}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <!-- Toggle Switches Section -->
-                                <div class="row">
-                                    <!-- Consultant approved from Police Toggle -->
-                                    <div class="col-xl-6 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox"
-                                                [checked]="distributionSiteService?.isConsultantApprovedFromPolice"
-                                                disabled id="consultantApprovedView">
-                                            <label class="form-check-label" for="consultantApprovedView">
-                                                {{ 'SHARED.FORMS.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <!-- Consultant from Ajman Toggle -->
-                                    <div class="col-xl-6 mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox"
-                                                [checked]="distributionSiteService?.isConsultantFromAjman" disabled
-                                                id="consultantFromAjmanView">
-                                            <label class="form-check-label" for="consultantFromAjmanView">
-                                                {{ 'SHARED.FORMS.CONSULTANT_FROM_AJMAN' | translate }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                            </div>
+                                  </button>
+                                  <button *ngIf="!partner.attachments || partner.attachments.length === 0"
+                                          class="btn btn-next-style"
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#partnerAttachmentModal"
+                                          (click)="fetchPartnerAttachments(partner)">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" viewBox="0 0 24 24"
+                                         fill="none">
+                                      <g clip-path="url(#clip0_4_888)">
+                                        <path d="M23.2715 9.41927C21.7205 6.89327 18.1925 2.65527 12.0005 2.65527C5.80854 2.65527 2.28054 6.89327 0.72954 9.41927C0.250068 10.1948 -0.00390625 11.0885 -0.00390625 12.0003C-0.00390625 12.912 0.250068 13.8058 0.72954 14.5813C2.28054 17.1073 5.80854 21.3453 12.0005 21.3453C18.1925 21.3453 21.7205 17.1073 23.2715 14.5813C23.751 13.8058 24.005 12.912 24.005 12.0003C24.005 11.0885 23.751 10.1948 23.2715 9.41927ZM21.5665 13.5343C20.2345 15.7003 17.2195 19.3453 12.0005 19.3453C6.78154 19.3453 3.76654 15.7003 2.43454 13.5343C2.14967 13.0733 1.99879 12.5421 1.99879 12.0003C1.99879 11.4584 2.14967 10.9272 2.43454 10.4663C3.76654 8.30027 6.78154 4.65527 12.0005 4.65527C17.2195 4.65527 20.2345 8.29627 21.5665 10.4663C21.8514 10.9272 22.0023 11.4584 22.0023 12.0003C22.0023 12.5421 21.8514 13.0733 21.5665 13.5343Z"
+                                              fill="#374957" />
+                                        <path d="M12 7C11.0111 7 10.0444 7.29324 9.22215 7.84265C8.39991 8.39206 7.75904 9.17295 7.3806 10.0866C7.00217 11.0002 6.90315 12.0055 7.09608 12.9755C7.289 13.9454 7.76521 14.8363 8.46447 15.5355C9.16373 16.2348 10.0546 16.711 11.0246 16.9039C11.9945 17.0969 12.9998 16.9978 13.9134 16.6194C14.827 16.241 15.6079 15.6001 16.1574 14.7779C16.7068 13.9556 17 12.9889 17 12C16.9984 10.6744 16.4711 9.40356 15.5338 8.46622C14.5964 7.52888 13.3256 7.00159 12 7ZM12 15C11.4067 15 10.8266 14.8241 10.3333 14.4944C9.83994 14.1648 9.45543 13.6962 9.22836 13.1481C9.0013 12.5999 8.94189 11.9967 9.05765 11.4147C9.1734 10.8328 9.45912 10.2982 9.87868 9.87868C10.2982 9.45912 10.8328 9.1734 11.4147 9.05764C11.9967 8.94189 12.5999 9.0013 13.1481 9.22836C13.6962 9.45542 14.1648 9.83994 14.4944 10.3333C14.8241 10.8266 15 11.4067 15 12C15 12.7957 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7957 15 12 15Z"
+                                              fill="#374957" />
+                                      </g>
+                                      <defs>
+                                        <clipPath id="clip0_4_888">
+                                          <rect width="24" height="24"
+                                                fill="white" />
+                                        </clipPath>
+                                      </defs>
+                                    </svg>
+                                  </button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
+                      </div>
 
+                      <div *ngIf="!partners || partners.length === 0" class="alert alert-info">
+                        {{ 'SHARED.PARTNERS.NO_PARTNERS' | translate }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                          data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    {{ 'SHARED.ATTACHMENTS.TITLE' | translate }}
+                  </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse"
+                     data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                    <div class="step-content">
 
-
-
-
-
-
-                        <div class="accordion" id="accordionExample">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button " type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        {{ 'SHARED.PARTNERS.TITLE' | translate }}
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="accordion-body">
-                                        <div class="step-content">
-
-                                            <div *ngIf="partners && partners.length > 0">
-                                                <div class="table-responsive">
-                                                    <table class="table new-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>{{ 'COMMON.NAME' | translate }}</th>
-                                                                <th>{{ 'COMMON.TYPE' | translate }}</th>
-                                                                <th>{{ 'COMMON.LICENSE_NUMBER' | translate }}</th>
-                                                                <th>{{ 'COMMON.LICENSE_ISSUER' | translate }}</th>
-                                                                <th>{{ 'COMMON.LICENSE_EXPIRY' | translate }}</th>
-                                                                <th>{{ 'COMMON.CONTACT_DETAILS' | translate }}</th>
-                                                                <th>{{ 'COMMON.ATTACHMENTS' | translate }}</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr *ngFor="let partner of partners">
-                                                                <td>{{partner.name || '-'}}</td>
-                                                                <td>{{partner.typeName ||
-                                                                    getPartnerTypeName(partner.type)}}
-                                                                </td>
-                                                                <td>{{partner.licenseNumber || '-'}}</td>
-                                                                <td>{{partner.licenseIssuer || '-'}}</td>
-                                                                <td>{{formatDate(partner.licenseExpiryDate) || '-'}}
-                                                                </td>
-                                                                <td>{{partner.contactDetails || '-'}}</td>
-                                                                <td class="text-center">
-                                                                    <button
-                                                                        *ngIf="partner.attachments && partner.attachments.length > 0"
-                                                                        class="btn btn-next-style"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#partnerAttachmentModal"
-                                                                        (click)="viewPartnerAttachments(partner)">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                                            width="24" height="24" viewBox="0 0 24 24"
-                                                                            fill="none">
-                                                                            <g clip-path="url(#clip0_4_888)">
-                                                                                <path
-                                                                                    d="M23.2715 9.41927C21.7205 6.89327 18.1925 2.65527 12.0005 2.65527C5.80854 2.65527 2.28054 6.89327 0.72954 9.41927C0.250068 10.1948 -0.00390625 11.0885 -0.00390625 12.0003C-0.00390625 12.912 0.250068 13.8058 0.72954 14.5813C2.28054 17.1073 5.80854 21.3453 12.0005 21.3453C18.1925 21.3453 21.7205 17.1073 23.2715 14.5813C23.751 13.8058 24.005 12.912 24.005 12.0003C24.005 11.0885 23.751 10.1948 23.2715 9.41927ZM21.5665 13.5343C20.2345 15.7003 17.2195 19.3453 12.0005 19.3453C6.78154 19.3453 3.76654 15.7003 2.43454 13.5343C2.14967 13.0733 1.99879 12.5421 1.99879 12.0003C1.99879 11.4584 2.14967 10.9272 2.43454 10.4663C3.76654 8.30027 6.78154 4.65527 12.0005 4.65527C17.2195 4.65527 20.2345 8.29627 21.5665 10.4663C21.8514 10.9272 22.0023 11.4584 22.0023 12.0003C22.0023 12.5421 21.8514 13.0733 21.5665 13.5343Z"
-                                                                                    fill="#374957" />
-                                                                                <path
-                                                                                    d="M12 7C11.0111 7 10.0444 7.29324 9.22215 7.84265C8.39991 8.39206 7.75904 9.17295 7.3806 10.0866C7.00217 11.0002 6.90315 12.0055 7.09608 12.9755C7.289 13.9454 7.76521 14.8363 8.46447 15.5355C9.16373 16.2348 10.0546 16.711 11.0246 16.9039C11.9945 17.0969 12.9998 16.9978 13.9134 16.6194C14.827 16.241 15.6079 15.6001 16.1574 14.7779C16.7068 13.9556 17 12.9889 17 12C16.9984 10.6744 16.4711 9.40356 15.5338 8.46622C14.5964 7.52888 13.3256 7.00159 12 7ZM12 15C11.4067 15 10.8266 14.8241 10.3333 14.4944C9.83994 14.1648 9.45543 13.6962 9.22836 13.1481C9.0013 12.5999 8.94189 11.9967 9.05765 11.4147C9.1734 10.8328 9.45912 10.2982 9.87868 9.87868C10.2982 9.45912 10.8328 9.1734 11.4147 9.05764C11.9967 8.94189 12.5999 9.0013 13.1481 9.22836C13.6962 9.45542 14.1648 9.83994 14.4944 10.3333C14.8241 10.8266 15 11.4067 15 12C15 12.7957 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7957 15 12 15Z"
-                                                                                    fill="#374957" />
-                                                                            </g>
-                                                                            <defs>
-                                                                                <clipPath id="clip0_4_888">
-                                                                                    <rect width="24" height="24"
-                                                                                        fill="white" />
-                                                                                </clipPath>
-                                                                            </defs>
-                                                                        </svg>
-                                                                        <div class="attachment-badge">
-                                                                            {{partner.attachments.length}}</div>
-                                                                    </button>
-                                                                    <button
-                                                                        *ngIf="!partner.attachments || partner.attachments.length === 0"
-                                                                        class="btn btn-next-style"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#partnerAttachmentModal"
-                                                                        (click)="fetchPartnerAttachments(partner)">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                                            width="24" height="24" viewBox="0 0 24 24"
-                                                                            fill="none">
-                                                                            <g clip-path="url(#clip0_4_888)">
-                                                                                <path
-                                                                                    d="M23.2715 9.41927C21.7205 6.89327 18.1925 2.65527 12.0005 2.65527C5.80854 2.65527 2.28054 6.89327 0.72954 9.41927C0.250068 10.1948 -0.00390625 11.0885 -0.00390625 12.0003C-0.00390625 12.912 0.250068 13.8058 0.72954 14.5813C2.28054 17.1073 5.80854 21.3453 12.0005 21.3453C18.1925 21.3453 21.7205 17.1073 23.2715 14.5813C23.751 13.8058 24.005 12.912 24.005 12.0003C24.005 11.0885 23.751 10.1948 23.2715 9.41927ZM21.5665 13.5343C20.2345 15.7003 17.2195 19.3453 12.0005 19.3453C6.78154 19.3453 3.76654 15.7003 2.43454 13.5343C2.14967 13.0733 1.99879 12.5421 1.99879 12.0003C1.99879 11.4584 2.14967 10.9272 2.43454 10.4663C3.76654 8.30027 6.78154 4.65527 12.0005 4.65527C17.2195 4.65527 20.2345 8.29627 21.5665 10.4663C21.8514 10.9272 22.0023 11.4584 22.0023 12.0003C22.0023 12.5421 21.8514 13.0733 21.5665 13.5343Z"
-                                                                                    fill="#374957" />
-                                                                                <path
-                                                                                    d="M12 7C11.0111 7 10.0444 7.29324 9.22215 7.84265C8.39991 8.39206 7.75904 9.17295 7.3806 10.0866C7.00217 11.0002 6.90315 12.0055 7.09608 12.9755C7.289 13.9454 7.76521 14.8363 8.46447 15.5355C9.16373 16.2348 10.0546 16.711 11.0246 16.9039C11.9945 17.0969 12.9998 16.9978 13.9134 16.6194C14.827 16.241 15.6079 15.6001 16.1574 14.7779C16.7068 13.9556 17 12.9889 17 12C16.9984 10.6744 16.4711 9.40356 15.5338 8.46622C14.5964 7.52888 13.3256 7.00159 12 7ZM12 15C11.4067 15 10.8266 14.8241 10.3333 14.4944C9.83994 14.1648 9.45543 13.6962 9.22836 13.1481C9.0013 12.5999 8.94189 11.9967 9.05765 11.4147C9.1734 10.8328 9.45912 10.2982 9.87868 9.87868C10.2982 9.45912 10.8328 9.1734 11.4147 9.05764C11.9967 8.94189 12.5999 9.0013 13.1481 9.22836C13.6962 9.45542 14.1648 9.83994 14.4944 10.3333C14.8241 10.8266 15 11.4067 15 12C15 12.7957 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7957 15 12 15Z"
-                                                                                    fill="#374957" />
-                                                                            </g>
-                                                                            <defs>
-                                                                                <clipPath id="clip0_4_888">
-                                                                                    <rect width="24" height="24"
-                                                                                        fill="white" />
-                                                                                </clipPath>
-                                                                            </defs>
-                                                                        </svg>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-
-                                            <div *ngIf="!partners || partners.length === 0" class="alert alert-info">
-                                                {{ 'SHARED.PARTNERS.NO_PARTNERS' | translate }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                      <div *ngIf="attachments && attachments.length > 0">
+                        <div class="row">
+                          <div class="col-xl-4 col-lg-6 mb-4"
+                               *ngFor="let attachment of attachments">
+                            <div class="attachment-box">
+                              <h6 class="card-title">
+                                {{
+attachment.attachmentTitle ||
+                                                                ('SHARED.ATTACHMENTS.ATTACHMENT' | translate)
+                                }}
+                              </h6>
+                              <p class="mb-4">
+                                {{ 'COMMON.UPLOADED_ON' | translate }}:
+                                {{formatDateTime(attachment.lastModified)}}
+                              </p>
+                              <div class="d-flex justify-content-between mt-auto">
+                                <button class="btn btn-next-style me-2"
+                                        (click)="viewAttachment(attachment)">
+                                  <i class="fas fa-eye me-1"></i>
+                                  {{ 'COMMON.VIEW' | translate }}
+                                </button>
+                                <button class="btn btn-download-style"
+                                        (click)="downloadAttachment(attachment)">
+                                  <i class="fas fa-download me-1"></i>
+                                  {{ 'COMMON.DOWNLOAD' | translate }}
+                                </button>
+                              </div>
                             </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        {{ 'SHARED.ATTACHMENTS.TITLE' | translate }}
-                                    </button>
-                                </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="accordion-body">
-                                        <div class="step-content">
+                          </div>
+                        </div>
+                      </div>
 
-                                            <div *ngIf="attachments && attachments.length > 0">
-                                                <div class="row">
-                                                    <div class="col-xl-4 col-lg-6 mb-4"
-                                                        *ngFor="let attachment of attachments">
-                                                        <div class="attachment-box">
-                                                            <h6 class="card-title">{{attachment.attachmentTitle ||
-                                                                ('SHARED.ATTACHMENTS.ATTACHMENT' | translate)}}</h6>
-                                                            <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}:
-                                                                {{formatDateTime(attachment.lastModified)}}</p>
-                                                            <div class="d-flex justify-content-between mt-auto">
-                                                                <button class="btn btn-next-style me-2"
-                                                                    (click)="viewAttachment(attachment)">
-                                                                    <i class="fas fa-eye me-1"></i>
-                                                                    {{ 'COMMON.VIEW' | translate }}
-                                                                </button>
-                                                                <button class="btn btn-download-style"
-                                                                    (click)="downloadAttachment(attachment)">
-                                                                    <i class="fas fa-download me-1"></i>
-                                                                    {{ 'COMMON.DOWNLOAD' | translate }}
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                      <div *ngIf="!attachments || attachments.length === 0"
+                           class="alert alert-info">
+                        {{ 'SHARED.ATTACHMENTS.NO_ATTACHMENTS' | translate }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                          data-bs-target="#collapseThree" aria-expanded="false"
+                          aria-controls="collapseThree">
+                    {{ 'COMMON.WORKFLOW_COMMENTS' | translate }}
+                  </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse"
+                     data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                    <div class="step-content">
+                      <!-- <div class="d-flex justify-content-end align-items-center mb-4">
+                          <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold"
+                              data-bs-toggle="modal" data-bs-target="#commentModal">
+                              <i class="fas fa-plus me-2"></i>
+                              {{ 'COMMON.ADD_COMMENT' | translate }}
+                          </button>
+                      </div> -->
+                      <!-- Loading state -->
+                      <div *ngIf="isLoadingComments" class="text-center py-5">
+                        <div class="spinner-border spinner-border-sm" role="status">
+                          <span class="visually-hidden">
+                            {{
+ 'COMMON.LOADING' | translate
+                            }}
+                          </span>
+                        </div>
+                        <span class="ms-2">{{ 'COMMON.LOADING_COMMENTS' | translate }}</span>
+                      </div>
 
-                                            <div *ngIf="!attachments || attachments.length === 0"
-                                                class="alert alert-info">
-                                                {{ 'SHARED.ATTACHMENTS.NO_ATTACHMENTS' | translate }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
-                                        {{ 'COMMON.WORKFLOW_COMMENTS' | translate }}
-                                    </button>
-                                </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="accordion-body">
-                                        <div class="step-content">
-                                            <!-- <div class="d-flex justify-content-end align-items-center mb-4">
-                                                <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold"
-                                                    data-bs-toggle="modal" data-bs-target="#commentModal">
-                                                    <i class="fas fa-plus me-2"></i>
-                                                    {{ 'COMMON.ADD_COMMENT' | translate }}
-                                                </button>
-                                            </div> -->
+                      <!-- <div class="comments-container">
+                          <div class="comment-item">
+                              <div
+                                  class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                                  <h5>Department Name</h5>
+                                  <div class="status-waiting">
+                                      Waiting
+                                  </div>
+                              </div>
+                              <div class="comment-area">
+                                  Lorem Ipsum is simply dummy text of the printing and typesetting
+                                  industry. Lorem Ipsum has been the industry's standard dummy
+                                  text ever since the 1500s, when an unknown printer took a galley
+                                  of type and scrambled it to make a type specimen book. It has
+                                  survived not only five centuries, but also the leap into
+                                  electronic typesetting, remaining essentially unchanged.
+                              </div>
+                              <button class="btn btn-view-attachment mt-2">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                      viewBox="0 0 20 20" fill="none">
+                                      <g clip-path="url(#clip0_560_1674)">
+                                          <path
+                                              d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
+                                              fill="#374957" />
+                                          <path
+                                              d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
+                                              fill="#374957" />
+                                      </g>
+                                      <defs>
+                                          <clipPath id="clip0_560_1674">
+                                              <rect width="20" height="20" fill="white" />
+                                          </clipPath>
+                                      </defs>
+                                  </svg>
+                                  View Attachment
+                              </button>
+                          </div>
+                          <div class="comment-item">
+                              <div
+                                  class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                                  <h5>Department Name</h5>
+                                  <div class="status-approved">
+                                      Accepted
+                                  </div>
+                              </div>
+                              <div class="comment-area">
+                                  Lorem Ipsum is simply dummy text of the printing and typesetting
+                                  industry. Lorem Ipsum has been the industry's standard dummy
+                                  text ever since the 1500s, when an unknown printer took a galley
+                                  of type and scrambled it to make a type specimen book. It has
+                                  survived not only five centuries, but also the leap into
+                                  electronic typesetting, remaining essentially unchanged.
+                              </div>
+                          </div>
+                          <div class="comment-item">
+                              <div
+                                  class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                                  <h5>Department Name</h5>
+                                  <div class="status-waiting">
+                                      Waiting
+                                  </div>
+                              </div>
+                              <div class="comment-area">
+                                  Lorem Ipsum is simply dummy text of the printing and typesetting
+                                  industry. Lorem Ipsum has been the industry's standard dummy
+                                  text ever since the 1500s, when an unknown printer took a galley
+                                  of type and scrambled it to make a type specimen book. It has
+                                  survived not only five centuries, but also the leap into
+                                  electronic typesetting, remaining essentially unchanged.
+                              </div>
+                          </div>
 
-                                            <!-- Loading state -->
-                                            <div *ngIf="isLoadingComments" class="text-center py-5">
-                                                <div class="spinner-border spinner-border-sm" role="status">
-                                                    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate
-                                                        }}</span>
-                                                </div>
-                                                <span class="ms-2">{{ 'COMMON.LOADING_COMMENTS' | translate }}</span>
-                                            </div>
-
-                                            <!-- <div class="comments-container">
-                                                <div class="comment-item">
-                                                    <div
-                                                        class="d-flex align-items-center justify-content-between gap-3 mb-2">
-                                                        <h5>Department Name</h5>
-                                                        <div class="status-waiting">
-                                                            Waiting
-                                                        </div>
-                                                    </div>
-                                                    <div class="comment-area">
-                                                        Lorem Ipsum is simply dummy text of the printing and typesetting
-                                                        industry. Lorem Ipsum has been the industry's standard dummy
-                                                        text ever since the 1500s, when an unknown printer took a galley
-                                                        of type and scrambled it to make a type specimen book. It has
-                                                        survived not only five centuries, but also the leap into
-                                                        electronic typesetting, remaining essentially unchanged.
-                                                    </div>
-                                                    <button class="btn btn-view-attachment mt-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                            viewBox="0 0 20 20" fill="none">
-                                                            <g clip-path="url(#clip0_560_1674)">
-                                                                <path
-                                                                    d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
-                                                                    fill="#374957" />
-                                                                <path
-                                                                    d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
-                                                                    fill="#374957" />
-                                                            </g>
-                                                            <defs>
-                                                                <clipPath id="clip0_560_1674">
-                                                                    <rect width="20" height="20" fill="white" />
-                                                                </clipPath>
-                                                            </defs>
-                                                        </svg>
-                                                        View Attachment
-                                                    </button>
-                                                </div>
-                                                <div class="comment-item">
-                                                    <div
-                                                        class="d-flex align-items-center justify-content-between gap-3 mb-2">
-                                                        <h5>Department Name</h5>
-                                                        <div class="status-approved">
-                                                            Accepted
-                                                        </div>
-                                                    </div>
-                                                    <div class="comment-area">
-                                                        Lorem Ipsum is simply dummy text of the printing and typesetting
-                                                        industry. Lorem Ipsum has been the industry's standard dummy
-                                                        text ever since the 1500s, when an unknown printer took a galley
-                                                        of type and scrambled it to make a type specimen book. It has
-                                                        survived not only five centuries, but also the leap into
-                                                        electronic typesetting, remaining essentially unchanged.
-                                                    </div>
-                                                </div>
-                                                <div class="comment-item">
-                                                    <div
-                                                        class="d-flex align-items-center justify-content-between gap-3 mb-2">
-                                                        <h5>Department Name</h5>
-                                                        <div class="status-waiting">
-                                                            Waiting
-                                                        </div>
-                                                    </div>
-                                                    <div class="comment-area">
-                                                        Lorem Ipsum is simply dummy text of the printing and typesetting
-                                                        industry. Lorem Ipsum has been the industry's standard dummy
-                                                        text ever since the 1500s, when an unknown printer took a galley
-                                                        of type and scrambled it to make a type specimen book. It has
-                                                        survived not only five centuries, but also the leap into
-                                                        electronic typesetting, remaining essentially unchanged.
-                                                    </div>
-                                                </div>
-
-                                            </div>
+                      </div>
 
 
-                                             <div *ngIf="!isLoadingComments">
-                                                <app-generic-data-table [columnDefs]="commentsColumnDefs"
-                                                    [rowData]="allWorkFlowComments"
-                                                    [totalCount]="allWorkFlowComments.length" [pageSize]="10"
-                                                    [currentPage]="0" [showActionColumn]="false"
-                                                    [columnHeaderMap]="commentsColumnHeaderMap"
-                                                    (actionClick)="onCommentsTableAction($event)"
-                                                    (cellClicked)="onTableCellClick($event)">
-                                                </app-generic-data-table>
-                                            </div> -->
+                       <div *ngIf="!isLoadingComments">
+                          <app-generic-data-table [columnDefs]="commentsColumnDefs"
+                              [rowData]="allWorkFlowComments"
+                              [totalCount]="allWorkFlowComments.length" [pageSize]="10"
+                              [currentPage]="0" [showActionColumn]="false"
+                              [columnHeaderMap]="commentsColumnHeaderMap"
+                              (actionClick)="onCommentsTableAction($event)"
+                              (cellClicked)="onTableCellClick($event)">
+                          </app-generic-data-table>
+                      </div> -->
 
 
 
 
-  <div class="comments-container">
+                      <div class="comments-container">
                         <div class="comment-item" *ngFor="let comment of allWorkFlowComments">
                           <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
                             <div>
@@ -603,20 +658,18 @@
                               </small>
                             </div>
                           </div>
-                           <div class="comment-area">
+                          <div class="comment-area">
                             {{ comment.comment }}
                           </div>
-                           <div>
-                            <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"  data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
+                          <div>
+                            <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}" data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
-                                fill="none">
+                                   fill="none">
                                 <g clip-path="url(#clip0_560_1674)">
-                                  <path
-                                    d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
-                                    fill="#374957" />
-                                  <path
-                                    d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
-                                    fill="#374957" />
+                                  <path d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
+                                        fill="#374957" />
+                                  <path d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
+                                        fill="#374957" />
                                 </g>
                                 <defs>
                                   <clipPath id="clip0_560_1674">
@@ -624,282 +677,367 @@
                                   </clipPath>
                                 </defs>
                               </svg>
-                              {{ 'COMMON.VIEW' | translate}} </button>
+                              {{ 'COMMON.VIEW' | translate}}
+                            </button>
                           </div>
                         </div>
                       </div>
 
 
-                                             <!-- <div *ngIf="!targetWorkFlowStep" class="alert alert-warning">
-                                                {{ 'COMMON.NO_WORKFLOW_STEP_FOUND' | translate }}
-                                            </div> -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-
-
+                      <!-- <div *ngIf="!targetWorkFlowStep" class="alert alert-warning">
+                          {{ 'COMMON.NO_WORKFLOW_STEP_FOUND' | translate }}
+                      </div> -->
                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
 
 
-            <!-- Error state -->
-            <div *ngIf="!isLoading && !mainApplyService" class="alert alert-danger text-center">
-                <h5>{{ 'COMMON.ERROR' | translate }}</h5>
-                <p>{{ 'COMMON.DATA_NOT_FOUND' | translate }}</p>
-                <button class="btn btn-secondary" (click)="goBack()">
-                    {{ 'COMMON.GO_BACK' | translate }}
-                </button>
-            </div>
+
+
+
+
+          </div>
         </div>
-    </section>
+      </div>
+
+
+      <!-- Error state -->
+      <div *ngIf="!isLoading && !mainApplyService" class="alert alert-danger text-center">
+        <h5>{{ 'COMMON.ERROR' | translate }}</h5>
+        <p>{{ 'COMMON.DATA_NOT_FOUND' | translate }}</p>
+        <button class="btn btn-secondary" (click)="goBack()">
+          {{ 'COMMON.GO_BACK' | translate }}
+        </button>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- Add Comment Modal -->
 <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="commentModalLabel">{{ 'COMMON.ADD_COMMENT' | translate }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form [formGroup]="commentForm" (ngSubmit)="addWorkFlowComment()">
-                    <div class="mb-3">
-                        <label for="commentText" class="form-label mb-2">{{ 'COMMON.COMMENT' | translate }}</label>
-                        <textarea class="form-control" id="commentText" rows="4" [(ngModel)]="newCommentText"
-                            [ngModelOptions]="{standalone: true}" placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
-                            required></textarea>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commentModalLabel">{{ 'COMMON.ADD_COMMENT' | translate }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form [formGroup]="commentForm" (ngSubmit)="addWorkFlowComment()">
+          <div class="mb-3">
+            <label for="commentText" class="form-label mb-2">{{ 'COMMON.COMMENT' | translate }}</label>
+            <textarea class="form-control" id="commentText" rows="4" [(ngModel)]="newCommentText"
+                      [ngModelOptions]="{standalone: true}" placeholder="{{ 'COMMON.ENTER_COMMENT' | translate }}"
+                      required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label mb-2">
+              {{ 'COMMON.ATTACHMENTS' | translate }} ({{
+ 'COMMON.OPTIONAL' |
+                            translate
+              }})
+            </label>
+
+            <!-- Comment Attachment Configurations -->
+            <div *ngIf="commentAttachmentConfigs.length > 0" class="">
+              <div>
+                <div *ngFor="let config of commentAttachmentConfigs">
+
+                  <div *ngIf="!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0"
+                       class="upload-area" (dragover)="onCommentDragOver($event)"
+                       (dragleave)="onCommentDragLeave($event)"
+                       (drop)="onCommentDrop($event, config.id!)" [class.drag-over]="isCommentDragOver"
+                       [class.border-danger]="isCommentAttachmentMandatory(config.id!) && (!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0) && commentValidationSubmitted"
+                       [class.border-success]="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0">
+                    <input type="file" class="d-none" [id]="'comment-file-' + config.id"
+                           (change)="onCommentFileSelected($event, config.id!)"
+                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+                    <label [for]="'comment-file-' + config.id" class="upload-label">
+                      <i class="fas fa-cloud-upload-alt mb-2"></i>
+                      <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
+                      <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
+                      <small class="text-muted d-block mt-1">{{ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate }}</small>
+                    </label>
+                  </div>
+
+                  <!-- Multiple Files Display -->
+                  <div *ngIf="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0"
+                       class="uploaded-files-list">
+                    <!-- Hidden file input for "Add More Files" functionality -->
+                    <input type="file" class="d-none" [id]="'comment-file-more-' + config.id"
+                           (change)="onCommentFileSelected($event, config.id!)"
+                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <h6 class="mb-0">{{ getCommentAttachmentName(config) }}</h6>
+                      <button type="button" class="btn btn-sm btn-gold"
+                              (click)="addMoreFiles(config.id!)">
+                        <i class="fas fa-plus me-1"></i>{{ 'Common.MORE_FILES' | translate }}
+                      </button>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label mb-2">{{ 'COMMON.ATTACHMENTS' | translate }} ({{ 'COMMON.OPTIONAL' |
-                            translate }})</label>
-
-                        <!-- Comment Attachment Configurations -->
-                        <div *ngIf="commentAttachmentConfigs.length > 0" class="">
-                            <div>
-                                <div *ngFor="let config of commentAttachmentConfigs">
-
-                                    <div *ngIf="!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0"
-                                        class="upload-area" (dragover)="onCommentDragOver($event)"
-                                        (dragleave)="onCommentDragLeave($event)"
-                                        (drop)="onCommentDrop($event, config.id!)" [class.drag-over]="isCommentDragOver"
-                                        [class.border-danger]="isCommentAttachmentMandatory(config.id!) && (!commentSelectedFiles[config.id!] || commentSelectedFiles[config.id!].length === 0) && commentValidationSubmitted"
-                                        [class.border-success]="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0">
-                                        <input type="file" class="d-none" [id]="'comment-file-' + config.id"
-                                            (change)="onCommentFileSelected($event, config.id!)"
-                                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
-                                        <label [for]="'comment-file-' + config.id" class="upload-label">
-                                            <i class="fas fa-cloud-upload-alt mb-2"></i>
-                                            <div>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</div>
-                                            <small class="text-muted">{{ 'ATTACHMENTS.SUPPORTED_FORMATS' | translate }}</small>
-                                            <small class="text-muted d-block mt-1">{{ 'ATTACHMENTS.MULTIPLE_FILES_ALLOWED' | translate }}</small>
-                                        </label>
-                                    </div>
-
-                                    <!-- Multiple Files Display -->
-                                    <div *ngIf="commentSelectedFiles[config.id!] && commentSelectedFiles[config.id!].length > 0"
-                                        class="uploaded-files-list">
-                                        <!-- Hidden file input for "Add More Files" functionality -->
-                                        <input type="file" class="d-none" [id]="'comment-file-more-' + config.id"
-                                            (change)="onCommentFileSelected($event, config.id!)"
-                                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
-                                        
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <h6 class="mb-0">{{ getCommentAttachmentName(config) }}</h6>
-                                            <button type="button" class="btn btn-sm btn-gold" 
-                                                (click)="addMoreFiles(config.id!)">
-                                                <i class="fas fa-plus me-1"></i>{{ 'Common.MORE_FILES' | translate }}
-                                            </button>
-                                        </div>
-                                        
-                                        <div class="file-list">
-                                            <div *ngFor="let file of commentSelectedFiles[config.id!]; let fileIndex = index" 
-                                                class="file-item d-flex align-items-center gap-2 p-2 border rounded mb-2">
-                                                <div class="file-preview me-2">
-                                                    <img *ngIf="commentFilePreviews[config.id!]?.[fileIndex] && file.type?.startsWith('image/')" 
-                                                        [src]="commentFilePreviews[config.id!]?.[fileIndex]" 
-                                                        class="img-thumbnail uploaded-img-small"
-                                                        [alt]="file.name">
-                                                    <i *ngIf="!file.type?.startsWith('image/')" 
-                                                        class="fas fa-file-alt text-primary fa-lg"></i>
-                                                </div>
-                                                <div class="file-info flex-grow-1">
-                                                    <div class="file-name">{{ file.name }}</div>
-                                                    <small class="text-muted">{{ formatFileSize(file.size) }}</small>
-                                                </div>
-                                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                                    (click)="removeCommentFile(config.id!, fileIndex)">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
+                    <div class="file-list">
+                      <div *ngFor="let file of commentSelectedFiles[config.id!]; let fileIndex = index"
+                           class="file-item d-flex align-items-center gap-2 p-2 border rounded mb-2">
+                        <div class="file-preview me-2">
+                          <img *ngIf="commentFilePreviews[config.id!]?.[fileIndex] && file.type?.startsWith('image/')"
+                               [src]="commentFilePreviews[config.id!]?.[fileIndex]"
+                               class="img-thumbnail uploaded-img-small"
+                               [alt]="file.name">
+                          <i *ngIf="!file.type?.startsWith('image/')"
+                             class="fas fa-file-alt text-primary fa-lg"></i>
                         </div>
-
-                        <!-- Legacy file input (keeping for backward compatibility) -->
-                        <div *ngIf="commentAttachmentConfigs.length === 0" class="mb-3">
-                            <input type="file" class="form-control" id="commentFiles" multiple
-                                (change)="onFileSelected($event)">
-
-                            <div *ngIf="selectedFiles.length > 0" class="mt-2">
-                                <div class="d-flex flex-wrap gap-2">
-                                    <span *ngFor="let file of selectedFiles; let i = index"
-                                        class="badge bg-light text-dark border">
-                                        {{file.name}}
-                                        <button type="button" class="btn-close btn-close-sm ms-2"
-                                            (click)="removeSelectedFile(i)"></button>
-                                    </span>
-                                </div>
-                            </div>
+                        <div class="file-info flex-grow-1">
+                          <div class="file-name">{{ file.name }}</div>
+                          <small class="text-muted">{{ formatFileSize(file.size) }}</small>
                         </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                (click)="removeCommentFile(config.id!, fileIndex)">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
                     </div>
-                </form>
+                  </div>
+
+                </div>
+              </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
-                    {{ 'COMMON.CANCEL' | translate }}
-                </button>
-                <button type="button" class="btn btn-gold" (click)="addWorkFlowComment()"
-                    [disabled]="!newCommentText.trim() || isSavingComment">
-                    <span *ngIf="isSavingComment" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                    {{ 'COMMON.ADD_COMMENT' | translate }}
-                </button>
+
+            <!-- Legacy file input (keeping for backward compatibility) -->
+            <div *ngIf="commentAttachmentConfigs.length === 0" class="mb-3">
+              <input type="file" class="form-control" id="commentFiles" multiple
+                     (change)="onFileSelected($event)">
+
+              <div *ngIf="selectedFiles.length > 0" class="mt-2">
+                <div class="d-flex flex-wrap gap-2">
+                  <span *ngFor="let file of selectedFiles; let i = index"
+                        class="badge bg-light text-dark border">
+                    {{file.name}}
+                    <button type="button" class="btn-close btn-close-sm ms-2"
+                            (click)="removeSelectedFile(i)"></button>
+                  </span>
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button type="button" class="btn btn-gold" (click)="addWorkFlowComment()"
+                [disabled]="!newCommentText.trim() || isSavingComment">
+          <span *ngIf="isSavingComment" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          {{ 'COMMON.ADD_COMMENT' | translate }}
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Attachment Preview Modal -->
 <div class="modal fade" id="attachmentModal" tabindex="-1" aria-labelledby="attachmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="attachmentModalLabel">
-                    <i class="fas fa-paperclip me-2"></i>
-                    {{ 'COMMON.ATTACHMENTS' | translate }}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <!-- Loading State -->
-                <div *ngIf="isLoadingAttachments" class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
-                    </div>
-                    <p class="mt-3 text-muted">{{ 'COMMON.LOADING_ATTACHMENTS' | translate }}</p>
-                </div>
-
-                <!-- No Attachments State -->
-                <div *ngIf="!isLoadingAttachments && selectedCommentAttachments.length === 0"
-                    class="text-center text-muted py-4">
-                    <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
-                    <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
-                </div>
-
-                <!-- Attachments List -->
-                <div *ngIf="!isLoadingAttachments && selectedCommentAttachments.length > 0" class="row g-3">
-                    <div *ngFor="let attachment of selectedCommentAttachments" class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm hover-shadow">
-                            <div class="card-body text-center p-3">
-                                <div class="mb-3">
-                                    <i class="fas fa-file-alt fa-2x text-primary"></i>
-                                </div>
-                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle ||
-                                    ('SHARED.ATTACHMENTS.ATTACHMENT' | translate) }}</h6>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
-                                        <i class="fas fa-download me-1"></i>
-                                        {{ 'COMMON.DOWNLOAD' | translate }}
-                                    </button>
-                                    <button class="btn btn-next-style" (click)="viewAttachment(attachment)">
-                                        <i class="fas fa-eye me-1"></i>
-                                        {{ 'COMMON.VIEW' | translate }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
-                    {{ 'COMMON.CLOSE' | translate }}
-                </button>
-            </div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="attachmentModalLabel">
+          <i class="fas fa-paperclip me-2"></i>
+          {{ 'COMMON.ATTACHMENTS' | translate }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <!-- Loading State -->
+        <div *ngIf="isLoadingAttachments" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+          </div>
+          <p class="mt-3 text-muted">{{ 'COMMON.LOADING_ATTACHMENTS' | translate }}</p>
         </div>
+
+        <!-- No Attachments State -->
+        <div *ngIf="!isLoadingAttachments && selectedCommentAttachments.length === 0"
+             class="text-center text-muted py-4">
+          <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
+          <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
+        </div>
+
+        <!-- Attachments List -->
+        <div *ngIf="!isLoadingAttachments && selectedCommentAttachments.length > 0" class="row g-3">
+          <div *ngFor="let attachment of selectedCommentAttachments" class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-shadow">
+              <div class="card-body text-center p-3">
+                <div class="mb-3">
+                  <i class="fas fa-file-alt fa-2x text-primary"></i>
+                </div>
+                <h6 class="card-title small mb-2">
+                  {{
+ attachment.attachmentTitle ||
+                                    ('SHARED.ATTACHMENTS.ATTACHMENT' | translate)
+                  }}
+                </h6>
+                <div class="d-grid gap-2">
+                  <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
+                    <i class="fas fa-download me-1"></i>
+                    {{ 'COMMON.DOWNLOAD' | translate }}
+                  </button>
+                  <button class="btn btn-next-style" (click)="viewAttachment(attachment)">
+                    <i class="fas fa-eye me-1"></i>
+                    {{ 'COMMON.VIEW' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
+          {{ 'COMMON.CLOSE' | translate }}
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Partner Attachment Preview Modal -->
 <div class="modal fade" id="partnerAttachmentModal" tabindex="-1" aria-labelledby="partnerAttachmentModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="partnerAttachmentModalLabel">
-                    <i class="fas fa-user-tie me-2"></i>
-                    {{ 'SHARED.PARTNERS.PARTNER_ATTACHMENTS' | translate }}
-                    <span *ngIf="selectedPartner" class="fw-normal"> - {{selectedPartner.name}}</span>
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <!-- Loading State -->
-                <div *ngIf="isLoadingPartnerAttachments" class="text-center py-5">
-                    <div class="spinner-border text-success" role="status">
-                        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
-                    </div>
-                    <p class="mt-3 text-muted">{{ 'COMMON.LOADING_ATTACHMENTS' | translate }}</p>
-                </div>
-
-                <!-- No Attachments State -->
-                <div *ngIf="!isLoadingPartnerAttachments && selectedPartnerAttachments.length === 0"
-                    class="text-center text-muted py-4">
-                    <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
-                    <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
-                </div>
-
-                <!-- Attachments List -->
-                <div *ngIf="!isLoadingPartnerAttachments && selectedPartnerAttachments.length > 0" class="row g-3">
-                    <div *ngFor="let attachment of selectedPartnerAttachments" class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm hover-shadow">
-                            <div class="card-body text-center p-3">
-                                <div class="mb-3">
-                                    <i class="fas fa-file-alt fa-2x"></i>
-                                </div>
-                                <h6 class="card-title small mb-2">{{ attachment.attachmentTitle ||
-                                    ('SHARED.ATTACHMENTS.ATTACHMENT' | translate) }}</h6>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
-                                        <i class="fas fa-download me-1"></i>
-                                        {{ 'COMMON.DOWNLOAD' | translate }}
-                                    </button>
-                                    <button class="btn btn-next-style" (click)="viewAttachment(attachment)">
-                                        <i class="fas fa-eye me-1"></i>
-                                        {{ 'COMMON.VIEW' | translate }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
-                    {{ 'COMMON.CLOSE' | translate }}
-                </button>
-            </div>
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="partnerAttachmentModalLabel">
+          <i class="fas fa-user-tie me-2"></i>
+          {{ 'SHARED.PARTNERS.PARTNER_ATTACHMENTS' | translate }}
+          <span *ngIf="selectedPartner" class="fw-normal"> - {{selectedPartner.name}}</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <!-- Loading State -->
+        <div *ngIf="isLoadingPartnerAttachments" class="text-center py-5">
+          <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+          </div>
+          <p class="mt-3 text-muted">{{ 'COMMON.LOADING_ATTACHMENTS' | translate }}</p>
         </div>
+
+        <!-- No Attachments State -->
+        <div *ngIf="!isLoadingPartnerAttachments && selectedPartnerAttachments.length === 0"
+             class="text-center text-muted py-4">
+          <i class="fas fa-file-alt fa-3x mb-3 text-muted"></i>
+          <p>{{ 'COMMON.NO_ATTACHMENTS' | translate }}</p>
+        </div>
+
+        <!-- Attachments List -->
+        <div *ngIf="!isLoadingPartnerAttachments && selectedPartnerAttachments.length > 0" class="row g-3">
+          <div *ngFor="let attachment of selectedPartnerAttachments" class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-shadow">
+              <div class="card-body text-center p-3">
+                <div class="mb-3">
+                  <i class="fas fa-file-alt fa-2x"></i>
+                </div>
+                <h6 class="card-title small mb-2">
+                  {{
+ attachment.attachmentTitle ||
+                                    ('SHARED.ATTACHMENTS.ATTACHMENT' | translate)
+                  }}
+                </h6>
+                <div class="d-grid gap-2">
+                  <button class="btn btn-download-style" (click)="downloadAttachment(attachment)">
+                    <i class="fas fa-download me-1"></i>
+                    {{ 'COMMON.DOWNLOAD' | translate }}
+                  </button>
+                  <button class="btn btn-next-style" (click)="viewAttachment(attachment)">
+                    <i class="fas fa-eye me-1"></i>
+                    {{ 'COMMON.VIEW' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
+          {{ 'COMMON.CLOSE' | translate }}
+        </button>
+      </div>
     </div>
+  </div>
+</div>
+
+<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="historyModalLabel" class="modal-title">
+          {{ 'WORKFLOW.HISTORY' | translate }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeHistoryModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <ng-container *ngIf="historyForModal?.length; else noHistory">
+
+          <div class="history-timeline">
+            <div class="history-item" *ngFor="let h of historyForModal; let i = index">
+              <div class="dot"></div>
+              <div class="content">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div class="step-status" [style.color]="getStatusColor(h.serviceStatus)">
+                    <i [class]="getStatusIcon(h.serviceStatus)" class="me-1"></i>
+                    {{h.serviceStatusName || (getStatusLabel(h.serviceStatus) | translate)}}
+                  </div>
+                  <small class="text-muted">
+                    {{ h.historyDate | date:'medium' }}
+                  </small>
+                </div>
+
+                <div class="mb-1">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.BY' | translate }}:</small>
+                  <span>{{ h.userName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.fromDepartmentName">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.FROM_DEPT' | translate }}:</small>
+                  <span>{{ h.fromDepartmentName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.toDepartmentName">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.TO_DEPT' | translate }}:</small>
+                  <span>{{ h.toDepartmentName }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="getHistoryNote(h)">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.NOTE' | translate }}:</small>
+                  <span>{{ getHistoryNote(h) }}</span>
+                </div>
+
+                <div class="mb-1" *ngIf="h.description">
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.DESCRIPTION' | translate }}:</small>
+                  <span>{{ h.description }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #noHistory>
+          <div class="text-center text-muted py-4">
+            {{ 'WORKFLOW.NO_HISTORY' | translate }}
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeHistoryModal()">
+          {{ 'COMMON.CLOSE' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

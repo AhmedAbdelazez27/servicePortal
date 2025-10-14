@@ -381,27 +381,6 @@ section {
   margin-bottom: 0 !important;
 }
 
-.btn-link {
-  color: var(--Color-16, #000);
-  font-family: 'Expo Arabic Book';
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  text-decoration: none;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.btn-link:hover {
-  color: var(--Color-16, #000);
-
-}
-
-.service-box .btn-link {
-  padding: 0;
-}
 
 .owl-theme .owl-dots .owl-dot span {
   width: 12px;
@@ -4035,28 +4014,6 @@ a,
     font-weight: 400;
     line-height: normal;
     text-transform: capitalize;
-  }
-
-  .btn-link {
-    color: var(--Color-16, #000);
-    font-family: 'Expo Arabic Book';
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    text-decoration: none;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .btn-link:hover {
-    color: var(--Color-16, #000);
-
-  }
-
-  .service-box .btn-link {
-    padding: 0;
   }
 
   .owl-theme .owl-dots .owl-dot span {
