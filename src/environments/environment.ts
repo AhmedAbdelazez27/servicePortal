@@ -1,10 +1,10 @@
 export const environment = {
   production: false,
  // apiBaseUrl: 'http://compassint.ddns.net:2041/api',
-  apiBaseUrl: 'https://localhost:7156/api',
+ //  apiBaseUrl: 'https://localhost:7156/api',
   // apiBaseUrl: 'https://192.168.51.4/api',
  // apiBaseUrl: 'https://Api.Ajmanccc.ae/api',  // Case sensitive - might be issue
-// apiBaseUrl: 'https://Api.Ajmanccc.ae/api',  // Try lowercase 'api'
+apiBaseUrl: 'https://api.ajmanccc.ae/api',  // Try lowercase 'api'
   firebase: {
     apiKey: 'AIzaSyAB3FKe70tGitiH23qLJY7jU_gLAxzjWhc',
     authDomain: 'ccc-serevices.firebaseapp.com',

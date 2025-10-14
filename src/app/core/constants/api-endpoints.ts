@@ -426,7 +426,7 @@ export class ApiEndpoints {
     getURLCredention: {
       clientId: 'ajm_ccc_web_prod',
       clientsecret: 'PXr2q2Tu8AMbK7mT',
-      redirectUri: 'https://www.ajmanccc.ae/login'
+      redirectUri: 'https://ajmanccc.ae/login'
     }
   };
 }
