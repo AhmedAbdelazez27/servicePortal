@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { SpinnerService } from '../../../core/services/spinner.service';
+import { Component, ElementRef, QueryList, ViewChildren, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { ProfileDbService } from '../../../core/services/profile-db.service';
+import { UserProfile } from '../../../core/dtos/user-profile';
 
 @Component({
   selector: 'app-verifyotp',
@@ -13,13 +15,20 @@ import { SpinnerService } from '../../../core/services/spinner.service';
   templateUrl: './verifyotp.component.html',
   styleUrl: './verifyotp.component.scss'
 })
-export class VerifyotpComponent {
+export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
   otpForm: FormGroup;
   submitted = false;
-  objectKeys: any[] = [];
+
+  objectKeys: string[] = ['otp1', 'otp2', 'otp3', 'otp4', 'otp5'];
+
   timer: number = 120;
-  forgetpasswordData :any;
-  tokenVerify:string='';
+  private timerId: any;
+
+  forgetpasswordData: any;
+  tokenVerify: string = '';
+
+  @ViewChildren('otpInput') inputs!: QueryList<ElementRef<HTMLInputElement>>;
+  isTwoFactorEnabled: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -27,7 +36,8 @@ export class VerifyotpComponent {
     private router: Router,
     private toastr: ToastrService,
     private translate: TranslateService,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private profileDb: ProfileDbService,
   ) {
     this.otpForm = this.fb.group({
       otp1: ['', Validators.required],
@@ -37,84 +47,269 @@ export class VerifyotpComponent {
       otp5: ['', Validators.required]
     });
 
-    if (localStorage.getItem("forgetpasswordData")) {
-      const data = localStorage.getItem("forgetpasswordData") || "{}" ;
+    if (localStorage.getItem('forgetpasswordData')) {
+      const data = localStorage.getItem('forgetpasswordData') || '{}';
       this.forgetpasswordData = JSON.parse(data);
       this.tokenVerify = this.forgetpasswordData?.sharedSecret;
-
+    }
+    if (JSON.parse(localStorage.getItem('comeFromisTwoFactorEnabled') || '{}')?.isTwoFactorEnabled) {
+      this.isTwoFactorEnabled = true;
+    } else {
+      this.isTwoFactorEnabled = false;
     }
   }
 
   ngOnInit(): void {
-
-    this.objectKeys = Object.keys(this.otpForm.controls);
-
     this.startTimer();
   }
 
-  startTimer() {
-    setInterval(() => {
-      if (this.timer > 0) {
-        this.timer--;
+  ngAfterViewInit(): void {
+    setTimeout(() => this.focusIndex(0), 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerId) clearInterval(this.timerId);
+    localStorage.removeItem("comeFromisTwoFactorEnabled");
+  }
+
+  // ====== Auto-Tab Helpers ======
+  private normalizeDigits(value: string): string {
+    const eastern = '٠١٢٣٤٥٦٧٨٩';
+    return value
+      .split('')
+      .map(ch => {
+        const idx = eastern.indexOf(ch);
+        return idx > -1 ? String(idx) : ch;
+      })
+      .join('')
+      .replace(/\D/g, '');
+  }
+
+  private focusIndex(i: number) {
+    const el = this.inputs?.get(i)?.nativeElement;
+    if (el) {
+      setTimeout(() => {
+        el.focus();
+        el.select();
+      });
+    }
+  }
+
+  onInput(e: Event, i: number) {
+    const input = e.target as HTMLInputElement;
+    let v = this.normalizeDigits(input.value);
+
+    if (!v) {
+      this.otpForm.get(this.objectKeys[i])?.setValue('');
+      return;
+    }
+
+    if (v.length > 1) {
+      const remaining = this.objectKeys.length - i;
+      const digits = v.slice(0, remaining).split('');
+      digits.forEach((d, offset) => {
+        this.otpForm.get(this.objectKeys[i + offset])?.setValue(d, { emitEvent: false });
+      });
+      const nextIndex = Math.min(i + digits.length, this.objectKeys.length - 1);
+      this.focusIndex(nextIndex);
+      return;
+    }
+
+    this.otpForm.get(this.objectKeys[i])?.setValue(v, { emitEvent: false });
+    if (i < this.objectKeys.length - 1) this.focusIndex(i + 1);
+  }
+
+  onKeyDown(e: KeyboardEvent, i: number) {
+    const ctrl = this.otpForm.get(this.objectKeys[i]);
+    const val = (ctrl?.value ?? '') as string;
+
+    const allowed = [
+      'Tab', 'Enter', 'ArrowLeft', 'ArrowRight', 'Home', 'End',
+      'Backspace', 'Delete'
+    ];
+    if (allowed.includes(e.key) || (e.ctrlKey || e.metaKey)) {
+      // Backspace 
+      if (e.key === 'Backspace' && !val && i > 0) {
+        e.preventDefault();
+        this.otpForm.get(this.objectKeys[i - 1])?.setValue('', { emitEvent: false });
+        this.focusIndex(i - 1);
+      } else if (e.key === 'ArrowLeft' && i > 0) {
+        e.preventDefault();
+        this.focusIndex(i - 1);
+      } else if (e.key === 'ArrowRight' && i < this.objectKeys.length - 1) {
+        e.preventDefault();
+        this.focusIndex(i + 1);
       }
+      return;
+    }
+
+
+    if (e.key.length === 1 && !/[0-9٠-٩]/.test(e.key)) {
+      e.preventDefault();
+    }
+  }
+
+  onPaste(e: ClipboardEvent, i: number) {
+    e.preventDefault();
+    const text = e.clipboardData?.getData('text') ?? '';
+    const digits = this.normalizeDigits(text)
+      .slice(0, this.objectKeys.length - i)
+      .split('');
+
+    if (!digits.length) return;
+
+    digits.forEach((d, offset) => {
+      this.otpForm.get(this.objectKeys[i + offset])?.setValue(d, { emitEvent: false });
+    });
+
+    const nextIndex = Math.min(i + digits.length, this.objectKeys.length - 1);
+    this.focusIndex(nextIndex);
+  }
+  // ====== /Auto-Tab Helpers ======
+
+  startTimer() {
+    if (this.timerId) clearInterval(this.timerId);
+    this.timerId = setInterval(() => {
+      if (this.timer > 0) this.timer--;
     }, 1000);
   }
 
   submitOtp(): void {
+    // this.authService.GetMyProfile().subscribe({
+    //   next: (res)=>{
+    //     console.log(res);
+        
+    //   },
+    //   error: (err)=>{
+    //     console.log(err);
+        
+    //   }
+    // })
+    // return
+
     this.submitted = true;
     if (this.otpForm.invalid) return;
+    this.spinnerService.show();
+    const otpCode = this.objectKeys.map(k => this.otpForm.get(k)?.value ?? '').join('');
 
-    const otpCode = Object.values(this.otpForm.value).join('');
-    const sharedSecret = localStorage.getItem('sharedSecret') || '';
+    if (this.isTwoFactorEnabled) {
+      this.authService.VerifyTwoFactor({ otpCode }).subscribe({
+        next: (res) => {
 
-    this.authService.verifyOtp({ sharedSecret: this.tokenVerify, otpCode }).subscribe({
-      next: (res) => {
 
-        if (res) {
-          this.toastr.success(
-            this.translate.instant('AUTH.MESSAGES.OTP_VERIFY_SUCCESS'),
-            this.translate.instant('TOAST.TITLE.SUCCESS')
-          );
-          this.router.navigate(['/reset-password']);
-        } else {
+          // if (res) {
+          //   this.toastr.success(
+          //     this.translate.instant('OTP.VERIFY_SUCCESS'),
+          //     this.translate.instant('TOAST.TITLE.SUCCESS')
+          //   );
+          // //   this.spinnerService.hide();
+          // // this.router.navigate(['/home']);
+          // } else {
+          //   this.toastr.error(
+          //     this.translate.instant('OTP.VERIFY_FAILED'),
+          //     this.translate.instant('TOAST.TITLE.ERROR')
+          //   );
+          // }
+        if (!res) {
+          this.spinnerService.hide();
+          this.toastr.error(this.translate.instant('OTP.VERIFY_FAILED'), this.translate.instant('TOAST.TITLE.ERROR'));
+          return;
+        }
+
+        this.authService.GetMyProfile().subscribe({
+          next: async (profile: UserProfile) => {
+           await this.profileDb.saveProfile(profile);  
+           this.authService.setProfile(profile);
+
+            this.toastr.success(
+              this.translate.instant('OTP.VERIFY_SUCCESS'),
+              this.translate.instant('TOAST.TITLE.SUCCESS')
+            );
+            this.spinnerService.hide();
+            this.router.navigate(['/home']);
+          },
+          error: (err) => {
+            this.spinnerService.hide();
+            this.toastr.error(this.translate.instant('OTP.VERIFY_FAILED'), this.translate.instant('TOAST.TITLE.ERROR'));
+            console.debug('GetMyProfile error:', err);
+          }
+        });
+
+
+        },
+        error: (err) => {
+          
           this.toastr.error(
-            this.translate.instant('AUTH.MESSAGES.OTP_VERIFY_FAILED'),
+            this.translate.instant('OTP.VERIFY_FAILED'),
             this.translate.instant('TOAST.TITLE.ERROR')
           );
-        }
-      },
-      error: (error: any) => {
-        this.toastr.error(
-          this.translate.instant('AUTH.MESSAGES.OTP_VERIFY_FAILED'),
-          this.translate.instant('TOAST.TITLE.ERROR')
-        );
-      },
-    });
+        },
+      });
+    } else {
+      this.authService.verifyOtp({ sharedSecret: this.tokenVerify, otpCode }).subscribe({
+        next: (res) => {
+          if (res) {
+            this.toastr.success(
+              this.translate.instant('OTP.VERIFY_SUCCESS'),
+              this.translate.instant('TOAST.TITLE.SUCCESS')
+            );
+            this.router.navigate(['/reset-password']);
+          } else {
+            this.toastr.error(
+              this.translate.instant('OTP.VERIFY_FAILED'),
+              this.translate.instant('TOAST.TITLE.ERROR')
+            );
+          }
+        },
+        error: () => {
+          this.toastr.error(
+            this.translate.instant('OTP.VERIFY_FAILED'),
+            this.translate.instant('TOAST.TITLE.ERROR')
+          );
+        },
+      });
+    }
   }
 
   resendOtp(): void {
-    if (!this.forgetpasswordData?.email) {
-      this.toastr.error(
-        this.translate.instant('AUTH.MESSAGES.CORRECT_EMAIL'),
-        this.translate.instant('TOAST.TITLE.ERROR')
-      );
-      return;
-    }
-    this.spinnerService.show();
-    this.authService.otpSendViaEmail({email:this.forgetpasswordData?.email}).subscribe({
-      next: (res)=>{
-        this.tokenVerify = res;
-        this.spinnerService.hide();
-        this.timer = 120
-      },
-      error: (err)=>{
-        this.spinnerService.hide();
-        
-      },
-      complete: ()=>{
-        this.spinnerService.hide();
+    if (this.isTwoFactorEnabled) {
+      this.spinnerService.show();
+      this.authService.ResendVerifyTwoFactorOtp({}).subscribe({
+        next: (res) => {
 
+          this.spinnerService.hide();
+          this.timer = 120;
+          this.startTimer();
+        },
+        error: () => {
+          this.spinnerService.hide();
+        },
+        complete: () => {
+          this.spinnerService.hide();
+        }
+      });
+    } else {
+      if (!this.forgetpasswordData?.email) {
+        this.toastr.error(this.translate.instant('CORECT_EMAIL'));
+        return;
       }
-    })
+      this.spinnerService.show();
+      this.authService.otpSendViaEmail({ email: this.forgetpasswordData?.email }).subscribe({
+        next: (res) => {
+          this.tokenVerify = res;
+          this.spinnerService.hide();
+          this.timer = 120;
+          this.startTimer();
+        },
+        error: () => {
+          this.spinnerService.hide();
+        },
+        complete: () => {
+          this.spinnerService.hide();
+        }
+      });
+    }
   }
+
+
 }

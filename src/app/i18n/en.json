@@ -3999,6 +3999,22 @@
 
     "LOADING": "Loading identity card data..."
 
+  },
+  "OTP": {
+    "TITLE": "Verify OTP",
+    "EXPIRES_IN": "OTP will expire in",
+    "SECONDS_SHORT": "s",
+    "VERIFY": "Verify OTP",
+    "DIDNT_RECEIVE": "Didn't receive OTP?",
+    "RESEND": "Resend OTP",
+    "VERIFY_SUCCESS": "OTP verified successfully",
+    "VERIFY_FAILED": "Failed to verify OTP",
+    "RESEND_SUCCESS": "A new OTP was sent",
+    "RESEND_FAILED": "Couldn't send OTP, please try again later",
+    "EMAIL_REQUIRED": "Please enter a valid email",
+    "FILL_ALL_DIGITS": "Please fill all OTP digits",
+    "HEADING": "OTP",
+    "SENT_HINT": "A one-time password will be sent to your email"
   }
 
 }

@@ -58,33 +58,29 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
+    // snapshot بيتحدّث من الـ AuthService بعد hydrate + أي setProfile
+    return !!this.authService.snapshot?.userId || this.authService.isLoggedIn();
   }
 
   loadCurrentUserName(): void {
     const currentUser = this.authService.getCurrentUser();
-    if (currentUser && currentUser.id) {
-      // If we already have user data, just update the name based on current language
+    if (currentUser?.id) {
       if (this.userData) {
         this.updateUserNameBasedOnLanguage(this.userData);
         this.loadProfilePhoto(this.userData);
         return;
       }
-
-      // Fetch complete user data to get both Arabic and English names
       this.userService.getUserProfileById().subscribe({
         next: (userData) => {
           if (userData) {
-            this.userData = userData; // Cache the user data
+            this.userData = userData;
             this.updateUserNameBasedOnLanguage(userData);
             this.loadProfilePhoto(userData);
           } else {
-            this.currentUserName = 'User';
+            this.currentUserName = currentUser.name || 'User';
           }
         },
-        error: (error) => {
-          console.error('Error loading user data:', error);
-          // Fallback to basic user info from token
+        error: () => {
           this.currentUserName = currentUser.name || 'User';
         }
       });
@@ -92,6 +88,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.currentUserName = 'User';
     }
   }
+
 
   /**
    * Public method to refresh user data (useful after profile updates)
@@ -125,7 +122,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private loadProfilePhoto(userData: any): void {
     console.log('🔍 Loading profile photo for user:', userData);
-    
+
     // First check if attachments are in user data
     if (userData.attachments && userData.attachments.length > 0) {
       console.log('📎 User attachments found in userData:', userData.attachments);
@@ -140,7 +137,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private findProfilePhotoInAttachments(attachments: any[], userType: number): void {
     console.log('🔍 Looking for profile photo in attachments, userType:', userType);
-    
+
     let profilePhotoAttachment;
 
     if (userType === 1 || userType === 3) {
@@ -171,8 +168,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const masterType = userType === 2 
-      ? AttachmentsConfigType.FillInstitutionRegistrationData 
+    const masterType = userType === 2
+      ? AttachmentsConfigType.FillInstitutionRegistrationData
       : AttachmentsConfigType.FillOutPublicLoginData;
 
     console.log('🔍 Loading attachments from service - masterId:', masterId, 'type:', masterType);
@@ -202,7 +199,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     // Handle relative paths
     const cleanPath = imgPath.startsWith('/') ? imgPath.substring(1) : imgPath;
-    
+
     // Import environment at runtime
     const baseUrl = this.getBaseUrl(cleanPath);
     return `${baseUrl}/${cleanPath}?t=${Date.now()}`;
@@ -210,7 +207,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private getBaseUrl(path: string): string {
     const apiBaseUrl = environment.apiBaseUrl;
-    
+
     if (path.startsWith('Uploads/')) {
       return apiBaseUrl.replace('/api', '');
     }
@@ -225,6 +222,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return !this.isLoggedIn() && !this.isLoginPage();
   }
 
+
   onChangePassword(): void {
     // TODO: Implement change password functionality check this with doc 
   }
@@ -233,59 +231,125 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.router.navigate(['/edit-profile']);
   }
 
+  // onLogout(): void {
+  //   // Clear notifications when logging out
+  //   this.notificationService.clearNotifications();
+  //   this.isNotificationDropdownOpen = false;
+  //   this.isSubscribed = false; // Reset subscription flag
+
+  //   // Clear cached user data
+  //   this.userData = null;
+  //   this.currentUserName = '';
+
+  //   this.authService.logout();
+  //   this.toastr.success(
+  //     this.translate.instant('AUTH.MESSAGES.LOGOUT_SUCCESS'),
+  //     this.translate.instant('TOAST.TITLE.SUCCESS')
+  //   );
+  // }
   onLogout(): void {
-    // Clear notifications when logging out
+
     this.notificationService.clearNotifications();
     this.isNotificationDropdownOpen = false;
-    this.isSubscribed = false; // Reset subscription flag
-
-    // Clear cached user data
+    this.isSubscribed = false;
     this.userData = null;
     this.currentUserName = '';
 
-    this.authService.logout();
-    this.toastr.success(
-      this.translate.instant('AUTH.MESSAGES.LOGOUT_SUCCESS'),
-      this.translate.instant('TOAST.TITLE.SUCCESS')
-    );
+    this.authService.logout().subscribe({
+      next: () => {
+
+      },
+      error: () => {
+
+      },
+      complete: () => {
+        this.toastr.success(
+          this.translate.instant('AUTH.MESSAGES.LOGOUT_SUCCESS'),
+          this.translate.instant('TOAST.TITLE.SUCCESS')
+        );
+        this.router.navigate(['/login']);
+      }
+    });
   }
+
 
   onLogin(): void {
     this.router.navigate(['/login']);
   }
 
+  // ngOnInit(): void {
+  //   if (this.isLoggedIn()) {
+  //     // Get current user's name and photo
+  //     this.loadCurrentUserName();
+
+  //     // Only subscribe to notifications if not already subscribed
+  //     if (!this.isSubscribed) {
+  //       this.subscribeToNotifications();
+  //       this.isSubscribed = true;
+  //     }
+
+  //     // ✅ NEW OPTIMIZED APPROACH: Session-based initialization
+  //     // This will only initialize once per user session, not on every page navigation
+  //     this.ensureUserSessionInitialized();
+
+  //     // ✅ Setup page focus listener for smart refreshing (only when cache is stale)
+  //     this.setupPageFocusListener();
+
+  //     // ✅ Listen for router events to refresh profile photo after edit
+  //     this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
+  //       if (event.constructor.name === 'NavigationEnd') {
+  //         // Refresh user data when navigating away from edit profile
+  //         const url = this.router.url;
+  //         if (this.userData && !url.includes('/edit-profile') && !url.includes('/login')) {
+  //           // Refresh to get latest profile photo
+  //           console.log('🔄 Refreshing user data after navigation to:', url);
+  //           this.refreshUserData();
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
   ngOnInit(): void {
-    if (this.isLoggedIn()) {
-      // Get current user's name and photo
-      this.loadCurrentUserName();
-
-      // Only subscribe to notifications if not already subscribed
-      if (!this.isSubscribed) {
-        this.subscribeToNotifications();
-        this.isSubscribed = true;
-      }
-
-      // ✅ NEW OPTIMIZED APPROACH: Session-based initialization
-      // This will only initialize once per user session, not on every page navigation
-      this.ensureUserSessionInitialized();
-
-      // ✅ Setup page focus listener for smart refreshing (only when cache is stale)
-      this.setupPageFocusListener();
-
-      // ✅ Listen for router events to refresh profile photo after edit
-      this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
-        if (event.constructor.name === 'NavigationEnd') {
-          // Refresh user data when navigating away from edit profile
-          const url = this.router.url;
-          if (this.userData && !url.includes('/edit-profile') && !url.includes('/login')) {
-            // Refresh to get latest profile photo
-            console.log('🔄 Refreshing user data after navigation to:', url);
-            this.refreshUserData();
+    // متابعة حالة الأوث
+    this.authService.user$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        if (user?.userId) {
+          // لوجين
+          this.loadCurrentUserName();
+          if (!this.isSubscribed) {
+            this.subscribeToNotifications();
+            this.isSubscribed = true;
           }
+          this.ensureUserSessionInitialized();
+          this.setupPageFocusListener();
+        } else {
+          // لاوج‌آوت
+          this.notifications = [];
+          this.unseenCount = 0;
+          this.isNotificationDropdownOpen = false;
+          this.isSubscribed = false;
+          this.userData = null;
+          this.currentUserName = '';
         }
       });
+
+    // لو عايز تحافظ على لغة الواجهة نفس القديم:
+    if (this.isLoggedIn()) {
+      this.loadCurrentUserName();
     }
+
+    // لغة الواجهة (نفس منطقك)
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(lang => {
+        this.currentLang = lang.lang;
+        if (this.isLoggedIn()) {
+          this.loadCurrentUserName();
+        }
+      });
   }
+
 
   /**
    * ✅ NEW: Ensure user session is initialized (called once per login session)

@@ -7,32 +7,40 @@
           <img src="./../../../../assets/images/logo.png" />
           <img src="./../../../../assets/images/logo.png" />
         </div>
-        <h4 class="bold gold title-32">{{ 'AUTH.VERIFY_OTP.TITLE' | translate }}</h4>
-        <p class="mb-4">{{ 'AUTH.VERIFY_OTP.DESCRIPTION' | translate }}</p>
+        <h4 class="bold gold title-32">{{ 'OTP.HEADING' | translate }}</h4>
+        <p class="mb-4">{{ 'OTP.SENT_HINT' | translate }}</p>
         <form [formGroup]="otpForm" (ngSubmit)="submitOtp()">
           <div class="mb-4">
             <div class="row d-flex justify-content-center">
-              
+
               <div class="col-2" *ngFor="let key of objectKeys; let i = index">
-                <input
+                <!-- <input
                   type="text"
                   class="form-control text-center"
                   [formControlName]="key"
                   maxlength="1"
                   [attr.id]="'otp' + i"
-                />
+                /> -->
+                <input #otpInput type="text" class="form-control text-center" [formControlName]="key" maxlength="1"
+                  [attr.id]="'otp' + i" (input)="onInput($event, i)" (keydown)="onKeyDown($event, i)"
+                  (paste)="onPaste($event, i)" (focus)="otpInput.select()" inputmode="numeric" pattern="[0-9]*"
+                  autocomplete="one-time-code" dir="ltr" />
+
+
               </div>
             </div>
           </div>
 
-          <p class="mb-4 text-center">{{ 'AUTH.VERIFY_OTP.EXPIRES_IN' | translate }} <span class="bold gold">{{ timer | number: '2.0' }}s</span></p>
+          <p class="mb-4 text-center">{{ 'OTP.EXPIRES_IN' | translate }} <span class="bold gold">{{ timer | number:
+              '2.0' }}{{ 'OTP.SECONDS_SHORT' | translate }}</span></p>
 
           <button type="submit" class="btn btn-gold w-100">
-            {{ 'AUTH.VERIFY_OTP.VERIFY_BUTTON' | translate }}
+            {{ 'OTP.VERIFY' | translate }}
           </button>
 
-          <p class="mt-4 text-center" >
-            {{ 'AUTH.VERIFY_OTP.DIDNT_RECEIVE' | translate }} . . . . <a (click)="resendOtp()" class="bold gold" style="cursor: pointer;">{{ 'AUTH.VERIFY_OTP.RESEND_OTP' | translate }}</a>
+          <p class="mt-4 text-center">
+            {{ 'OTP.DIDNT_RECEIVE' | translate }} <a (click)="resendOtp()" class="bold gold" style="cursor: pointer;">{{
+              'OTP.RESEND' | translate }}</a>
           </p>
         </form>
       </div>

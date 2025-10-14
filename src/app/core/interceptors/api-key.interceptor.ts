@@ -6,6 +6,7 @@ export const apiKeyInterceptor: HttpInterceptorFn = (req, next) => {
   const language = uiLang.startsWith('ar') ? 'ar-EG' : 'en-US';
 
   const clonedReq = req.clone({
+    withCredentials: true,
     setHeaders: {
       ApiKey: 'Apikeytest' ,
       'Accept-Language':language

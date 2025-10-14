@@ -13,6 +13,8 @@ import { NotificationService } from '../../../core/services/notification.service
 import { TranslationService } from '../../../core/services/translation.service copy';
 import { LoginUAEPassDto } from '../../../core/dtos/uaepass.dto';
 import { ApiEndpoints } from '../../../core/constants/api-endpoints';
+import { ProfileDbService } from '../../../core/services/profile-db.service';
+import { UserProfile } from '../../../core/dtos/user-profile';
 
 type ModalMode = 'login' | 'signUpInstitution' | 'signUpIndividual';
 declare var bootstrap: any;
@@ -42,7 +44,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private notificationService: NotificationService,
     private route: ActivatedRoute,
-    private translation: TranslationService
+    private profileDb: ProfileDbService,
   ) {
     this.form = this.fb.group({
       userName: ['', Validators.required],
@@ -63,8 +65,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.getUAEPassInfo(this.uaePassParams);
         } else {
           const redirectUri = window.location.origin + '/login';
-         // const logoutURL = 'https://stg-id.uaepass.ae/idshub/logout?redirect_uri=' + encodeURIComponent(redirectUri);
-          const logoutURL = 'https://id.uaepass.ae/idshub/logout?redirect_uri=' + encodeURIComponent(redirectUri);
+          const logoutURL =
+            'https://stg-id.uaepass.ae/idshub/logout?redirect_uri=' +
+            encodeURIComponent(redirectUri);
 
           this.translate
             .get(['COMMON.UAEPassCancelRequest'])
@@ -82,19 +85,159 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /** Normal username/password login */
-  submit(): void {
-    this.submitted = true;
-    if (this.form.invalid) return;
+  // submit(): void {
+  //   this.submitted = true;
+  //   if (this.form.invalid) return;
 
-    this.spinnerService.show();
-    this.auth.login(this.form.value).subscribe({
-      next: res => this.handleLoginSuccess(res),
-      error: () => {
-        this.toastr.error(this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'), this.translate.instant('TOAST.TITLE.ERROR'));
-        this.spinnerService.hide();
+  //   this.spinnerService.show();
+  //   this.auth.login(this.form.value).subscribe({
+  //     next: res => {
+  //       this.handleLoginSuccess(res);
+      
+  //     },
+  //     error: () => {
+  //       this.toastr.error(this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'), this.translate.instant('TOAST.TITLE.ERROR'));
+  //       this.spinnerService.hide();
+  //     }
+  //   });
+  // }
+  /** Normal username/password login */
+submit(): void {
+  this.submitted = true;
+  if (this.form.invalid) return;
+
+  this.spinnerService.show();
+
+  this.auth.login(this.form.value).subscribe({
+    next: (res) => {
+      // لو السيرفر رجع توكين (سيناريو UAEPASS)، خزّنه
+      if (res?.token) {
+        this.auth.saveToken(res.token);
       }
-    });
+
+      // Two-Factor؟
+      if (res?.isTwoFactorEnabled) {
+        localStorage.setItem(
+          'comeFromisTwoFactorEnabled',
+          JSON.stringify({ isTwoFactorEnabled: true })
+        );
+        this.router.navigate(['/verify-otp']);
+        this.spinnerService.hide();
+        return;
+      }
+
+      // غير كده: هات البروفايل وخزّنه في IndexedDB + الميموري
+      this.auth.GetMyProfile().subscribe({
+        next: async (profile: UserProfile) => {
+          await this.profileDb.saveProfile(profile);
+          this.auth.setProfile(profile);
+
+          this.toastr.success(
+            this.translate.instant('LOGIN.SUCCESS'),
+            this.translate.instant('TOAST.TITLE.SUCCESS')
+          );
+
+          // (اختياري) لو عندك جلسة Notifications
+          try { await this.notificationService.initializeUserSession(); } catch {}
+
+          this.router.navigate(['/home']);
+        },
+        error: (err) => {
+          this.toastr.error(
+            this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'),
+            this.translate.instant('TOAST.TITLE.ERROR')
+          );
+          console.debug('GetMyProfile error:', err);
+        },
+        complete: () => this.spinnerService.hide()
+      });
+    },
+    error: () => {
+      this.toastr.error(
+        this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'),
+        this.translate.instant('TOAST.TITLE.ERROR')
+      );
+      this.spinnerService.hide();
+    }
+  });
+}
+
+
+  private handleLoginSuccess(res: any): void {
+    this.auth.saveToken(res?.token);
+    const decodedData = this.auth.decodeToken();
+
+    if (!decodedData) {
+      this.toastr.error(this.translate.instant('AUTH.MESSAGES.INVALID_TOKEN_ERROR'));
+      return;
+    }
+
+    if (decodedData.Permissions) {
+      localStorage.setItem('permissions', JSON.stringify(decodedData.Permissions));
+    }
+
+    if (decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
+      localStorage.setItem('pages', JSON.stringify(decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']));
+    }
+
+    const userId = this.extractUserIdFromToken(decodedData);
+    if (userId) {
+      localStorage.setItem('userId', userId);
+    } else {
+      this.toastr.error(this.translate.instant('AUTH.MESSAGES.TOKEN_EXTRACTION_ERROR'));
+      this.spinnerService.hide();
+      return;
+    }
+
+    this.toastr.success(this.translate.instant('AUTH.MESSAGES.LOGIN_SUCCESS'));
+    this.initializeNotificationSession();
+     this.spinnerService.hide(); 
+    this.router.navigate(['/home']);
   }
+
+    private handleUAEPassLogin(params: LoginUAEPassDto): void {
+    this.auth.UAEPasslogin(params)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.handleLoginSuccess(res);
+          this.spinnerService.hide();
+        },
+        error: (err) => {
+          this.handleUAEPassError(err);
+          this.spinnerService.hide();
+        }
+      });
+  }
+
+    getUAEPassInfo(params: LoginUAEPassDto): void {
+    const storedState = sessionStorage.getItem('uae_pass_state');
+    if (storedState && storedState !== params.state) {
+      this.toastr.error('Security validation failed', 'Error');
+      this.spinnerService.hide();
+      return;
+    }
+
+    const storedMode = sessionStorage.getItem('uae_pass_mode') as ModalMode;
+    if (storedMode) this.modalMode = storedMode;
+
+    switch (this.modalMode) {
+      case 'login':
+        this.handleUAEPassLogin(params);
+        break;
+      case 'signUpInstitution':
+        this.handleUAEPassInstitutionSignup(params);
+        break;
+      case 'signUpIndividual':
+        this.handleUAEPassIndividualSignup(params);
+        break;
+    }
+
+    sessionStorage.removeItem('uae_pass_mode');
+    sessionStorage.removeItem('uae_pass_state');
+  }
+
+  
 
   loginByUAEPass(): void {
     this.modalMode = 'login';
@@ -137,81 +280,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     window.location.href = uaePassURL;
   }
 
-  getUAEPassInfo(params: LoginUAEPassDto): void {
-    const storedState = sessionStorage.getItem('uae_pass_state');
-    if (storedState && storedState !== params.state) {
-      this.toastr.error('Security validation failed', 'Error');
-      this.spinnerService.hide();
-      return;
-    }
-
-    const storedMode = sessionStorage.getItem('uae_pass_mode') as ModalMode;
-    if (storedMode) this.modalMode = storedMode;
-
-    switch (this.modalMode) {
-      case 'login':
-        this.handleUAEPassLogin(params);
-        break;
-      case 'signUpInstitution':
-        this.handleUAEPassInstitutionSignup(params);
-        break;
-      case 'signUpIndividual':
-        this.handleUAEPassIndividualSignup(params);
-        break;
-    }
-
-    sessionStorage.removeItem('uae_pass_mode');
-    sessionStorage.removeItem('uae_pass_state');
-  }
-
-  private handleUAEPassLogin(params: LoginUAEPassDto): void {
-    this.auth.UAEPasslogin(params)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.handleLoginSuccess(res);
-          this.spinnerService.hide();
-        },
-        error: (err) => {
-          this.handleUAEPassError(err);
-          this.spinnerService.hide();
-        }
-      });
-  }
-
-  private handleLoginSuccess(res: any): void {
-    this.auth.saveToken(res?.token);
-    const decodedData = this.auth.decodeToken();
-
-    if (!decodedData) {
-      this.toastr.error(this.translate.instant('AUTH.MESSAGES.INVALID_TOKEN_ERROR'));
-      return;
-    }
-
-    if (decodedData.Permissions) {
-      localStorage.setItem('permissions', JSON.stringify(decodedData.Permissions));
-    }
-
-    if (decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
-      localStorage.setItem('pages', JSON.stringify(decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']));
-    }
-
-    const userId = this.extractUserIdFromToken(decodedData);
-    if (userId) {
-      localStorage.setItem('userId', userId);
-    } else {
-      this.toastr.error(this.translate.instant('AUTH.MESSAGES.TOKEN_EXTRACTION_ERROR'));
-      this.spinnerService.hide();
-      return;
-    }
-
-    this.toastr.success(this.translate.instant('AUTH.MESSAGES.LOGIN_SUCCESS'));
-    this.initializeNotificationSession();
-     this.spinnerService.hide(); 
-    this.router.navigate(['/home']);
-  }
 
 
+
+  
   private handleUAEPassInstitutionSignup(params: LoginUAEPassDto): void {
     this.auth.GetUAEPassInfo(params)
       .pipe(takeUntil(this.destroy$))

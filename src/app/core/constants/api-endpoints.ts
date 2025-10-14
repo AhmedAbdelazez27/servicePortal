@@ -20,6 +20,10 @@ export class ApiEndpoints {
     GetLoginInfo: '/Login',
     GetUAEPAssInfo: '/Register',
     GetMyProfile: '/GetMyProfile',
+    ResendVerifyTwoFactorOtp : '/Auth/ResendVerifyTwoFactorOtp'  ,
+    VerifyTwoFactor : '/Auth/VerifyTwoFactor'  ,
+    RefreshToken : '/Auth/RefreshToken'  ,
+    Logout : '/Logout'  ,
 
   };
 
@@ -406,7 +410,7 @@ export class ApiEndpoints {
   };
 
 
-  static readonly UAE_PASS_CONFIG = {
+ static readonly UAE_PASS_CONFIG = {
    // baseUrl: 'https://stg-id.uaepass.ae/idshub',
     baseUrl: 'https://id.uaepass.ae/idshub',
 
