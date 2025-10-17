@@ -1,0 +1,70 @@
+<div class="landing-container" [class.show]="showContent">
+  <!-- Animated Background -->
+  <div class="background-animation">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+    <div class="particles">
+      <span *ngFor="let i of [].constructor(20); let idx = index" 
+            class="particle" 
+            [style.left.%]="(idx * 5)"
+            [style.animation-delay.s]="(idx * 0.1)"></span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <div class="logo-container">
+        <img src="assets/images/council-logo.png" alt="CCC Logo" class="main-logo">
+        <div class="logo-glow"></div>
+      </div>
+      
+      <!-- Launch Text -->
+      <div class="launch-text">
+        <h1 class="title">
+          <span class="title-line">مرحباً بكم في</span>
+          <span class="title-main"> منصة مجلس تنسيق العمل الخيري والأوقاف
+          </span>
+        </h1>
+        <p class="subtitle">Welcome to Charity Coordination Council Portal</p>
+        
+        <!-- Animated Divider -->
+        <div class="divider">
+          <span class="divider-dot"></span>
+          <span class="divider-line"></span>
+          <span class="divider-dot"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="cta-section">
+      <button class="enter-button" 
+              (click)="navigateToHome()" 
+              [class.navigating]="isNavigating"
+              [disabled]="isNavigating">
+        <span class="button-text" *ngIf="!isNavigating"> اطلاق المنصة  </span>
+        <span class="button-text countdown-text" *ngIf="isNavigating"> جاري الاطلاق ... {{ countdown }}</span>
+        <span class="button-icon" *ngIf="!isNavigating">→</span>
+        <span class="button-glow"></span>
+        <span class="button-loader" *ngIf="isNavigating"></span>
+      </button>
+      
+       <p class="auto-redirect navigating-text" *ngIf="isNavigating">جاري الانتقال إلى  المنصة...</p>
+    </div>
+
+    <!-- Loading Progress Bar -->
+    <div class="loading-bar" *ngIf="isNavigating">
+      <div class="loading-progress fast"></div>
+    </div>
+  </div>
+
+  <!-- Decorative Elements -->
+  <div class="decorative-corner top-left"></div>
+  <div class="decorative-corner top-right"></div>
+  <div class="decorative-corner bottom-left"></div>
+  <div class="decorative-corner bottom-right"></div>
+</div>
+

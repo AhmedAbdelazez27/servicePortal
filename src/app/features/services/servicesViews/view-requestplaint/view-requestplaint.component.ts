@@ -78,6 +78,7 @@ export class ViewRequestplaintComponent implements OnInit {
   isCommentDragOver = false;
   commentValidationSubmitted = false;
   selectedFiles: File[] = [];
+  lastMatchingWorkFlowStep: any = null;
 
   constructor(
      private route: ActivatedRoute,
@@ -115,6 +116,41 @@ export class ViewRequestplaintComponent implements OnInit {
         this.workFlowSteps = resp.workFlowSteps || [];
         this.partners = resp.partners || [];
         this.attachments = resp.attachments || [];
+        // 🟩 Get all steps with serviceStatus 1, 2, or 7
+        const validStatuses = [1, 2, 7];
+
+        // Get the last step in the workflow (latest one)
+        const lastStep = this.workFlowSteps[this.workFlowSteps.length - 1];
+
+        // Get all matching steps
+        const matchingSteps = this.workFlowSteps.filter(step =>
+          validStatuses.includes(step.serviceStatus ?? -1)
+        );
+
+        // Default to null
+        this.lastMatchingWorkFlowStep = null;
+
+        // 🧠 Logic explanation:
+        // 1️⃣ If last step's status is NOT 1/2/7 AND there was a previous "approved" (1) step → set false/null
+        // 2️⃣ Otherwise, take the last valid step normally
+
+        if (lastStep && !validStatuses.includes(lastStep.serviceStatus ?? -1)) {
+          const hasApprovedBefore = this.workFlowSteps.some(step => step.serviceStatus === 1);
+          if (hasApprovedBefore) {
+            // ✅ If an approved step exists and latest is not in [1,2,7]
+            this.lastMatchingWorkFlowStep = null; // or false if you prefer boolean
+          } else {
+            // ✅ No approved step before, keep normal behavior
+            this.lastMatchingWorkFlowStep = matchingSteps.length
+              ? matchingSteps[matchingSteps.length - 1]
+              : null;
+          }
+        } else {
+          // ✅ Latest step itself is valid (1/2/7)
+          this.lastMatchingWorkFlowStep = matchingSteps.length
+            ? matchingSteps[matchingSteps.length - 1]
+            : null;
+        }
 
         this.findTargetWorkFlowStep();
         // if (this.targetWorkFlowStep) {

@@ -100,7 +100,10 @@
 
                   <div class="step-content">
                     <div class="step-header">
-                      <div class="step-number">{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}</div>
+                      <div class="step-number">
+                        <!--{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}-->
+                        {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
+                      </div>
                       <div class="step-status" [style.color]="getStatusColor(step.serviceStatus)">
                         <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
                         {{ step.serviceStatusName || (getStatusLabel(step.serviceStatus) | translate) }}
@@ -120,6 +123,53 @@
 
           <!-- Content Area -->
           <div class="col-lg-9 mb-4">
+            <div id="statusInfo">
+              <div class="main-container mb-4">
+                <div id="workFlowStep" class="mb-3" *ngIf="lastMatchingWorkFlowStep; else readonlyNotes">
+                  <div class="form-group mb-3">
+                    <label for="NotesForApproving" class="control-label col-md-12">
+                      {{ 'mainApplyServiceResourceName.notes' | translate }}
+                    </label>
+
+                    <textarea id="NotesForApproving" class="form-control" readonly>
+{{ mainApplyService.notesForApproving }}
+        </textarea>
+                  </div>
+
+                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 1" class="alert alert-success text-center">
+                    {{ 'mainApplyServiceResourceName.agree' | translate }}
+                  </div>
+
+                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 2" class="alert alert-danger text-center">
+                    {{ 'mainApplyServiceResourceName.disagree' | translate }}
+                  </div>
+
+                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 7" class="alert alert-warning text-center">
+                    {{ 'mainApplyServiceResourceName.underReview' | translate }}
+                  </div>
+
+                  <div class="popover__wrapper" *ngIf="lastMatchingWorkFlowStep.refuseReason">
+                    <a href="javascript:void(0);">
+                      <span class="btn btn-info">{{ mainApplyService.lastStatus }}</span>
+                    </a>
+                    <div class="popover__content w-60">
+                      <p class="popover__message">{{ lastMatchingWorkFlowStep.refuseReason }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <ng-template #readonlyNotes>
+                  <div class="form-group mb-3">
+                    <label for="NotesForApproving" class="control-label col-md-12">
+                      {{ 'mainApplyServiceResourceName.notes' | translate }}
+                    </label>
+                    <textarea id="NotesForApproving" class="form-control" readonly>
+{{ mainApplyService.notesForApproving }}
+        </textarea>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
             <div class="main-container mb-4">
 
               <!-- Section: Basic (includes Service Info card) -->
@@ -166,8 +216,11 @@
                   </div>
 
                   <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.SUPERVISING_SIDE' | translate
-                      }}</label>
+                    <label class="form-label fw-bold">
+                      {{
+ 'REQUEST_EVENT_PERMIT.SUPERVISING_SIDE' | translate
+                      }}
+                    </label>
                     <div class="form-control-plaintext">{{requestEventPermit.supervisingSide || '-'}}</div>
                   </div>
 
@@ -270,11 +323,14 @@
                   </div>
 
                   <div class="col-md-12 mb-3" *ngIf="requestEventPermit?.donationCollectionChannels?.length">
-                    <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.DONATION_CHANNELS' | translate
-                      }}</label>
+                    <label class="form-label fw-bold">
+                      {{
+ 'REQUEST_EVENT_PERMIT.DONATION_CHANNELS' | translate
+                      }}
+                    </label>
                     <div class="form-control-plaintext">
                       <span class="badge bg-light text-dark border me-1 mb-1"
-                        *ngFor="let name of getDonationChannelNames()">{{ name }}</span>
+                            *ngFor="let name of getDonationChannelNames()">{{ name }}</span>
                     </div>
                   </div>
 
@@ -430,23 +486,23 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="adsHeader">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#adsSection" aria-expanded="false" aria-controls="adsSection">
+                          data-bs-target="#adsSection" aria-expanded="false" aria-controls="adsSection">
                     {{ 'REQUEST_EVENT_PERMIT.ADVERTISEMENTS' | translate }}
                   </button>
                 </h2>
                 <div id="adsSection" class="accordion-collapse collapse" aria-labelledby="adsHeader"
-                  data-bs-parent="#requestSectionsAccordion">
+                     data-bs-parent="#requestSectionsAccordion">
                   <div class="accordion-body">
 
 
                     <ng-container *ngIf="requestEventPermit?.requestAdvertisements?.length; else noAds">
                       <div class="accordion" id="adsAccordion">
                         <div class="accordion-item"
-                          *ngFor="let ad of requestEventPermit!.requestAdvertisements!; let i = index">
+                             *ngFor="let ad of requestEventPermit!.requestAdvertisements!; let i = index">
                           <h2 class="accordion-header" [id]="'adHeading' + i">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                              [attr.data-bs-target]="'#adCollapse' + i" aria-expanded="false"
-                              [attr.aria-controls]="'adCollapse' + i">
+                                    [attr.data-bs-target]="'#adCollapse' + i" aria-expanded="false"
+                                    [attr.aria-controls]="'adCollapse' + i">
 
 
                               <div class="d-flex flex-column">
@@ -454,9 +510,10 @@
                                   {{ 'REQUEST_EVENT_PERMIT.AD' | translate }} #{{ i + 1 }} — {{ ad.adTitle || '-' }}
                                 </div>
                                 <div class="step-status pt-1" [style.color]="getStatusColor(ad.advertisementStatus)"
-                                  style="font-weight: normal; font-size: 16px;">
+                                     style="font-weight: normal; font-size: 16px;">
                                   <i [class]="getStatusIcon(ad.advertisementStatus)" class="me-1"></i>
-                                  {{ ad.advertisementStatusName || (getStatusLabel(ad.advertisementStatus) |
+                                  {{
+ ad.advertisementStatusName || (getStatusLabel(ad.advertisementStatus) |
                                   translate)
                                   }}
                                 </div>
@@ -465,11 +522,11 @@
                             </button>
                           </h2>
                           <div [id]="'adCollapse' + i" class="accordion-collapse collapse"
-                            [attr.aria-labelledby]="'adHeading' + i" data-bs-parent="#adsAccordion">
+                               [attr.aria-labelledby]="'adHeading' + i" data-bs-parent="#adsAccordion">
 
                             <div class="ms-auto pb-1">
                               <button type="button" class="btn btn-gold dropdown-toggle"
-                                style="padding: 12px !important;" (click)="openAdWorkflow(ad)">
+                                      style="padding: 12px !important;" (click)="openAdWorkflow(ad)">
                                 <i class="fas fa-route me-1"></i>
                                 {{ 'WORKFLOW.PROCESS_STEPS' | translate }}
                               </button>
@@ -477,60 +534,69 @@
                             <div class="accordion-body">
                               <div class="row">
                                 <div class="col-md-4 mb-2">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_START' | translate
-                                    }}</label>
+                                  <label class="form-label fw-bold">
+                                    {{
+ 'REQUEST_EVENT_PERMIT.AD_START' | translate
+                                    }}
+                                  </label>
                                   <div class="form-control-plaintext">{{ formatDateTime(ad.startDate) }}</div>
                                 </div>
                                 <div class="col-md-4 mb-2">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_END' | translate
-                                    }}</label>
+                                  <label class="form-label fw-bold">
+                                    {{
+ 'REQUEST_EVENT_PERMIT.AD_END' | translate
+                                    }}
+                                  </label>
                                   <div class="form-control-plaintext">{{ formatDateTime(ad.endDate) }}</div>
                                 </div>
                                 <!-- <div class="col-md-4 mb-2">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_TARGETED_AMOUNT' |
-                                    translate }}</label>
-                                  <div class="form-control-plaintext">{{ ad?.targetedAmount ?? '-' }}</div>
-                                </div>
+                        <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_TARGETED_AMOUNT' |
+                          translate }}</label>
+                        <div class="form-control-plaintext">{{ ad?.targetedAmount ?? '-' }}</div>
+                      </div>
 
-                                <div class="col-md-4 mb-2">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_SUPERVISOR' |
-                                    translate }}</label>
-                                  <div class="form-control-plaintext">{{ ad.supervisorName || '-' }}</div>
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_MOBILE' | translate
-                                    }}</label>
-                                  <div class="form-control-plaintext">{{ ad.mobile || '-' }}</div>
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_EMAIL' | translate
-                                    }}</label>
-                                  <div class="form-control-plaintext">{{ ad.eMail || '-' }}</div>
-                                </div>
+                      <div class="col-md-4 mb-2">
+                        <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_SUPERVISOR' |
+                          translate }}</label>
+                        <div class="form-control-plaintext">{{ ad.supervisorName || '-' }}</div>
+                      </div>
+                      <div class="col-md-4 mb-2">
+                        <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_MOBILE' | translate
+                          }}</label>
+                        <div class="form-control-plaintext">{{ ad.mobile || '-' }}</div>
+                      </div>
+                      <div class="col-md-4 mb-2">
+                        <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_EMAIL' | translate
+                          }}</label>
+                        <div class="form-control-plaintext">{{ ad.eMail || '-' }}</div>
+                      </div>
 
-                                <div class="col-md-6 mb-2">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_FLAGS' | translate
-                                    }}</label>
-                                  <div class="form-control-plaintext">
-                                    <span class="badge bg-primary me-2" *ngIf="ad.newAd">{{
-                                      'REQUEST_EVENT_PERMIT.NEW_AD' | translate }}</span>
-                                    <span class="badge bg-info" *ngIf="ad.reNewAd">{{
-                                      'REQUEST_EVENT_PERMIT.RENEW_AD' | translate }}</span>
-                                    <span *ngIf="!ad.newAd && !ad.reNewAd">-</span>
-                                  </div>
-                                </div> -->
-
+                      <div class="col-md-6 mb-2">
+                        <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_FLAGS' | translate
+                          }}</label>
+                        <div class="form-control-plaintext">
+                          <span class="badge bg-primary me-2" *ngIf="ad.newAd">{{
+                            'REQUEST_EVENT_PERMIT.NEW_AD' | translate }}</span>
+                          <span class="badge bg-info" *ngIf="ad.reNewAd">{{
+                            'REQUEST_EVENT_PERMIT.RENEW_AD' | translate }}</span>
+                          <span *ngIf="!ad.newAd && !ad.reNewAd">-</span>
+                        </div>
+                      </div> -->
                                 <!-- Targets -->
                                 <div class="col-md-6 mb-2">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_TARGETS' | translate
-                                    }}</label>
+                                  <label class="form-label fw-bold">
+                                    {{
+ 'REQUEST_EVENT_PERMIT.AD_TARGETS' | translate
+                                    }}
+                                  </label>
                                   <div class="form-control-plaintext">
                                     <ng-container *ngIf="ad.requestAdvertisementTargets?.length; else noTargets">
                                       <span class="badge bg-light text-dark border me-1"
-                                        *ngFor="let t of ad.requestAdvertisementTargets">
-                                        {{ t.othertxt || ('REQUEST_EVENT_PERMIT.TARGET_TYPE' | translate) + ' ' +
-
-                                        t.lkpTargetTypeText}}
+                                            *ngFor="let t of ad.requestAdvertisementTargets">
+                                        {{
+ t.othertxt || ('REQUEST_EVENT_PERMIT.TARGET_TYPE' | translate) + ' ' +
+                                        t.lkpTargetTypeText
+                                        }}
 
                                       </span>
                                     </ng-container>
@@ -540,12 +606,16 @@
 
                                 <!-- Locations -->
                                 <div class="col-md-6 mb-2">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_LOCATIONS' |
-                                    translate }}</label>
+                                  <label class="form-label fw-bold">
+                                    {{
+ 'REQUEST_EVENT_PERMIT.AD_LOCATIONS' |
+                                    translate
+                                    }}
+                                  </label>
                                   <div class="form-control-plaintext">
                                     <ng-container *ngIf="ad.requestAdvertisementAdLocations?.length; else noLocs">
                                       <span class="badge bg-light text-dark border me-1"
-                                        *ngFor="let l of ad.requestAdvertisementAdLocations">
+                                            *ngFor="let l of ad.requestAdvertisementAdLocations">
                                         {{ l.location }}
                                       </span>
                                     </ng-container>
@@ -555,15 +625,19 @@
 
                                 <!-- Methods -->
                                 <div class="col-md-6 mb-3">
-                                  <label class="form-label fw-bold">{{ 'REQUEST_EVENT_PERMIT.AD_METHODS' | translate
-                                    }}</label>
+                                  <label class="form-label fw-bold">
+                                    {{
+ 'REQUEST_EVENT_PERMIT.AD_METHODS' | translate
+                                    }}
+                                  </label>
                                   <div class="form-control-plaintext">
                                     <ng-container *ngIf="ad.requestAdvertisementAdMethods?.length; else noMethods">
                                       <span class="badge bg-light text-dark border me-1"
-                                        *ngFor="let m of ad.requestAdvertisementAdMethods">
-                                        {{ m.othertxt || ('REQUEST_EVENT_PERMIT.METHOD' | translate) + ' ' +
-
-                                        m.lkpAdMethodText }}
+                                            *ngFor="let m of ad.requestAdvertisementAdMethods">
+                                        {{
+ m.othertxt || ('REQUEST_EVENT_PERMIT.METHOD' | translate) + ' ' +
+                                        m.lkpAdMethodText
+                                        }}
 
                                       </span>
                                     </ng-container>
@@ -580,8 +654,10 @@
                                       <div class="col-xl-4 col-lg-6 mb-3" *ngFor="let att of ad.attachments">
                                         <div class="attachment-box">
                                           <h6 class="card-title">
-                                            {{ att.attachmentTitle || ('REQUEST_EVENT_PERMIT.ATTACHMENT' |
-                                            translate) }}
+                                            {{
+ att.attachmentTitle || ('REQUEST_EVENT_PERMIT.ATTACHMENT' |
+                                            translate)
+                                            }}
                                           </h6>
                                           <p class="mb-3">
                                             {{ 'COMMON.UPLOADED_ON' | translate }}:
@@ -592,7 +668,8 @@
                                               <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }}
                                             </button>
                                             <button class="btn btn-download-style" (click)="downloadAttachment(att)">
-                                              <i class="fas fa-download me-1"></i>{{ 'COMMON.DOWNLOAD' | translate
+                                              <i class="fas fa-download me-1"></i>{{
+ 'COMMON.DOWNLOAD' | translate
                                               }}
                                             </button>
                                           </div>
@@ -601,8 +678,12 @@
                                     </div>
                                   </ng-container>
                                   <ng-template #noAdAtts>
-                                    <div class="alert alert-info py-2 mb-0">{{ 'REQUEST_EVENT_PERMIT.NO_ATTACHMENTS'
-                                      | translate }}</div>
+                                    <div class="alert alert-info py-2 mb-0">
+                                      {{
+ 'REQUEST_EVENT_PERMIT.NO_ATTACHMENTS'
+                                      | translate
+                                      }}
+                                    </div>
                                   </ng-template>
                                 </div>
 
@@ -624,12 +705,12 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="partnersHeader">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#partnersSection" aria-expanded="false" aria-controls="partnersSection">
+                          data-bs-target="#partnersSection" aria-expanded="false" aria-controls="partnersSection">
                     {{ 'REQUEST_EVENT_PERMIT.PARTNERS' | translate }}
                   </button>
                 </h2>
                 <div id="partnersSection" class="accordion-collapse collapse" aria-labelledby="partnersHeader"
-                  data-bs-parent="#requestSectionsAccordion">
+                     data-bs-parent="#requestSectionsAccordion">
                   <div class="accordion-body">
 
 
@@ -657,12 +738,12 @@
                               <td>{{partner.contactDetails || '-'}}</td>
                               <td class="text-center">
                                 <button *ngIf="partner.attachments?.length" class="btn btn-next-style"
-                                  (click)="viewPartnerAttachments(partner)">
+                                        (click)="viewPartnerAttachments(partner)">
                                   <i class="fas fa-eye me-1"></i>
                                   {{ 'COMMON.VIEW' | translate }} ({{partner.attachments?.length}})
                                 </button>
                                 <button *ngIf="!partner.attachments?.length" class="btn btn-next-style"
-                                  (click)="viewPartnerAttachments(partner)">
+                                        (click)="viewPartnerAttachments(partner)">
                                   <i class="fas fa-eye me-1"></i>
                                   {{ 'COMMON.VIEW' | translate }}
                                 </button>
@@ -683,12 +764,12 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="attachmentsHeader">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#attachmentsSection" aria-expanded="false" aria-controls="attachmentsSection">
+                          data-bs-target="#attachmentsSection" aria-expanded="false" aria-controls="attachmentsSection">
                     {{ 'REQUEST_EVENT_PERMIT.ATTACHMENTS' | translate }}
                   </button>
                 </h2>
                 <div id="attachmentsSection" class="accordion-collapse collapse" aria-labelledby="attachmentsHeader"
-                  data-bs-parent="#requestSectionsAccordion">
+                     data-bs-parent="#requestSectionsAccordion">
                   <div class="accordion-body">
 
 
@@ -699,8 +780,10 @@
                             <h6 class="card-title">
                               {{attachment.attachmentTitle || ('REQUEST_EVENT_PERMIT.ATTACHMENT' | translate)}}
                             </h6>
-                            <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}:
-                              {{formatDateTime(attachment.lastModified)}}</p>
+                            <p class="mb-4">
+                              {{ 'COMMON.UPLOADED_ON' | translate }}:
+                              {{formatDateTime(attachment.lastModified)}}
+                            </p>
                             <div class="d-flex justify-content-end">
                               <button class="btn btn-next-style me-2" (click)="viewAttachment(attachment)">
                                 <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }}
@@ -724,99 +807,99 @@
               <div class="accordion-item">
                 <h2 class="accordion-header" id="wfHeader">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#wfComments" aria-expanded="false" aria-controls="wfComments">
+                          data-bs-target="#wfComments" aria-expanded="false" aria-controls="wfComments">
                     {{ 'COMMON.WORKFLOW_COMMENTS' | translate }}
                   </button>
                 </h2>
                 <div id="wfComments" class="accordion-collapse collapse" aria-labelledby="wfHeader"
-                  data-bs-parent="#requestSectionsAccordion">
+                     data-bs-parent="#requestSectionsAccordion">
                   <div class="accordion-body">
                     <div class="step-content">
 
                       <!-- <div class="d-flex justify-content-end align-items-center mb-4">
-                        <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
-                          data-bs-target="#commentModal">
-                          <i class="fas fa-plus me-2"></i>
-                          {{ 'COMMON.ADD_COMMENT' | translate }}
-                        </button>
-                      </div> -->
-                      <!-- 
-                      <div class="comments-container">
-                        <div class="comment-item">
-                          <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
-                            <h5>Department Name</h5>
-                            <div class="status-waiting">
-                              Waiting
-                            </div>
-                          </div>
-                          <div class="comment-area">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting
-                            industry. Lorem Ipsum has been the industry's standard dummy
-                            text ever since the 1500s, when an unknown printer took a galley
-                            of type and scrambled it to make a type specimen book. It has
-                            survived not only five centuries, but also the leap into
-                            electronic typesetting, remaining essentially unchanged.
-                          </div>
-                          <button class="btn btn-view-attachment mt-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
-                              fill="none">
-                              <g clip-path="url(#clip0_560_1674)">
-                                <path
-                                  d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
-                                  fill="#374957" />
-                                <path
-                                  d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
-                                  fill="#374957" />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_560_1674">
-                                  <rect width="20" height="20" fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
-                            View Attachment
-                          </button>
-                        </div>
-                        <div class="comment-item">
-                          <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
-                            <h5>Department Name</h5>
-                            <div class="status-approved">
-                              Accepted
-                            </div>
-                          </div>
-                          <div class="comment-area">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting
-                            industry. Lorem Ipsum has been the industry's standard dummy
-                            text ever since the 1500s, when an unknown printer took a galley
-                            of type and scrambled it to make a type specimen book. It has
-                            survived not only five centuries, but also the leap into
-                            electronic typesetting, remaining essentially unchanged.
-                          </div>
-                        </div>
-                        <div class="comment-item">
-                          <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
-                            <h5>Department Name</h5>
-                            <div class="status-waiting">
-                              Waiting
-                            </div>
-                          </div>
-                          <div class="comment-area">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting
-                            industry. Lorem Ipsum has been the industry's standard dummy
-                            text ever since the 1500s, when an unknown printer took a galley
-                            of type and scrambled it to make a type specimen book. It has
-                            survived not only five centuries, but also the leap into
-                            electronic typesetting, remaining essentially unchanged.
-                          </div>
-                        </div>
+              <button *ngIf="targetWorkFlowStep" type="button" class="btn btn-gold" data-bs-toggle="modal"
+                data-bs-target="#commentModal">
+                <i class="fas fa-plus me-2"></i>
+                {{ 'COMMON.ADD_COMMENT' | translate }}
+              </button>
+            </div> -->
+                      <!--
+            <div class="comments-container">
+              <div class="comment-item">
+                <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                  <h5>Department Name</h5>
+                  <div class="status-waiting">
+                    Waiting
+                  </div>
+                </div>
+                <div class="comment-area">
+                  Lorem Ipsum is simply dummy text of the printing and typesetting
+                  industry. Lorem Ipsum has been the industry's standard dummy
+                  text ever since the 1500s, when an unknown printer took a galley
+                  of type and scrambled it to make a type specimen book. It has
+                  survived not only five centuries, but also the leap into
+                  electronic typesetting, remaining essentially unchanged.
+                </div>
+                <button class="btn btn-view-attachment mt-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                    fill="none">
+                    <g clip-path="url(#clip0_560_1674)">
+                      <path
+                        d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
+                        fill="#374957" />
+                      <path
+                        d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
+                        fill="#374957" />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_560_1674">
+                        <rect width="20" height="20" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                  View Attachment
+                </button>
+              </div>
+              <div class="comment-item">
+                <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                  <h5>Department Name</h5>
+                  <div class="status-approved">
+                    Accepted
+                  </div>
+                </div>
+                <div class="comment-area">
+                  Lorem Ipsum is simply dummy text of the printing and typesetting
+                  industry. Lorem Ipsum has been the industry's standard dummy
+                  text ever since the 1500s, when an unknown printer took a galley
+                  of type and scrambled it to make a type specimen book. It has
+                  survived not only five centuries, but also the leap into
+                  electronic typesetting, remaining essentially unchanged.
+                </div>
+              </div>
+              <div class="comment-item">
+                <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
+                  <h5>Department Name</h5>
+                  <div class="status-waiting">
+                    Waiting
+                  </div>
+                </div>
+                <div class="comment-area">
+                  Lorem Ipsum is simply dummy text of the printing and typesetting
+                  industry. Lorem Ipsum has been the industry's standard dummy
+                  text ever since the 1500s, when an unknown printer took a galley
+                  of type and scrambled it to make a type specimen book. It has
+                  survived not only five centuries, but also the leap into
+                  electronic typesetting, remaining essentially unchanged.
+                </div>
+              </div>
 
-                      </div>
+            </div>
 
-                      <app-generic-data-table [columnDefs]="commentsColumnDefs" [rowData]="allWorkFlowComments"
-                        [totalCount]="allWorkFlowComments.length" [pageSize]="10" [currentPage]="0"
-                        [showActionColumn]="false" [columnHeaderMap]="commentsColumnHeaderMap"
-                        (actionClick)="onCommentsTableAction($event)" (cellClicked)="onTableCellClick($event)">
-                      </app-generic-data-table> -->
+            <app-generic-data-table [columnDefs]="commentsColumnDefs" [rowData]="allWorkFlowComments"
+              [totalCount]="allWorkFlowComments.length" [pageSize]="10" [currentPage]="0"
+              [showActionColumn]="false" [columnHeaderMap]="commentsColumnHeaderMap"
+              (actionClick)="onCommentsTableAction($event)" (cellClicked)="onTableCellClick($event)">
+            </app-generic-data-table> -->
 
 
 
@@ -843,20 +926,18 @@
                           <!-- Attachments -->
                           <div>
                             <!-- <button class="btn btn-next-style attachment-btn" data-comment-id="${id}" data-row-index="${p.node.rowIndex}">
-                 <i class="fas fa-eye me-1"></i><span>   view</span>
-               </button> -->
+                    <i class="fas fa-eye me-1"></i><span>   view</span>
+                  </button> -->
 
                             <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"
-                              data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
+                                    data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
-                                fill="none">
+                                   fill="none">
                                 <g clip-path="url(#clip0_560_1674)">
-                                  <path
-                                    d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
-                                    fill="#374957" />
-                                  <path
-                                    d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
-                                    fill="#374957" />
+                                  <path d="M19.3923 7.84858C18.0998 5.74358 15.1598 2.21191 9.9998 2.21191C4.8398 2.21191 1.8998 5.74358 0.607299 7.84858C0.207739 8.49484 -0.00390625 9.23962 -0.00390625 9.99941C-0.00390625 10.7592 0.207739 11.504 0.607299 12.1502C1.8998 14.2552 4.8398 17.7869 9.9998 17.7869C15.1598 17.7869 18.0998 14.2552 19.3923 12.1502C19.7919 11.504 20.0035 10.7592 20.0035 9.99941C20.0035 9.23962 19.7919 8.49484 19.3923 7.84858V7.84858ZM17.9715 11.2777C16.8615 13.0827 14.349 16.1202 9.9998 16.1202C5.65063 16.1202 3.13813 13.0827 2.02813 11.2777C1.79074 10.8936 1.66501 10.451 1.66501 9.99941C1.66501 9.54785 1.79074 9.10521 2.02813 8.72108C3.13813 6.91608 5.65063 3.87858 9.9998 3.87858C14.349 3.87858 16.8615 6.91275 17.9715 8.72108C18.2089 9.10521 18.3346 9.54785 18.3346 9.99941C18.3346 10.451 18.2089 10.8936 17.9715 11.2777V11.2777Z"
+                                        fill="#374957" />
+                                  <path d="M10.0007 5.83301C9.17656 5.83301 8.37098 6.07738 7.68578 6.53522C7.00057 6.99306 6.46652 7.6438 6.15115 8.40516C5.83579 9.16652 5.75328 10.0043 5.91405 10.8126C6.07482 11.6208 6.47166 12.3632 7.05437 12.946C7.63709 13.5287 8.37952 13.9255 9.18778 14.0863C9.99603 14.2471 10.8338 14.1645 11.5952 13.8492C12.3565 13.5338 13.0073 12.9998 13.4651 12.3146C13.9229 11.6293 14.1673 10.8238 14.1673 9.99967C14.166 8.89501 13.7266 7.83597 12.9455 7.05486C12.1644 6.27374 11.1053 5.83433 10.0007 5.83301V5.83301ZM10.0007 12.4997C9.5062 12.4997 9.02285 12.3531 8.61173 12.0783C8.2006 11.8036 7.88017 11.4132 7.69095 10.9564C7.50173 10.4996 7.45223 9.9969 7.54869 9.51195C7.64515 9.027 7.88325 8.58154 8.23289 8.23191C8.58252 7.88228 9.02797 7.64417 9.51293 7.54771C9.99788 7.45125 10.5005 7.50076 10.9574 7.68998C11.4142 7.87919 11.8046 8.19963 12.0793 8.61075C12.354 9.02187 12.5007 9.50522 12.5007 9.99967C12.5007 10.6627 12.2373 11.2986 11.7684 11.7674C11.2996 12.2363 10.6637 12.4997 10.0007 12.4997Z"
+                                        fill="#374957" />
                                 </g>
                                 <defs>
                                   <clipPath id="clip0_560_1674">
@@ -1310,7 +1391,8 @@
             <div>
               <div class="step-header">
                 <div class="step-number">
-                  {{ 'WORKFLOW.STEP' | translate }} {{ step.stepOrder }}
+                  <!--{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}-->
+                  {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
                 </div>
                 <div class="step-status" [style.color]="getStatusColor(step.serviceStatus)">
                   <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>

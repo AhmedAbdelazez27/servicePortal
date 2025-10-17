@@ -117,6 +117,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
+  lastMatchingWorkFlowStep: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -292,7 +293,31 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         this.workFlowSteps = response.workFlowSteps || [];
         this.partners = response.partners || [];
         this.attachments = response.attachments || [];
-        
+        const validStatuses = [1, 2, 7];
+
+        const lastStep = this.workFlowSteps[this.workFlowSteps.length - 1];
+
+        const matchingSteps = this.workFlowSteps.filter(step =>
+          validStatuses.includes(step.serviceStatus ?? -1)
+        );
+
+        this.lastMatchingWorkFlowStep = null;
+
+        if (lastStep && !validStatuses.includes(lastStep.serviceStatus ?? -1)) {
+          const hasApprovedBefore = this.workFlowSteps.some(step => step.serviceStatus === 1);
+          if (hasApprovedBefore) {
+            this.lastMatchingWorkFlowStep = null;
+          } else {
+            this.lastMatchingWorkFlowStep = matchingSteps.length
+              ? matchingSteps[matchingSteps.length - 1]
+              : null;
+          }
+        } else {
+          this.lastMatchingWorkFlowStep = matchingSteps.length
+            ? matchingSteps[matchingSteps.length - 1]
+            : null;
+        }
+
         this.findTargetWorkFlowStep();
         // if (this.targetWorkFlowStep) {
         //   console.log("truuuuuuuue");

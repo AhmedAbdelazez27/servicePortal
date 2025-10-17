@@ -21,6 +21,7 @@ export class ViewComplaintrequestComponent implements OnInit {
   workFlowSteps: any[] = [];
   workFlowQuery: any;
   targetWorkFlowStep: WorkFlowStepDto | null = null;
+  lastMatchingWorkFlowStep: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +48,12 @@ export class ViewComplaintrequestComponent implements OnInit {
       next: (resp: any) => {
         this.mainApplyService = resp;  // تخزين البيانات القادمة من الـ API في mainApplyService
         this.workFlowSteps = this.mainApplyService?.workFlowSteps ?? [];
+        const matchingSteps = this.workFlowSteps.filter(
+          step => [1, 2, 7].includes(step.serviceStatus ?? -1)
+        );
+        this.lastMatchingWorkFlowStep = matchingSteps.length
+          ? matchingSteps[matchingSteps.length - 1]
+          : null;
         this.findTargetWorkFlowStep();
 
         console.log(resp);

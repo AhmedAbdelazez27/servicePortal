@@ -1,0 +1,582 @@
+.landing-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #F1F6FA 0%, #EDEDED 50%, #F7F7F7 100%);
+  font-family: 'Expo Arabic Book';
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+
+  &.show {
+    opacity: 1;
+  }
+}
+
+// Background Animation
+.background-animation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(141, 115, 77, 0.08);
+  animation: float 20s infinite ease-in-out;
+
+  &.circle-1 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    left: -150px;
+    animation-delay: 0s;
+  }
+
+  &.circle-2 {
+    width: 500px;
+    height: 500px;
+    bottom: -250px;
+    right: -250px;
+    animation-delay: 5s;
+  }
+
+  &.circle-3 {
+    width: 400px;
+    height: 400px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: 10s;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+// Particles
+.particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(141, 115, 77, 0.4);
+  border-radius: 50%;
+  animation: rise 15s infinite ease-in;
+  bottom: -10px;
+
+  &:nth-child(2n) {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+@keyframes rise {
+  0% {
+    bottom: -10px;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    bottom: 110%;
+    opacity: 0;
+    transform: translateX(100px);
+  }
+}
+
+// Main Content
+.content-wrapper {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 2rem;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Logo Section
+.logo-section {
+  margin-bottom: 3rem;
+}
+
+.logo-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 2rem;
+  animation: scaleIn 1s ease-out 0.3s both;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.main-logo {
+  width: 800px;
+  height: auto;
+  filter: drop-shadow(0 10px 30px rgba(141, 115, 77, 0.2));
+  position: relative;
+  z-index: 2;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.logo-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, rgba(141, 115, 77, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 1;
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+// Launch Text
+.launch-text {
+  animation: fadeIn 1s ease-out 0.6s both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title-line {
+  display: block;
+  color: #8D734D;
+  font-size: 1.8rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  font-family: 'Expo Arabic Book';
+}
+
+.title-main {
+  display: block;
+  color: #252525;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 10px rgba(141, 115, 77, 0.1);
+  font-family: 'Expo Arabic Book';
+}
+
+.subtitle {
+  color: #625F68;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  font-family: 'Expo Arabic Book';
+}
+
+// Divider
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.divider-line {
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(141, 115, 77, 0.5), transparent);
+}
+
+.divider-dot {
+  width: 8px;
+  height: 8px;
+  background: #8D734D;
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+// CTA Section
+.cta-section {
+  margin-top: 3rem;
+  animation: fadeInUp 1s ease-out 0.9s both;
+}
+
+.enter-button {
+  position: relative;
+  padding: 1.2rem 3rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #8D734D;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(141, 115, 77, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'Expo Arabic Book';
+
+  &:hover {
+    transform: translateY(-3px);
+    background: #a7895d;
+    box-shadow: 0 15px 40px rgba(141, 115, 77, 0.4);
+
+    .button-icon {
+      transform: translateX(5px);
+    }
+
+    .button-glow {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  &.navigating {
+    background: linear-gradient(45deg, #8D734D, #a7895d);
+    color: #ffffff;
+    cursor: not-allowed;
+    animation: buttonPulse 1s ease-in-out infinite;
+  }
+
+  &:disabled {
+    opacity: 1;
+  }
+}
+
+@keyframes buttonPulse {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(141, 115, 77, 0.4);
+  }
+  50% {
+    box-shadow: 0 10px 40px rgba(141, 115, 77, 0.6);
+  }
+}
+
+.button-text {
+  position: relative;
+  z-index: 2;
+
+  &.countdown-text {
+    font-weight: 700;
+    animation: textPulse 1s ease-in-out infinite;
+  }
+}
+
+@keyframes textPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.button-icon {
+  position: relative;
+  z-index: 2;
+  font-size: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.button-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(167, 137, 93, 0.3), rgba(141, 115, 77, 0.3));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.button-loader {
+  position: absolute;
+  top: 50%;
+  right: 1.5rem;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  z-index: 2;
+}
+
+@keyframes spin {
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+.auto-redirect {
+  margin-top: 1.5rem;
+  color: #625F68;
+  font-size: 0.9rem;
+  font-weight: 300;
+  font-family: 'Expo Arabic Book';
+  animation: fadeInOut 2s ease-in-out infinite;
+
+  &.navigating-text {
+    color: #252525;
+    font-weight: 500;
+    animation: textGlow 1s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    opacity: 0.9;
+    text-shadow: 0 0 10px rgba(141, 115, 77, 0.2);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 20px rgba(141, 115, 77, 0.3);
+  }
+}
+
+// Loading Bar
+.loading-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(141, 115, 77, 0.2);
+  overflow: hidden;
+}
+
+.loading-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #8D734D, rgba(141, 115, 77, 0.5));
+  animation: progress 5s linear forwards;
+
+  &.fast {
+    animation: progress 3s linear forwards;
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+// Decorative Corners
+.decorative-corner {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 2px solid rgba(141, 115, 77, 0.2);
+  z-index: 5;
+
+  &.top-left {
+    top: 20px;
+    left: 20px;
+    border-right: none;
+    border-bottom: none;
+    animation: cornerGlow 3s ease-in-out infinite;
+  }
+
+  &.top-right {
+    top: 20px;
+    right: 20px;
+    border-left: none;
+    border-bottom: none;
+    animation: cornerGlow 3s ease-in-out 0.5s infinite;
+  }
+
+  &.bottom-left {
+    bottom: 20px;
+    left: 20px;
+    border-right: none;
+    border-top: none;
+    animation: cornerGlow 3s ease-in-out 1s infinite;
+  }
+
+  &.bottom-right {
+    bottom: 20px;
+    right: 20px;
+    border-left: none;
+    border-top: none;
+    animation: cornerGlow 3s ease-in-out 1.5s infinite;
+  }
+}
+
+@keyframes cornerGlow {
+  0%, 100% {
+    border-color: rgba(141, 115, 77, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    border-color: rgba(141, 115, 77, 0.5);
+    transform: scale(1.05);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .main-logo {
+    width: 300px;
+  }
+  
+  .logo-glow {
+    width: 350px;
+    height: 350px;
+  }
+
+  .title-line {
+    font-size: 1.3rem;
+  }
+
+  .title-main {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .enter-button {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  .decorative-corner {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-logo {
+    width: 220px;
+  }
+  
+  .logo-glow {
+    width: 280px;
+    height: 280px;
+  }
+
+  .title-line {
+    font-size: 1.1rem;
+  }
+
+  .title-main {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .enter-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .decorative-corner {
+    width: 40px;
+    height: 40px;
+  }
+}
+

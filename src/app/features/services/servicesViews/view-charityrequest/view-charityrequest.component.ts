@@ -168,6 +168,7 @@ type MainApplyServiceView = {
   lastStatusEN?: string;
   lastModified: string;
   permitNumber?: string;
+  notesForApproving?: string;
   service?: { serviceId: number; serviceName: string; serviceNameEn?: string; descriptionAr?: string | null; descriptionEn?: string | null; serviceType?: number };
   workFlowSteps: WorkFlowStepDto[];
   attachments: AttachmentDto[];
@@ -281,6 +282,7 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
   currentUserName = '';
 
   addWorkFlowSteps: any[] = [];
+  lastMatchingWorkFlowStep: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -331,7 +333,12 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
         this.workFlowSteps = resp.workFlowSteps || [];
         this.partners = resp.partners || [];
         this.attachments = resp.attachments || [];
-
+        const matchingSteps = this.workFlowSteps.filter(
+          step => [1, 2, 7].includes(step.serviceStatus ?? -1)
+        );
+        this.lastMatchingWorkFlowStep = matchingSteps.length
+          ? matchingSteps[matchingSteps.length - 1]
+          : null;
         this.findTargetWorkFlowStep();
         // if (this.targetWorkFlowStep) {
           this.loadWorkFlowComments();

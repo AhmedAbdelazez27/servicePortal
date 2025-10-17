@@ -84,7 +84,8 @@
                 <div>
                   <div class="step-header">
                     <div class="step-number">
-                      {{ 'WORKFLOW.STEP' | translate }} {{ step.stepOrder }}
+                      <!--{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}-->
+                      {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
                     </div>
                     <div class="step-status" [style.color]="getStatusColor(step.serviceStatus)">
                       <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
@@ -107,6 +108,53 @@
 
         <!-- Content Area -->
         <div class="col-lg-9 mb-4">
+          <div id="statusInfo">
+            <div class="main-container mb-4">
+              <div id="workFlowStep" class="mb-3" *ngIf="lastMatchingWorkFlowStep; else readonlyNotes">
+                <div class="form-group mb-3">
+                  <label for="NotesForApproving" class="control-label col-md-12">
+                    {{ 'mainApplyServiceResourceName.notes' | translate }}
+                  </label>
+
+                  <textarea id="NotesForApproving" class="form-control" readonly>
+{{ mainApplyService.notesForApproving }}
+        </textarea>
+                </div>
+
+                <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 1" class="alert alert-success text-center">
+                  {{ 'mainApplyServiceResourceName.agree' | translate }}
+                </div>
+
+                <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 2" class="alert alert-danger text-center">
+                  {{ 'mainApplyServiceResourceName.disagree' | translate }}
+                </div>
+
+                <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 7" class="alert alert-warning text-center">
+                  {{ 'mainApplyServiceResourceName.underReview' | translate }}
+                </div>
+
+                <div class="popover__wrapper" *ngIf="lastMatchingWorkFlowStep.refuseReason">
+                  <a href="javascript:void(0);">
+                    <span class="btn btn-info">{{ mainApplyService.lastStatus }}</span>
+                  </a>
+                  <div class="popover__content w-60">
+                    <p class="popover__message">{{ lastMatchingWorkFlowStep.refuseReason }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <ng-template #readonlyNotes>
+                <div class="form-group mb-3">
+                  <label for="NotesForApproving" class="control-label col-md-12">
+                    {{ 'mainApplyServiceResourceName.notes' | translate }}
+                  </label>
+                  <textarea id="NotesForApproving" class="form-control" readonly>
+{{ mainApplyService.notesForApproving }}
+        </textarea>
+                </div>
+              </ng-template>
+            </div>
+          </div>
           <div class="main-container h-100">
 
             <!-- Section: Basic -->
@@ -167,15 +215,15 @@
 
             <!-- Section: Attachments -->
             <!-- <div class="main-container mb-4" *ngIf="mainApplyService.attachments?.length">
-              <div class="step-content">
-                <h5 class="mb-4">{{ 'COMMON.ATTACHMENTS' | translate }}</h5>
-                <ul>
-                  <li *ngFor="let attachment of mainApplyService.attachments">
-                    <a [href]="attachment.imgPath" target="_blank">{{ attachment.attachmentTitle }}</a>
-                  </li>
-                </ul>
-              </div>
-            </div> -->
+      <div class="step-content">
+        <h5 class="mb-4">{{ 'COMMON.ATTACHMENTS' | translate }}</h5>
+        <ul>
+          <li *ngFor="let attachment of mainApplyService.attachments">
+            <a [href]="attachment.imgPath" target="_blank">{{ attachment.attachmentTitle }}</a>
+          </li>
+        </ul>
+      </div>
+    </div> -->
             <div class=" mb-4" *ngIf="mainApplyService?.attachments?.length">
               <div class="step-content">
                 <h5 class="mb-3 gold">{{ 'COMMON.ATTACHMENTS' | translate }}</h5>
@@ -251,7 +299,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </section>
 </div>

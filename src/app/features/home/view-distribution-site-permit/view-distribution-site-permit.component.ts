@@ -123,6 +123,7 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
+  lastMatchingWorkFlowStep: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -287,9 +288,7 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     if (!id) {
       this.hasError = true;
       this.errorMessage = this.translate.instant('COMMON.INVALID_ID');
-              this.errorDetails = this.translate.instant('COMMON.NO_VALID_ID_URL');
-      // Remove navigation - keep user on the page
-      // this.router.navigate(['/']);
+      this.errorDetails = this.translate.instant('COMMON.NO_VALID_ID_URL');
       return;
     }
 
@@ -297,35 +296,30 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     const subscription = this.mainApplyServiceService.getDetailById({ id }).subscribe({
       next: (response) => {
         this.mainApplyService = response;
-        // For serviceId 1001, the location data comes from fastingTentService
-        // This is the backend structure for distribution site permit applications
         this.distributionSiteService = response.fastingTentService;
         this.workFlowSteps = response.workFlowSteps || [];
         this.partners = response.partners || [];
         this.attachments = response.attachments || [];
-        
+
+        const matchingSteps = this.workFlowSteps.filter(
+          step => [1, 2, 7].includes(step.serviceStatus ?? -1)
+        );
+        this.lastMatchingWorkFlowStep = matchingSteps.length
+          ? matchingSteps[matchingSteps.length - 1]
+          : null;
+
         this.findTargetWorkFlowStep();
-        // if (this.targetWorkFlowStep) {
-          this.loadWorkFlowComments();
-          // console.log("trrrrrrrrrrrrueeeeeeeeeeeee");
-          
-        // }else{
-        //   console.log("faaaaaaaaaaaaaaaaaaaalse");
-          
-        // }
-        
-        // Initialize map when data is loaded and coordinates are available
+        this.loadWorkFlowComments();
+
         if (this.distributionSiteService?.distributionSiteCoordinators) {
           setTimeout(() => this.initializeMap(), 500);
         }
-        
+
         this.isLoading = false;
       },
       error: (error) => {
         this.hasError = true;
         this.errorMessage = this.getErrorMessage(error);
-        
-        // Provide more detailed error information and guidance
         if (this.isAuthenticationError(error)) {
           this.errorDetails = this.getErrorGuidance(error);
         } else if (this.isErrorRecoverable(error)) {
@@ -333,12 +327,11 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
         } else {
           this.errorDetails = this.getErrorGuidance(error);
         }
-        
+
         this.isLoading = false;
-        // Remove navigation - keep user on the page
-        // this.router.navigate(['/']);
       }
     });
+
     this.subscriptions.push(subscription);
   }
 

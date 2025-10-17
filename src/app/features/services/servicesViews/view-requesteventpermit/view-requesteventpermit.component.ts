@@ -293,6 +293,7 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   currentUserName = '';
 
   addWorkFlowSteps: any[] = [];
+  lastMatchingWorkFlowStep: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -343,7 +344,12 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
         this.workFlowSteps = resp.workFlowSteps || [];
         this.partners = resp.partners || [];
         this.attachments = resp.attachments || [];
-
+        const matchingSteps = this.workFlowSteps.filter(
+          step => [1, 2, 7].includes(step.serviceStatus ?? -1)
+        );
+        this.lastMatchingWorkFlowStep = matchingSteps.length
+          ? matchingSteps[matchingSteps.length - 1]
+          : null;
         this.findTargetWorkFlowStep();
         // if (this.targetWorkFlowStep) {
           this.loadWorkFlowComments();

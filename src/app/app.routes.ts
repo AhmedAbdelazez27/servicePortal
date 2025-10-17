@@ -7,6 +7,9 @@ import { authMatchGuard } from './core/guards/auth/auth-match.guard';
 import { loginGuard } from './core/guards/auth/login.guard';
 
 export const routes: Routes = [
+// Landing page (first page without layout)
+{ path: 'landing', loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingComponent) },
+
 {
   path: '',
   component: MainLayoutComponent,
