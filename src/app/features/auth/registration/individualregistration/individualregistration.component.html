@@ -407,7 +407,7 @@
                 <span *ngIf="!isLoading">{{ 'REGISTRATION.CREATE_ACCOUNT' | translate }}</span>
                 <span *ngIf="isLoading">{{ 'REGISTRATION.CREATING' | translate }}</span>
               </button>
-              <button type="button" class="btn btn-gray w-50" routerLink="/login">
+              <button type="button" class="btn btn-gray w-50"  (click)="logout()">
                 {{ 'REGISTRATION.CANCEL' | translate }}
               </button>
             </div>

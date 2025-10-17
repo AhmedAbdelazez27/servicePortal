@@ -14,6 +14,7 @@ import { AttachmentsConfigType } from '../../../core/dtos/attachments/attachment
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
+import { ApiEndpoints } from '../../../core/constants/api-endpoints';
 
 @Component({
   selector: 'app-navbar',
@@ -256,20 +257,27 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.currentUserName = '';
 
     this.authService.logout().subscribe({
-      next: () => {
-
+      next: (res) => {
+        this.toastr.success(res);
+        this.redirectToLogout();
       },
       error: () => {
-
+        this.redirectToLogout();
       },
       complete: () => {
         this.toastr.success(
           this.translate.instant('AUTH.MESSAGES.LOGOUT_SUCCESS'),
           this.translate.instant('TOAST.TITLE.SUCCESS')
         );
+        this.redirectToLogout();
         this.router.navigate(['/login']);
       }
     });
+  }
+  private redirectToLogout(): void {
+    const redirectUri = window.location.origin + '/login';
+    const logoutURL = `${ApiEndpoints.UAE_PASS_CONFIG.baseUrl}/logout?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    setTimeout(() => (window.location.href = logoutURL), 2000);
   }
 
 

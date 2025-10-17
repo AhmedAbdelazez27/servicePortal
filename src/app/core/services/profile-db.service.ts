@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase } from 'idb';
 import { UserProfile } from '../dtos/user-profile';
+import { ApiEndpoints } from '../constants/api-endpoints';
 
 type SessionSchema = {
   session: {
@@ -41,5 +42,9 @@ export class ProfileDbService {
   async clearProfile(): Promise<void> {
     const db = await this.dbPromise;
     await db.delete('session', 'profile');
+
+    const redirectUri = window.location.origin + '/login';
+    const logoutURL = `${ApiEndpoints.UAE_PASS_CONFIG.baseUrl}/logout?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    setTimeout(() => (window.location.href = logoutURL), 500);
   }
 }

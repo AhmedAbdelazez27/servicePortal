@@ -164,38 +164,49 @@ submit(): void {
 
 
   private handleLoginSuccess(res: any): void {
-    this.auth.saveToken(res?.token);
-    const decodedData = this.auth.decodeToken();
-
-    if (!decodedData) {
-      this.toastr.error(this.translate.instant('AUTH.MESSAGES.INVALID_TOKEN_ERROR'));
-      return;
+    if (res?.token) {
+      this.auth.saveToken(res.token);
     }
 
-    if (decodedData.Permissions) {
-      localStorage.setItem('permissions', JSON.stringify(decodedData.Permissions));
-    }
-
-    if (decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
-      localStorage.setItem('pages', JSON.stringify(decodedData['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']));
-    }
-
-    const userId = this.extractUserIdFromToken(decodedData);
-    if (userId) {
-      localStorage.setItem('userId', userId);
-    } else {
-      this.toastr.error(this.translate.instant('AUTH.MESSAGES.TOKEN_EXTRACTION_ERROR'));
+    if (res?.isTwoFactorEnabled) {
+      localStorage.setItem(
+        'comeFromisTwoFactorEnabled',
+        JSON.stringify({ isTwoFactorEnabled: true })
+      );
+      this.router.navigate(['/verify-otp']);
       this.spinnerService.hide();
       return;
     }
 
-    this.toastr.success(this.translate.instant('AUTH.MESSAGES.LOGIN_SUCCESS'));
+    this.auth.GetMyProfile().subscribe({
+      next: async (profile: UserProfile) => {
+        await this.profileDb.saveProfile(profile);
+        this.auth.setProfile(profile);
+
+        this.toastr.success(
+          this.translate.instant('LOGIN.SUCCESS'),
+          this.translate.instant('TOAST.TITLE.SUCCESS')
+        );
+
+        try { await this.notificationService.initializeUserSession(); } catch { }
+
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.toastr.error(
+          this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'),
+          this.translate.instant('TOAST.TITLE.ERROR')
+        );
+        console.debug('GetMyProfile error:', err);
+      },
+      complete: () => this.spinnerService.hide()
+    });
     this.initializeNotificationSession();
      this.spinnerService.hide(); 
     this.router.navigate(['/home']);
   }
 
-    private handleUAEPassLogin(params: LoginUAEPassDto): void {
+  private handleUAEPassLogin(params: LoginUAEPassDto): void {
     this.auth.UAEPasslogin(params)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -289,9 +300,8 @@ submit(): void {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: res => {
-          localStorage.setItem('UAEPassInfo', JSON.stringify(res));
-          this.router.navigate(['/register/institution']);
-          this.spinnerService.hide();
+          console.log(res);
+          this.handleUAEPassInstitutionSignupSuccess(res);
         },
         error: err => {
           this.handleUAEPassError(err);
@@ -300,20 +310,40 @@ submit(): void {
       });
   }
 
+  private handleUAEPassInstitutionSignupSuccess(res: any): void {
+    if (res.isExists) {
+      this.toastr.error(res.message);
+      this.redirectToLogout();
+      return;
+    }
+    localStorage.setItem('UAEPassInfo', JSON.stringify(res?.user));
+    this.router.navigate(['/register/institution']);
+    this.spinnerService.hide();
+  }
+
   private handleUAEPassIndividualSignup(params: LoginUAEPassDto): void {
     this.auth.GetUAEPassInfo(params)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: res => {
-          localStorage.setItem('UAEPassInfo', JSON.stringify(res));
-          this.router.navigate(['/register/individual']);
-          this.spinnerService.hide();
+          this.handleUAEPassIndividualSignupSuccess(res);
         },
         error: err => {
           this.handleUAEPassError(err);
           this.spinnerService.hide();
         }
       });
+  }
+
+  private handleUAEPassIndividualSignupSuccess(res: any): void {
+    if (res.isExists) {
+      this.toastr.error(res.message);
+      this.redirectToLogout();
+      return;
+    }
+    localStorage.setItem('UAEPassInfo', JSON.stringify(res?.user));
+    this.router.navigate(['/register/individual']);
+    this.spinnerService.hide();
   }
 
   private handleUAEPassError(err: any): void {

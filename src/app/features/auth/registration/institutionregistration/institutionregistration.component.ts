@@ -29,6 +29,7 @@ import { FndLookUpValuesSelect2RequestDto } from '../../../../core/dtos/FndLookU
 // Validators
 import { confirmPasswordValidator } from '../../../../shared/customValidators/confirmPasswordValidator';
 import { UAEPassDto } from '../../../../core/dtos/uaepass.dto';
+import { ApiEndpoints } from '../../../../core/constants/api-endpoints';
 
 @Component({
   selector: 'app-institutionregistration',
@@ -540,5 +541,11 @@ export class InstitutionregistrationComponent implements OnInit {
       mobileControl.updateValueAndValidity();
       this.cdr.detectChanges();
     }
+  }
+
+  logout(): void {
+    const redirectUri = window.location.origin + '/login';
+    const logoutURL = `${ApiEndpoints.UAE_PASS_CONFIG.baseUrl}/logout?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    setTimeout(() => (window.location.href = logoutURL), 2000);
   }
 }
