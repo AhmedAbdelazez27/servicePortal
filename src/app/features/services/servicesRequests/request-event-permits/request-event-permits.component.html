@@ -27,7 +27,7 @@
                 <div class="step">1</div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
                   <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5"
-                        stroke-linecap="round" />
+                    stroke-linecap="round" />
                 </svg>
               </div>
               <span class="step-title" (click)="goToStep(1)">
@@ -44,7 +44,7 @@
                 <div class="step">2</div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
                   <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5"
-                        stroke-linecap="round" />
+                    stroke-linecap="round" />
                 </svg>
               </div>
               <span class="step-title" (click)="goToStep(2)">
@@ -61,7 +61,7 @@
                 <div class="step">3</div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
                   <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5"
-                        stroke-linecap="round" />
+                    stroke-linecap="round" />
                 </svg>
               </div>
               <span class="step-title" (click)="goToStep(3)">
@@ -99,14 +99,14 @@
 
                 <div class="row">
                   <!-- Request No (عرض فقط) -->
-                  <div class="col-xl-6 mb-4">
+                  <!-- <div class="col-xl-6 mb-4">
                     <label class="form-label">
                       {{
                       "CHARITY_EVENT.REQUEST_NO" | translate
                       }}
                     </label>
                     <input type="text" class="form-control" value="0" readonly />
-                  </div>
+                  </div> -->
 
                   <!-- Request Date -->
                   <!-- <div class="col-xl-6 mb-4">
@@ -123,20 +123,20 @@
                                             {{ 'VALIDATIONCHARITY_EVENT.RFC3339_REQUIRED' | translate }}
                                         </div>
                                     </div> -->
-                  <div class="col-xl-6 mb-4">
+                  <!-- <div class="col-xl-6 mb-4">
                     <label class="form-label">
                       {{ "CHARITY_EVENT.REQUEST_DATE" | translate }}
                       <span class="text-danger">*</span>
                     </label>
 
-                    <!-- readonly style with date only -->
+                    
                     <div class="form-control bg-light">
                       {{
                       firstStepForm.get("requestDate")?.value
                       | date : "yyyy-MM-dd"
                       }}
                     </div>
-                  </div>
+                  </div> -->
 
                   <!-- Request Side -->
                   <div class="col-xl-6 mb-4">
@@ -199,8 +199,8 @@
                       <span class="text-danger">*</span>
                     </label>
                     <ng-select formControlName="lkpRequestTypeId" [items]="requestTypes" bindLabel="text" bindValue="id"
-                               [clearable]="true" [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
-                               class="ng-select-custom" [ngClass]="{
+                      [clearable]="true" [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                      class="ng-select-custom" [ngClass]="{
                         'is-invalid':
                           firstStepForm.get('lkpRequestTypeId')?.touched &&
                           firstStepForm.get('lkpRequestTypeId')?.invalid
@@ -217,27 +217,25 @@
                   <div class="col-xl-6 mb-4" *ngIf="isIndividualRequestType()">
                     <label class="form-label">
                       {{
-    "event.beneficiaryIdNumber" | translate
+                      "event.beneficiaryIdNumber" | translate
                       }} <span class="text-danger">*</span>
                     </label>
 
                     <div class="input-group">
                       <input type="text" class="form-control" formControlName="beneficiaryIdNumber"
-                             placeholder="784-____-_______-_"
-                             maxlength="15"
-                             (keypress)="restrictToNumbers($event)"
-                             [class.is-invalid]="firstStepForm.get('beneficiaryIdNumber')?.touched && firstStepForm.get('beneficiaryIdNumber')?.invalid" />
+                        placeholder="784-____-_______-_" maxlength="15" (keypress)="restrictToNumbers($event)"
+                        [class.is-invalid]="firstStepForm.get('beneficiaryIdNumber')?.touched && firstStepForm.get('beneficiaryIdNumber')?.invalid" />
 
-                      <button type="button" class="btn btn-outline-primary"
-                              (click)="readIdentityCardData()"
-                              [disabled]="isLoadingIdentityCard || !firstStepForm.get('beneficiaryIdNumber')?.value">
+                      <button type="button" class="btn btn-outline-primary" (click)="readIdentityCardData()"
+                        [disabled]="isLoadingIdentityCard || !firstStepForm.get('beneficiaryIdNumber')?.value">
                         <span *ngIf="isLoadingIdentityCard" class="spinner-border spinner-border-sm me-1"></span>
                         <i *ngIf="!isLoadingIdentityCard" class="fas fa-id-card me-1"></i>
                         {{ "COMMON.READ_CARD" | translate }}
                       </button>
                     </div>
 
-                    <div class="invalid-feedback d-block" *ngIf="firstStepForm.get('beneficiaryIdNumber')?.touched && firstStepForm.get('beneficiaryIdNumber')?.errors">
+                    <div class="invalid-feedback d-block"
+                      *ngIf="firstStepForm.get('beneficiaryIdNumber')?.touched && firstStepForm.get('beneficiaryIdNumber')?.errors">
                       <div *ngIf="firstStepForm.get('beneficiaryIdNumber')?.hasError('required')">
                         {{ "VALIDATION.REQUIRED_FIELD" | translate }}
                       </div>
@@ -270,8 +268,8 @@
                       <span class="text-danger">*</span>
                     </label>
                     <ng-select formControlName="lkpPermitTypeId" [items]="permitsTypes" bindLabel="text" bindValue="id"
-                               [clearable]="true" [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
-                               class="ng-select-custom" [ngClass]="{
+                      [clearable]="true" [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
+                      class="ng-select-custom" [ngClass]="{
                         'is-invalid':
                           firstStepForm.get('lkpPermitTypeId')?.touched &&
                           firstStepForm.get('lkpPermitTypeId')?.invalid
@@ -355,7 +353,7 @@
                     <input type="time" class="form-control" [value]="
                         getTimeOnly(firstStepForm.get('amStartTime')?.value)
                       " (change)="onTimeChange($event, 'amStartTime')"
-                           [disabled]="!firstStepForm.get('startDate')?.value" [title]="
+                      [disabled]="!firstStepForm.get('startDate')?.value" [title]="
                         !firstStepForm.get('startDate')?.value
                           ? 'Please select the start date first'
                           : ''
@@ -376,13 +374,13 @@
                   <div class="col-xl-6 mb-4">
                     <label class="form-label">
                       {{
- "event.AmEndTime" | translate
+                      "event.AmEndTime" | translate
                       }}<span class="text-danger">*</span>
                     </label>
                     <input type="time" class="form-control" [value]="
                         getTimeOnly(firstStepForm.get('amEndTime')?.value)
                       " (change)="onTimeChange($event, 'amEndTime')"
-                           [disabled]="!firstStepForm.get('startDate')?.value" [title]="
+                      [disabled]="!firstStepForm.get('startDate')?.value" [title]="
                         !firstStepForm.get('startDate')?.value
                           ? 'Please select the start date first'
                           : ''
@@ -406,8 +404,8 @@
                       <span class="text-danger">*</span>
                     </label>
                     <input type="time" class="form-control" [value]="getLocalTimeValue('pmStartTime')"
-                           (change)="onTimeChange($event, 'pmStartTime')" [disabled]="!firstStepForm.get('startDate')?.value"
-                           [title]="
+                      (change)="onTimeChange($event, 'pmStartTime')" [disabled]="!firstStepForm.get('startDate')?.value"
+                      [title]="
                         !firstStepForm.get('startDate')?.value
                           ? 'Please select the start date first'
                           : ''
@@ -431,8 +429,8 @@
                       <span class="text-danger">*</span>
                     </label>
                     <input type="time" class="form-control" [value]="getLocalTimeValue('pmEndTime')"
-                           (change)="onTimeChange($event, 'pmEndTime')" [disabled]="!firstStepForm.get('startDate')?.value"
-                           [title]="
+                      (change)="onTimeChange($event, 'pmEndTime')" [disabled]="!firstStepForm.get('startDate')?.value"
+                      [title]="
                         !firstStepForm.get('startDate')?.value
                           ? 'Please select the start date first'
                           : ''
@@ -514,12 +512,12 @@
                       ">
                       <div class="mobile-prefix-container">
                         <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag"
-                             class="uae-flag-image" />
+                          class="uae-flag-image" />
                         <span class="mobile-prefix">971</span>
                       </div>
                       <input type="tel" class="form-control mobile-number-input" formControlName="adminTel"
-                             placeholder="565666666" maxlength="9" (keypress)="restrictMobileInput($event)"
-                             (input)="onAdminTelInput()" (blur)="onAdminTelBlur()" />
+                        placeholder="565666666" maxlength="9" (keypress)="restrictMobileInput($event)"
+                        (input)="onAdminTelInput()" (blur)="onAdminTelBlur()" />
                     </div>
 
                     <div *ngIf="
@@ -553,12 +551,12 @@
                       ">
                       <div class="mobile-prefix-container">
                         <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag"
-                             class="uae-flag-image" />
+                          class="uae-flag-image" />
                         <span class="mobile-prefix">971</span>
                       </div>
                       <input type="tel" class="form-control mobile-number-input" formControlName="telephone"
-                             placeholder="565666666" maxlength="9" (keypress)="restrictMobileInput($event)"
-                             (input)="onTelephoneInput()" (blur)="onTelephoneBlur()" />
+                        placeholder="565666666" maxlength="9" (keypress)="restrictMobileInput($event)"
+                        (input)="onTelephoneInput()" (blur)="onTelephoneBlur()" />
                     </div>
 
                     <div *ngIf="
@@ -606,7 +604,7 @@
                       }}
                     </label>
                     <input type="number" step="any" min="0" class="form-control" formControlName="targetedAmount"
-                           [class.is-invalid]="
+                      [class.is-invalid]="
                         firstStepForm.get('targetedAmount')?.touched &&
                         firstStepForm.get('targetedAmount')?.invalid
                       " />
@@ -627,9 +625,9 @@
                       <span class="text-danger">*</span>
                     </label>
                     <ng-select formControlName="donationCollectionChannelIds" [items]="donationChannelsLookup"
-                               bindLabel="text" bindValue="id" [multiple]="true" [closeOnSelect]="false" [clearable]="true"
-                               [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
-                               [ngClass]="{
+                      bindLabel="text" bindValue="id" [multiple]="true" [closeOnSelect]="false" [clearable]="true"
+                      [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
+                      [ngClass]="{
                         'is-invalid':
                           firstStepForm.get('donationCollectionChannelIds')
                             ?.touched &&
@@ -677,7 +675,8 @@
                           <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">{{ "IDENTITY_CARD.FULL_NAME" | translate }}</label>
                             <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? identityCardData.fullNameAr : identityCardData.fullNameEn }}
+                              {{ translationService.currentLang === 'ar' ? identityCardData.fullNameAr :
+                              identityCardData.fullNameEn }}
                             </div>
                           </div>
 
@@ -693,7 +692,8 @@
                           <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">{{ "IDENTITY_CARD.NATIONALITY" | translate }}</label>
                             <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? identityCardData.nationalityAr : identityCardData.nationalityEn }}
+                              {{ translationService.currentLang === 'ar' ? identityCardData.nationalityAr :
+                              identityCardData.nationalityEn }}
                             </div>
                           </div>
 
@@ -701,7 +701,8 @@
                           <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">{{ "IDENTITY_CARD.GENDER" | translate }}</label>
                             <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? identityCardData.genderAr : identityCardData.genderEn }}
+                              {{ translationService.currentLang === 'ar' ? identityCardData.genderAr :
+                              identityCardData.genderEn }}
                             </div>
                           </div>
 
@@ -717,7 +718,8 @@
                           <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">{{ "IDENTITY_CARD.MARITAL_STATUS" | translate }}</label>
                             <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? identityCardData.maritalStatusAr : identityCardData.maritalStatusEn }}
+                              {{ translationService.currentLang === 'ar' ? identityCardData.maritalStatusAr :
+                              identityCardData.maritalStatusEn }}
                             </div>
                           </div>
 
@@ -741,7 +743,8 @@
                           <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">{{ "IDENTITY_CARD.OCCUPATION" | translate }}</label>
                             <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? (identityCardData.occupationAr || '-') : (identityCardData.occupationEn || '-') }}
+                              {{ translationService.currentLang === 'ar' ? (identityCardData.occupationAr || '-') :
+                              (identityCardData.occupationEn || '-') }}
                             </div>
                           </div>
 
@@ -749,7 +752,8 @@
                           <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">{{ "IDENTITY_CARD.ADDRESS" | translate }}</label>
                             <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? (identityCardData.addressAr || '-') : (identityCardData.addressEn || '-') }}
+                              {{ translationService.currentLang === 'ar' ? (identityCardData.addressAr || '-') :
+                              (identityCardData.addressEn || '-') }}
                             </div>
                           </div>
 
@@ -823,8 +827,8 @@
                       <span class="text-danger">*</span>
                     </label>
                     <ng-select formControlName="type" [items]="partnerTypes" bindLabel="label" bindValue="id"
-                               [multiple]="false" [closeOnSelect]="true" [clearable]="true" [searchable]="true"
-                               [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom" [ngClass]="{
+                      [multiple]="false" [closeOnSelect]="true" [clearable]="true" [searchable]="true"
+                      [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom" [ngClass]="{
                         'is-invalid':
                           partnerForm.get('type')?.touched &&
                           partnerForm.get('type')?.invalid
@@ -842,7 +846,8 @@
                   <div class="col-xl-6 mb-3">
                     <label class="form-label">
                       {{ "PARTNERS.LICENSE_ISSUER" | translate }}
-                      <span class="text-danger">*</span>
+                      <span class="text-danger"
+                        *ngIf="partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4">*</span>
                     </label>
                     <input class="form-control" formControlName="licenseIssuer" [class.is-invalid]="
                         partnerForm.get('licenseIssuer')?.touched &&
@@ -851,7 +856,7 @@
                     <div class="invalid-feedback" *ngIf="
                         partnerForm.get('licenseIssuer')?.touched &&
                         partnerForm.get('licenseIssuer')?.errors
-                      ">
+                      && (partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4) ">
                       {{ "VALIDATION.REQUIRED_FIELD" | translate }}
                     </div>
                   </div>
@@ -860,7 +865,8 @@
                   <div class="col-xl-6 mb-3">
                     <label class="form-label">
                       {{ "PARTNERS.LICENSE_NUMBER" | translate }}
-                      <span class="text-danger">*</span>
+                      <span class="text-danger"
+                        *ngIf="partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4">*</span>
                     </label>
                     <input class="form-control" formControlName="licenseNumber" [class.is-invalid]="
                         partnerForm.get('licenseNumber')?.touched &&
@@ -869,7 +875,7 @@
                     <div class="invalid-feedback" *ngIf="
                         partnerForm.get('licenseNumber')?.touched &&
                         partnerForm.get('licenseNumber')?.errors
-                      ">
+                       && (partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4)">
                       {{ "VALIDATION.REQUIRED_FIELD" | translate }}
                     </div>
                   </div>
@@ -878,7 +884,8 @@
                   <div class="col-xl-6 mb-3">
                     <label class="form-label">
                       {{ "PARTNERS.LICENSE_EXPIRY" | translate }}
-                      <span class="text-danger">*</span>
+                      <span class="text-danger"
+                        *ngIf="partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4">*</span>
                     </label>
                     <input type="date" class="form-control" formControlName="licenseExpiryDate" [class.is-invalid]="
                         partnerForm.get('licenseExpiryDate')?.touched &&
@@ -887,20 +894,37 @@
                     <div class="invalid-feedback" *ngIf="
                         partnerForm.get('licenseExpiryDate')?.touched &&
                         partnerForm.get('licenseExpiryDate')?.errors
-                      ">
+                      && (partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4) ">
                       {{ "VALIDATION.REQUIRED_FIELD" | translate }}
                     </div>
                   </div>
 
                   <!-- Contact Details (optional) -->
-                  <div class="col-xl-6 mb-3">
+                  <!-- <div class="col-xl-6 mb-3">
                     <label class="form-label">
                       {{
                       "PARTNERS.CONTACT_DETAILS" | translate
                       }}
                     </label>
                     <textarea rows="1" class="form-control" formControlName="contactDetails"></textarea>
+                  </div> -->
+
+                  <!-- Contact Details (optional converted to required) -->
+                  <div class="col-xl-6 mb-3">
+                    <label class="form-label">
+                      {{ 'PARTNERS.CONTACT_DETAILS' | translate }}
+                      <span class="text-danger">*</span>
+                    </label>
+
+                    <input type="number" class="form-control" formControlName="contactDetails"
+                      [class.is-invalid]="partnerForm.get('contactDetails')?.touched && partnerForm.get('contactDetails')?.invalid" />
+
+                    <div class="invalid-feedback"
+                      *ngIf="partnerForm.get('contactDetails')?.touched && partnerForm.get('contactDetails')?.hasError('required')">
+                      {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                    </div>
                   </div>
+
 
                   <div class="col-xl-12 mb-3">
                     <label class="form-label">
@@ -931,7 +955,7 @@
                               <td>
                                 <!-- {{ cfg.id}} -->
                                 {{
- getAttachmentName(AttachmentsConfigType.Partner,
+                                getAttachmentName(AttachmentsConfigType.Partner,
                                 cfg.id!)
                                 }}
                               </td>
@@ -939,19 +963,19 @@
                               <td>
                                 <!-- Upload area -->
                                 <div *ngIf="!hasSelected(AttachmentsConfigType.Partner, cfg.id!)" class="upload-area"
-                                     (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
-                                     (drop)="onDrop($event, AttachmentsConfigType.Partner, cfg.id!)"
-                                     [class.drag-over]="isDragOver">
+                                  (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                                  (drop)="onDrop($event, AttachmentsConfigType.Partner, cfg.id!)"
+                                  [class.drag-over]="isDragOver">
 
                                   <input type="file" class="d-none" [id]="'file-partner-' + cfg.id"
-                                         (change)="onFileSelected($event, AttachmentsConfigType.Partner, cfg.id!)"
-                                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                    (change)="onFileSelected($event, AttachmentsConfigType.Partner, cfg.id!)"
+                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
 
                                   <label [for]="'file-partner-' + cfg.id" class="upload-label">
                                     <i class="fas fa-cloud-upload-alt"></i>
                                     <span>
                                       {{
- 'ATTACHMENTS.DRAG_DROP_OR_CLICK' |
+                                      'ATTACHMENTS.DRAG_DROP_OR_CLICK' |
                                       translate
                                       }}
                                     </span>
@@ -969,14 +993,14 @@
 
                                   <img style="width: 150px; height: 100px;" *ngIf="getPreview(AttachmentsConfigType.Partner, cfg.id!)
                               && state(AttachmentsConfigType.Partner).selected[cfg.id!].type?.startsWith('image/')"
-                                       [src]="getPreview(AttachmentsConfigType.Partner, cfg.id!)" class="preview-image">
+                                    [src]="getPreview(AttachmentsConfigType.Partner, cfg.id!)" class="preview-image">
                                 </div>
                               </td>
 
                               <td>
                                 <button *ngIf="hasSelected(AttachmentsConfigType.Partner, cfg.id!)" type="button"
-                                        class="btn btn-sm btn-danger"
-                                        (click)="removeFile(AttachmentsConfigType.Partner, cfg.id!)">
+                                  class="btn btn-sm btn-danger"
+                                  (click)="removeFile(AttachmentsConfigType.Partner, cfg.id!)">
                                   {{ 'COMMON.REMOVE' | translate }}
                                 </button>
                               </td>
@@ -1045,7 +1069,7 @@
 
                 <div class="row">
                   <!-- Request Date (readonly visual) -->
-                  <div class="col-xl-6 mb-4">
+                  <!-- <div class="col-xl-6 mb-4">
                     <label class="form-label">
                       {{
                       "CHARITY_EVENT.REQUEST_DATE" | translate
@@ -1054,7 +1078,7 @@
                     <div class="form-control" readonly>
                       {{ advertForm.value.requestDate | date : "medium" }}
                     </div>
-                  </div>
+                  </div> -->
 
                   <!-- Provider (optional) -->
                   <!-- <div class="col-xl-6 mb-4">
@@ -1246,8 +1270,8 @@
                       <span class="text-danger">*</span>
                     </label>
                     <ng-select formControlName="targetTypeIds" [items]="advertisementTargetType" bindLabel="text"
-                               bindValue="id" [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
-                               [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom" [ngClass]="{
+                      bindValue="id" [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
+                      [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom" [ngClass]="{
                         'is-invalid':
                           advertForm.get('targetTypeIds')?.touched &&
                           advertForm.get('targetTypeIds')?.invalid
@@ -1269,8 +1293,8 @@
                       <span class="text-danger">*</span>
                     </label>
                     <ng-select formControlName="adMethodIds" [items]="advertisementMethodType" bindLabel="text"
-                               bindValue="id" [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
-                               [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom" [ngClass]="{
+                      bindValue="id" [multiple]="true" [closeOnSelect]="false" [clearable]="true" [searchable]="true"
+                      [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom" [ngClass]="{
                         'is-invalid':
                           advertForm.get('adMethodIds')?.touched &&
                           advertForm.get('adMethodIds')?.invalid
@@ -1294,7 +1318,7 @@
 
                     <div class="d-flex gap-2 mb-2">
                       <input class="form-control" [(ngModel)]="newLocationInput" [ngModelOptions]="{ standalone: true }"
-                             name="newLocationInput" placeholder="{{
+                        name="newLocationInput" placeholder="{{
                           'CHARITY_EVENT.ADD_LOCATION_PLACEHOLDER' | translate
                         }}" />
                       <button type="button" class="btn btn-outline-primary" (click)="addLocation()">
@@ -1306,7 +1330,7 @@
                       <span class="badge bg-secondary" *ngFor="let loc of adLocations; let i = index">
                         {{ loc }}
                         <button type="button" class="btn-close btn-close-white btn-sm ms-1" aria-label="Close"
-                                (click)="removeLocation(i)"></button>
+                          (click)="removeLocation(i)"></button>
                       </span>
                     </div>
 
@@ -1316,10 +1340,16 @@
                   </div>
                 </div>
 
+                <div class="col-xl-12 mb-2">
+                  <label class="form-label">{{ 'CHARITY_EVENT.NOTES' | translate }}</label>
+                  <textarea class="form-control" rows="3" formControlName="notes"
+                    [placeholder]="'CHARITY_EVENT.NOTES_PLACEHOLDER' | translate"></textarea>
+                </div>
+
                 <!-- Ad Attachments (RequestAnEventAnnouncementOrDonationCampaign) -->
                 <div class="mt-4">
                   <h6 class="mb-3">
-                    {{ "CHARITY_EVENT.AD_ATTACHMENTS" | translate }}
+                    {{ "PROFILE.DOCUMENTS" | translate }} 
                   </h6>
 
                   <div class="table-responsive">
@@ -1355,7 +1385,7 @@
                                   cfg.id!
                                 )
                               " class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
-                                 (drop)="
+                              (drop)="
                                 onDrop(
                                   $event,
                                   AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
@@ -1525,7 +1555,7 @@
                                 config.id!
                               )
                             " class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
-                               (drop)="
+                            (drop)="
                               onDrop(
                                 $event,
                                 AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
@@ -1609,12 +1639,12 @@
 
                 <div>
                   <button *ngIf="currentStep < totalSteps" type="button" class="btn btn-primary"
-                          (click)="handleNextClick()" [disabled]="isLoading || !isFormInitialized || isSaving">
+                    (click)="handleNextClick()" [disabled]="isLoading || !isFormInitialized || isSaving">
                     {{ "COMMON.NEXT" | translate }}
                   </button>
 
                   <button *ngIf="currentStep === totalSteps" type="submit" class="btn btn-success"
-                          [disabled]="!canSubmit() || isSaving">
+                    [disabled]="!canSubmit() || isSaving">
                     <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
                     {{ "COMMON.SUBMIT" | translate }}
                   </button>
@@ -1678,7 +1708,8 @@
                 </div>
 
                 <div class="mb-1" *ngIf="h.description">
-                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.DESCRIPTION' | translate }}:</small>
+                  <small class="text-muted">{{ 'mainApplyServiceResourceName.WORKFLOW.DESCRIPTION' | translate
+                    }}:</small>
                   <span>{{ h.description }}</span>
                 </div>
               </div>

@@ -115,12 +115,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   advertisementTargetType: any[] = [];
   advertisementMethodType: any[] = [];
   donationChannelsLookup: any[] = [];
-  partnerTypes: any[] = [
-    { id: PartnerType.Person, label: 'Person' },
-    { id: PartnerType.Government, label: 'Government' },
-    { id: PartnerType.Supplier, label: 'Supplier' },
-    { id: PartnerType.Company, label: 'Company' },
-  ];
+  partnerTypes: Array<{ id: PartnerType; label: string }> = [];
+
   partners: any[] = [];
   partnerForm!: FormGroup;
   adsStepIndex = 3;
@@ -155,7 +151,30 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.clearAllToasts();
     this.loadInitialData();
+
+    // أول تحميل
+    this.setPartnerTypes();
+
+    // تحديث عند تغيير اللغة
+    const langSub = this.translate.onLangChange.subscribe(() => {
+      this.setPartnerTypes();
+    });
+    this.subscriptions.push(langSub);
   }
+
+
+  private setPartnerTypes(): void {
+    const lang = this.translate.currentLang || localStorage.getItem('currentLang') || 'en';
+    const isArabic = lang === 'ar';
+
+    this.partnerTypes = [
+      { id: PartnerType.Person, label: isArabic ? 'فرد' : 'Person' },
+      { id: PartnerType.Government, label: isArabic ? 'جهة حكومية' : 'Government' },
+      { id: PartnerType.Supplier, label: isArabic ? 'مورد' : 'Supplier' },
+      { id: PartnerType.Company, label: isArabic ? 'شركة' : 'Company' },
+    ];
+  }
+
 
 
   private clearAllToasts(): void {
@@ -187,7 +206,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         supervisorName: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
         jopTitle: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
         telephone1: this.fb.control('', { validators: [Validators.required, this.uaeMobileValidator.bind(this)], nonNullable: true }),
-        telephone2: this.fb.control('', { validators: [Validators.required, this.uaeMobileValidator.bind(this)], nonNullable: true }),
+        telephone2: this.fb.control('', { validators: [this.uaeMobileValidator.bind(this)], nonNullable: true }),
         email: this.fb.control<string | null>(null, { validators: [Validators.email] }),
         advertisementType: this.fb.control<1 | 2>(1, { validators: [Validators.required], nonNullable: true }),
         notes: this.fb.control<string | null>(null),
@@ -241,6 +260,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
         targetTypeIds: this.fb.control<number[]>([], { validators: [arrayMinLength(1)], nonNullable: true }),
         adMethodIds: this.fb.control<number[]>([], { validators: [arrayMinLength(1)], nonNullable: true }),
+        notes: this.fb.control<string | null>(null),
       },
       {
         validators: [dateRangeValidator, this.renewRequiresOldPermValidator]
@@ -316,7 +336,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
       // optional
-      contactDetails: this.fb.control<string | null>(null, [Validators.maxLength(1000)]),
+      contactDetails: this.fb.control('',{validators: [Validators.required]}),
       mainApplyServiceId: this.fb.control<number | null>(null),
 
 
@@ -403,6 +423,12 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (!contactDetails) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.CONTACT_DETAILS'));
+      return;
+    }
+
+
     // Type: لازم قيمة صحيحة من enum (IsInEnum)
     const validTypes = [PartnerType.Person, PartnerType.Supplier, PartnerType.Company, PartnerType.Government];
     if (partnerType === null || !validTypes.includes(partnerType)) {
@@ -440,6 +466,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         this.toastr.error(this.translate.instant('VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS') + ': ' + missingFields.join(', '));
         return;
       }
+
 
       // مرفق الرخصة 2057
       // const hasLicenseAttachment =
@@ -485,8 +512,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
     if (partnerType === PartnerType.Person || partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
 
-      if (! partnerAttachments.length) {
-        this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') );
+      if (!partnerAttachments.length) {
+        this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED'));
         return;
       }
     }
@@ -521,6 +548,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     } else {
       this.showPartnerAttachments = false;
     }
+    console.log(this.partnerForm.get('type')?.value);
+
   }
   isPartnerAttachmentAllowed(cfgId: number): boolean {
     const type = this.partnerForm.get('type')?.value;
@@ -532,8 +561,9 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   }
 
   getPartnerTypeLabel(id: number): string {
-    return this.partnerTypes.find((t: any) => t.id === id)?.text ?? '';
+    return this.partnerTypes.find(t => t.id === id)?.label ?? '';
   }
+
 
   ////////////////////////////////////////////// start attachment functions
 
@@ -761,7 +791,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       'supervisorName',
       'jopTitle',
       'telephone1',
-      'telephone2',
+      // 'telephone2',
       'advertisementType'
     ];
 
@@ -792,7 +822,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       'supervisorName',
       'jopTitle',
       'telephone1',
-      'telephone2',
+      // 'telephone2',
       'advertisementType'
     ];
     const allHaveValues = mustHave.every(k => {
@@ -853,7 +883,9 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         startDate: toISO(formData.startDate),
         endDate: toISO(formData.endDate),
         telephone1: `971${formData.telephone1}`, // Add 971 prefix
-        telephone2: `971${formData.telephone2}`, // Add 971 prefix
+        // telephone2: `971${formData.telephone2}`, // Add 971 prefix
+        telephone2: formData.telephone2 ? `971${formData.telephone2}` : null,
+
         requestAdvertisements: this.requestAdvertisements,
         attachments: mainAttachments,
         partners: (this.partners || []).map(p => ({
@@ -1016,7 +1048,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       workFlowServiceType: Number(v.workFlowServiceType) as any,
 
       requestDate: toRFC3339(v.requestDate)!,
-     // userId: v.userId,
+      // userId: v.userId,
 
       provider: v.provider ?? null,
       adTitle: v.adTitle,
@@ -1035,6 +1067,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       newAd: v.newAd === true ? true : (v.reNewAd ? false : true),
       reNewAd: v.reNewAd === true ? true : false,
       oldPermNumber: v.oldPermNumber ?? null,
+      notes: v.notes ?? null,
 
       requestEventPermitId: v.requestEventPermitId != null ? Number(v.requestEventPermitId) : null,
 
@@ -1057,7 +1090,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         location: loc
       })),
     };
-
+    
     this.requestAdvertisements.push(ad);
     console.log('requestAdvertisements', this.requestAdvertisements);
 

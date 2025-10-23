@@ -297,11 +297,11 @@
     "SELECT_ENTITY": "اختر المؤسسة",
     "FOUNDATION_NAME": "اسم المؤسسة",
     "ENTER_FOUNDATION_NAME": "أدخل اسم المؤسسة",
-    "LICENSE_NUMBER": "رقم الترخيص",
-    "ENTER_LICENSE_NUMBER": "أدخل رقم الترخيص",
-    "LICENSE_END_DATE": "تاريخ انتهاء الترخيص",
-    "SELECT_LICENSE_END_DATE": "اختر تاريخ انتهاء الترخيص",
-    "LICENSE_DATE_FUTURE": "يجب أن يكون تاريخ انتهاء الترخيص في المستقبل",
+    "LICENSE_NUMBER": "رقم الرخصة",
+    "ENTER_LICENSE_NUMBER": "أدخل رقم الرخصة",
+    "LICENSE_END_DATE": "تاريخ انتهاء الرخصة",
+    "SELECT_LICENSE_END_DATE": "اختر تاريخ انتهاء الرخصة",
+    "LICENSE_DATE_FUTURE": "يجب أن يكون تاريخ انتهاء الرخصة في المستقبل",
     "CONTACT_INFO": "معلومات الاتصال",
     "EMAIL": "البريد الإلكتروني",
     "ENTER_EMAIL": "أدخل البريد الإلكتروني",
@@ -421,8 +421,6 @@
     "ATTACHMENTS_SAVED": "تم حفظ المرفقات بنجاح!",
     "ATTACHMENT_SAVE_ERROR": "فشل في حفظ المرفقات. يرجى المحاولة مرة أخرى."
   },
-
-
   "REQUEST_PLAINT": {
     "TITLE": "طلب تظلم",
     "DESCRIPTION": "قدم طلب التظلم الخاص بك من خلال ملء النموذج أدناه بجميع المعلومات والمستندات المطلوبة.",
@@ -454,7 +452,6 @@
     "ATTACHMENTS": "المستندات المطلوبة",
     "NO_ENTITIES_AVAILABLE": "لا توجد جهات متاحة لهذا المستخدم"
   },
-
   "REQUEST_COMPLAINT": {
     "TITLE": "طلب شكوى",
     "DESCRIPTION": "قدم طلب الشكوى مع المعلومات التفصيلية",
@@ -476,7 +473,6 @@
     "MOCK_SUGGESTION": "اقتراح",
     "MOCK_THANKS": "شكر"
   },
-
   "FASTING_TENT": {
     "TITLE": "خيمة الإفطار وتوزيع المواد الغذائية",
     "DESCRIPTION": "قدم طلبك لإقامة خيمة إفطار أو موقع توزيع من خلال استكمال المعلومات والوثائق المطلوبة.",
@@ -493,7 +489,6 @@
       "TENT_SETUP_DATE": "تاريخ إقامة الخيمة"
     }
   },
-
   "DISTRIBUTION_SITE": {
     "TITLE": "تصريح موقع التوزيع",
     "DESCRIPTION": "قدم طلبك للحصول على تصريح موقع توزيع من خلال استكمال المعلومات المطلوبة واختيار إحداثيات الموقع على الخريطة ورفع المستندات اللازمة.",
@@ -502,7 +497,6 @@
       "DATE_DETAILS_DESC": "الجدولة وتوقيت الإعداد"
     }
   },
-
   "ATTACHMENTS": {
     "TITLE": "المرفقات",
     "DOCUMENT_TYPE": "نوع المستند",
@@ -515,7 +509,6 @@
     "MORE_FILES ": "إضافة ملفات أخرى",
     "MULTIPLE_FILES_ALLOWED": "يمكن اختيار عدة ملفات في وقت واحد"
   },
-
   "SUCCESS": {
     "REQUEST_PLAINT_CREATED": "تم تقديم طلب التظلم بنجاح!",
     "REQUEST_COMPLAINT_CREATED": "تم إنشاء طلب الشكوى بنجاح",
@@ -528,7 +521,6 @@
     "IDENTITY_CARD_READ": "تم استرجاع بيانات بطاقة الهوية بنجاح",
     "AD_ADDED": "تم إضافة الإعلان بنجاح"
   },
-
   "ERRORS": {
     "SERVICE_ID_NOT_FOUND": "معرف الخدمة غير موجود",
     "FAILED_LOAD_SERVICE_DETAILS": "فشل في تحميل تفاصيل الخدمة. يرجى المحاولة مرة أخرى.",
@@ -558,11 +550,9 @@
     "FAILED_TO_READ_IDENTITY_CARD": "فشل في قراءة بيانات بطاقة الهوية. يرجى المحاولة مرة أخرى.",
     "INVALID_ID": "معرف غير صالح."
   },
-
   "WARNINGS": {
     "REASON_ALREADY_ADDED": "تم إضافة هذا السبب مسبقاً."
   },
-
   "VALIDATION": {
     "REQUIRED": "هذا الحقل مطلوب",
     "EMAIL": "يرجى إدخال عنوان بريد إلكتروني صحيح",
@@ -619,8 +609,6 @@
     "END_DATE_BEFORE_START_MESSAGE": "يجب أن يكون تاريخ النهاية بعد تاريخ البداية. يرجى اختيار تاريخ انتهاء صحيح.",
     "ACCEPT_TERMS": "يجب الموافقة على الشروط والأحكام"
   },
-
-
   "SERVICES": {
     "TITLE": "الخدمات",
     "DETAILS": "تفاصيل الخدمة",
@@ -656,7 +644,6 @@
     "VIEW_DETAILS": "عرض التفاصيل",
     "START_REQUEST": "بدء الطلب"
   },
-
   "HOME": {
     "WELCOME": "أهلاً وسهلاً",
     "FEATURED_SERVICES": "الخدمات المميزة",
@@ -721,8 +708,6 @@
       "IMAGE_ALT": "صورة القسم الرئيسي"
     }
   },
-
-
   "COMMON": {
     "REQUEST_SERVICE": "طلب الخدمة",
     "LOADING": "جاري التحميل...",
@@ -780,9 +765,9 @@
     "INVALID_ID": "معرف غير صالح",
     "NAME": "الاسم",
     "TYPE": "النوع",
-    "LICENSE_NUMBER": "رقم الترخيص",
-    "LICENSE_ISSUER": "جهة إصدار الترخيص",
-    "LICENSE_EXPIRY": "انتهاء الترخيص",
+    "LICENSE_NUMBER": "رقم الرخصة",
+    "LICENSE_ISSUER": "جهة إصدار الرخصة",
+    "LICENSE_EXPIRY": "انتهاء الرخصة",
     "CONTACT_DETAILS": "تفاصيل الاتصال",
     "INVALID_PARTNER_ID": "معرف شريك غير صالح",
     "ERROR_DETAILS": "تفاصيل الخطأ",
@@ -844,11 +829,11 @@
       "PARTNER_NAME": "اسم الشريك",
       "PARTNER_NAME_PLACEHOLDER": "أدخل اسم الشريك",
       "PARTNER_TYPE": "نوع الشريك",
-      "LICENSE_ISSUER": "جهة إصدار الترخيص",
-      "LICENSE_ISSUER_PLACEHOLDER": "أدخل جهة إصدار الترخيص",
-      "LICENSE_NUMBER": "رقم الترخيص",
-      "LICENSE_NUMBER_PLACEHOLDER": "أدخل رقم الترخيص",
-      "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الترخيص",
+      "LICENSE_ISSUER": "جهة إصدار الرخصة",
+      "LICENSE_ISSUER_PLACEHOLDER": "أدخل جهة إصدار الرخصة",
+      "LICENSE_NUMBER": "رقم الرخصة",
+      "LICENSE_NUMBER_PLACEHOLDER": "أدخل رقم الرخصة",
+      "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الرخصة",
       "CONTACT_DETAILS": "تفاصيل الاتصال",
       "CONTACT_DETAILS_PLACEHOLDER": "أدخل تفاصيل الاتصال",
       "START_DATE": "تاريخ البداية",
@@ -878,8 +863,8 @@
       "NO_PARTNERS_ADDED": "لم يتم إضافة أي شركاء حتى الآن",
       "NO_PARTNERS": "لا توجد شركاء متاحون",
       "ADD_PARTNER": "إضافة شريك",
-      "PARTNER_ATTACHMENTS": "مرفقات الشريك" ,
-       "ATTACHMENTS" :"اضافة مرفق"
+      "PARTNER_ATTACHMENTS": "مرفقات الشريك",
+      "ATTACHMENTS": "اضافة مرفق"
     },
     "ATTACHMENTS": {
       "TITLE": "المرفقات",
@@ -1218,8 +1203,8 @@
     "REQUEST_DATE": "تاريخ الطلب",
     "EVENT_NAME": "اسم الفعالية",
     "EVENT_LOCATION": "موقع الفعالية",
-    "START_DATE": "تاريخ البدء",
-    "END_DATE": "تاريخ الانتهاء",
+    "START_DATE": "تاريخ \\ وقت البدء",
+    "END_DATE": "تاريخ\\وقت الانتهاء",
     "SUPERVISOR_NAME": "اسم المشرف",
     "JOB_TITLE": "المسمى الوظيفي",
     "TELEPHONE1": "هاتف 1",
@@ -1248,7 +1233,7 @@
     "OLD_PERM_NUMBER": "رقم التصريح السابق",
     "TARGET_TYPES": "الفئات المستهدفة",
     "AD_METHODS": "قنوات الإعلان",
-    "AD_LOCATIONS": "أماكن الإعلان",
+    "AD_LOCATIONS": "مواقع الإعلان",
     "ADD_LOCATION_PLACEHOLDER": "أضف موقعًا ثم اضغط إضافة",
     "DATE_RANGE_COL": "الفترة الزمنية",
     "TARGETS_COUNT": "عدد الفئات",
@@ -1334,10 +1319,10 @@
   "PARTNERS": {
     "NAME": "اسم الشريك",
     "TYPE": "نوع الشريك",
-    "LICENSE_ISSUER": "جهة إصدار الترخيص",
-    "LICENSE_NUMBER": "رقم الترخيص",
-    "LICENSE_EXPIRY": "تاريخ انتهاء الترخيص",
-    "CONTACT_DETAILS": "بيانات التواصل",
+    "LICENSE_ISSUER": "جهة إصدار الرخصة",
+    "LICENSE_NUMBER": "رقم الرخصة",
+    "LICENSE_EXPIRY": "تاريخ انتهاء الرخصة",
+    "CONTACT_DETAILS": "رقم تواصل الشريك",
     "MAIN_APPLY_SERVICE": "الخدمة الرئيسية (اختياري)"
   },
   "WORKFLOW": {
@@ -1409,11 +1394,11 @@
     "PARTNER_NAME": "اسم الشريك",
     "PARTNER_NAME_PLACEHOLDER": "أدخل اسم الشريك",
     "PARTNER_TYPE": "نوع الشريك",
-    "LICENSE_ISSUER": "جهة إصدار الترخيص",
-    "LICENSE_ISSUER_PLACEHOLDER": "أدخل جهة إصدار الترخيص",
-    "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الترخيص",
-    "LICENSE_NUMBER": "رقم الترخيص",
-    "LICENSE_NUMBER_PLACEHOLDER": "أدخل رقم الترخيص",
+    "LICENSE_ISSUER": "جهة إصدار الرخصة",
+    "LICENSE_ISSUER_PLACEHOLDER": "أدخل جهة إصدار الرخصة",
+    "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الرخصة",
+    "LICENSE_NUMBER": "رقم الرخصة",
+    "LICENSE_NUMBER_PLACEHOLDER": "أدخل رقم الرخصة",
     "CONTACT_DETAILS": "تفاصيل الاتصال",
     "CONTACT_DETAILS_PLACEHOLDER": "أدخل تفاصيل الاتصال",
     "ATTACHMENTS": "المرفقات"
@@ -1475,11 +1460,11 @@
     "PARTNER_NAME": "اسم الشريك",
     "PARTNER_NAME_PLACEHOLDER": "أدخل اسم الشريك",
     "PARTNER_TYPE": "نوع الشريك",
-    "LICENSE_ISSUER": "جهة إصدار الترخيص",
-    "LICENSE_ISSUER_PLACEHOLDER": "أدخل جهة إصدار الترخيص",
-    "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الترخيص",
-    "LICENSE_NUMBER": "رقم الترخيص",
-    "LICENSE_NUMBER_PLACEHOLDER": "أدخل رقم الترخيص",
+    "LICENSE_ISSUER": "جهة إصدار الرخصة",
+    "LICENSE_ISSUER_PLACEHOLDER": "أدخل جهة إصدار الرخصة",
+    "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الرخصة",
+    "LICENSE_NUMBER": "رقم الرخصة",
+    "LICENSE_NUMBER_PLACEHOLDER": "أدخل رقم الرخصة",
     "CONTACT_DETAILS": "تفاصيل الاتصال",
     "CONTACT_DETAILS_PLACEHOLDER": "أدخل تفاصيل الاتصال"
   },
@@ -1528,9 +1513,9 @@
     "NO_PARTNERS": "لم يتم إضافة شركاء",
     "PARTNER_NAME": "اسم الشريك",
     "PARTNER_TYPE": "نوع الشريك",
-    "LICENSE_ISSUER": "جهة إصدار الترخيص",
-    "LICENSE_NUMBER": "رقم الترخيص",
-    "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الترخيص",
+    "LICENSE_ISSUER": "جهة إصدار الرخصة",
+    "LICENSE_NUMBER": "رقم الرخصة",
+    "LICENSE_EXPIRY_DATE": "تاريخ انتهاء الرخصة",
     "CONTACT_DETAILS": "تفاصيل الاتصال",
     "NO_ATTACHMENTS": "لم يتم العثور على مرفقات"
   },
@@ -1728,7 +1713,7 @@
     "PASSPORT_NO": "رقم جواز السفر",
     "FAMILY_PERSONS": "عدد أفراد الأسرة",
     "LOADING": "جاري تحميل بيانات بطاقة الهوية..."
-    },
+  },
   "OTP": {
     "TITLE": "تأكيد الرمز",
     "EXPIRES_IN": "ستنتهي صلاحية الرمز خلال",

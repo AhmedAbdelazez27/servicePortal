@@ -53,7 +53,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   currentStep: number = 1;
-  totalSteps: number = 5;
+  totalSteps: number = 3;
   
   // Forms
   requestPlaintForm!: FormGroup;
@@ -453,11 +453,11 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
         return this.validateStep1();
       case 2:
         return true; // Reasons are optional initially
+      // case 3:
+      //   return true; // Evidence is optional
+      // case 4:
+      //   return true; // Justifications are optional
       case 3:
-        return true; // Evidence is optional
-      case 4:
-        return true; // Justifications are optional
-      case 5:
         return true; // Attachments validation in upload
       default:
         return true;
@@ -774,15 +774,15 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
         const step2Valid = this.reasons.length > 0;
 
         return step2Valid;
+      // case 3:
+      //   const step3Valid = this.evidences.length > 0;
+
+      //   return step3Valid;
+      // case 4:
+      //   const step4Valid = this.justifications.length > 0;
+
+        // return step4Valid;
       case 3:
-        const step3Valid = this.evidences.length > 0;
-
-        return step3Valid;
-      case 4:
-        const step4Valid = this.justifications.length > 0;
-
-        return step4Valid;
-      case 5:
         const step5Valid = this.attachments.some(a => a.fileBase64 && a.fileName);
 
         return step5Valid;

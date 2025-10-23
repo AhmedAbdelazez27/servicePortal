@@ -87,18 +87,18 @@
 
                                 <div class="row">
                                     <!-- Request No  -->
-                                    <div class="col-xl-6 mb-4">
+                                    <!-- <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_NO' | translate }}</label>
                                         <input type="text" class="form-control" value="0" readonly>
-                                    </div>
+                                    </div> -->
 
                                     <!-- Request Date  -->
-                                    <div class="col-xl-6 mb-4">
+                                    <!-- <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_DATE' | translate }}</label>
                                         <div class="form-control" readonly>
                                             {{ firstStepForm.value.requestDate | date:'medium' }}
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <!-- Event Name -->
                                     <div class="col-xl-6 mb-4">
@@ -223,8 +223,9 @@
 
                                     <div class="col-xl-6 mb-4">
                                         <label class="form-label">
-                                            {{ 'CHARITY_EVENT.TELEPHONE2' | translate }} <span
-                                                class="text-danger">*</span>
+                                            {{ 'CHARITY_EVENT.TELEPHONE2' | translate }}
+                                            <!-- <span
+                                                class="text-danger">*</span> -->
                                         </label>
 
                                         <!-- Mobile Number Input with UAE Flag and 971 prefix -->
@@ -243,9 +244,9 @@
 
                                         <div *ngIf="(submitted || firstStepForm.get('telephone2')?.touched) && firstStepForm.get('telephone2')?.errors"
                                             class="invalid-feedback">
-                                            <div *ngIf="firstStepForm.get('telephone2')?.hasError('required')">
+                                            <!-- <div *ngIf="firstStepForm.get('telephone2')?.hasError('required')">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                            </div>
+                                            </div> -->
                                             <div *ngIf="firstStepForm.get('telephone2')?.hasError('pattern')">
                                                 {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
                                             </div>
@@ -348,12 +349,13 @@
                                     <!-- License Issuer (required) -->
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">
-                                            {{ 'PARTNERS.LICENSE_ISSUER' | translate }} 
+                                            {{ 'PARTNERS.LICENSE_ISSUER' | translate }} <span class="text-danger"
+                                                *ngIf="partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4">*</span>
                                         </label>
                                         <input class="form-control" formControlName="licenseIssuer"
                                             [class.is-invalid]="partnerForm.get('licenseIssuer')?.touched && partnerForm.get('licenseIssuer')?.invalid">
                                         <div class="invalid-feedback"
-                                            *ngIf="partnerForm.get('licenseIssuer')?.touched && partnerForm.get('licenseIssuer')?.errors">
+                                            *ngIf="partnerForm.get('licenseIssuer')?.touched && partnerForm.get('licenseIssuer')?.errors&& (partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4)">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
@@ -361,12 +363,13 @@
                                     <!-- License Number (required) -->
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">
-                                            {{ 'PARTNERS.LICENSE_NUMBER' | translate }} 
+                                            {{ 'PARTNERS.LICENSE_NUMBER' | translate }} <span class="text-danger"
+                                                *ngIf="partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4">*</span>
                                         </label>
                                         <input class="form-control" formControlName="licenseNumber"
                                             [class.is-invalid]="partnerForm.get('licenseNumber')?.touched && partnerForm.get('licenseNumber')?.invalid">
                                         <div class="invalid-feedback"
-                                            *ngIf="partnerForm.get('licenseNumber')?.touched && partnerForm.get('licenseNumber')?.errors">
+                                            *ngIf="partnerForm.get('licenseNumber')?.touched && partnerForm.get('licenseNumber')?.errors && (partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4)">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
@@ -374,22 +377,33 @@
                                     <!-- License Expiry Date (required) -->
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">
-                                            {{ 'PARTNERS.LICENSE_EXPIRY' | translate }}
+                                            {{ 'PARTNERS.LICENSE_EXPIRY' | translate }} <span class="text-danger"
+                                                *ngIf="partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4">*</span>
                                         </label>
                                         <input type="date" class="form-control" formControlName="licenseExpiryDate"
                                             [class.is-invalid]="partnerForm.get('licenseExpiryDate')?.touched && partnerForm.get('licenseExpiryDate')?.invalid">
                                         <div class="invalid-feedback"
-                                            *ngIf="partnerForm.get('licenseExpiryDate')?.touched && partnerForm.get('licenseExpiryDate')?.errors">
+                                            *ngIf="partnerForm.get('licenseExpiryDate')?.touched && partnerForm.get('licenseExpiryDate')?.errors && (partnerForm.get('type')?.value == 3 || partnerForm.get('type')?.value == 4)">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                                     </div>
 
-                                    <!-- Contact Details (optional) -->
+                                    <!-- Contact Details (optional converted to required) -->
                                     <div class="col-xl-6 mb-3">
-                                        <label class="form-label">{{ 'PARTNERS.CONTACT_DETAILS' | translate }}</label>
-                                        <textarea rows="1" class="form-control"
-                                            formControlName="contactDetails"></textarea>
+                                        <label class="form-label">
+                                            {{ 'PARTNERS.CONTACT_DETAILS' | translate }}
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+                                        <input type="number" class="form-control" formControlName="contactDetails"
+                                            [class.is-invalid]="partnerForm.get('contactDetails')?.touched && partnerForm.get('contactDetails')?.invalid" />
+
+                                        <div class="invalid-feedback"
+                                            *ngIf="partnerForm.get('contactDetails')?.touched && partnerForm.get('contactDetails')?.hasError('required')">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
                                     </div>
+
 
                                     <div class="col-xl-12 mb-3">
                                         <label class="form-label">
@@ -402,7 +416,7 @@
 
                                     <!-- Partner Attachments (AttachmentsConfigType.Partner) -->
                                     <div *ngIf="showPartnerAttachments" class="col-12 mt-4">
-                                        <h6 class="mb-3">{{ 'PARTNERS.ATTACHMENTS' | translate }}</h6>
+                                        <h6 class="mb-3">{{ 'PROFILE.DOCUMENTS' | translate }}</h6>
 
                                         <div class="table-responsive">
                                             <table class="table table-striped align-middle">
@@ -537,12 +551,12 @@
 
                                 <div class="row">
                                     <!-- Request Date (readonly visual) -->
-                                    <div class="col-xl-6 mb-4">
+                                    <!-- <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_DATE' | translate }}</label>
                                         <div class="form-control" readonly>
                                             {{ advertForm.value.requestDate | date:'medium' }}
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <!-- Provider (optional) -->
                                     <!-- <div class="col-xl-6 mb-4">
@@ -786,12 +800,16 @@
                                         </div>
                                     </div>
 
-
+                                    <div class="col-xl-12 mb-2">
+                                        <label class="form-label">{{ 'CHARITY_EVENT.NOTES' | translate }}</label>
+                                        <textarea class="form-control" rows="3" formControlName="notes"
+                                            [placeholder]="'CHARITY_EVENT.NOTES_PLACEHOLDER' | translate"></textarea>
+                                    </div>
                                 </div>
 
                                 <!-- Ad Attachments (RequestAnEventAnnouncementOrDonationCampaign) -->
                                 <div class="mt-4">
-                                    <h6 class="mb-3">{{ 'CHARITY_EVENT.AD_ATTACHMENTS' | translate }}</h6>
+                                    <h6 class="mb-3">{{ 'REQUEST_PLAINT.ATTACHMENTS' | translate }}</h6>
 
                                     <div class="table-responsive">
                                         <table class="table table-striped align-middle">

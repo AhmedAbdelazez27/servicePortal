@@ -144,12 +144,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   advertisementTargetType: any[] = [];
   advertisementMethodType: any[] = [];
   donationChannelsLookup: any[] = [];
-  partnerTypes: any[] = [
-    { id: PartnerType.Person, label: 'Person' },
-    { id: PartnerType.Government, label: 'Government' },
-    { id: PartnerType.Supplier, label: 'Supplier' },
-    { id: PartnerType.Company, label: 'Company' },
-  ];
+  partnerTypes: Array<{ id: PartnerType; label: string }> = [];
+
   requestTypes: any[] = [];
   permitsTypes: any[] = [];
   partners: any[] = [];
@@ -165,7 +161,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   ];
   service: any;
   showPartnerAttachments = false;
-  
+
   // Identity Card Reader
   identityCardData: IdentityCardReaderDto | null = null;
   isLoadingIdentityCard = false;
@@ -191,7 +187,28 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.clearAllToasts();
     this.loadInitialData();
+
+    this.setPartnerTypes();
+
+    // تحديث عند تغيير اللغة
+    const langSub = this.translate.onLangChange.subscribe(() => {
+      this.setPartnerTypes();
+    });
+    this.subscriptions.push(langSub);
   }
+
+  private setPartnerTypes(): void {
+    const lang = this.translate.currentLang || localStorage.getItem('currentLang') || 'en';
+    const isArabic = lang === 'ar';
+
+    this.partnerTypes = [
+      { id: PartnerType.Person, label: isArabic ? 'فرد' : 'Person' },
+      { id: PartnerType.Government, label: isArabic ? 'جهة حكومية' : 'Government' },
+      { id: PartnerType.Supplier, label: isArabic ? 'مورد' : 'Supplier' },
+      { id: PartnerType.Company, label: isArabic ? 'شركة' : 'Company' },
+    ];
+  }
+
 
   private clearAllToasts(): void {
     this.toastr.clear();
@@ -394,7 +411,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         // oldPermNumber: this.fb.control<string | null>(null),
 
         requestEventPermitId: this.fb.control<number | null>(null),
-
+        notes: this.fb.control<string | null>(null),
         targetTypeIds: this.fb.control<number[]>([], {
           validators: [arrayMinLength(1)],
           nonNullable: true,
@@ -498,7 +515,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
       // optional
-      contactDetails: this.fb.control<string | null>(null, [Validators.maxLength(1000)]),
+      contactDetails: this.fb.control('',{validators: [Validators.required]}),
       mainApplyServiceId: this.fb.control<number | null>(null),
 
 
@@ -564,6 +581,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     }
     if (name.length > 200) {
       this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME')} (<= 200)`);
+      return;
+    }
+
+    if (!contactDetails) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.CONTACT_DETAILS'));
       return;
     }
 
@@ -696,8 +718,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   }
 
   getPartnerTypeLabel(id: number): string {
-    return this.partnerTypes.find((t: any) => t.id === id)?.text ?? '';
+    return this.partnerTypes.find(t => t.id === id)?.label ?? '';
   }
+
 
   ////////////////////////////////////////////// start attachment functions
 
@@ -998,7 +1021,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     // 1)required
     (
       [
-       // ['userId', 450],
+        // ['userId', 450],
         ['requestSide', 200],
         ['supervisingSide', 200],
         ['eventName', 200],
@@ -1153,7 +1176,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       return false;
 
     const mustHave = [
-     // 'userId',
+      // 'userId',
       'requestSide',
       'supervisingSide',
       'eventName',
@@ -1410,7 +1433,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       workFlowServiceType: Number(v.workFlowServiceType) as any,
 
       requestDate: toRFC3339(v.requestDate)!,
-    //  userId: v.userId,
+      //  userId: v.userId,
 
       // provider: v.provider ?? null,
       adTitle: v.adTitle,
@@ -1429,7 +1452,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       // newAd: v.newAd === true ? true : (v.reNewAd ? false : true),
       // reNewAd: v.reNewAd === true ? true : false,
       // oldPermNumber: v.oldPermNumber ?? null,
-
+      notes: v.notes ?? null,
       requestEventPermitId:
         v.requestEventPermitId != null ? Number(v.requestEventPermitId) : null,
 
@@ -1462,7 +1485,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       serviceType: 1,
       workFlowServiceType: 1,
       requestDate: new Date().toISOString(),
-     // userId: v.userId,
+      // userId: v.userId,
       // adLang: 'ar',
       // newAd: true,
       // reNewAd: false,
@@ -1633,7 +1656,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   // Emirates ID validation
   emiratesIdValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
-    
+
     // If not individual request type, no validation needed
     if (!this.isIndividualRequestType()) {
       return null;
@@ -1647,7 +1670,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     // Check if exactly 15 digits (only numbers) - Emirates ID format
     const cleanValue = value.toString().trim();
     const emiratesIdPattern = /^\d{15}$/;
-    
+
     if (!emiratesIdPattern.test(cleanValue)) {
       return { pattern: true };
     }
@@ -1658,16 +1681,16 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   // Check if request type is individual (حالة فردية)
   isIndividualRequestType(): boolean {
     const requestTypeId = this.firstStepForm?.get('lkpRequestTypeId')?.value;
-    
+
     // Find the selected request type
     const selectedType = this.requestTypes.find(type => type.id === requestTypeId);
-    
+
     // Check if the text contains "فردية" or "individual" (case insensitive)
     if (selectedType && selectedType.text) {
       const text = selectedType.text.toLowerCase();
       return text.includes('فردية') || text.includes('individual') || text.includes('فردي');
     }
-    
+
     return false;
   }
 
@@ -1735,7 +1758,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   // Read Identity Card Data
   readIdentityCardData(): void {
     const idNumber = this.firstStepForm.get('beneficiaryIdNumber')?.value;
-    
+
     if (!idNumber || idNumber.toString().trim() === '') {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
       return;
@@ -1744,7 +1767,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     // Validate Emirates ID format (15 digits)
     const cleanValue = idNumber.toString().trim();
     const emiratesIdPattern = /^\d{15}$/;
-    
+
     if (!emiratesIdPattern.test(cleanValue)) {
       this.toastr.error(this.translate.instant('VALIDATION.INVALID_EMIRATES_ID'));
       return;
@@ -1765,7 +1788,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Error reading identity card:', error);
         this.isLoadingIdentityCard = false;
-        
+
         if (error.error && error.error.reason) {
           this.toastr.error(error.error.reason);
         } else if (error.status === 404) {

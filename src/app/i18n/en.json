@@ -2991,9 +2991,8 @@
 
     "EVENT_LOCATION": "Event Location",
 
-    "START_DATE": "Start Date",
-
-    "END_DATE": "End Date",
+    "START_DATE": "Start Date / Time",
+    "END_DATE": "End Date / Time",
 
     "SUPERVISOR_NAME": "Supervisor Name",
 

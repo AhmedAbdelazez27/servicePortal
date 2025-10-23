@@ -67,6 +67,7 @@ export interface RequestAdvertisement {
   supervisorName: string | null;
   fax: string | null;
   eMail: string | null;
+  notes: string | null;
   targetedAmount: number | null;
   newAd: boolean | null;
   reNewAd: boolean | null;
