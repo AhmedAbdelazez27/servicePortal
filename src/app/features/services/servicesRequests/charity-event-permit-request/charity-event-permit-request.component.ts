@@ -336,9 +336,10 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
       // optional
-      contactDetails: this.fb.control('',{validators: [Validators.required]}),
+      contactDetails: this.fb.control('', { validators: [Validators.required] }),
       mainApplyServiceId: this.fb.control<number | null>(null),
 
+      nameEn: ['', [Validators.required, Validators.maxLength(200)]],
 
       name: ['', [Validators.required, Validators.maxLength(200)]],
       jobRequirementsDetails: [''],
@@ -411,11 +412,17 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     const licenseExpiry = (this.partnerForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnerForm.get('licenseNumber')?.value ?? '').toString().trim();
     const contactDetails = (this.partnerForm.get('contactDetails')?.value ?? '').toString().trim();
+    const nameEn = (this.partnerForm.get('nameEn')?.value ?? '').toString().trim();
+
 
     // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
     // Name: required + max 200
     if (!name) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME'));
+      return;
+    }
+    if (!nameEn) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.NAME_EN'));
       return;
     }
     if (name.length > 200) {
@@ -521,6 +528,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
     this.partners.push({
       name: v.name!,
+      nameEn: v.nameEn!,
+
       type: v.type!,
       licenseIssuer: v.licenseIssuer!,
       licenseExpiryDate: v.licenseExpiryDate!,
@@ -1090,7 +1099,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         location: loc
       })),
     };
-    
+
     this.requestAdvertisements.push(ad);
     console.log('requestAdvertisements', this.requestAdvertisements);
 

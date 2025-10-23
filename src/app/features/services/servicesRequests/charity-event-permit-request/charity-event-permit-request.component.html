@@ -328,6 +328,26 @@
                                         </div>
                                     </div>
 
+
+
+                                    <!-- NameEn (required) -->
+                                    <div class="col-xl-6 mb-3">
+                                        <label class="form-label">
+                                            {{ "PARTNERS.NAME_EN" | translate }}
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input class="form-control" formControlName="nameEn" [class.is-invalid]="
+                        partnerForm.get('nameEn')?.touched &&
+                        partnerForm.get('nameEn')?.invalid
+                      " />
+                                        <div class="invalid-feedback" *ngIf="
+                        partnerForm.get('nameEn')?.touched &&
+                        partnerForm.get('nameEn')?.errors
+                      ">
+                                            {{ "VALIDATION.REQUIRED_FIELD" | translate }}
+                                        </div>
+                                    </div>
+
                                     <!-- Type (required) -->
                                     <div class="col-xl-6 mb-3">
                                         <label class="form-label">

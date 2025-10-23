@@ -520,6 +520,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
 
       name: ['', [Validators.required, Validators.maxLength(200)]],
+      nameEn: ['', [Validators.required, Validators.maxLength(200)]],
       jobRequirementsDetails: [''],
     });
   }
@@ -568,6 +569,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     // ====== تحضير قيم الحقول ======
     const name = (this.partnerForm.get('name')?.value ?? '').toString().trim();
+    const nameEn = (this.partnerForm.get('nameEn')?.value ?? '').toString().trim();
     const licenseIssuer = (this.partnerForm.get('licenseIssuer')?.value ?? '').toString().trim();
     const licenseExpiry = (this.partnerForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnerForm.get('licenseNumber')?.value ?? '').toString().trim();
@@ -577,6 +579,10 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     // Name: required + max 200
     if (!name) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME'));
+      return;
+    }
+       if (!nameEn) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.NAME_EN'));
       return;
     }
     if (name.length > 200) {
@@ -680,6 +686,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     this.partners.push({
       name: v.name!,
+      nameEn: v.nameEn!,
       type: v.type!,
       licenseIssuer: v.licenseIssuer!,
       licenseExpiryDate: v.licenseExpiryDate!,

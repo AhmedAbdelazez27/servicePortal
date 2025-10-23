@@ -3219,6 +3219,7 @@
   "PARTNERS": {
 
     "NAME": "Partner Name",
+    "NAME_EN": "Partner English Name",
 
     "TYPE": "Partner Type",
 
