@@ -175,18 +175,6 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   submitOtp(): void {
-    // this.authService.GetMyProfile().subscribe({
-    //   next: (res)=>{
-    //     console.log(res);
-        
-    //   },
-    //   error: (err)=>{
-    //     console.log(err);
-        
-    //   }
-    // })
-    // return
-
     this.submitted = true;
     if (this.otpForm.invalid) return;
     this.spinnerService.show();
@@ -238,7 +226,7 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
 
         },
         error: (err) => {
-          
+          this.spinnerService.hide();
           this.toastr.error(
             this.translate.instant('OTP.VERIFY_FAILED'),
             this.translate.instant('TOAST.TITLE.ERROR')
@@ -253,8 +241,10 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
               this.translate.instant('OTP.VERIFY_SUCCESS'),
               this.translate.instant('TOAST.TITLE.SUCCESS')
             );
+            this.spinnerService.hide();
             this.router.navigate(['/reset-password']);
           } else {
+            this.spinnerService.hide();
             this.toastr.error(
               this.translate.instant('OTP.VERIFY_FAILED'),
               this.translate.instant('TOAST.TITLE.ERROR')
@@ -262,6 +252,7 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         },
         error: () => {
+          this.spinnerService.hide();
           this.toastr.error(
             this.translate.instant('OTP.VERIFY_FAILED'),
             this.translate.instant('TOAST.TITLE.ERROR')

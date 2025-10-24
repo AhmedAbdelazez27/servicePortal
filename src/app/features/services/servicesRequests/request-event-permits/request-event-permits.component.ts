@@ -251,9 +251,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           nonNullable: true,
         }),
 
-        supervisingSide: this.fb.control<string>('', {
-          validators: [Validators.required, Validators.maxLength(200)],
-          nonNullable: true,
+        supervisingSide: this.fb.control(null, {
+          validators: [ Validators.maxLength(200)]
         }),
 
         eventName: this.fb.control<string>('', {
@@ -271,52 +270,44 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           nonNullable: true,
         }),
 
-        lkpPermitTypeId: this.fb.control<number>(1, {
-          validators: [Validators.required],
-          nonNullable: true,
-        }),
+        lkpPermitTypeId: this.fb.control(null),
 
-        eventLocation: this.fb.control<string>('', {
-          validators: [Validators.required, Validators.maxLength(500)],
-          nonNullable: true,
-        }),
+        eventLocation: this.fb.control(null, {
+          validators: [Validators.maxLength(500)]}),
 
-        amStartTime: this.fb.control<string>('', {
-          validators: [rfc3339Required],
-          nonNullable: true,
-        }),
-        amEndTime: this.fb.control<string>('', {
-          validators: [rfc3339Required],
-          nonNullable: true,
-        }),
-        pmStartTime: this.fb.control<string>('', {
-          validators: [rfc3339Required],
-          nonNullable: true,
-        }),
-        pmEndTime: this.fb.control<string>('', {
-          validators: [rfc3339Required],
-          nonNullable: true,
-        }),
+        // amStartTime: this.fb.control<string>('', {
+        //   validators: [rfc3339Required],
+        //   nonNullable: true,
+        // }),
+        // amEndTime: this.fb.control<string>('', {
+        //   validators: [rfc3339Required],
+        //   nonNullable: true,
+        // }),
+        // pmStartTime: this.fb.control<string>('', {
+        //   validators: [rfc3339Required],
+        //   nonNullable: true,
+        // }),
+        // pmEndTime: this.fb.control<string>('', {
+        //   validators: [rfc3339Required],
+        //   nonNullable: true,
+        // }),
 
-        // amStartTime: this.fb.control('', [Validators.required]),
-        // amEndTime: this.fb.control('', [Validators.required]),
-        // pmStartTime: this.fb.control('', [Validators.required]),
-        // pmEndTime: this.fb.control('', [Validators.required]),
+        amStartTime: this.fb.control(null),
+        amEndTime: this.fb.control(null),
+        pmStartTime: this.fb.control(null),
+        pmEndTime: this.fb.control(null),
 
         admin: this.fb.control<string>('', {
           validators: [Validators.required, Validators.maxLength(200)],
           nonNullable: true,
         }),
 
-        delegateName: this.fb.control<string>('', {
-          validators: [Validators.required, Validators.maxLength(200)],
-          nonNullable: true,
+        delegateName: this.fb.control(null, {
+          validators: [ Validators.maxLength(200)]
         }),
 
-        alternateName: this.fb.control<string>('', {
-          validators: [Validators.required, Validators.maxLength(100)],
-          nonNullable: true,
-        }),
+        alternateName: this.fb.control(null, {
+          validators: [Validators.maxLength(100)]}),
 
         adminTel: this.fb.control<string>('', {
           validators: [Validators.required, this.uaeMobileValidator.bind(this)],
@@ -351,7 +342,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       },
       {
         validators: [
-          timeRangesOk,
+          // timeRangesOk,
           // this.timeRangeValidator('amStartTime', 'amEndTime'),
           // this.timeRangeValidator('pmStartTime', 'pmEndTime')
         ],
@@ -515,7 +506,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
       // optional
-      contactDetails: this.fb.control('',{validators: [Validators.required]}),
+      contactDetails: this.fb.control(null,{validators: [Validators.required]}),
       mainApplyServiceId: this.fb.control<number | null>(null),
 
 
@@ -573,7 +564,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const licenseIssuer = (this.partnerForm.get('licenseIssuer')?.value ?? '').toString().trim();
     const licenseExpiry = (this.partnerForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnerForm.get('licenseNumber')?.value ?? '').toString().trim();
-    const contactDetails = (this.partnerForm.get('contactDetails')?.value ?? '').toString().trim();
+    const contactDetails = +(this.partnerForm.get('contactDetails')?.value ?? null);
 
     // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
     // Name: required + max 200
@@ -615,10 +606,10 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     }
 
     // ContactDetails: max 1000 (لو متعبّي)
-    if (contactDetails && contactDetails.length > 1000) {
-      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
-      return;
-    }
+    // if (contactDetails && contactDetails.length > 1000) {
+    //   this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
+    //   return;
+    // }
 
     // ====== البيزنيس (الأولوية ليه) ======
     // Supplier/Company ⇒ بيانات الرخصة required + مرفق الرخصة (2057) required
@@ -1030,12 +1021,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       [
         // ['userId', 450],
         ['requestSide', 200],
-        ['supervisingSide', 200],
+        // ['supervisingSide', 200],
         ['eventName', 200],
-        ['eventLocation', 500],
+        // ['eventLocation', 500],
         ['admin', 200],
-        ['delegateName', 200],
-        ['alternateName', 100],
+        // ['delegateName', 200],
+        // ['alternateName', 100],
       ] as const
     ).forEach(([k, max]) => {
       const v = val(k);
@@ -1108,7 +1099,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     );
 
     // 4) Enums: lkpRequestTypeId / lkpPermitTypeId
-    (['lkpRequestTypeId', 'lkpPermitTypeId'] as const).forEach((k) => {
+    (['lkpRequestTypeId'] as const).forEach((k) => {
       const v = val(k);
       if (v === null || v === undefined || `${v}`.trim() === '') {
         addErr(k, 'required');
@@ -1185,12 +1176,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const mustHave = [
       // 'userId',
       'requestSide',
-      'supervisingSide',
+      // 'supervisingSide',
       'eventName',
-      'eventLocation',
+      // 'eventLocation',
       'admin',
-      'delegateName',
-      'alternateName',
+      // 'delegateName',
+      // 'alternateName',
     ];
     const allHaveValues = mustHave.every((k) => {
       const c = this.firstStepForm.get(k);
@@ -1260,7 +1251,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       const formData = this.firstStepForm.value;
       const payload: any = {
         ...formData,
-        lkpPermitTypeId: +formData.lkpPermitTypeId,
+        lkpPermitTypeId: formData.lkpPermitTypeId,
         lkpRequestTypeId: +formData.lkpRequestTypeId,
 
         requestDate: toISO(formData.requestDate ?? new Date()),

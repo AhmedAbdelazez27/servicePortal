@@ -336,7 +336,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
       // optional
-      contactDetails: this.fb.control('', { validators: [Validators.required] }),
+      contactDetails: this.fb.control(null, { validators: [Validators.required] }),
       mainApplyServiceId: this.fb.control<number | null>(null),
 
       nameEn: ['', [Validators.required, Validators.maxLength(200)]],
@@ -411,7 +411,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     const licenseIssuer = (this.partnerForm.get('licenseIssuer')?.value ?? '').toString().trim();
     const licenseExpiry = (this.partnerForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnerForm.get('licenseNumber')?.value ?? '').toString().trim();
-    const contactDetails = (this.partnerForm.get('contactDetails')?.value ?? '').toString().trim();
+    const contactDetails = +(this.partnerForm.get('contactDetails')?.value ?? null);
     const nameEn = (this.partnerForm.get('nameEn')?.value ?? '').toString().trim();
 
 
@@ -456,10 +456,10 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     }
 
     // ContactDetails: max 1000 (لو متعبّي)
-    if (contactDetails && contactDetails.length > 1000) {
-      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
-      return;
-    }
+    // if (contactDetails && contactDetails.length > 1000) {
+    //   this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
+    //   return;
+    // }
 
     // ====== البيزنيس (الأولوية ليه) ======
     // Supplier/Company ⇒ بيانات الرخصة required + مرفق الرخصة (2057) required

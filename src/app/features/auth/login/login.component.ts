@@ -143,6 +143,8 @@ submit(): void {
           this.router.navigate(['/home']);
         },
         error: (err) => {
+          console.log("err ",err);
+          
           this.toastr.error(
             this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'),
             this.translate.instant('TOAST.TITLE.ERROR')
@@ -152,10 +154,12 @@ submit(): void {
         complete: () => this.spinnerService.hide()
       });
     },
-    error: () => {
+    error: (error) => {
+      console.log("error = ",error?.error?.reason);
+      
       this.toastr.error(
-        this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'),
-        this.translate.instant('TOAST.TITLE.ERROR')
+        error?.error?.reason ? error?.error?.reason:this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'),
+        this.translate.instant('TOAST.TITLE.ERROR')+"tttttttt"
       );
       this.spinnerService.hide();
     }

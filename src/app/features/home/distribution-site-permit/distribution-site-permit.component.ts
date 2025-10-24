@@ -163,7 +163,8 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       licenseIssuer: ['', [Validators.maxLength(200)]],
       licenseExpiryDate: [null],
       licenseNumber: ['', [Validators.maxLength(100)]],
-      contactDetails: ['', [Validators.maxLength(1000)]],
+      contactDetails: this.fb.control(null, { validators: [Validators.required] }),
+      nameEn: ['', [Validators.required, Validators.maxLength(200)]],
       jobRequirementsDetails: [''],
     });
 
@@ -641,12 +642,20 @@ addPartner(): void {
     const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
     const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
-    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
-
+   const contactDetails = +(this.partnersForm.get('contactDetails')?.value ?? null);
+    const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
     // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
     // Name: required + max 200
     if (!name) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME'));
+      return;
+    }
+        if (!nameEn) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.NAME_EN'));
+      return;
+    }
+      if (!contactDetails) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.CONTACT_DETAILS'));
       return;
     }
     if (name.length > 200) {
@@ -674,10 +683,10 @@ addPartner(): void {
     }
 
     // ContactDetails: max 1000 (لو متعبّي)
-    if (contactDetails && contactDetails.length > 1000) {
-      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
-      return;
-    }
+    // if (contactDetails && contactDetails.length > 1000) {
+    //   this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
+    //   return;
+    // }
 
     // ====== البيزنيس (الأولوية ليه) ======
     // Supplier/Company ⇒ بيانات الرخصة required + مرفق الرخصة (2057) required

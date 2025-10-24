@@ -185,7 +185,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       licenseIssuer: ['', [Validators.maxLength(200)]],
       licenseExpiryDate: [null],
       licenseNumber: ['', [Validators.maxLength(100)]],
-      contactDetails: ['', [Validators.maxLength(1000)]],
+      contactDetails: this.fb.control(null, { validators: [Validators.required] }),
+      nameEn: ['', [Validators.required, Validators.maxLength(200)]],
       jobRequirementsDetails: [''],
     });
 
@@ -726,7 +727,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       skip: 0,
       take: 100,
       searchTerm: '',
-      isAvailable : true,
+      isAvailable: true,
       orderByValue: null
     };
 
@@ -1115,8 +1116,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
             .bindPopup(`
               <div>
                 <h6>${location.locationName || t('COMMON.UNKNOWN_LOCATION')}</h6>
-                <p><strong>${t('FASTING_TENT_REQ.ADDRESS')}:</strong> ${location.address ||  t('COMMON.N_A')}</p>
-                <p><strong>${t('FASTING_TENT_REQ.REGION_NAME')}:</strong> ${location.region ||  t('COMMON.N_A')}</p>
+                <p><strong>${t('FASTING_TENT_REQ.ADDRESS')}:</strong> ${location.address || t('COMMON.N_A')}</p>
+                <p><strong>${t('FASTING_TENT_REQ.REGION_NAME')}:</strong> ${location.region || t('COMMON.N_A')}</p>
                 <p><strong>${t('COMMON.STATUS')}:</strong> ${location.isAvailable ? t('COMMON.AVAILABLE') : t('COMMON.NOT_AVAILABLE')}</p>
               </div>
             `)
@@ -1261,12 +1262,21 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
     const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
-    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
+    const contactDetails = +(this.partnersForm.get('contactDetails')?.value ?? null);
+    const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
 
     // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
     // Name: required + max 200
     if (!name) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME'));
+      return;
+    }
+    if (!nameEn) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.NAME_EN'));
+      return;
+    }
+      if (!contactDetails) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.CONTACT_DETAILS'));
       return;
     }
     if (name.length > 200) {
@@ -1294,10 +1304,10 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     }
 
     // ContactDetails: max 1000 (لو متعبّي)
-    if (contactDetails && contactDetails.length > 1000) {
-      this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
-      return;
-    }
+    // if (contactDetails && contactDetails.length > 1000) {
+    //   this.toastr.error(this.translate.instant('VALIDATION.MAX_LENGTH_EXCEEDED') + `: ${this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS')} (<= 1000)`);
+    //   return;
+    // }
 
     // ====== البيزنيس (الأولوية ليه) ======
     // Supplier/Company ⇒ بيانات الرخصة required + مرفق الرخصة (2057) required
@@ -1354,11 +1364,13 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     };
 
     this.partners.push(newPartner);
+    console.log(this.partners);
+    
     this.partnersForm.reset();
     this.showPartnerAttachments = false;
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
-    console.log("partners ",this.partners);
-    
+    console.log("partners ", this.partners);
+
   }
 
 
