@@ -252,7 +252,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         }),
 
         supervisingSide: this.fb.control(null, {
-          validators: [ Validators.maxLength(200)]
+          validators: [Validators.maxLength(200)]
         }),
 
         eventName: this.fb.control<string>('', {
@@ -273,7 +273,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         lkpPermitTypeId: this.fb.control(null),
 
         eventLocation: this.fb.control(null, {
-          validators: [Validators.maxLength(500)]}),
+          validators: [Validators.maxLength(500)]
+        }),
 
         // amStartTime: this.fb.control<string>('', {
         //   validators: [rfc3339Required],
@@ -303,11 +304,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         }),
 
         delegateName: this.fb.control(null, {
-          validators: [ Validators.maxLength(200)]
+          validators: [Validators.maxLength(200)]
         }),
 
         alternateName: this.fb.control(null, {
-          validators: [Validators.maxLength(100)]}),
+          validators: [Validators.maxLength(100)]
+        }),
 
         adminTel: this.fb.control<string>('', {
           validators: [Validators.required, this.uaeMobileValidator.bind(this)],
@@ -506,7 +508,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
       // optional
-      contactDetails: this.fb.control(null,{validators: [Validators.required]}),
+      contactDetails: this.fb.control(null, { validators: [Validators.required] }),
       mainApplyServiceId: this.fb.control<number | null>(null),
 
 
@@ -572,7 +574,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.PARTNER_NAME'));
       return;
     }
-       if (!nameEn) {
+    if (!nameEn) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.NAME_EN'));
       return;
     }
@@ -784,7 +786,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     file: File
   ): void {
     if (!this.validateFile(file)) return;
-
+    this.selectedFiles[configId] = file;
     const s = this.ensureState(type);
     s.selected[configId] = file;
 
@@ -835,7 +837,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const s = this.ensureState(type);
     delete s.selected[configId];
     delete s.previews[configId];
-
+    delete this.selectedFiles[configId];
     const i = s.items.findIndex((a) => a.attConfigID === configId);
     if (i !== -1) {
       s.items[i] = { ...s.items[i], fileBase64: '', fileName: '' };
@@ -1202,9 +1204,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       AttachmentsConfigType.DeclarationOfCharityEffectiveness;
     if (this.hasMissingRequiredAttachments(mainAttachType)) return false;
 
-    const withAd =
-      Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
-    if (withAd && this.requestAdvertisements.length === 0) return false;
+    // const withAd =
+    //   Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
+    // if (withAd && this.requestAdvertisements.length === 0) return false;
 
     return true;
   }
@@ -1270,7 +1272,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
             ? toISO(p.licenseExpiryDate)
             : null,
           licenseNumber: p.licenseNumber ?? null,
-          contactDetails: p.contactDetails ?? null,
+          contactDetails: p.contactDetails.toString() ?? null,
           mainApplyServiceId: p.mainApplyServiceId ?? null,
           attachments: p.attachments,
         })),
@@ -1894,4 +1896,14 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     }
     return h?.noteEn || h?.serviceStatusName || '';
   }
+
+  isAttachmentMandatory(configId: number): boolean {
+    const config = this.attachmentConfigs.find(c => c.id === configId);
+    return config?.mendatory || false;
+  }
+
+  isMandatory(config: any): boolean {
+    return !!config?.mendatory;  
+  }
+
 }

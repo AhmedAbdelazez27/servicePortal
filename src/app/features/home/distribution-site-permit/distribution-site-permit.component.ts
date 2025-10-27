@@ -737,7 +737,7 @@ addPartner(): void {
       licenseIssuer,
       licenseExpiryDate: licenseExpiry || null,
       licenseNumber,
-      contactDetails,
+      contactDetails:contactDetails.toString(),
       mainApplyServiceId: 0,
       attachments: partnerAttachments
     };

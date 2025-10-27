@@ -177,7 +177,7 @@
                   <!-- Event Name -->
                   <div class="col-xl-6 mb-4">
                     <label class="form-label">
-                      {{ "CHARITY_EVENT.EVENT_NAME" | translate }} 
+                      {{ "CHARITY_EVENT.EVENT_NAME" | translate }}
                       <span class="text-danger">*</span>
                     </label>
                     <input class="form-control" formControlName="eventName" [class.is-invalid]="
@@ -218,7 +218,7 @@
                     <label class="form-label">
                       {{
                       "event.beneficiaryIdNumber" | translate
-                      }} <span class="text-danger">*</span> 
+                      }} <span class="text-danger">*</span>
                     </label>
 
                     <div class="input-group">
@@ -820,7 +820,7 @@
                     </div>
                   </div>
 
-                   <!-- NameEn (required) -->
+                  <!-- NameEn (required) -->
                   <div class="col-xl-6 mb-3">
                     <label class="form-label">
                       {{ "PARTNERS.NAME_EN" | translate }}
@@ -1367,7 +1367,7 @@
                 <!-- Ad Attachments (RequestAnEventAnnouncementOrDonationCampaign) -->
                 <div class="mt-4">
                   <h6 class="mb-3">
-                    {{ "PROFILE.DOCUMENTS" | translate }} 
+                    {{ "PROFILE.DOCUMENTS" | translate }}
                   </h6>
 
                   <div class="table-responsive">
@@ -1553,97 +1553,83 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="
-                          let config of state(
-                            AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit
-                          ).configs
-                        ">
-                        <td>
-                          {{
-                          getAttachmentName(
-                          AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                          config.id!
-                          )
+  let config of state(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit).configs
+">
+                        <!-- نوع المستند -->
+                        <td class="align-middle">
+                          {{ getAttachmentName(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)
                           }}
+                          <span *ngIf="isMandatory(config)" class="text-danger ms-1">*</span>
+
+                          <!-- تم الرفع -->
+                          <div
+                            *ngIf="isMandatory(config) && hasSelected(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)"
+                            class="text-success small mt-1">
+                            <i class="fas fa-check-circle"></i> {{ 'VALIDATION.UPLOADED' | translate }}
+                          </div>
                         </td>
-                        <td>
-                          <!-- Upload Area -->
-                          <div *ngIf="
-                              !hasSelected(
-                                AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                                config.id!
-                              )
-                            " class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
-                            (drop)="
-                              onDrop(
-                                $event,
-                                AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                                config.id!
-                              )
-                            " [class.drag-over]="isDragOver">
-                            <input type="file" class="d-none" [id]="'file-dec-' + config.id" (change)="
-                                onFileSelected(
-                                  $event,
-                                  AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                                  config.id!
-                                )
-                              " accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
-                            <label [for]="'file-dec-' + config.id" class="upload-label">
+
+                        <!-- الملف -->
+                        <td class="align-middle">
+                          <!-- منطقة الرفع -->
+                          <div
+                            *ngIf="!hasSelected(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)"
+                            class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                            (drop)="onDrop($event, AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)"
+                            [class.drag-over]="isDragOver" [class.border-danger]="isMandatory(config)
+                                && !hasSelected(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)
+                                && (currentStep === 4 || submitted)"
+                            [class.border-success]="hasSelected(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)">
+
+                            <input type="file" class="d-none" [id]="'file-permit-' + config.id"
+                              (change)="onFileSelected($event, AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)"
+                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+
+                            <label [for]="'file-permit-' + config.id" class="upload-label">
                               <i class="fas fa-cloud-upload-alt"></i>
-                              <span>
-                                {{
-                                "ATTACHMENTS.DRAG_DROP_OR_CLICK" | translate
-                                }}
-                              </span>
+                              <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
                             </label>
                           </div>
 
-                          <!-- File Preview -->
-                          <div *ngIf="
-                              hasSelected(
-                                AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                                config.id!
-                              )
-                            " class="file-preview">
+                          <!-- المعاينة -->
+                          <div
+                            *ngIf="hasSelected(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)"
+                            class="file-preview">
                             <span class="file-name">
-                              {{
-                              selectedFileName(
-                              AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                              config.id!
-                              )
-                              }}
+                              {{ selectedFileName(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
+                              config.id!) }}
                             </span>
-                            <img style="width: 150px; height: 100px" *ngIf="
-                                getPreview(
-                                  AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                                  config.id!
-                                ) &&
-                                state(
-                                  AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit
-                                ).selected[config.id!].type.startsWith('image/')
-                              " [src]="
-                                getPreview(
-                                  AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                                  config.id!
-                                )
-                              " class="preview-image" />
+                            <img style="width:150px;height:100px"
+                              *ngIf="getPreview(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)
+                  && state(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit).selected[config.id!]?.type?.startsWith('image/')"
+                              [src]="getPreview(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)"
+                              class="preview-image" />
+                          </div>
+
+                          <!-- رسالة المرفق مطلوب -->
+                          <div *ngIf="isMandatory(config)
+                && !hasSelected(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)
+                && (currentStep === 4 || submitted)" class="mt-2 d-flex align-items-center gap-2 text-danger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                              fill="none">
+                              <path d="M12 2L1 21h22L12 2z" stroke="currentColor" fill="none" />
+                              <path d="M12 8v6M12 17v1" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                            <span>{{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}</span>
                           </div>
                         </td>
-                        <td>
-                          <button *ngIf="
-                              hasSelected(
-                                AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                                config.id!
-                              )
-                            " type="button" class="btn btn-sm btn-danger" (click)="
-                              removeFile(
-                                AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
-                                config.id!
-                              )
-                            ">
-                            {{ "COMMON.REMOVE" | translate }}
+
+                        <!-- الإجراءات -->
+                        <td class="align-middle">
+                          <button
+                            *ngIf="hasSelected(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)"
+                            type="button" class="btn btn-sm btn-danger"
+                            (click)="removeFile(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit, config.id!)">
+                            {{ 'COMMON.REMOVE' | translate }}
                           </button>
                         </td>
                       </tr>
+
                     </tbody>
                   </table>
                 </div>

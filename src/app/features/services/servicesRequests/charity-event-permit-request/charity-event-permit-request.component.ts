@@ -411,7 +411,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     const licenseIssuer = (this.partnerForm.get('licenseIssuer')?.value ?? '').toString().trim();
     const licenseExpiry = (this.partnerForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnerForm.get('licenseNumber')?.value ?? '').toString().trim();
-    const contactDetails = +(this.partnerForm.get('contactDetails')?.value ?? null);
+    const contactDetails = (this.partnerForm.get('contactDetails')?.value ?? '').toString().trim();
     const nameEn = (this.partnerForm.get('nameEn')?.value ?? '').toString().trim();
 
 
@@ -534,7 +534,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       licenseIssuer: v.licenseIssuer!,
       licenseExpiryDate: v.licenseExpiryDate!,
       licenseNumber: v.licenseNumber!,
-      contactDetails: v.contactDetails ?? null,
+      contactDetails: v.contactDetails.toString() ?? null,
       jobRequirementsDetails: v.jobRequirementsDetails ?? null,
       mainApplyServiceId: v.mainApplyServiceId ?? null,
       attachments: partnerAttachments,
@@ -619,6 +619,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   handleFileUpload(type: AttachmentsConfigType, configId: number, file: File): void {
     if (!this.validateFile(file)) return;
 
+    this.selectedFiles[configId] = file;
+
     const s = this.ensureState(type);
     s.selected[configId] = file;
 
@@ -661,6 +663,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     const s = this.ensureState(type);
     delete s.selected[configId];
     delete s.previews[configId];
+    delete this.selectedFiles[configId];
 
     const i = s.items.findIndex(a => a.attConfigID === configId);
     if (i !== -1) {
@@ -846,8 +849,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
     if (this.hasMissingRequiredAttachments(mainAttachType)) return false;
 
-    const withAd = Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
-    if (withAd && this.requestAdvertisements.length === 0) return false;
+    // const withAd = Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
+    // if (withAd && this.requestAdvertisements.length === 0) return false;
 
     return true;
   }
@@ -903,7 +906,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           licenseIssuer: p.licenseIssuer ?? null,
           licenseExpiryDate: p.licenseExpiryDate ? toISO(p.licenseExpiryDate) : null,
           licenseNumber: p.licenseNumber ?? null,
-          contactDetails: p.contactDetails ?? null,
+          contactDetails: p.contactDetails.toString() ?? null,
           mainApplyServiceId: p.mainApplyServiceId ?? null,
           attachments: p.attachments
         })),
@@ -1178,6 +1181,15 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       mobileControl.updateValueAndValidity();
       this.cdr.detectChanges();
     }
+  }
+
+  isAttachmentMandatory(configId: number): boolean {
+    const config = this.attachmentConfigs.find(c => c.id === configId);
+    return config?.mendatory || false;
+  }
+
+  isMandatory(config: any): boolean {
+    return !!config?.mendatory;  // مش mandatory
   }
 
 }

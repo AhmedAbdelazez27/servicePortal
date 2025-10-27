@@ -1358,7 +1358,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       licenseIssuer,
       licenseExpiryDate: licenseExpiry || null,
       licenseNumber,
-      contactDetails,
+      contactDetails:contactDetails.toString(),
       mainApplyServiceId: 0,
       attachments: partnerAttachments
     };

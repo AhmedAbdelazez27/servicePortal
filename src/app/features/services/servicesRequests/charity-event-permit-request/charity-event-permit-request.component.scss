@@ -77,3 +77,19 @@
     opacity: 1;
   }
 }
+
+
+.upload-area {
+  border: 2px dashed #ced4da;
+  border-radius: .5rem;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background-color .2s;
+}
+.upload-area.drag-over { background: rgba(0,0,0,.03); }
+.upload-area.border-danger { border-color: #dc3545 !important; }
+.upload-area.border-success { border-color: #198754 !important; }
+.upload-label { display:inline-flex; align-items:center; gap:.5rem; }
+.file-preview .file-name { font-weight:500; display:block; margin-bottom:.25rem; }
+.preview-image { object-fit:cover; border:1px solid #eee; border-radius:.25rem; }

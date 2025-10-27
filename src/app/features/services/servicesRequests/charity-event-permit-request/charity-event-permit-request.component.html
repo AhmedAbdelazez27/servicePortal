@@ -966,52 +966,80 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr
-                                                *ngFor="let config of state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).configs">
-                                                <td>{{
-                                                    getAttachmentName(AttachmentsConfigType.DeclarationOfCharityEffectiveness,
-                                                    config.id!) }}</td>
-                                                <td>
-                                                    <!-- Upload Area -->
-                                                    <div *ngIf="!hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
-                                                        class="upload-area" (dragover)="onDragOver($event)"
-                                                        (dragleave)="onDragLeave($event)"
-                                                        (drop)="onDrop($event, AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
-                                                        [class.drag-over]="isDragOver">
-                                                        <input type="file" class="d-none" [id]="'file-dec-' + config.id"
-                                                            (change)="onFileSelected($event, AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
-                                                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                                                        <label [for]="'file-dec-' + config.id" class="upload-label">
-                                                            <i class="fas fa-cloud-upload-alt"></i>
-                                                            <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate
-                                                                }}</span>
-                                                        </label>
-                                                    </div>
+                                           <tr *ngFor="let config of state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).configs">
 
-                                                    <!-- File Preview -->
-                                                    <div *ngIf="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
-                                                        class="file-preview">
-                                                        <span class="file-name">
-                                                            {{
-                                                            selectedFileName(AttachmentsConfigType.DeclarationOfCharityEffectiveness,
-                                                            config.id!) }}
-                                                        </span>
-                                                        <img style="width: 150px; height: 100px;"
-                                                            *ngIf="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
-                      && state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).selected[config.id!].type.startsWith('image/')"
-                                                            [src]="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
-                                                            class="preview-image">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        *ngIf="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
-                                                        type="button" class="btn btn-sm btn-danger"
-                                                        (click)="removeFile(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)">
-                                                        {{ 'COMMON.REMOVE' | translate }}
-                                                    </button>
-                                                </td>
-                                            </tr>
+  <!-- نوع المستند -->
+  <td class="align-middle">
+    {{ getAttachmentName(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) }}
+    <span *ngIf="isMandatory(config)" class="text-danger ms-1">*</span>
+
+    <!-- تم الرفع للمطلوب -->
+    <div *ngIf="isMandatory(config) && hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+         class="text-success small mt-1">
+      <i class="fas fa-check-circle"></i> {{ 'VALIDATION.UPLOADED' | translate }}
+    </div>
+  </td>
+
+  <!-- الملف -->
+  <td class="align-middle">
+    <!-- منطقة الرفع -->
+    <div *ngIf="!hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+         class="upload-area"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event, AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+         [class.drag-over]="isDragOver"
+         [class.border-danger]="isMandatory(config) 
+                                && !hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
+                                && (currentStep === 4 || submitted)"
+         [class.border-success]="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)">
+
+      <input type="file" class="d-none"
+             [id]="'file-dec-' + config.id"
+             (change)="onFileSelected($event, AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+      <label [for]="'file-dec-' + config.id" class="upload-label">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
+      </label>
+    </div>
+
+    <!-- المعاينة -->
+    <div *ngIf="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)" class="file-preview">
+      <span class="file-name">
+        {{ selectedFileName(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) }}
+      </span>
+      <img style="width:150px;height:100px;"
+           *ngIf="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
+                  && state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).selected[config.id!]?.type?.startsWith('image/')"
+           [src]="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+           class="preview-image">
+    </div>
+
+    <!-- رسالة: المرفق مطلوب -->
+    <div *ngIf="isMandatory(config) 
+                && !hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
+                && (currentStep === 4 || submitted)"
+         class="mt-2 d-flex align-items-center gap-2 text-danger">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L1 21h22L12 2z" stroke="currentColor" fill="none"/>
+        <path d="M12 8v6M12 17v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>{{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}</span>
+      <!-- أو نص ثابت: الإجرائات: المرفق مطلوب -->
+    </div>
+  </td>
+
+  <!-- الإجراءات -->
+  <td class="align-middle">
+    <button *ngIf="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+            type="button" class="btn btn-sm btn-danger"
+            (click)="removeFile(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)">
+      {{ 'COMMON.REMOVE' | translate }}
+    </button>
+  </td>
+</tr>
+
                                         </tbody>
                                     </table>
 

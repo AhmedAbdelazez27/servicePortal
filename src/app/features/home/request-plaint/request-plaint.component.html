@@ -69,7 +69,7 @@
                         <div class="d-flex gap-3">
                             <div class="step-container" [class.active]="isStepActive(3)" [class.completed]="isStepCompleted(5)">
                                 <div class="step-bg"></div>
-                                <div class="step">5</div>
+                                <div class="step">3</div>
                             </div>
                             <span class="step-title" (click)="goToStep(3)">{{ 'REQUEST_PLAINT.STEP5_TITLE' | translate }}</span>
                         </div>
@@ -86,15 +86,15 @@
                                 <h5 class="mb-4">{{ 'REQUEST_PLAINT.MAIN_INFO' | translate }}</h5>
                                 
                                 <div class="row">
-                                    <div class="col-xl-6 mb-4">
+                                    <!-- <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'REQUEST_PLAINT.REQUEST_NO' | translate }}</label>
                                         <input type="text" class="form-control" value="0" readonly>
-                                    </div>
+                                    </div> -->
                                     
-                                    <div class="col-xl-6 mb-4">
+                                    <!-- <div class="col-xl-6 mb-4">
                                         <label class="form-label">{{ 'REQUEST_PLAINT.REQUEST_DATE' | translate }}</label>
                                         <input type="date" class="form-control" formControlName="requestDate" readonly>
-                                    </div>
+                                    </div> -->
 
                                     <div class="col-xl-12 mb-4">
                                         <label class="form-label">{{ 'REQUEST_PLAINT.MAIN_APPLY_SERVICE' | translate }} <span class="text-danger">*</span></label>
@@ -112,7 +112,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-12 mb-4">
+                                    <!-- <div class="col-xl-12 mb-4">
                                         <label class="form-label">{{ 'REQUEST_PLAINT.REQUESTING_ENTITY' | translate }}</label>
                                         <div class="entity-tags-container">
                                             <div class="entity-tags">
@@ -138,16 +138,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- Hidden input to properly bind the form control -->
+                                        
                                         <input type="hidden" formControlName="requestingEntityId">
                                         <div *ngIf="submitted && requestPlaintForm.get('requestingEntityId')?.errors" class="invalid-feedback d-block">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
-                                        <!-- Show message when no entities are available -->
+                                      
                                         <div *ngIf="userEntities.length === 0 && !isLoading" class="text-muted small mt-1">
                                             {{ 'REQUEST_PLAINT.NO_ENTITIES_AVAILABLE' | translate }}
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <div class="col-xl-12 mb-4">
                                         <label class="form-label">{{ 'REQUEST_PLAINT.DETAILS' | translate }} <span class="text-danger">*</span></label>

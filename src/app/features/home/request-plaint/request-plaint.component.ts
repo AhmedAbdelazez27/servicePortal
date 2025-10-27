@@ -124,7 +124,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
       this.requestPlaintForm.patchValue({
         requestDate: this.loadformData.requestPlaint?.requestDate,
         requestMainApplyServiceId: this.loadformData.requestPlaint?.requestMainApplyServiceId,
-        requestingEntityId: this.loadformData.requestPlaint?.requestMainApplyServiceId,
+        // requestingEntityId: this.loadformData.requestPlaint?.requestMainApplyServiceId,
         details: this.loadformData.requestPlaint?.details,
         notes: this.loadformData.requestPlaint?.notes
       });
@@ -266,9 +266,9 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
           this.userEntity = entities[0];
           
           // Set the default selected entity in the form
-          this.requestPlaintForm.patchValue({
-            requestingEntityId: entities[0].id
-          });
+          // this.requestPlaintForm.patchValue({
+          //   requestingEntityId: entities[0].id
+          // });
           
           // Trigger change detection
           this.cdr.detectChanges();
@@ -294,12 +294,12 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
 
           
           // Set the default selected entity in the form
-          this.requestPlaintForm.patchValue({
-            requestingEntityId: entities[0].id
-          });
+          // this.requestPlaintForm.patchValue({
+          //   requestingEntityId: entities[0].id
+          // });
           
           // Also try setting the value directly to ensure it's updated
-          this.requestPlaintForm.get('requestingEntityId')?.setValue(entities[0].id);
+          // this.requestPlaintForm.get('requestingEntityId')?.setValue(entities[0].id);
           
           // Trigger change detection to ensure UI updates
           this.cdr.detectChanges();
