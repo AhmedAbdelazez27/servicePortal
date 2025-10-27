@@ -511,6 +511,7 @@
   },
   "SUCCESS": {
     "REQUEST_PLAINT_CREATED": "تم تقديم طلب التظلم بنجاح!",
+    "REQUEST_Project_Campaign": "تم تقديم طلب تصريح مشروع / حملة تبرع بنجاح!",
     "REQUEST_COMPLAINT_CREATED": "تم إنشاء طلب الشكوى بنجاح",
     "FASTING_TENT_REQUEST_CREATED": "تم تقديم طلب خيمة الإفطار بنجاح!",
     "DISTRIBUTION_SITE_REQUEST_CREATED": "تم تقديم طلب تصريح موقع التوزيع بنجاح!",
