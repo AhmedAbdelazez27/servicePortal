@@ -941,7 +941,12 @@
 
     "END_DATE_BEFORE_START_MESSAGE": "End date must be after start date. Please select a valid end date.",
 
-    "ACCEPT_TERMS": "You must accept the terms and conditions"
+    "ACCEPT_TERMS": "You must accept the terms and conditions",
+     "START_NOT_BEFORE_TODAY": "Start date cannot be earlier than today.",
+    "END_MUST_BE_LESS_THAN_START": "End date must be less than the start date.",
+    "CHARITY_EVENT": {
+      "RFC3339_REQUIRED": "Please enter a valid date and time in the correct format."
+    }
 
   },
 
@@ -1294,6 +1299,7 @@
   "SUCCESS": {
 
     "REQUEST_PLAINT_CREATED": "Your grievance request has been submitted successfully!",
+    "REQUEST_Project_Campaign": "Your Project/Campaign Donation Statement request has been submitted successfully!",
 
     "REQUEST_COMPLAINT_CREATED": "Complaint request created successfully",
 

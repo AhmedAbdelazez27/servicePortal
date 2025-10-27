@@ -1659,7 +1659,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       const sub = this.fastingTentRequestService.create(createDto).subscribe({
         next: (response) => {
           this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_CREATED'));
-          this.router.navigate(['/services']);
+          this.router.navigate(['/request']);
           this.isSaving = false;
         },
         error: (error) => {

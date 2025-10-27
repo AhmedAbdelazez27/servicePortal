@@ -309,6 +309,10 @@
                       "VALIDATIONCHARITY_EVENT.RFC3339_REQUIRED" | translate
                       }}
                     </div>
+                    
+                    <div style="color:red" *ngIf=" firstStepForm.hasError('startBeforeToday')">
+                      {{ 'VALIDATION.START_NOT_BEFORE_TODAY' | translate }}
+                    </div>
                   </div>
 
                   <div class="col-xl-6 mb-4">
@@ -1189,6 +1193,9 @@
                       ">
                       {{ "VALIDATION.REQUIRED_FIELD" | translate }}
                     </div>
+                    <div style="color:red" *ngIf=" advertForm.hasError('startBeforeToday')">
+                      {{ 'VALIDATION.START_NOT_BEFORE_TODAY' | translate }}
+                    </div>
                   </div>
 
                   <div class="col-xl-6 mb-1">
@@ -1380,104 +1387,85 @@
                         </tr>
                       </thead>
 
-                      <tbody>
-                        <tr *ngFor="
-                            let cfg of state(
-                              AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign
-                            ).configs
-                          ">
-                          <td>
-                            {{
-                            getAttachmentName(
-                            AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                            cfg.id!
-                            )
-                            }}
-                          </td>
+                      <tr *ngFor="
+  let cfg of state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).configs
+">
+  <!-- نوع المستند -->
+  <td class="align-middle">
+    {{ getAttachmentName(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!) }}
+    <span *ngIf="isMandatory(cfg)" class="text-danger ms-1">*</span>
 
-                          <td>
-                            <!-- Upload area -->
-                            <div *ngIf="
-                                !hasSelected(
-                                  AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                                  cfg.id!
-                                )
-                              " class="upload-area" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
-                              (drop)="
-                                onDrop(
-                                  $event,
-                                  AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                                  cfg.id!
-                                )
-                              " [class.drag-over]="isDragOver">
-                              <input type="file" class="d-none" [id]="'file-reqAd-' + cfg.id" (change)="
-                                  onFileSelected(
-                                    $event,
-                                    AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                                    cfg.id!
-                                  )
-                                " accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+    <!-- تم الرفع -->
+    <div *ngIf="isMandatory(cfg)
+                && hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+         class="text-success small mt-1">
+      <i class="fas fa-check-circle"></i> {{ 'VALIDATION.UPLOADED' | translate }}
+    </div>
+  </td>
 
-                              <label [for]="'file-reqAd-' + cfg.id" class="upload-label">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <span>
-                                  {{
-                                  "ATTACHMENTS.DRAG_DROP_OR_CLICK" | translate
-                                  }}
-                                </span>
-                              </label>
-                            </div>
+  <!-- الملف -->
+  <td class="align-middle">
+    <!-- منطقة الرفع -->
+    <div *ngIf="!hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+         class="upload-area"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+         [class.drag-over]="isDragOver"
+         [class.border-danger]="isMandatory(cfg)
+                                && !hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
+                                && (currentStep === 4 || submitted)"
+         [class.border-success]="hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)">
 
-                            <!-- Preview -->
-                            <div *ngIf="
-                                hasSelected(
-                                  AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                                  cfg.id!
-                                )
-                              " class="file-preview">
-                              <span class="file-name">
-                                {{
-                                selectedFileName(
-                                AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                                cfg.id!
-                                )
-                                }}
-                              </span>
+      <input type="file" class="d-none"
+             [id]="'file-reqAd-' + cfg.id"
+             (change)="onFileSelected($event, AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
 
-                              <img style="width: 150px; height: 100px" *ngIf="
-                                  getPreview(
-                                    AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                                    cfg.id!
-                                  ) &&
-                                  state(
-                                    AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign
-                                  ).selected[cfg.id!].type.startsWith('image/')
-                                " [src]="
-                                  getPreview(
-                                    AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                                    cfg.id!
-                                  )
-                                " class="preview-image" />
-                            </div>
-                          </td>
+      <label [for]="'file-reqAd-' + cfg.id" class="upload-label">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
+      </label>
+    </div>
 
-                          <td>
-                            <button *ngIf="
-                                hasSelected(
-                                  AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                                  cfg.id!
-                                )
-                              " type="button" class="btn btn-sm btn-danger" (click)="
-                                removeFile(
-                                  AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
-                                  cfg.id!
-                                )
-                              ">
-                              {{ "COMMON.REMOVE" | translate }}
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
+    <!-- المعاينة -->
+    <div *ngIf="hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+         class="file-preview">
+      <span class="file-name">
+        {{ selectedFileName(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!) }}
+      </span>
+
+      <img style="width:150px;height:100px"
+           *ngIf="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
+                  && state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign)
+                        .selected[cfg.id!]?.type?.startsWith('image/')"
+           [src]="getPreview(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+           class="preview-image" />
+    </div>
+
+    <!-- رسالة: المرفق مطلوب -->
+    <div *ngIf="isMandatory(cfg)
+                && !hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)
+                && (currentStep === 3 || submitted)"
+         class="mt-2 d-flex align-items-center gap-2 text-danger">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L1 21h22L12 2z" stroke="currentColor" fill="none"/>
+        <path d="M12 8v6M12 17v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>{{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}</span>
+    </div>
+  </td>
+
+  <!-- الإجراءات -->
+  <td class="align-middle">
+    <button *ngIf="hasSelected(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)"
+            type="button" class="btn btn-sm btn-danger"
+            (click)="removeFile(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign, cfg.id!)">
+      {{ 'COMMON.REMOVE' | translate }}
+    </button>
+  </td>
+</tr>
+
                     </table>
                   </div>
                 </div>

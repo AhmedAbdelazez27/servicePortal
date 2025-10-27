@@ -247,7 +247,7 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
           this.toastr.success(
             this.translate.instant('SUCCESS.REQUEST_COMPLAINT_CREATED')
           );
-          this.router.navigate(['/services']);
+          this.router.navigate(['/request']);
           this.isSaving = false;
         },
         error: (error) => {

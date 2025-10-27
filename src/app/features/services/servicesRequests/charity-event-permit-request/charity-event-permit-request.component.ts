@@ -15,6 +15,7 @@ import { CharityEventPermitRequestService } from '../../../../core/services/char
 import { arrayMinLength, dateRangeValidator } from '../../../../shared/customValidators';
 import { RequestAdvertisement } from '../../../../core/dtos/charity-event-permit/charity-event-permit.dto';
 import { FastingTentAttachmentDto, FastingTentPartnerDto, PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
+import { notBeforeTodayFor } from '../../../../shared/customValidators/date.validators';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -215,7 +216,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           nonNullable: true,
         }),
       },
-      { validators: [dateRangeValidator] }
+      { validators: [dateRangeValidator, notBeforeTodayFor('startDate')] }
     );
 
   }
@@ -263,7 +264,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         notes: this.fb.control<string | null>(null),
       },
       {
-        validators: [dateRangeValidator, this.renewRequiresOldPermValidator]
+        validators: [dateRangeValidator, this.renewRequiresOldPermValidator,
+          notBeforeTodayFor('startDate')]
       }
     );
   }
@@ -918,7 +920,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           console.log(res);
 
           this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
-          this.router.navigate(['/services']);
+          this.router.navigate(['/request']);
           this.isSaving = false;
         },
         error: (error: any) => {

@@ -340,39 +340,77 @@
                                         </thead>
                                         <tbody>
                                             <tr *ngFor="let config of attachmentConfigs; let i = index">
-                                                <td>{{ getAttachmentName(config) }}</td>
-                                                <td>
-                                                    <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
-                                                         (dragover)="onDragOver($event)"
-                                                         (dragleave)="onDragLeave($event)"
-                                                         (drop)="onDrop($event, config.id!)"
-                                                         [class.drag-over]="isDragOver">
-                                                        <input type="file" 
-                                                               class="d-none" 
-                                                               [id]="'file-' + config.id"
-                                                               (change)="onFileSelected($event, config.id!)"
-                                                               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                                                        <label [for]="'file-' + config.id" class="upload-label">
-                                                            <i class="fas fa-cloud-upload-alt"></i>
-                                                            <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
-                                                        </label>
-                                                    </div>
-                                                    <div *ngIf="selectedFiles[config.id!]" class="file-preview">
-                                                        <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
-                                                        <img style="width: 150px; height: 100px;"  *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')" 
-                                                             [src]="filePreviews[config.id!]" 
-                                                             class="preview-image">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <button *ngIf="selectedFiles[config.id!]" 
-                                                            type="button" 
-                                                            class="btn btn-sm btn-danger" 
-                                                            (click)="removeFile(config.id!)">
-                                                        {{ 'COMMON.REMOVE' | translate }}
-                                                    </button>
-                                                </td>
-                                            </tr>
+  <!-- اسم المستند + نجمة/تيك -->
+  <td class="align-middle">
+    {{ getAttachmentName(config) }}
+    <span *ngIf="isMandatory(config)" class="text-danger ms-1">*</span>
+
+    <div *ngIf="isMandatory(config) && selectedFiles[config.id!]"
+         class="text-success small mt-1">
+      <i class="fas fa-check-circle"></i>
+      {{ 'VALIDATION.UPLOADED' | translate }}
+    </div>
+  </td>
+
+  <!-- الملف -->
+  <td class="align-middle">
+    <!-- منطقة الرفع -->
+    <div *ngIf="!selectedFiles[config.id!]"
+         class="upload-area"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event, config.id!)"
+         [class.drag-over]="isDragOver"
+         [class.border-danger]="isMandatory(config)
+                                && !selectedFiles[config.id!]
+                                && (currentStep === 3 || submitted)"
+         [class.border-success]="selectedFiles[config.id!]">
+
+      <input type="file"
+             class="d-none"
+             [id]="'file-' + config.id"
+             (change)="onFileSelected($event, config.id!)"
+             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+
+      <label [for]="'file-' + config.id" class="upload-label">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
+      </label>
+    </div>
+
+    <!-- المعاينة -->
+    <div *ngIf="selectedFiles[config.id!]" class="file-preview">
+      <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
+      <img style="width:150px;height:100px"
+           *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type?.startsWith('image/')"
+           [src]="filePreviews[config.id!]"
+           class="preview-image">
+    </div>
+
+    <!-- رسالة: المرفق مطلوب -->
+    <div *ngIf="isMandatory(config)
+                && !selectedFiles[config.id!]
+                && (currentStep === 3 || submitted)"
+         class="mt-2 d-flex align-items-center gap-2 text-danger">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L1 21h22L12 2z" stroke="currentColor" fill="none"/>
+        <path d="M12 8v6M12 17v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>{{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}</span>
+    </div>
+  </td>
+
+  <!-- الإجراءات -->
+  <td class="align-middle">
+    <button *ngIf="selectedFiles[config.id!]"
+            type="button"
+            class="btn btn-sm btn-danger"
+            (click)="removeFile(config.id!)">
+      {{ 'COMMON.REMOVE' | translate }}
+    </button>
+  </td>
+</tr>
+
                                         </tbody>
                                     </table>
                                 </div>

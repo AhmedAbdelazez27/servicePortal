@@ -46,6 +46,7 @@ import {
 import { PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
 import { IdentityCardReaderDto } from '../../../../core/dtos/identity-card/identity-card-reader.dto';
 import { ServiceStatus } from '../../../../core/dtos/appEnum.dto';
+import { notBeforeTodayFor } from '../../../../shared/customValidators/date.validators';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -344,7 +345,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       },
       {
         validators: [
-          // timeRangesOk,
+          timeRangesOk,
+          notBeforeTodayFor('startDate')
           // this.timeRangeValidator('amStartTime', 'amEndTime'),
           // this.timeRangeValidator('pmStartTime', 'pmEndTime')
         ],
@@ -415,7 +417,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         }),
       },
       {
-        validators: [dateRangeValidator, this.renewRequiresOldPermValidator],
+        validators: [dateRangeValidator, this.renewRequiresOldPermValidator,
+          notBeforeTodayFor('startDate')],
       }
     );
   }
@@ -1201,7 +1204,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     if (!channels.length) return false;
 
     const mainAttachType =
-      AttachmentsConfigType.DeclarationOfCharityEffectiveness;
+      AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
     if (this.hasMissingRequiredAttachments(mainAttachType)) return false;
 
     // const withAd =
@@ -1286,9 +1289,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
             console.log(res);
 
             this.toastr.success(
-              this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED')
+              this.translate.instant('SUCCESS.REQUEST_Project_Campaign')
             );
-            this.router.navigate(['/services']);
+            this.router.navigate(['/request']);
             this.isSaving = false;
           },
           error: (error: any) => {

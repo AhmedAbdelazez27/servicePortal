@@ -726,7 +726,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
         next: (response) => {
 
           this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
-          this.router.navigate(['/services']);
+          this.router.navigate(['/request']);
           this.isSaving = false;
         },
         error: (error) => {
@@ -836,5 +836,8 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     return allFieldsValid;
   }
 
-  
+  isMandatory(config: any): boolean {
+  return !!config?.mendatory;
+}
+
 }
