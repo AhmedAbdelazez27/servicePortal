@@ -207,7 +207,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         supervisorName: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
         jopTitle: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
         telephone1: this.fb.control('', { validators: [Validators.required, this.uaeMobileValidator.bind(this)], nonNullable: true }),
-        telephone2: this.fb.control('', { validators: [this.uaeMobileValidator.bind(this)], nonNullable: true }),
+        telephone2: this.fb.control('', { validators: [this.uaeMobileValidator.bind(this)] }),
         email: this.fb.control<string | null>(null, { validators: [Validators.email] }),
         advertisementType: this.fb.control<1 | 2>(1, { validators: [Validators.required], nonNullable: true }),
         notes: this.fb.control<string | null>(null),
