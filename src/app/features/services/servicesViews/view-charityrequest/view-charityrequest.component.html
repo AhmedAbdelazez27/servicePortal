@@ -30,7 +30,7 @@
             <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
               <h4 class="title ">{{ 'CHARITY_EVENT_PERMIT.VIEW_TITLE' | translate }}</h4>
 
-              <div class="dropdown"  *ngIf="(targetWorkFlowStep && mainApplyService?.serviceStatus === 7)||(mainApplyService?.serviceStatus === 1)"> 
+               <div class="dropdown"  *ngIf="(targetWorkFlowStep && mainApplyService?.serviceStatus === 7)||(mainApplyService?.serviceStatus === 1)"> 
                 <button class="btn btn-gold dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false" style="padding: 12px !important;">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -135,57 +135,7 @@
 
           <!-- Content Area -->
           <div class="col-lg-9 mb-4">
-            <div id="statusInfo">
-              <div class="main-container mb-4">
-                <div id="workFlowStep" class="mb-3" *ngIf="lastMatchingWorkFlowStep; else readonlyNotes">
-                  <div class="form-group mb-3">
-                    <label for="NotesForApproving" class="control-label col-md-12">
-                      {{ 'mainApplyServiceResourceName.notes' | translate }}
-                    </label>
-
-                    <textarea id="NotesForApproving" class="form-control" readonly>
-{{ mainApplyService.notesForApproving }}
-        </textarea>
-                  </div>
-
-                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 1" class="alert alert-success text-center">
-                    {{ 'mainApplyServiceResourceName.agree' | translate }}
-                  </div>
-
-                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 2" class="alert alert-danger text-center">
-                    {{ 'mainApplyServiceResourceName.disagree' | translate }}
-                  </div>
-
-                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 7" class="alert alert-warning text-center">
-                    {{ 'mainApplyServiceResourceName.underReview' | translate }}
-                  </div>
-
-                  <div class="popover__wrapper" *ngIf="lastMatchingWorkFlowStep.refuseReason">
-                    <a href="javascript:void(0);">
-                      <span class="btn btn-info">{{ mainApplyService.lastStatus }}</span>
-                    </a>
-                    <div class="popover__content w-60">
-                      <p class="popover__message">{{ lastMatchingWorkFlowStep.refuseReason }}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <ng-template #readonlyNotes>
-                  <div class="form-group mb-3">
-                    <label for="NotesForApproving" class="control-label col-md-12">
-                      {{ 'mainApplyServiceResourceName.notes' | translate }}
-                    </label>
-                    <textarea id="NotesForApproving" class="form-control" readonly>
-{{ mainApplyService.notesForApproving }}
-        </textarea>
-                  </div>
-                </ng-template>
-              </div>
-            </div>
             <div class="main-container mb-4">
-
-
-
               <!-- Section: Basic -->
 
               <div class="step-content mb-4">

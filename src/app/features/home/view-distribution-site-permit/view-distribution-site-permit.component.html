@@ -165,55 +165,6 @@ step.serviceStatusName || (getStatusLabel(step.serviceStatus) |
 
           <!-- Content Area -->
           <div class="col-lg-9 mb-4">
-            <div id="statusInfo">
-              <div class="main-container mb-4">
-                <div id="workFlowStep" class="mb-3" *ngIf="lastMatchingWorkFlowStep; else readonlyNotes">
-                  <div class="form-group mb-3">
-                    <label for="NotesForApproving" class="control-label col-md-12">
-                      {{ 'mainApplyServiceResourceName.notes' | translate }}
-                    </label>
-
-                    <textarea id="NotesForApproving" class="form-control" readonly>
-{{ mainApplyService.notesForApproving }}
-        </textarea>
-                  </div>
-
-                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 1" class="alert alert-success text-center">
-                    {{ 'mainApplyServiceResourceName.agree' | translate }}
-                  </div>
-
-                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 2" class="alert alert-danger text-center">
-                    {{ 'mainApplyServiceResourceName.disagree' | translate }}
-                  </div>
-
-                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 7" class="alert alert-warning text-center">
-                    {{ 'mainApplyServiceResourceName.underReview' | translate }}
-                  </div>
-
-                  <div class="popover__wrapper" *ngIf="lastMatchingWorkFlowStep.refuseReason">
-                    <a href="javascript:void(0);">
-                      <span class="btn btn-info">{{ mainApplyService.lastStatus }}</span>
-                    </a>
-                    <div class="popover__content w-60">
-                      <p class="popover__message">{{ lastMatchingWorkFlowStep.refuseReason }}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <ng-template #readonlyNotes>
-                  <div class="form-group mb-3">
-                    <label for="NotesForApproving" class="control-label col-md-12">
-                      {{ 'mainApplyServiceResourceName.notes' | translate }}
-                    </label>
-                    <textarea id="NotesForApproving" class="form-control" readonly>
-{{ mainApplyService.notesForApproving }}
-        </textarea>
-                  </div>
-                </ng-template>
-              </div>
-            </div>
-
-
             <!-- Tab 2: Basic Information -->
 
             <div class="main-container mb-4">

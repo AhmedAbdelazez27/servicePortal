@@ -1165,6 +1165,14 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     return types[type] || 'Unknown';
   }
 
+  // Helper to get location photo URL safely
+  getLocationPhotoUrl(): string | null {
+    const rawPath = this.fastingTentService?.location?.locationPhotoPath
+      || this.fastingTentService?.distributionSitePhotoPath
+      || null;
+    return rawPath ? this.getAttachmentUrl(rawPath) : null;
+  }
+
   downloadAttachment(attachment: AttachmentDto | PartnerAttachmentDto | any): void {
     if (attachment.imgPath) {
       // Construct the full URL for the file

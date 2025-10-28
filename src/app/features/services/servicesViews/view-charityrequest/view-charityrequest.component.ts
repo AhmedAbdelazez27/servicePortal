@@ -361,9 +361,8 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
       const sorted = this.workFlowSteps
         .filter(s => s.stepOrder !== null && s.stepOrder !== undefined)
         .sort((a, b) => (a.stepOrder || 0) - (b.stepOrder || 0));
-      console.log(sorted);
-      
-            
+
+
       this.targetWorkFlowStep = sorted.slice().reverse().find(s => s.serviceStatus === ServiceStatus.ReturnForModifications) || null;
     }
   }
@@ -1122,12 +1121,15 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
         othertxt: null
       })),
 
+
     };
 
 
-          this._AdvertisementsService.createDepartment(ad).subscribe({
+    // console.log('requestAdvertisements', ad);
+    this._AdvertisementsService.createDepartment(ad).subscribe({
       next: (res) => {
-              this.resetAttachments(adAttachType);
+        // console.log(res);
+        this.resetAttachments(adAttachType);
 
         this.advertForm.reset({
           serviceType: 1,
@@ -1151,7 +1153,8 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
 
       },
       error: (err) => {
-            
+        // console.log(err);
+
       }
     })
 
@@ -1234,7 +1237,8 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     const sub = this.mainApplyServiceService.getDetailById({ id }).subscribe({
       next: (resp: any) => {
         this.addWorkFlowSteps = resp.workFlowSteps || [];
-               this.showWfModal = true;
+        // console.log(resp);
+         this.showWfModal = true;
       },
       error: () => {
         this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));

@@ -669,7 +669,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       ...a,
       masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
     }));
-    console.log("partnerAttachments = ", partnerAttachments);
+    // console.log("partnerAttachments = ", partnerAttachments);
 
     if (partnerType === PartnerType.Person || partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
 
@@ -692,14 +692,14 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       mainApplyServiceId: v.mainApplyServiceId ?? null,
       attachments: partnerAttachments,
     });
-    console.log(this.partners);
+    // console.log(this.partners);
     this.resetAttachments(partnerAttachType);
     this.partnerForm.reset();
 
 
     this.showPartnerAttachments = false;
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
-    console.log("partners ", this.partners);
+    // console.log("partners ", this.partners);
 
   }
 
@@ -1280,13 +1280,13 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           attachments: p.attachments,
         })),
       };
-      console.log('payload = ', payload);
+      // console.log('payload = ', payload);
 
       const sub = this._CharityEventPermitRequestService
         .createRequestEvent(payload)
         .subscribe({
           next: (res) => {
-            console.log(res);
+            // console.log(res);
 
             this.toastr.success(
               this.translate.instant('SUCCESS.REQUEST_Project_Campaign')
@@ -1336,7 +1336,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
   canProceedToNext(): boolean {
     // Only validate if user is actively trying to proceed, not during initial load
-    console.log();
+    // console.log();
     if (this.isLoading || !this.firstStepForm || !this.isFormInitialized) {
       return this.currentStep < this.totalSteps;
     }
@@ -1349,7 +1349,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     const isValidStep1 =
       this.firstStepForm.valid && !this.firstStepForm.hasError('dateRange');
-    console.log(this.firstStepForm.value);
+    // console.log(this.firstStepForm.value);
 
     if (this.currentStep === 1) {
       if (isValidStep1) {
@@ -1480,7 +1480,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     };
 
     this.requestAdvertisements.push(ad);
-    console.log('requestAdvertisements', this.requestAdvertisements);
+    // console.log('requestAdvertisements', this.requestAdvertisements);
 
     this.resetAttachments(adAttachType);
 
