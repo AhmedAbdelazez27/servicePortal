@@ -341,7 +341,7 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
           : null;
         this.findTargetWorkFlowStep();
         // if (this.targetWorkFlowStep) {
-          this.loadWorkFlowComments();
+        this.loadWorkFlowComments();
         // } else {
         //   this.initializeCommentsTable([]);
         // }
@@ -371,14 +371,14 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     const rows: any[] = [];
     (this.workFlowSteps || []).forEach(step => {
       const comments = step.workFlowComments || [];
-      comments.forEach((c:any) => {
-         if (c?.commentTypeId == 2) {
-           rows.push({
-             ...c,
-             stepDepartmentName: step.departmentName,
-             stepServiceStatus: step.serviceStatusName
-           });
-         }
+      comments.forEach((c: any) => {
+        if (c?.commentTypeId == 2) {
+          rows.push({
+            ...c,
+            stepDepartmentName: step.departmentName,
+            stepServiceStatus: step.serviceStatusName
+          });
+        }
       });
     });
 
@@ -908,7 +908,7 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
         workFlowServiceType: this.fb.control<number | null>(1, { validators: [Validators.required] }),
 
         requestDate: this.fb.control(new Date().toISOString(), { validators: [Validators.required], nonNullable: true }),
-       // userId: this.fb.control(currentUser?.id ?? '', { validators: [Validators.required], nonNullable: true }),
+        // userId: this.fb.control(currentUser?.id ?? '', { validators: [Validators.required], nonNullable: true }),
 
         // provider: this.fb.control<string | null>(null),
 
@@ -1167,25 +1167,27 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     s.selected = {};
     s.previews = {};
   }
-  loadAttachmentConfigs(type: AttachmentsConfigType): void {
-    const s = this.ensureState(type);
-    s.sub?.unsubscribe();
+loadAttachmentConfigs(type: AttachmentsConfigType): void {
+  const s = this.ensureState(type);
+  s.sub?.unsubscribe();
 
-    s.sub = this.attachmentService.getAttachmentsConfigByType(type).subscribe({
-      next: (configs: any) => {
-        s.configs = configs || [];
-        s.items = s.configs.map(cfg => ({
-          fileBase64: '',
-          fileName: '',
-          masterId: 0,
-          attConfigID: cfg.id!
-        }));
-        s.selected = {};
-        s.previews = {};
-      },
-      error: (e) => console.error('Error loading attachment configs for type', type, e)
-    });
-  }
+  s.sub = this.attachmentService.getAttachmentsConfigByType(type, true, null).subscribe({
+    next: (configs: any) => {
+      s.configs = configs || [];
+      s.items = s.configs.map(cfg => ({
+        fileBase64: '',
+        fileName: '',
+        masterId: 0,
+        attConfigID: cfg.id!
+      }));
+      s.selected = {};
+      s.previews = {};
+      this.cdr.detectChanges();
+    },
+    error: (e) => console.error('Error loading attachment configs for type', type, e)
+  });
+}
+
 
   loadInitialData(): void {
     this.isLoading = true;
@@ -1233,12 +1235,12 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     this.showWfModal = false;
   }
 
-    loadworkflowAdd(id:any): void {
+  loadworkflowAdd(id: any): void {
     const sub = this.mainApplyServiceService.getDetailById({ id }).subscribe({
       next: (resp: any) => {
         this.addWorkFlowSteps = resp.workFlowSteps || [];
         // console.log(resp);
-         this.showWfModal = true;
+        this.showWfModal = true;
       },
       error: () => {
         this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
@@ -1281,5 +1283,52 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     }
     return h?.noteEn || h?.serviceStatusName || '';
   }
+
+
+
+
+  // الإلزام من الـ config نفسه
+  isMandatoryCfg(cfg: AttachmentsConfigDto): boolean {
+    return !!cfg?.mendatory;
+  }
+
+getAdUpload(ad?: RequestAdvertisement, configId?: number): AttachmentDto | undefined {
+  if (!ad || !configId) return undefined;
+  const list = ad.attachments || [];
+  return list.find((x: any) => (x?.attConfigID ?? x?.attConfigId) === configId);
+}
+
+hasFileFor(ad?: RequestAdvertisement, configId?: number): boolean {
+  const up = this.getAdUpload(ad, configId);
+  return !!up?.imgPath;
+}
+
+  // عنوان نعرضه: أولوية لعنوان الملف المرفوع وإلا اسم الـ config (AR/EN)
+  getAdAttachmentTitle(ad: RequestAdvertisement, cfg: AttachmentsConfigDto): string {
+    const up = this.getAdUpload(ad, cfg.id!);
+    if (up?.attachmentTitle) return up.attachmentTitle;
+    return this.translationService.currentLang === 'ar'
+      ? (cfg.name || '')
+      : (cfg.nameEn || cfg.name || '');
+  }
+
+  // تاريخ العرض: من المرفق لو موجود وإلا من الـ config لو بيرجع lastModified
+  getAdLastModified(ad: RequestAdvertisement, cfg: AttachmentsConfigDto): string | Date | null {
+    const up = this.getAdUpload(ad, cfg.id!);
+    return up?.lastModified || cfg?.lastModified || null;
+  }
+
+  // فتح/تحميل اعتمادًا على الـ imgPath من المرفق المقابل
+  viewAdAttachment(ad: RequestAdvertisement, cfg: AttachmentsConfigDto) {
+    const up = this.getAdUpload(ad, cfg.id!);
+    if (!up?.imgPath) return;
+    this.viewAttachment(up);
+  }
+  downloadAdAttachment(ad: RequestAdvertisement, cfg: AttachmentsConfigDto) {
+    const up = this.getAdUpload(ad, cfg.id!);
+    if (!up?.imgPath) return;
+    this.downloadAttachment(up);
+  }
+
 
 }
