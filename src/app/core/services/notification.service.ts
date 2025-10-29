@@ -631,6 +631,45 @@ export class NotificationService {
     }
   }
 
+  
+  /**
+ * Mark ALL notifications as seen (optimistic update + server sync)
+ * POST https://localhost:7156/api/Notifications/MarkAllSeen
+ */
+  private isMarkingAll = false;
+
+  async markAllAsSeen(): Promise<void> {
+    if (this.isMarkingAll) return;
+    this.isMarkingAll = true;
+
+    const prevList = [...(this.notificationsSubject.value || [])];
+    const prevUnseen = this.unseenCountSubject.value || 0;
+
+    try {
+      // 1️⃣ تحديث محلي سريع (optimistic update)
+      if (prevUnseen > 0 || prevList.some(n => !n.isSeen)) {
+        const updated = prevList.map(n => ({ ...n, isSeen: true }));
+        this.notificationsSubject.next(updated);
+        this.unseenCountSubject.next(0);
+      }
+
+      // 2️⃣ استدعاء الـ API
+      await this.notificationApiService.markAllNotificationsAsSeen().toPromise();
+
+      // 3️⃣ حفظ وقت آخر تحديث
+      this.lastRefreshTime = Date.now();
+
+    } catch (err) {
+      // رجّع الحالة القديمة لو حصل خطأ
+      this.notificationsSubject.next(prevList);
+      this.unseenCountSubject.next(prevUnseen);
+      this.toastr.error('فشل في تعليم كل الإشعارات كمقروءة');
+      throw err;
+    } finally {
+      this.isMarkingAll = false;
+    }
+  }
+
   /**
    * Get current notifications (last 30) - with debugging
    */

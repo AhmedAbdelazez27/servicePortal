@@ -247,9 +247,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         //  nonNullable: true,
         //}),
 
-        requestSide: this.fb.control<string>('', {
-          validators: [Validators.required, Validators.maxLength(200)],
-          nonNullable: true,
+        requestSide: this.fb.control(null, {
+          validators: [Validators.maxLength(200)]
         }),
 
         supervisingSide: this.fb.control(null, {
@@ -316,11 +315,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           validators: [Validators.required, this.uaeMobileValidator.bind(this)],
           nonNullable: true,
         }),
-
-        telephone: this.fb.control<string>('', {
-          validators: [Validators.required, this.uaeMobileValidator.bind(this)],
-          nonNullable: true,
-        }),
+        telephone: this.fb.control(null, {validators: [this.uaeMobileValidator.bind(this)]}),
 
         email: this.fb.control<string | null>(null, {
           validators: [Validators.maxLength(50), Validators.email],
@@ -1025,7 +1020,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     (
       [
         // ['userId', 450],
-        ['requestSide', 200],
+        // ['requestSide', 200],
         // ['supervisingSide', 200],
         ['eventName', 200],
         // ['eventLocation', 500],
@@ -1046,7 +1041,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       }
     });
 
-    (['adminTel', 'telephone'] as const).forEach((k) => {
+    (['adminTel'] as const).forEach((k) => {
       const v = val(k);
       if (!isNonEmptyString(v)) {
         addErr(k, 'required');
@@ -1180,7 +1175,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     const mustHave = [
       // 'userId',
-      'requestSide',
+      // 'requestSide',
       // 'supervisingSide',
       'eventName',
       // 'eventLocation',
@@ -1263,7 +1258,8 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         startDate: toISO(formData.startDate),
         endDate: toISO(formData.endDate),
         adminTel: `971${formData.adminTel}`, // Add 971 prefix
-        telephone: `971${formData.telephone}`, // Add 971 prefix
+        telephone: formData.telephone ? `971${formData.telephone}` : null, // Add 971 prefix
+
         scIdentityCardReaderId: this.identityCardData?.id || null, // Add identity card reader ID
         requestAdvertisements: this.requestAdvertisements,
         attachments: mainAttachments,

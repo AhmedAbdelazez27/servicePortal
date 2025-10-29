@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ApiEndpoints } from '../constants/api-endpoints';
-import { 
-  NotificationDto, 
-  CreateNotificationDto, 
+import {
+  NotificationDto,
+  CreateNotificationDto,
   CreateDepartmentNotificationDto,
   SendNotificationToDepartmentDto,
   GetAllNotificationRequestDto,
   UpdateFCMTokenDto,
-  PagedResultDto 
+  PagedResultDto
 } from '../dtos/notifications/notification.dto';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class NotificationApiService {
   private readonly BASE_URL = environment.apiBaseUrl;
   private readonly NotificationBASE_URL = `${environment.apiBaseUrl}${ApiEndpoints.Notifications.Base}`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Get all notifications for a user
@@ -71,7 +71,7 @@ export class NotificationApiService {
   //  );
   //}
 
-  getUnseenNotificationsCount(): Observable<number>  {
+  getUnseenNotificationsCount(): Observable<number> {
     const apiUrl = `${this.NotificationBASE_URL}${ApiEndpoints.Notifications.GetUnseenCount}`;
     return this.http.get<number>(apiUrl);
   }
@@ -101,7 +101,7 @@ export class NotificationApiService {
    */
   updateFCMToken(tokenData: UpdateFCMTokenDto): Observable<void> {
     const url = `${this.BASE_URL}${ApiEndpoints.FCMToken.Update}`;
-    
+
     return this.http.post<void>(url, tokenData).pipe(
       tap(() => {
         // FCM token API call successful
@@ -109,6 +109,18 @@ export class NotificationApiService {
       catchError(error => {
         throw error;
       })
+    );
+  }
+
+
+  /**
+ * Mark all notifications as seen
+ * POST https://localhost:7156/api/Notifications/MarkAllSeen
+ */
+  markAllNotificationsAsSeen(): Observable<void> {
+    return this.http.post<void>(
+      `${this.BASE_URL}/Notifications/MarkAllSeen`,
+      {}
     );
   }
 }
