@@ -2959,7 +2959,31 @@
 
     "Yes": "Yes",
 
-    "NoPermission": "No Permission"
+    "NoPermission": "No Permission",
+
+    "WORKFLOW": {
+      "PROCESS_STEPS": "Workflow Process Steps",
+      "PROCESS_STEPS_DESC": "View workflow process steps",
+      "STEP": "Step",
+      "COMMENTS": "Comments",
+      "MORE_COMMENTS": "more comments",
+      "STATUS_ACCEPT": "Accepted",
+      "STATUS_REJECT": "Rejected",
+      "STATUS_REJECT_FOR_REASON": "Rejected with Reason",
+      "STATUS_WAITING": "Waiting",
+      "STATUS_RECEIVED": "Received",
+      "STATUS_RETURN_FOR_MODIFICATIONS": "Return for Modifications",
+      "STATUS_UNKNOWN": "Unknown Status",
+      "VIEW_HISTORY": "View history",
+      "HISTORY": "Status history",
+      "FROM_DEPT": "From department",
+      "TO_DEPT": "To department",
+      "NOTE": "Note",
+      "DESCRIPTION": "Description",
+      "STATUS": "Status",
+      "BY": "By",
+      "NO_HISTORY": "No history"
+    }
 
   },
 

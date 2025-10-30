@@ -42,7 +42,7 @@
               <div class="col-xl-6">
                 <p class="mb-1">
                   <strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong>
-                  {{formatDate(mainApplyService.applyDate)}}
+                  {{formatDateTime(mainApplyService.applyDate)}}
                 </p>
               </div>
               <div class="col-xl-6" *ngIf="mainApplyService.permitNumber">
@@ -276,51 +276,80 @@
                      data-bs-parent="#fastingTentAccordion">
                   <div class="accordion-body">
                     <div class="step-content">
-                      <div *ngIf="partners && partners.length > 0">
-                        <div class="table-responsive">
-                          <table class="table table-bordered">
-                            <thead class="table-light">
-                              <tr>
-                                <th>{{ 'VIEW_FASTING_TENT.PARTNER_NAME' | translate }}</th>
-                                <th>{{ 'VIEW_FASTING_TENT.PARTNER_TYPE' | translate }}</th>
-                                <th>{{ 'VIEW_FASTING_TENT.LICENSE_NUMBER' | translate }}</th>
-                                <th>{{ 'VIEW_FASTING_TENT.LICENSE_ISSUER' | translate }}</th>
-                                <th>{{ 'VIEW_FASTING_TENT.LICENSE_EXPIRY_DATE' | translate }}</th>
-                                <th>{{ 'VIEW_FASTING_TENT.CONTACT_DETAILS' | translate }}</th>
-                                <th>{{ 'COMMON.ATTACHMENTS' | translate }}</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr *ngFor="let partner of partners">
-                                <td>{{partner.name || '-'}}</td>
-                                <td>{{partner.typeName || getPartnerTypeName(partner.type)}}</td>
-                                <td>{{partner.licenseNumber || '-'}}</td>
-                                <td>{{partner.licenseIssuer || '-'}}</td>
-                                <td>{{formatDate(partner.licenseExpiryDate) || '-'}}</td>
-                                <td>{{partner.contactDetails || '-'}}</td>
-                                <td class="text-center">
-                                  <button *ngIf="partner.attachments && partner.attachments.length > 0"
-                                          class="btn btn-next-style" data-bs-toggle="modal"
-                                          data-bs-target="#partnerAttachmentModal" (click)="viewPartnerAttachments(partner)">
-                                    <i class="fas fa-eye me-1"></i>
-                                    {{ 'COMMON.VIEW' | translate }} ({{partner.attachments.length}})
-                                  </button>
-                                  <button *ngIf="!partner.attachments || partner.attachments.length === 0"
-                                          class="btn btn-next-style" data-bs-toggle="modal"
-                                          data-bs-target="#partnerAttachmentModal" (click)="fetchPartnerAttachments(partner)">
-                                    <i class="fas fa-eye me-1"></i>
-                                    {{ 'COMMON.VIEW' | translate }}
-                                  </button>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                      <ng-container *ngIf="partners && partners.length > 0; else noPartners">
+                        <div class="accordion" id="partnersAccordion">
+                          <div class="accordion-item"
+                               *ngFor="let partner of partners; let i = index">
+                            <h2 class="accordion-header" [id]="'partnerHeading' + i">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                      [attr.data-bs-target]="'#partnerCollapse' + i" aria-expanded="false"
+                                      [attr.aria-controls]="'partnerCollapse' + i">
+                                <div class="d-flex flex-column">
+                                  <div>
+                                 {{ i + 1 }} — {{ partner.name || '-' }}
+                                  </div>
+                                  <div class="text-muted pt-1" style="font-weight: normal; font-size: 14px;">
+                                    {{ partner.typeName || getPartnerTypeName(partner.type) || '-' }}
+                                  </div>
+                                </div>
+                              </button>
+                            </h2>
+                            <div [id]="'partnerCollapse' + i" class="accordion-collapse collapse"
+                                 [attr.aria-labelledby]="'partnerHeading' + i" data-bs-parent="#partnersAccordion">
+                              <div class="accordion-body">
+                                <div class="row">
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.PARTNER_NAME' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.name || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.PARTNER_TYPE' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.typeName || getPartnerTypeName(partner.type) || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.LICENSE_NUMBER' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.licenseNumber || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.LICENSE_ISSUER' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.licenseIssuer || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.LICENSE_EXPIRY_DATE' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ formatDate(partner.licenseExpiryDate) || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.CONTACT_DETAILS' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.contactDetails || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-12 mb-2">
+                                    <label class="form-label fw-bold">{{ 'COMMON.ATTACHMENTS' | translate }}</label>
+                                    <div class="form-control-plaintext">
+                                      <button *ngIf="partner.attachments && partner.attachments.length > 0"
+                                              class="btn btn-next-style" data-bs-toggle="modal"
+                                              data-bs-target="#partnerAttachmentModal" (click)="viewPartnerAttachments(partner)">
+                                        <i class="fas fa-eye me-1"></i>
+                                        {{ 'COMMON.VIEW' | translate }} ({{partner.attachments.length}})
+                                      </button>
+                                      <button *ngIf="!partner.attachments || partner.attachments.length === 0"
+                                              class="btn btn-next-style" data-bs-toggle="modal"
+                                              data-bs-target="#partnerAttachmentModal" (click)="fetchPartnerAttachments(partner)">
+                                        <i class="fas fa-eye me-1"></i>
+                                        {{ 'COMMON.VIEW' | translate }}
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-
-                      <div *ngIf="!partners || partners.length === 0" class="alert alert-info">
-                        {{ 'VIEW_FASTING_TENT.NO_PARTNERS' | translate }}
-                      </div>
+                      </ng-container>
+                      <ng-template #noPartners>
+                        <div class="alert alert-info">
+                          {{ 'VIEW_FASTING_TENT.NO_PARTNERS' | translate }}
+                        </div>
+                      </ng-template>
                     </div>
                   </div>
                 </div>

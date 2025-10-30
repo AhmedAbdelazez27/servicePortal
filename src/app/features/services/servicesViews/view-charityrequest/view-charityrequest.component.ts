@@ -165,6 +165,8 @@ type MainApplyServiceView = {
   applyDate: string;
   applyNo: string;
   lastStatus: string;
+  serviceStatusName: string;
+  
   lastStatusEN?: string;
   lastModified: string;
   permitNumber?: string;

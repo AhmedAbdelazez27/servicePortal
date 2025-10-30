@@ -1188,7 +1188,30 @@
     "validid": "رقم الهويه موجود من قبل",
     "workloc": "مقر العمل *",
     "Yes": "نعم",
-    "NoPermission": "لا يوجد صلاحية"
+    "NoPermission": "لا يوجد صلاحية",
+    "WORKFLOW": {
+      "PROCESS_STEPS": "خطوات سير العمل",
+      "PROCESS_STEPS_DESC": "عرض خطوات سير العمل",
+      "STEP": "خطوة",
+      "COMMENTS": "التعليقات",
+      "MORE_COMMENTS": "تعليقات أخرى",
+      "STATUS_ACCEPT": "مقبول",
+      "STATUS_REJECT": "مرفوض",
+      "STATUS_REJECT_FOR_REASON": "مرفوض لسبب",
+      "STATUS_WAITING": "في الانتظار",
+      "STATUS_RECEIVED": "مستلم",
+      "STATUS_RETURN_FOR_MODIFICATIONS": "إرجاع للتعديل",
+      "STATUS_UNKNOWN": "حالة غير معروفة",
+      "VIEW_HISTORY": "عرض السجل",
+      "HISTORY": "سجل الحالة",
+      "FROM_DEPT": "من الجهة",
+      "TO_DEPT": "إلى الجهة",
+      "NOTE": "ملاحظة",
+      "DESCRIPTION": "الوصف",
+      "STATUS": "الحالة",
+      "BY": "بواسطة",
+      "NO_HISTORY": "لا يوجد سجل"
+    }
   },
   "COMMONCHARITY_EVENT": {
     "NEXT": "التالي",

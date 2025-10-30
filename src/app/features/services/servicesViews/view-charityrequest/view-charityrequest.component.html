@@ -65,12 +65,15 @@
               <div class="col-xl-6">
                 <p class="mb-1">
                   <strong>{{ 'COMMON.APPLICATION_DATE' | translate }}:</strong> {{
-                  formatDate(mainApplyService.applyDate)
+                  formatDateTime(mainApplyService.applyDate)
                   }}
                 </p>
               </div>
               <div class="col-xl-6">
-                <span class="badge bg-primary">{{ mainApplyService.lastStatus }}</span>
+                <p class="mb-1">
+                  <strong>{{ 'COMMON.STATUS' | translate }}:</strong>
+                  <span class="badge bg-primary ms-2">{{ mainApplyService.serviceStatusName || mainApplyService.lastStatus }}</span>
+                </p>
               </div>
               <div class="col-xl-6" *ngIf="mainApplyService.permitNumber">
                 <p class="mb-0">
@@ -123,8 +126,12 @@
                       </div>
                     </div>
                     <h6 class="department-name">{{ step.departmentName }}</h6>
+                    <small class="text-muted d-block mb-2" *ngIf="step.lastModified">
+                      <i class="bi bi-calendar3 me-1"></i>
+                      {{ formatDate(step.lastModified) }}
+                    </small>
                     <button type="button" class="btn btn-link p-0"
-                      (click)="openHistoryModal(step.workFlowHistories || [])">
+                            (click)="openHistoryModal(step.workFlowHistories || [])">
                       <i class="bi bi-clock-history me-1"></i>{{'WORKFLOW.VIEW_HISTORY' | translate}}
                     </button>
                   </div>
@@ -164,7 +171,7 @@
                   <div class="col-12 mb-3">
                     <label class="form-label fw-bold">{{ 'COMMON.STATUS' | translate }}</label>
                     <div class="form-control-plaintext">
-                      {{ mainApplyService.lastStatus }}
+                      {{ mainApplyService.serviceStatusName || mainApplyService.lastStatus }}
                     </div>
                   </div>
                 </div>
@@ -408,65 +415,30 @@
 
                                     <ng-container *ngIf="ad.attachments && ad.attachments.length > 0; else noAdAtts">
                                       <div class="row">
-                                        <div class="col-xl-4 col-lg-6 mb-3"
-                                          *ngFor="let cfg of state(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign).configs">
-                                          <div class="attachment-box p-3 border rounded position-relative">
-
-                                            <!-- عنوان + نجمة المطلوبة + تم الرفع -->
-                                            <h6
-                                              class="card-title d-flex align-items-center justify-content-between mb-2">
-                                              <span>
-                                                {{ getAdAttachmentTitle(ad, cfg) || ('REQUEST_EVENT_PERMIT.ATTACHMENT' |
-                                                translate) }}
-                                                <span *ngIf="isMandatoryCfg(cfg)" class="text-danger ms-1">*</span>
-                                              </span>
-
-                                              <small *ngIf="isMandatoryCfg(cfg) && hasFileFor(ad, cfg.id!)"
-                                                class="text-success d-flex align-items-center gap-1">
-                                                <i class="fas fa-check-circle"></i>
-                                                {{ 'VALIDATION.UPLOADED' | translate }}
-                                              </small>
+                                        <div class="col-xl-4 col-lg-6 mb-3" *ngFor="let att of ad.attachments">
+                                          <div class="attachment-box">
+                                            <h6 class="card-title">
+                                              {{
+ att.attachmentTitle || ('REQUEST_EVENT_PERMIT.ATTACHMENT' |
+                                              translate)
+                                              }}
                                             </h6>
-
-                                            <!-- تاريخ الرفع -->
-                                            <p class="mb-3 small text-muted">
+                                            <p class="mb-3">
                                               {{ 'COMMON.UPLOADED_ON' | translate }}:
-                                              {{ formatDateTime(getAdLastModified(ad, cfg)) }}
+                                              {{ formatDateTime(att.lastModified) }}
                                             </p>
-
-                                            <!-- ⚠️ المرفق مطلوب -->
-                                            <div *ngIf="isMandatoryCfg(cfg) && !hasFileFor(ad, cfg.id!)"
-                                              class="text-danger small d-flex align-items-center gap-2 mb-2">
-                                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none">
-                                                <path d="M12 2L1 21h22L12 2z" stroke="currentColor" fill="none" />
-                                                <path d="M12 8v6M12 17v1" stroke="currentColor" stroke-width="2"
-                                                  stroke-linecap="round" />
-                                              </svg>
-                                              {{ 'VALIDATION.ATTACHMENT_REQUIRED' | translate }}
-                                            </div>
-
-                                            <!-- الأزرار -->
                                             <div class="d-flex justify-content-end">
-                                              <button class="btn btn-next-style me-2"
-                                                (click)="viewAdAttachment(ad, cfg)"
-                                                [disabled]="!hasFileFor(ad, cfg.id!)">
-                                                <i class="fas fa-eye me-1"></i>
-                                                {{ 'COMMON.VIEW' | translate }}
+                                              <button class="btn btn-next-style me-2" (click)="viewAttachment(att)">
+                                                <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }}
                                               </button>
-
-                                              <button class="btn btn-download-style"
-                                                (click)="downloadAdAttachment(ad, cfg)"
-                                                [disabled]="!hasFileFor(ad, cfg.id!)">
-                                                <i class="fas fa-download me-1"></i>
-                                                {{ 'COMMON.DOWNLOAD' | translate }}
+                                              <button class="btn btn-download-style" (click)="downloadAttachment(att)">
+                                                <i class="fas fa-download me-1"></i>{{
+ 'COMMON.DOWNLOAD' | translate
+                                                }}
                                               </button>
                                             </div>
-
                                           </div>
                                         </div>
-
-
                                       </div>
                                     </ng-container>
                                     <ng-template #noAdAtts>
@@ -508,45 +480,73 @@
 
                     <div class="step-content">
 
-                      <div *ngIf="partners?.length; else noPartners">
-                        <div class="table-responsive">
-                          <table class="table table-bordered">
-                            <thead class="table-light">
-                              <tr>
-                                <th>{{ 'COMMON.NAME' | translate }}</th>
-                                <th>{{ 'COMMON.TYPE' | translate }}</th>
-                                <th>{{ 'COMMON.LICENSE_NUMBER' | translate }}</th>
-                                <th>{{ 'COMMON.LICENSE_ISSUER' | translate }}</th>
-                                <th>{{ 'COMMON.LICENSE_EXPIRY' | translate }}</th>
-                                <th>{{ 'COMMON.CONTACT_DETAILS' | translate }}</th>
-                                <th>{{ 'COMMON.ATTACHMENTS' | translate }}</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr *ngFor="let partner of partners">
-                                <td>{{ partner.name || '-' }}</td>
-                                <td>{{ partner.typeName || partner.type || '-' }}</td>
-                                <td>{{ partner.licenseNumber || '-' }}</td>
-                                <td>{{ partner.licenseIssuer || '-' }}</td>
-                                <td>{{ formatDate(partner.licenseExpiryDate) }}</td>
-                                <td>{{ partner.contactDetails || '-' }}</td>
-                                <td class="text-center">
-                                  <button *ngIf="partner.attachments?.length" class="btn btn-next-style"
-                                    (click)="viewPartnerAttachments(partner)">
-                                    <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }} ({{
-                                    partner.attachments?.length
-                                    }})
-                                  </button>
-                                  <button *ngIf="!partner.attachments?.length" class="btn btn-next-style"
-                                    (click)="viewPartnerAttachments(partner)">
-                                    <i class="fas fa-eye me-1"></i>{{ 'COMMON.VIEW' | translate }}
-                                  </button>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                      <ng-container *ngIf="partners?.length; else noPartners">
+                        <div class="accordion" id="partnersAccordion">
+                          <div class="accordion-item"
+                               *ngFor="let partner of partners; let i = index">
+                            <h2 class="accordion-header" [id]="'partnerHeading' + i">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                      [attr.data-bs-target]="'#partnerCollapse' + i" aria-expanded="false"
+                                      [attr.aria-controls]="'partnerCollapse' + i">
+                                <div class="d-flex flex-column">
+                                  <div>
+                                    {{ i + 1 }} — {{ partner.name || '-' }}
+                                  </div>
+                                  <div class="text-muted pt-1" style="font-weight: normal; font-size: 14px;">
+                                    {{ partner.typeName || partner.type || '-' }}
+                                  </div>
+                                </div>
+                              </button>
+                            </h2>
+                            <div [id]="'partnerCollapse' + i" class="accordion-collapse collapse"
+                                 [attr.aria-labelledby]="'partnerHeading' + i" data-bs-parent="#partnersAccordion">
+                              <div class="accordion-body">
+                                <div class="row">
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'COMMON.NAME' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.name || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'COMMON.TYPE' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.typeName || partner.type || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'COMMON.LICENSE_NUMBER' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.licenseNumber || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'COMMON.LICENSE_ISSUER' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.licenseIssuer || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'COMMON.LICENSE_EXPIRY' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ formatDate(partner.licenseExpiryDate) || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-4 mb-2">
+                                    <label class="form-label fw-bold">{{ 'COMMON.CONTACT_DETAILS' | translate }}</label>
+                                    <div class="form-control-plaintext">{{ partner.contactDetails || '-' }}</div>
+                                  </div>
+                                  <div class="col-md-12 mb-2">
+                                    <label class="form-label fw-bold">{{ 'COMMON.ATTACHMENTS' | translate }}</label>
+                                    <div class="form-control-plaintext">
+                                      <button *ngIf="partner.attachments?.length" class="btn btn-next-style"
+                                              (click)="viewPartnerAttachments(partner)">
+                                        <i class="fas fa-eye me-1"></i>
+                                        {{ 'COMMON.VIEW' | translate }} ({{ partner.attachments?.length }})
+                                      </button>
+                                      <button *ngIf="!partner.attachments?.length" class="btn btn-next-style"
+                                              (click)="viewPartnerAttachments(partner)">
+                                        <i class="fas fa-eye me-1"></i>
+                                        {{ 'COMMON.VIEW' | translate }}
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      </ng-container>
 
                       <ng-template #noPartners>
                         <div class="alert alert-info">{{ 'CHARITY_EVENT_PERMIT.NO_PARTNERS' | translate }}</div>
