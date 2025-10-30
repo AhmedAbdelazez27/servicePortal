@@ -29,7 +29,7 @@
                             <span class="step-title" (click)="goToStep(1)">{{ 'REQUEST_PLAINT.STEP1_TITLE' | translate }}</span>
                         </div>
 
-                        <!-- Step 2: Plaint Reasons -->
+                        <!-- Step 2: Plaint Reasons (commented out per request)
                         <div class="d-flex gap-3 mb-3">
                             <div class="step-container" [class.active]="isStepActive(2)" [class.completed]="isStepCompleted(2)">
                                 <div class="step-bg"></div>
@@ -40,6 +40,7 @@
                             </div>
                             <span class="step-title" (click)="goToStep(2)">{{ 'REQUEST_PLAINT.STEP2_TITLE' | translate }}</span>
                         </div>
+                        -->
 
                         <!-- Step 3: Evidence -->
                         <!-- <div class="d-flex gap-3 mb-3">
@@ -65,13 +66,13 @@
                             <span class="step-title" (click)="goToStep(4)">{{ 'REQUEST_PLAINT.STEP4_TITLE' | translate }}</span>
                         </div> -->
 
-                        <!-- Step 5: Attachments -->
+                        <!-- Step 2: Attachments (renumbered) -->
                         <div class="d-flex gap-3">
-                            <div class="step-container" [class.active]="isStepActive(3)" [class.completed]="isStepCompleted(5)">
+                            <div class="step-container" [class.active]="isStepActive(2)" [class.completed]="isStepCompleted(2)">
                                 <div class="step-bg"></div>
-                                <div class="step">3</div>
+                                <div class="step">2</div>
                             </div>
-                            <span class="step-title" (click)="goToStep(3)">{{ 'REQUEST_PLAINT.STEP5_TITLE' | translate }}</span>
+                            <span class="step-title" (click)="goToStep(2)">{{ 'REQUEST_PLAINT.STEP5_TITLE' | translate }}</span>
                         </div>
                     </div>
                 </div>
@@ -175,62 +176,6 @@
                                 </div>
                             </div>
 
-                            <!-- Step 2: Plaint Reasons -->
-                            <div *ngIf="currentStep === 2" class="step-content">
-                                <h5 class="mb-4">{{ 'REQUEST_PLAINT.PLAINT_REASONS' | translate }}</h5>
-                                
-                                <div class="row">
-                                    <div class="col-xl-8 mb-4">
-                                        <label class="form-label">{{ 'REQUEST_PLAINT.SELECT_REASON' | translate }}</label>
-                                        <ng-select 
-                                            formControlName="selectedReason"
-                                            [placeholder]="'COMMON.SELECT_OPTION' | translate"
-                                            [items]="plaintReasonsOptions"
-                                            [clearable]="true"
-                                            bindLabel="reasonText"
-                                            bindValue="id"
-                                            [class.is-invalid]="submitted && requestPlaintForm.get('selectedReason')?.errors"
-                                            (change)="onReasonSelectionChange($event)">
-                                        </ng-select>
-                                        
-
-
-                                        <!-- Show message when no reasons are available -->
-                                        <div *ngIf="plaintReasonsOptions.length === 0 && !isLoading" class="text-muted small mt-1">
-                                            {{ 'REQUEST_PLAINT.NO_REASONS_AVAILABLE' | translate }}
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4 mb-4 d-flex align-items-end">
-                                        <button type="button" class="btn btn-primary" (click)="addReason()" [disabled]="!requestPlaintForm.get('selectedReason')?.value">
-                                            {{ 'COMMON.ADD' | translate }}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Reasons Table -->
-                                <div *ngIf="reasons.length > 0" class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>{{ 'REQUEST_PLAINT.REASON' | translate }}</th>
-                                                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr *ngFor="let reason of reasons; let i = index">
-                                                <td>{{ i + 1 }}</td>
-                                                <td>{{ getReasonText(reason.lkpPlaintReasonsId) }}</td>
-                                                <td>
-                                                    <button type="button" class="btn btn-sm btn-danger" (click)="removeReason(i)">
-                                                        {{ 'COMMON.REMOVE' | translate }}
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
 
                             <!-- Step 3: Evidence -->
                             <!-- <div *ngIf="currentStep === 3" class="step-content">
@@ -325,8 +270,8 @@
                                 </div>
                             </div> -->
 
-                            <!-- Step 5: Attachments -->
-                            <div *ngIf="currentStep === 3" class="step-content">
+                            <!-- Step 2: Attachments -->
+                            <div *ngIf="currentStep === 2" class="step-content">
                                 <h5 class="mb-4">{{ 'REQUEST_PLAINT.ATTACHMENTS' | translate }}</h5>
                                 
                                 <div class="table-responsive">
@@ -363,7 +308,7 @@
          [class.drag-over]="isDragOver"
          [class.border-danger]="isMandatory(config)
                                 && !selectedFiles[config.id!]
-                                && (currentStep === 3 || submitted)"
+                                && (currentStep === 2 || submitted)"
          [class.border-success]="selectedFiles[config.id!]">
 
       <input type="file"
@@ -390,7 +335,7 @@
     <!-- رسالة: المرفق مطلوب -->
     <div *ngIf="isMandatory(config)
                 && !selectedFiles[config.id!]
-                && (currentStep === 3 || submitted)"
+                && (currentStep === 2 || submitted)"
          class="mt-2 d-flex align-items-center gap-2 text-danger">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
         <path d="M12 2L1 21h22L12 2z" stroke="currentColor" fill="none"/>

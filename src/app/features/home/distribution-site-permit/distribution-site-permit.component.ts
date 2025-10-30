@@ -56,7 +56,7 @@ import { FastingTentPartnerDto } from '../../../core/dtos/FastingTentRequest/fas
 export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   // Tab management
   currentTab: number = 1;
-  totalTabs: number = 5;
+  totalTabs: number = 4;
   visitedTabs: Set<number> = new Set([1]); // Track visited tabs, start with tab 1
 
   // Forms
@@ -372,15 +372,12 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
         this.validateMainInfoTab(true);
         break;
       case 2:
-        this.validateDateDetailsTab(true);
-        break;
-      case 3:
         this.validateSupervisorInfoTab(true);
         break;
-      case 4:
+      case 3:
         this.validatePartnersTab(true);
         break;
-      case 5:
+      case 4:
         this.validateAttachmentsTab(true);
         break;
     }
@@ -397,12 +394,10 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       case 1:
         return this.validateMainInfoTab();
       case 2:
-        return this.validateDateDetailsTab();
-      case 3:
         return this.validateSupervisorInfoTab();
-      case 4:
+      case 3:
         return this.validatePartnersTab(); // Validate partners and their attachments
-      case 5:
+      case 4:
         return this.validateAttachmentsTab(); // Updated to use specific attachment validation
       default:
         return true;
@@ -1082,7 +1077,6 @@ addPartner(): void {
     }
     return (
       this.validateMainInfoTab(showToastr) &&
-      this.validateDateDetailsTab(showToastr) &&
       this.validateSupervisorInfoTab(showToastr) &&
       this.validatePartnersTab(showToastr) &&
       this.validateAttachmentsTab(showToastr)
@@ -1185,12 +1179,10 @@ addPartner(): void {
       case 1:
         return this.validateMainInfoTab();
       case 2:
-        return this.validateDateDetailsTab();
-      case 3:
         return this.validateSupervisorInfoTab();
-      case 4:
+      case 3:
         return this.validatePartnersTab();
-      case 5:
+      case 4:
         return this.validateAttachmentsTab();
       default:
         return false;

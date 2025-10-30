@@ -21,15 +21,7 @@
             <form [formGroup]="requestComplaintForm" (ngSubmit)="onSubmit()">
               <div class="row">
                 <!-- Request Date -->
-                <div class="col-md-6 mb-4">
-                  <label class="form-label">{{ 'REQUEST_COMPLAINT.REQUEST_DATE' | translate }} <span
-                      class="text-danger">*</span></label>
-                  <input type="date" class="form-control" formControlName="requestDate" readonly
-                    [class.is-invalid]="hasFieldError('requestDate')">
-                  <div *ngIf="hasFieldError('requestDate')" class="invalid-feedback">
-                    {{ getFieldErrorMessage('requestDate') }}
-                  </div>
-                </div>
+       
 
                 <!-- Complaint Type -->
                 <div class="col-md-6 mb-4">

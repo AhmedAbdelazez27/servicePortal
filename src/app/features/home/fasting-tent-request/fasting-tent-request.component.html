@@ -40,7 +40,7 @@
                             </div>
                         </div>
 
-                        <!-- Tab 2: Date Details -->
+                        <!-- Tab 2: Supervisor Information -->
                         <div class="step-navigation-item">
                             <div class="step-container" [class.active]="isTabActive(2)"
                                 [class.completed]="isTabCompleted(2)"
@@ -56,16 +56,16 @@
                                 <span class="step-title" (click)="goToTab(2)" [class.text-success]="isTabCompleted(2)"
                                     [class.text-danger]="currentTab > 2 && !isTabCompleted(2)"
                                     [class.text-primary]="isTabActive(2)">
-                                    {{ 'FASTING_TENT_REQ.DATE_DETAILS_TITLE' | translate }}
+                                    {{ 'FASTING_TENT_REQ.SUPERVISOR_INFO' | translate }}
                                 </span>
                                 <small class="d-block text-muted step-description">{{
-                                    'FASTING_TENT_REQ.DATE_DETAILS_DESC' | translate }}</small>
+                                    'FASTING_TENT_REQ.SUPERVISOR_INFO_DESC' | translate }}</small>
                             </div>
                         </div>
 
-                        <!-- Tab 3: Supervisor Information -->
+                        <!-- Tab 3: Partners -->
                         <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(3)"
+                            <div class="step-container partners-tab" [class.active]="isTabActive(3)"
                                 [class.completed]="isTabCompleted(3)"
                                 [class.invalid]="currentTab > 3 && !isTabCompleted(3)">
                                 <div class="step-bg"></div>
@@ -79,29 +79,6 @@
                                 <span class="step-title" (click)="goToTab(3)" [class.text-success]="isTabCompleted(3)"
                                     [class.text-danger]="currentTab > 3 && !isTabCompleted(3)"
                                     [class.text-primary]="isTabActive(3)">
-                                    {{ 'FASTING_TENT_REQ.SUPERVISOR_INFO' | translate }}
-                                </span>
-                                <small class="d-block text-muted step-description">{{
-                                    'FASTING_TENT_REQ.SUPERVISOR_INFO_DESC' | translate }}</small>
-                            </div>
-                        </div>
-
-                        <!-- Tab 4: Partners -->
-                        <div class="step-navigation-item">
-                            <div class="step-container partners-tab" [class.active]="isTabActive(4)"
-                                [class.completed]="isTabCompleted(4)"
-                                [class.invalid]="currentTab > 4 && !isTabCompleted(4)">
-                                <div class="step-bg"></div>
-                                <div class="step">
-                                    <span *ngIf="!isTabCompleted(4)">4</span>
-                                    <i *ngIf="isTabCompleted(4)" class="fas fa-check"></i>
-                                </div>
-                            </div>
-                            <div class="connecting-line"></div>
-                            <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(4)" [class.text-success]="isTabCompleted(4)"
-                                    [class.text-danger]="currentTab > 4 && !isTabCompleted(4)"
-                                    [class.text-primary]="isTabActive(4)">
                                     {{ 'FASTING_TENT_REQ.PARTNERS' | translate }}
                                 </span>
                                 <small class="d-block text-muted step-description">{{
@@ -109,21 +86,21 @@
                             </div>
                         </div>
 
-                        <!-- Tab 5: Attachments -->
+                        <!-- Tab 4: Attachments -->
                         <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(5)"
-                                [class.completed]="isTabCompleted(5)"
-                                [class.invalid]="currentTab === 5 && !isTabCompleted(5)">
+                            <div class="step-container" [class.active]="isTabActive(4)"
+                                [class.completed]="isTabCompleted(4)"
+                                [class.invalid]="currentTab === 4 && !isTabCompleted(4)">
                                 <div class="step-bg"></div>
                                 <div class="step">
-                                    <span *ngIf="!isTabCompleted(5)">5</span>
-                                    <i *ngIf="isTabCompleted(5)" class="fas fa-check"></i>
+                                    <span *ngIf="!isTabCompleted(4)">4</span>
+                                    <i *ngIf="isTabCompleted(4)" class="fas fa-check"></i>
                                 </div>
                             </div>
                             <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(5)" [class.text-success]="isTabCompleted(5)"
-                                    [class.text-danger]="currentTab === 5 && !isTabCompleted(5)"
-                                    [class.text-primary]="isTabActive(5)">
+                                <span class="step-title" (click)="goToTab(4)" [class.text-success]="isTabCompleted(4)"
+                                    [class.text-danger]="currentTab === 4 && !isTabCompleted(4)"
+                                    [class.text-primary]="isTabActive(4)">
                                     {{ 'FASTING_TENT_REQ.ATTACHMENTS' | translate }}
                                 </span>
                                 <small class="d-block text-muted step-description">{{
@@ -198,6 +175,41 @@
                                             </div>
                                         </div>
 
+                                        <!-- Date Details (moved here to be with basic info above the map) -->
+                                        <div class="row mb-4">
+                                            <!-- Start Date -->
+                                            <div class="col-xl-6 mb-4">
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.START_DATE' | translate }} <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" formControlName="startDate"
+                                                    [class.is-invalid]="mainInfoForm.get('startDate')?.invalid && (mainInfoForm.get('startDate')?.touched || submitted)"
+                                                    [class.is-valid]="mainInfoForm.get('startDate')?.valid && (mainInfoForm.get('startDate')?.touched || submitted)">
+                                                <div *ngIf="mainInfoForm.get('startDate')?.invalid && (mainInfoForm.get('startDate')?.touched || submitted)"
+                                                    class="invalid-feedback">
+                                                    {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                                </div>
+                                                <div *ngIf="isStartDatePast()" class="text-danger small mt-1">
+                                                    {{ 'VALIDATION.START_DATE_PAST' | translate }}
+                                                </div>
+                                            </div>
+
+                                            <!-- End Date -->
+                                            <div class="col-xl-6 mb-4">
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.END_DATE' | translate }} <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" formControlName="endDate"
+                                                    [class.is-invalid]="mainInfoForm.get('endDate')?.invalid && (mainInfoForm.get('endDate')?.touched || submitted)"
+                                                    [class.is-valid]="mainInfoForm.get('endDate')?.valid && (mainInfoForm.get('endDate')?.touched || submitted)">
+                                                <div *ngIf="mainInfoForm.get('endDate')?.invalid && (mainInfoForm.get('endDate')?.touched || submitted)"
+                                                    class="invalid-feedback">
+                                                    {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                                </div>
+                                                <div *ngIf="isEndDateBeforeStart()" class="text-danger small mt-1">
+                                                    {{ 'VALIDATION.END_DATE_BEFORE_START' | translate }}
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <!-- Map Selection -->
                                         <div class="mb-4">
                                             <label class="form-label">{{ 'FASTING_TENT_REQ.SELECT_FROM_MAP' | translate
@@ -240,12 +252,7 @@
                                         <h6 class="mb-3">{{ 'SHARED.LOCATION.DETAILS' | translate }}</h6>
 
                                         <div class="row">
-                                            <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT_REQ.OWNER_NAME' | translate
-                                                    }}</label>
-                                                <input type="text" class="form-control" formControlName="ownerName"
-                                                    readonly>
-                                            </div>
+                                           
 
                                             <div class="col-xl-6 mb-3">
                                                 <label class="form-label">{{ 'FASTING_TENT_REQ.REGION_NAME' | translate
@@ -261,12 +268,7 @@
                                                     readonly>
                                             </div>
 
-                                            <div class="col-xl-6 mb-3">
-                                                <label class="form-label">{{ 'FASTING_TENT_REQ.GROUND_NO' | translate
-                                                    }}</label>
-                                                <input type="text" class="form-control" formControlName="groundNo"
-                                                    readonly>
-                                            </div>
+                                      
 
                                             <div class="col-xl-12 mb-3">
                                                 <label class="form-label">{{ 'FASTING_TENT_REQ.ADDRESS' | translate
@@ -297,58 +299,8 @@
                             </form>
                         </div>
 
-                        <!-- Tab 2: Date Details -->
+                        <!-- Tab 2: Supervisor Information -->
                         <div *ngIf="currentTab === 2" class="step-content">
-                            <h5 class="mb-4">{{ 'FASTING_TENT_REQ.DATE_DETAILS_TITLE' | translate }}</h5>
-
-                            <form [formGroup]="dateDetailsForm">
-                                <div class="row">
-                                    <!-- Start Date -->
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.START_DATE' | translate }} <span
-                                                class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" formControlName="startDate"
-                                            [class.is-invalid]="dateDetailsForm.get('startDate')?.invalid && (dateDetailsForm.get('startDate')?.touched || submitted)"
-                                            [class.is-valid]="dateDetailsForm.get('startDate')?.valid && (dateDetailsForm.get('startDate')?.touched || submitted)">
-                                        <div *ngIf="dateDetailsForm.get('startDate')?.invalid && (dateDetailsForm.get('startDate')?.touched || submitted)"
-                                            class="invalid-feedback">
-                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                        </div>
-                                        <div *ngIf="isStartDatePast()" class="text-danger small mt-1">
-                                            {{ 'VALIDATION.START_DATE_PAST' | translate }}
-                                        </div>
-                                    </div>
-
-                                    <!-- End Date -->
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.END_DATE' | translate }} <span
-                                                class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" formControlName="endDate"
-                                            [class.is-invalid]="dateDetailsForm.get('endDate')?.invalid && (dateDetailsForm.get('endDate')?.touched || submitted)"
-                                            [class.is-valid]="dateDetailsForm.get('endDate')?.valid && (dateDetailsForm.get('endDate')?.touched || submitted)">
-                                        <div *ngIf="dateDetailsForm.get('endDate')?.invalid && (dateDetailsForm.get('endDate')?.touched || submitted)"
-                                            class="invalid-feedback">
-                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                        </div>
-                                        <div *ngIf="isEndDateBeforeStart()" class="text-danger small mt-1">
-                                            {{ 'VALIDATION.END_DATE_BEFORE_START' | translate }}
-                                        </div>
-                                    </div>
-
-                                    <!-- Tent Setup Date -->
-                                    <!-- <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'FASTING_TENT_REQ.SETUP_DATE' | translate
-                                            }}</label>
-                                        <input type="date" class="form-control" formControlName="tentDate"
-                                            [disabled]="true">
-                                    </div> -->
-
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Tab 3: Supervisor Information -->
-                        <div *ngIf="currentTab === 3" class="step-content">
                             <h5 class="mb-4">{{ 'FASTING_TENT_REQ.SUPERVISOR_INFO' | translate }}</h5>
 
                             <form [formGroup]="supervisorForm">
@@ -407,8 +359,8 @@
                             </form>
                         </div>
 
-                        <!-- Tab 4: Partners -->
-                        <div *ngIf="currentTab === 4" class="step-content">
+                        <!-- Tab 3: Partners -->
+                        <div *ngIf="currentTab === 3" class="step-content">
                             <h5 class="mb-4">{{ 'FASTING_TENT_REQ.PARTNERS' | translate }}</h5>
 
                             <form [formGroup]="partnersForm">
@@ -579,7 +531,7 @@
                                                                             (dragleave)="onPartnerDragLeave($event)"
                                                                             (drop)="onPartnerDrop($event, config.id!, partnersForm.get('type')?.value)"
                                                                             [class.drag-over]="isDragOver"
-                                                                            [class.border-danger]="config.mendatory && partnersForm.get('type')?.value && !partnerSelectedFiles[partnersForm.get('type')?.value][config.id!] && (currentTab === 4 || submitted)"
+                                                                            [class.border-danger]="config.mendatory && partnersForm.get('type')?.value && !partnerSelectedFiles[partnersForm.get('type')?.value][config.id!] && (currentTab === 3 || submitted)"
                                                                             [class.border-success]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]">
                                                                             <input type="file" class="d-none"
                                                                                 [id]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id"
@@ -701,17 +653,17 @@
                             </div>
                         </div>
 
-                        <!-- Tab 5: Attachments -->
-                        <div *ngIf="currentTab === 5" class="step-content">
+                        <!-- Tab 4: Attachments -->
+                        <div *ngIf="currentTab === 4" class="step-content">
                             <h5 class="mb-4">{{ 'FASTING_TENT_REQ.ATTACHMENTS' | translate }}</h5>
 
                             <!-- Validation Status Indicator -->
-                            <div class="alert" [class.alert-success]="isTabCompleted(5)"
-                                [class.alert-warning]="!isTabCompleted(5)" class="mb-3">
+                            <div class="alert" [class.alert-success]="isTabCompleted(4)"
+                                [class.alert-warning]="!isTabCompleted(4)" class="mb-3">
                                 <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
-                                <span *ngIf="isTabCompleted(5)" class="">{{
+                                <span *ngIf="isTabCompleted(4)" class="">{{
                                     'VALIDATION.ALL_REQUIRED_ATTACHMENTS_UPLOADED' | translate }}</span>
-                                <span *ngIf="!isTabCompleted(5)" class="gold"> {{
+                                <span *ngIf="!isTabCompleted(4)" class="gold"> {{
                                     'VALIDATION.PLEASE_UPLOAD_REQUIRED_ATTACHMENTS' | translate }}</span>
                             </div>
 
@@ -739,7 +691,7 @@
                                                 <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
                                                     (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
                                                     (drop)="onDrop($event, config.id!)" [class.drag-over]="isDragOver"
-                                                    [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)"
+                                                    [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 4 || submitted)"
                                                     [class.border-success]="selectedFiles[config.id!]">
                                                     <input type="file" class="d-none" [id]="'file-' + config.id"
                                                         (change)="onFileSelected($event, config.id!)"
@@ -782,7 +734,7 @@
                                                     </button>
 
                                                 </div>
-                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)"
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 4 || submitted)"
                                                     class="mt-2">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none">

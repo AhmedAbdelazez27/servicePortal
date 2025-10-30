@@ -56,12 +56,11 @@ import {
 export class FastingTentRequestComponent implements OnInit, OnDestroy {
   // Tab management
   currentTab: number = 1;
-  totalTabs: number = 5;
+  totalTabs: number = 4;
   visitedTabs: Set<number> = new Set([1]);
 
   // Forms
   mainInfoForm!: FormGroup;
-  dateDetailsForm!: FormGroup;
   supervisorForm!: FormGroup;
   partnersForm!: FormGroup;
   submitted = false;
@@ -165,12 +164,9 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       distributionSiteCoordinators: [''],
       councilApprovalDate: ['', Validators.required],
       serviceType: [ServiceType.TentPermission],
-    });
-
-    this.dateDetailsForm = this.fb.group({
+      // Date fields moved from dateDetailsForm
       startDate: ['', [Validators.required, this.startDateNotPastValidator()]],
       endDate: ['', [Validators.required, this.endDateAfterStartDateValidator()]],
-      // tentDate: [{ value: '', disabled: true }], // renamed and disabled
     });
 
     this.supervisorForm = this.fb.group({
@@ -224,17 +220,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(mainFormSub);
 
-    const dateFormSub = this.dateDetailsForm.valueChanges.subscribe(() => {
-      this.cdr.detectChanges();
-    });
-    this.subscriptions.push(dateFormSub);
-
     // Subscribe to startDate changes for validation without showing toasts immediately
-    const startDateControl = this.dateDetailsForm.get('startDate');
+    const startDateControl = this.mainInfoForm.get('startDate');
     if (startDateControl) {
       const startDateSub = startDateControl.valueChanges.subscribe(() => {
         // Only validate without showing toasts - toasts will show when user tries to proceed
-        this.validateDateDetailsTab(false);
+        this.validateMainInfoTab(false);
       });
       this.subscriptions.push(startDateSub);
     }
@@ -449,15 +440,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         this.validateMainInfoTab(true);
         break;
       case 2:
-        this.validateDateDetailsTab(true);
-        break;
-      case 3:
         this.validateSupervisorTab(true);
         break;
-      case 4:
+      case 3:
         this.validatePartnersTab(true);
         break;
-      case 5:
+      case 4:
         this.validateAttachmentsTab(true);
         break;
     }
@@ -474,12 +462,10 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       case 1:
         return this.validateMainInfoTab();
       case 2:
-        return this.validateDateDetailsTab();
-      case 3:
         return this.validateSupervisorTab();
-      case 4:
+      case 3:
         return this.validatePartnersTab();
-      case 5:
+      case 4:
         return this.validateAttachmentsTab();
       default:
         return true;
@@ -533,57 +519,29 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    return true;
-  }
+    // Validate dates moved here from Date tab
+    const startDate = this.mainInfoForm.get('startDate')?.value;
+    const endDate = this.mainInfoForm.get('endDate')?.value;
 
-  validateDateDetailsTab(showToastr = false): boolean {
-    const form = this.dateDetailsForm;
-
-    // Check start date (required)
-    const startDate = form.get('startDate')?.value;
-    if (!startDate || (typeof startDate === 'string' && startDate.trim() === '')) {
-      if (showToastr) {
-        this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT.START_DATE'));
-      }
+    if (!startDate) {
+      if (showToastr) this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.START_DATE'));
+      return false;
+    }
+    if (!endDate) {
+      if (showToastr) this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.END_DATE'));
       return false;
     }
 
-    // Check end date (required)
-    const endDate = form.get('endDate')?.value;
-    if (!endDate || (typeof endDate === 'string' && endDate.trim() === '')) {
-      if (showToastr) {
-        this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT.END_DATE'));
-      }
-      return false;
-    }
-
-    // Validate that start date is not in the past
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to start of day for comparison
+    today.setHours(0, 0, 0, 0);
     const startDateObj = new Date(startDate);
-
-    if (startDateObj < today) {
-      if (showToastr) {
-        this.toastr.error(this.translate.instant('FASTING_TENT.START_DATE_PAST_MESSAGE'));
-      }
-      return false;
-    }
-
-    // Validate that end date is after start date
     const endDateObj = new Date(endDate);
-    if (endDateObj <= startDateObj) {
-      if (showToastr) {
-        this.toastr.error(this.translate.instant('FASTING_TENT.END_DATE_BEFORE_START_MESSAGE'));
-      }
+    if (startDateObj < today) {
+      if (showToastr) this.toastr.error(this.translate.instant('FASTING_TENT.START_DATE_PAST_MESSAGE'));
       return false;
     }
-
-    // Validate maximum duration (optional business rule - can be adjusted)
-    const daysDiff = Math.ceil((endDateObj.getTime() - startDateObj.getTime()) / (1000 * 60 * 60 * 24));
-    if (daysDiff > 365) { // Max 1 year duration
-      if (showToastr) {
-        this.toastr.error(this.translate.instant('VALIDATION.DATE_RANGE_TOO_LONG'));
-      }
+    if (endDateObj <= startDateObj) {
+      if (showToastr) this.toastr.error(this.translate.instant('FASTING_TENT.END_DATE_BEFORE_START_MESSAGE'));
       return false;
     }
 
@@ -1620,7 +1578,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
     try {
       const formData = this.mainInfoForm.getRawValue();
-      const dateDetailsData = this.dateDetailsForm.getRawValue();
       const supervisorData = this.supervisorForm.getRawValue();
       const currentUser = this.authService.getCurrentUser();
 
@@ -1642,8 +1599,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         streetName: formData.streetName,
         groundNo: formData.groundNo,
         address: formData.address,
-        startDate: dateDetailsData.startDate,
-        endDate: dateDetailsData.endDate,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
         notes: formData.notes,
         locationId: formData.locationId,
         supervisorName: supervisorData.supervisorName,
@@ -1741,7 +1698,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    return this.validateMainInfoTab(showToastr) && this.validateDateDetailsTab(showToastr) && this.validateSupervisorTab(showToastr) && this.validatePartnersTab(showToastr) && this.validateAttachments(showToastr);
+    return this.validateMainInfoTab(showToastr) && this.validateSupervisorTab(showToastr) && this.validatePartnersTab(showToastr) && this.validateAttachments(showToastr);
   }
 
   getSelectedLocationTypeName(): string {
@@ -1759,12 +1716,10 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       case 1:
         return this.validateMainInfoTab();
       case 2:
-        return this.validateDateDetailsTab();
-      case 3:
         return this.validateSupervisorTab();
-      case 4:
+      case 3:
         return this.validatePartnersTab();
-      case 5:
+      case 4:
         return this.validateAttachmentsTab();
       default:
         return false;
@@ -1796,17 +1751,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         }
         break;
       case 2:
-        isValid = this.validateDateDetailsTab();
-        if (!isValid) {
-          if (!this.dateDetailsForm.get('startDate')?.value) {
-            errors.push('Start Date is required');
-          }
-          if (!this.dateDetailsForm.get('endDate')?.value) {
-            errors.push('End Date is required');
-          }
-        }
-        break;
-      case 3:
         isValid = this.validateSupervisorTab();
         if (!isValid) {
           if (!this.supervisorForm.get('supervisorName')?.value) {
@@ -1884,11 +1828,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Helper methods for template error display (match distribution-site-permit)
   isStartDatePast(): boolean {
-    const control = this.dateDetailsForm.get('startDate');
+    const control = this.mainInfoForm.get('startDate');
     return control && control.touched && control.errors && control.errors['startDatePast'];
   }
   isEndDateBeforeStart(): boolean {
-    const control = this.dateDetailsForm.get('endDate');
+    const control = this.mainInfoForm.get('endDate');
     return control && control.touched && control.errors && control.errors['endDateBeforeStart'];
   }
 

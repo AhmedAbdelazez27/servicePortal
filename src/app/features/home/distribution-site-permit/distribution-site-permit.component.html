@@ -28,7 +28,7 @@
                                     <i *ngIf="isTabCompleted(1)" class="fas fa-check"></i>
                                 </div>
                             </div>
-                            <div class="connecting-line" *ngIf="currentTab !== 5"></div>
+                            <div class="connecting-line" *ngIf="currentTab !== 4"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" (click)="goToTab(1)" [class.text-success]="isTabCompleted(1)"
                                     [class.text-danger]="currentTab > 1 && !isTabCompleted(1)"
@@ -40,7 +40,7 @@
                             </div>
                         </div>
 
-                        <!-- Tab 2: Date Details -->
+                        <!-- Tab 2: Supervisor Information -->
                         <div class="step-navigation-item">
                             <div class="step-container" [class.active]="isTabActive(2)"
                                 [class.completed]="isTabCompleted(2)"
@@ -56,16 +56,16 @@
                                 <span class="step-title" (click)="goToTab(2)" [class.text-success]="isTabCompleted(2)"
                                     [class.text-danger]="currentTab > 2 && !isTabCompleted(2)"
                                     [class.text-primary]="isTabActive(2)">
-                                    {{ 'DIST_SITE.DATE_DETAILS_TAB' | translate }}
+                                    {{ 'DIST_SITE.SUPERVISOR_INFO_TAB' | translate }}
                                 </span>
-                                <small class="d-block text-muted step-description">{{ 'DIST_SITE.DATE_DETAILS_DESC' |
+                                <small class="d-block text-muted step-description">{{ 'DIST_SITE.SUPERVISOR_INFO_DESC' |
                                     translate }}</small>
                             </div>
                         </div>
 
-                        <!-- Tab 3: Supervisor Information -->
+                        <!-- Tab 3: Partners -->
                         <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(3)"
+                            <div class="step-container partners-tab" [class.active]="isTabActive(3)"
                                 [class.completed]="isTabCompleted(3)"
                                 [class.invalid]="currentTab > 3 && !isTabCompleted(3)">
                                 <div class="step-bg"></div>
@@ -79,29 +79,6 @@
                                 <span class="step-title" (click)="goToTab(3)" [class.text-success]="isTabCompleted(3)"
                                     [class.text-danger]="currentTab > 3 && !isTabCompleted(3)"
                                     [class.text-primary]="isTabActive(3)">
-                                    {{ 'DIST_SITE.SUPERVISOR_INFO_TAB' | translate }}
-                                </span>
-                                <small class="d-block text-muted step-description">{{ 'DIST_SITE.SUPERVISOR_INFO_DESC' |
-                                    translate }}</small>
-                            </div>
-                        </div>
-
-                        <!-- Tab 4: Partners -->
-                        <div class="step-navigation-item">
-                            <div class="step-container partners-tab" [class.active]="isTabActive(4)"
-                                [class.completed]="isTabCompleted(4)"
-                                [class.invalid]="currentTab > 4 && !isTabCompleted(4)">
-                                <div class="step-bg"></div>
-                                <div class="step">
-                                    <span *ngIf="!isTabCompleted(4)">4</span>
-                                    <i *ngIf="isTabCompleted(4)" class="fas fa-check"></i>
-                                </div>
-                            </div>
-                            <div class="connecting-line"></div>
-                            <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(4)" [class.text-success]="isTabCompleted(4)"
-                                    [class.text-danger]="currentTab > 4 && !isTabCompleted(4)"
-                                    [class.text-primary]="isTabActive(4)">
                                     {{ 'DIST_SITE.TAB2_TITLE' | translate }}
                                 </span>
                                 <small class="d-block text-muted step-description">{{
@@ -109,21 +86,21 @@
                             </div>
                         </div>
 
-                        <!-- Tab 5: Attachments -->
+                        <!-- Tab 4: Attachments -->
                         <div class="step-navigation-item">
-                            <div class="step-container" [class.active]="isTabActive(5)"
-                                [class.completed]="isTabCompleted(5)"
-                                [class.invalid]="currentTab === 5 && !isTabCompleted(5)">
+                            <div class="step-container" [class.active]="isTabActive(4)"
+                                [class.completed]="isTabCompleted(4)"
+                                [class.invalid]="currentTab === 4 && !isTabCompleted(4)">
                                 <div class="step-bg"></div>
                                 <div class="step">
-                                    <span *ngIf="!isTabCompleted(5)">5</span>
-                                    <i *ngIf="isTabCompleted(5)" class="fas fa-check"></i>
+                                    <span *ngIf="!isTabCompleted(4)">4</span>
+                                    <i *ngIf="isTabCompleted(4)" class="fas fa-check"></i>
                                 </div>
                             </div>
                             <div class="step-content-wrapper">
-                                <span class="step-title" (click)="goToTab(5)" [class.text-success]="isTabCompleted(5)"
-                                    [class.text-danger]="currentTab === 5 && !isTabCompleted(5)"
-                                    [class.text-primary]="isTabActive(5)">
+                                <span class="step-title" (click)="goToTab(4)" [class.text-success]="isTabCompleted(4)"
+                                    [class.text-danger]="currentTab === 4 && !isTabCompleted(4)"
+                                    [class.text-primary]="isTabActive(4)">
                                     {{ 'DIST_SITE.TAB3_TITLE' | translate }}
                                 </span>
                                 <small class="d-block text-muted step-description">{{ 'DIST_SITE.ATTACHMENTS_DESC' |
@@ -218,6 +195,36 @@
                                             [placeholder]="'DIST_SITE.ADDRESS_PLACEHOLDER' | translate">
                                     </div>
 
+                                    <!-- Date Details moved here -->
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DIST_SITE.START_DATE' | translate }} <span
+                                                class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" formControlName="startDate"
+                                            [class.is-invalid]="isFieldInvalid('startDate')"
+                                            [class.is-valid]="isFieldValid('startDate')">
+                                        <div *ngIf="isFieldInvalid('startDate')" class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                        <div *ngIf="isStartDatePast()" class="text-danger small mt-1">
+                                            {{ 'VALIDATION.START_DATE_PAST' | translate }}
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 mb-4">
+                                        <label class="form-label">{{ 'DIST_SITE.END_DATE' | translate }} <span
+                                                class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" formControlName="endDate"
+                                            [class.is-invalid]="isFieldInvalid('endDate')"
+                                            [class.is-valid]="isFieldValid('endDate')">
+                                        <div *ngIf="mainInfoForm.get('endDate')?.invalid && (mainInfoForm.get('endDate')?.touched || submitted)"
+                                            class="invalid-feedback">
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                        </div>
+                                        <div *ngIf="isEndDateBeforeStart() || invalidEndDate"
+                                            class="text-danger small mt-1">
+                                            {{ 'VALIDATION.END_DATE_BEFORE_START' | translate }}
+                                        </div>
+                                    </div>
+
                                     <!-- Notes -->
                                     <div class="col-xl-12 mb-4">
                                         <label class="form-label">{{ 'DIST_SITE.NOTES' | translate }}</label>
@@ -262,64 +269,8 @@
                             </form>
                         </div>
 
-                        <!-- Tab 2: Date Details Content -->
+                        <!-- Tab 2: Supervisor Information Content -->
                         <div *ngIf="currentTab === 2" class="step-content">
-                            <h5 class="mb-4">{{ 'DIST_SITE.DATE_DETAILS' | translate }}</h5>
-
-                            <!-- Validation Status Indicator
-                            <div class="alert" [class.alert-success]="isCurrentTabValid()" [class.alert-warning]="!isCurrentTabValid()" class="mb-3">
-                                <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
-                                <span *ngIf="isCurrentTabValid()" class="text-success">{{ 'VALIDATION.ALL_REQUIRED_FIELDS_COMPLETED' | translate }}</span>
-                                <span *ngIf="!isCurrentTabValid()" class="text-warning">{{ 'VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS' | translate }}</span>
-                            </div> -->
-
-                            <form [formGroup]="mainInfoForm">
-                                <div class="row">
-                                    <!-- Start Date -->
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DIST_SITE.START_DATE' | translate }} <span
-                                                class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" formControlName="startDate"
-                                            [class.is-invalid]="isFieldInvalid('startDate')"
-                                            [class.is-valid]="isFieldValid('startDate')">
-                                        <div *ngIf="isFieldInvalid('startDate')" class="invalid-feedback">
-                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                        </div>
-                                        <div *ngIf="isStartDatePast()" class="text-danger small mt-1">
-                                            {{ 'VALIDATION.START_DATE_PAST' | translate }}
-                                        </div>
-                                    </div>
-                                    <!-- End Date -->
-                                    <div class="col-xl-6 mb-4">
-                                        <label class="form-label">{{ 'DIST_SITE.END_DATE' | translate }} <span
-                                                class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" formControlName="endDate"
-                                            [class.is-invalid]="isFieldInvalid('endDate')"
-                                            [class.is-valid]="isFieldValid('endDate')">
-                                        <!-- <div *ngIf="isFieldInvalid('endDate')" class="invalid-feedback">
-                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                        </div>
-                                        <div *ngIf="isEndDateBeforeStart()" class="text-danger small mt-1">
-                                            {{ 'VALIDATION.END_DATE_BEFORE_START' | translate }}
-                                        </div> -->
-                                        <div *ngIf="mainInfoForm.get('endDate')?.invalid && (mainInfoForm.get('endDate')?.touched || submitted)"
-                                            class="invalid-feedback">
-                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
-                                        </div>
-                                        <div *ngIf="isEndDateBeforeStart() || invalidEndDate"
-                                            class="text-danger small mt-1">
-                                            {{ 'VALIDATION.END_DATE_BEFORE_START' | translate }}
-                                        </div>
-                                    </div>
-
-
-
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Tab 3: Supervisor Information Content -->
-                        <div *ngIf="currentTab === 3" class="step-content">
                             <h5 class="mb-4">{{ 'DIST_SITE.SUPERVISOR_INFO' | translate }}</h5>
 
                             <!-- Validation Status Indicator
@@ -382,8 +333,8 @@
                             </form>
                         </div>
 
-                        <!-- Tab 4: Partners Content -->
-                        <div *ngIf="currentTab === 4" class="step-content">
+                        <!-- Tab 3: Partners Content -->
+                        <div *ngIf="currentTab === 3" class="step-content">
                             <h5 class="mb-4">{{ 'DIST_SITE.PARTNERS' | translate }}</h5>
 
                             <!-- Info Alert -->
@@ -561,7 +512,7 @@
                                                                             (dragleave)="onPartnerDragLeave($event)"
                                                                             (drop)="onPartnerDrop($event, config.id!, partnersForm.get('type')?.value)"
                                                                             [class.drag-over]="isDragOver"
-                                                                            [class.border-danger]="config.mendatory && partnersForm.get('type')?.value && !partnerSelectedFiles[partnersForm.get('type')?.value][config.id!] && (currentTab === 4 || submitted)"
+                                                                            [class.border-danger]="config.mendatory && partnersForm.get('type')?.value && !partnerSelectedFiles[partnersForm.get('type')?.value][config.id!] && (currentTab === 3 || submitted)"
                                                                             [class.border-success]="partnerSelectedFiles[partnersForm.get('type')?.value][config.id!]">
                                                                             <input type="file" class="d-none"
                                                                                 [id]="'partner-file-' + partnersForm.get('type')?.value + '-' + config.id"
@@ -672,8 +623,8 @@
                             </div>
                         </div>
 
-                        <!-- Tab 5: Attachments Content -->
-                        <div *ngIf="currentTab === 5" class="step-content">
+                        <!-- Tab 4: Attachments Content -->
+                        <div *ngIf="currentTab === 4" class="step-content">
                             <h5 class="mb-4">{{ 'DIST_SITE.ATTACHMENTS' | translate }}</h5>
 
                             <!-- Validation Status Indicator -->
@@ -708,7 +659,7 @@
                                                 <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
                                                     (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
                                                     (drop)="onDrop($event, config.id!)" [class.drag-over]="isDragOver"
-                                                    [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)"
+                                                    [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 4 || submitted)"
                                                     [class.border-success]="selectedFiles[config.id!]">
                                                     <input type="file" class="d-none" [id]="'file-' + config.id"
                                                         (change)="onFileSelected($event, config.id!)"
@@ -733,7 +684,7 @@
                                                         [src]="filePreviews[config.id!]" class="preview-image mt-2"
                                                         style="max-width: 200px; max-height: 100px; border-radius: 4px;">
                                                 </div>
-                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 5 || submitted)"
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 4 || submitted)"
                                                     class="text-danger small mt-1">
                                                     <i class="fas fa-exclamation-triangle"></i> {{
                                                     'VALIDATION.ATTACHMENT_REQUIRED' | translate }}

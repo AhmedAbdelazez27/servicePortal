@@ -52,7 +52,10 @@
                 </p>
               </div>
               <div class="col-xl-6">
-                <span class="badge bg-primary">{{mainApplyService.lastStatus}}</span>
+                <p class="mb-1">
+                  <strong>{{ 'COMMON.STATUS' | translate }}:</strong>
+                  <span class="badge bg-primary ms-2">{{mainApplyService.serviceStatusName || mainApplyService.lastStatus}}</span>
+                </p>
               </div>
             </div>
           </div>
@@ -99,6 +102,10 @@
                       </div>
                     </div>
                     <h6 class="department-name">{{step.departmentName}}</h6>
+                    <small class="text-muted d-block mb-2" *ngIf="step.lastModified">
+                      <i class="bi bi-calendar3 me-1"></i>
+                      {{ formatDate(step.lastModified) }}
+                    </small>
                     <button type="button" class="btn btn-link p-0"
                             (click)="openHistoryModal(step.workFlowHistories || [])">
                       <i class="bi bi-clock-history me-1"></i>{{'WORKFLOW.VIEW_HISTORY' | translate}}
@@ -111,53 +118,8 @@
           </div>
 
           <div class="col-lg-9 mb-4">
-            <div id="statusInfo">
-              <div class="main-container mb-4">
-                <div id="workFlowStep" class="mb-3" *ngIf="lastMatchingWorkFlowStep; else readonlyNotes">
-                  <div class="form-group mb-3">
-                    <label for="NotesForApproving" class="control-label col-md-12">
-                      {{ 'mainApplyServiceResourceName.notes' | translate }}
-                    </label>
-
-                    <textarea id="NotesForApproving" class="form-control" readonly>
-{{ mainApplyService.notesForApproving }}
-        </textarea>
-                  </div>
-
-                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 1" class="alert alert-success text-center">
-                    {{ 'mainApplyServiceResourceName.agree' | translate }}
-                  </div>
-
-                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 2" class="alert alert-danger text-center">
-                    {{ 'mainApplyServiceResourceName.disagree' | translate }}
-                  </div>
-
-                  <div *ngIf="lastMatchingWorkFlowStep.serviceStatus == 7" class="alert alert-warning text-center">
-                    {{ 'mainApplyServiceResourceName.underReview' | translate }}
-                  </div>
-
-                  <div class="popover__wrapper" *ngIf="lastMatchingWorkFlowStep.refuseReason">
-                    <a href="javascript:void(0);">
-                      <span class="btn btn-info">{{ mainApplyService.lastStatus }}</span>
-                    </a>
-                    <div class="popover__content w-60">
-                      <p class="popover__message">{{ lastMatchingWorkFlowStep.refuseReason }}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <ng-template #readonlyNotes>
-                  <div class="form-group mb-3">
-                    <label for="NotesForApproving" class="control-label col-md-12">
-                      {{ 'mainApplyServiceResourceName.notes' | translate }}
-                    </label>
-                    <textarea id="NotesForApproving" class="form-control" readonly>
-{{ mainApplyService.notesForApproving }}
-        </textarea>
-                  </div>
-                </ng-template>
-              </div>
-            </div>
+          
+             
 
             <div class="main-container mb-4">
               <div class="step-content mb-4">
@@ -205,10 +167,7 @@
                       <div class="form-control-plaintext">{{fastingTentService?.location?.locationName || '-'}}</div>
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.LOCATION_OWNER' | translate }}</label>
-                      <div class="form-control-plaintext">{{fastingTentService?.location?.locationOwner || '-'}}</div>
-                    </div>
+                   
 
                     <div class="col-md-12 mb-3">
                       <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.LOCATION_ADDRESS' | translate }}</label>
@@ -225,10 +184,7 @@
                       <div class="form-control-plaintext">{{fastingTentService?.streetName || '-'}}</div>
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label fw-bold">{{ 'VIEW_FASTING_TENT.GROUND_NO' | translate }}</label>
-                      <div class="form-control-plaintext">{{fastingTentService?.groundNo || '-'}}</div>
-                    </div>
+                 
                   </div>
 
                   <!-- Map Display -->
@@ -296,36 +252,7 @@
                 </div>
 
                 <!-- Toggle Switches -->
-                <div class="row">
-                  <div class="col-xl-6 mb-3">
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" [checked]="fastingTentService?.tentIsSetUp"
-                             disabled id="tentIsSetUpView">
-                      <label class="form-check-label" for="tentIsSetUpView">
-                        {{ 'VIEW_FASTING_TENT.TENT_IS_SET_UP' | translate }}
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-xl-6 mb-3">
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox"
-                             [checked]="fastingTentService?.isConsultantApprovedFromPolice" disabled
-                             id="consultantApprovedView">
-                      <label class="form-check-label" for="consultantApprovedView">
-                        {{ 'VIEW_FASTING_TENT.CONSULTANT_APPROVED_FROM_POLICE' | translate }}
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-xl-6 mb-3">
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox"
-                             [checked]="fastingTentService?.isConsultantFromAjman" disabled id="consultantFromAjmanView">
-                      <label class="form-check-label" for="consultantFromAjmanView">
-                        {{ 'VIEW_FASTING_TENT.CONSULTANT_FROM_AJMAN' | translate }}
-                      </label>
-                    </div>
-                  </div>
-                </div>
+             
 
               </div>
 

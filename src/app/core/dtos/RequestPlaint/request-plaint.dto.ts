@@ -57,6 +57,7 @@ export interface MainApplyServiceSelect2RequestDto {
   searchTerm?: string;
   orderByValue?: string;
   userId?: string;
+  isForRequestPlaint?: boolean;
 }
 
 export interface Select2Result {
