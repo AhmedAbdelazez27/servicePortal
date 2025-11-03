@@ -16,6 +16,8 @@ import { Pagination, FndLookUpValuesSelect2RequestDto, SelectdropdownResultResul
 import { MainApplyService } from '../../../core/services/mainApplyService/mainApplyService.service';
 import { Router } from '@angular/router';
 import { AppEnum } from '../../../core/dtos/appEnum.dto';
+import { MainApplyServiceReportService } from '../../../core/services/mainApplyService/mainApplyService.reports';
+import { AuthService } from '../../../core/services/auth.service';
  
 
 declare var bootstrap: any;
@@ -53,6 +55,7 @@ export class MainApplyServiceComponent {
   loadgridData: mainApplyServiceDto[] = [];
   summaryRequests: any[] = [];
   loadformData: mainApplyServiceDto = {} as mainApplyServiceDto;
+  currecntDept: string | null = null;
 
 
   constructor(
@@ -63,7 +66,9 @@ export class MainApplyServiceComponent {
     private spinnerService: SpinnerService,
     private Select2Service: Select2Service,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private mainApplyServiceReportService: MainApplyServiceReportService,
+    private authService: AuthService,
   )
   {  
     
@@ -77,10 +82,22 @@ export class MainApplyServiceComponent {
     this.buildColumnDefs();
     this.rowActions = [
       { label: this.translate.instant('COMMON.ViewInfo'), icon: 'icon-frame-view', action: 'onViewInfo' },
+      { label: this.translate.instant('Common.Print'), icon: 'fa fa-print', action: 'onPrintPDF' },
+
       // { label: this.translate.instant('Common.requestComplaint'), icon: 'icon-frame-view', action: 'onRequestComplaint' },
     ];
    
     this.getLoadDataGrid({ pageNumber: 1, pageSize: this.pagination.take });
+
+    let profile = this.authService.snapshot;
+    let storeddepartmentId = profile?.departmentId ?? '';
+
+    const storedDeptIds = storeddepartmentId
+      .replace(/"/g, '')
+      .split(',')
+      .map(x => x.trim())
+      .filter(x => x !== '');
+    this.currecntDept = storeddepartmentId.replace(/"/g, '').trim();
   }
 
   ngOnDestroy(): void {
@@ -292,6 +309,39 @@ export class MainApplyServiceComponent {
             );
           });
         return;
+      }
+    }
+
+    else if (event.action === 'onPrintPDF') {
+
+      if (!event?.row) return;
+
+      const serviceName = event.row.service?.serviceName ?? '';
+      const lastStatus = event.row.lastStatus ?? '';
+      const permitNumber = event.row.permitNumber ?? '';
+      const serviceId = event.row.serviceId ?? '';
+      const id = event.row.id ?? '';
+
+      if (serviceName === "تصريح خيمة / موقع إفطار" && lastStatus.includes("تمت الموافقة")) {
+        this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+      }
+      else if (serviceName === "تصريح خيمة / موقع إفطار" && permitNumber.trim() !== '' && ['2009', '2010', '2011'].some(d => this.currecntDept?.includes(d))) {
+        this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'initial');
+      }
+      else if (lastStatus.includes("تمت الموافقة")) {
+        this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+      }
+      else {
+        this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+
+        //this.translate
+        //  .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+        //  .subscribe(translations => {
+        //    this.toastr.error(
+        //      `${translations['mainApplyServiceResourceName.NoPermission']}`,
+        //    );
+        //  });
+        //return;
       }
     }
   }

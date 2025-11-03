@@ -18,3 +18,14 @@ export enum ServiceStatus {
   Received = 5,
   ReturnForModifications = 7
 }
+export enum ServicesType {
+  TentPermission = 1,
+  CharityEventPermit = 2,
+  RequestForStaffAppointment = 3,
+  ReligiousInstitutionRequest = 4,
+  RequestAnEventAnnouncement = 5,
+  DonationCampaignPermitRequest = 6,
+  GrievanceRequest = 7,
+  DistributionSitePermitApplication = 1001,
+  RequestComplaint = 1002
+}

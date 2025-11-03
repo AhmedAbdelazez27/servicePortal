@@ -415,10 +415,15 @@
             <li>
               <button class="dropdown-item"
                       (click)="onTableAction({ action: 'onViewInfo', row })">
-                {{ 'Common.ViewInfo' | translate }}
+                {{ 'COMMON.ViewInfo' | translate }}
               </button>
             </li>
-           
+            <li>
+              <button class="dropdown-item"
+                      (click)="onTableAction({ action: 'onPrintPDF', row })">
+                {{ 'Common.Print' | translate }}
+              </button>
+            </li>
           </ul>
         </div>
       </td>

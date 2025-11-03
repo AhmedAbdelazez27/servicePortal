@@ -194,7 +194,7 @@ export class ApiEndpoints {
     GetById: (id: number) => `/${id}`,
     Create: '/Create',
     Update: '/Update',
-    Delete: (id: number) => `/Delete/${id}`,
+    Delete: (id: number) => `/Delete/${id}`,    
     GetAllWithMultipleTypes: '/GetAllWithMultipleTypes'
   };
 
@@ -412,15 +412,15 @@ export class ApiEndpoints {
 
 
  static readonly UAE_PASS_CONFIG = {
-   baseUrl: 'https://stg-id.uaepass.ae/idshub',
-    // baseUrl: 'https://id.uaepass.ae/idshub',
+   // baseUrl: 'https://stg-id.uaepass.ae/idshub',
+    baseUrl: 'https://id.uaepass.ae/idshub',
 
-    getURLCredention: {
-     clientId: 'sandbox_stage',
-     //  redirectUri: 'http://compassint.ddns.net:2040/login'
-     redirectUri: 'http://localhost:5173/login',
-     clientsecret: 'HnlHOJTkTb66Y5H'
-    },
+    //getURLCredention: {
+    //  clientId: 'sandbox_stage',
+    //  //  redirectUri: 'http://compassint.ddns.net:2040/login'
+    //  redirectUri: 'http://localhost:4200/login',
+    //  clientsecret: 'HnlHOJTkTb66Y5H'
+    //},
 
     //getURLCredention: {
     //  clientId: 'ccc_web_stg',
@@ -428,10 +428,10 @@ export class ApiEndpoints {
     //  redirectUri: 'https://192.168.51.130:2001/login'
     //}
 
-    // getURLCredention: {
-    //   clientId: 'ajm_ccc_web_prod',
-    //   clientsecret: 'PXr2q2Tu8AMbK7mT',
-    //   redirectUri: 'https://ajmanccc.ae/login'
-    // }
+    getURLCredention: {
+      clientId: 'ajm_ccc_web_prod',
+      clientsecret: 'PXr2q2Tu8AMbK7mT',
+      redirectUri: 'https://ajmanccc.ae/login'
+    }
   };
 }

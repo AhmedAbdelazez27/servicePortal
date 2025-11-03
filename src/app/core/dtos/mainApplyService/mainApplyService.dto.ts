@@ -56,7 +56,8 @@ export class mainApplyServiceDto {
   requestPlaint: RequestPlaintDto | null = null;
   charityEventPermit: CharityEventPermitDto | null = null;
   requestComplaint: RequestComplaintDto | null = null;
-  serviceStatusName ?: any;
+  serviceStatusName?: any;
+  entityName: string | null = null;
 }
 export class ServiceDto {
   serviceId: number | null = null;
@@ -277,6 +278,9 @@ export class FastingTentServiceDto {
   distributionSitePhotoPath: string | null = null;
   location: LocationDto | null = null;
   mainApplyService: mainApplyServiceDto | null = null;
+  tentConstructDate: Date | null = null;
+  consultantNumber?: string | null = null;
+  consultantName?: string | null = null;
 }
 
 export class LocationDto {
