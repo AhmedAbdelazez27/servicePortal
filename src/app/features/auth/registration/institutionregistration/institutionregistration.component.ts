@@ -95,7 +95,8 @@ export class InstitutionregistrationComponent implements OnInit {
   ngOnInit(): void {
    
     this.loadDropdownData();
-    this.loadAttachmentConfigs();
+    // this.loadAttachmentConfigs();
+    this.loadAttachmentConfigsNew();
   }
 
   private initializeForm(): void {
@@ -266,6 +267,26 @@ export class InstitutionregistrationComponent implements OnInit {
       }
     });
   }
+
+  private loadAttachmentConfigsNew(): void {
+  this.attachmentService.getAttachmentsConfigByTypes(
+    [AttachmentsConfigType.FillInstitutionRegistrationData, AttachmentsConfigType.ProfileImage],
+    {
+      active: true,
+      mandatory: null,
+    }
+  ).subscribe({
+    next: (configs: AttachmentsConfigDto[]) => {
+      this.attachmentConfigs = configs;
+    },
+    error: (err) => {
+      this.toastr.error(
+        this.translate.instant('REGISTRATION.TOASTR.ATTACHMENT_CONFIG_ERROR'),
+        this.translate.instant('TOAST.TITLE.ERROR')
+      );
+    }
+  });
+}
 
   private fetchGenderOptions(): void {
     if (this.genderLoading || !this.genderHasMore) return;

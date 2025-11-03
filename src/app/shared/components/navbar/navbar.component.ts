@@ -104,7 +104,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
    */
   refreshProfilePhoto(): void {
     if (this.userData) {
-      console.log('🔄 Refreshing profile photo only...');
       this.loadProfilePhoto(this.userData);
     }
   }
@@ -122,41 +121,32 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private loadProfilePhoto(userData: any): void {
-    console.log('🔍 Loading profile photo for user:', userData);
 
     // First check if attachments are in user data
     if (userData.attachments && userData.attachments.length > 0) {
-      console.log('📎 User attachments found in userData:', userData.attachments);
       this.findProfilePhotoInAttachments(userData.attachments, userData.userType || userData.lkpUserTypeId);
     } else if (userData.masterId) {
-      console.log('🔍 No attachments in userData, loading from attachment service...');
       this.loadProfilePhotoFromService(userData);
     } else {
-      console.log('❌ No masterId found, cannot load attachments');
     }
   }
 
   private findProfilePhotoInAttachments(attachments: any[], userType: number): void {
-    console.log('🔍 Looking for profile photo in attachments, userType:', userType);
 
     let profilePhotoAttachment;
 
     if (userType === 1 || userType === 3) {
       // Individual user
       profilePhotoAttachment = attachments.find((att: any) => att.attConfigID === 7);
-      console.log('🔍 Looking for config ID 7 (individual user):', profilePhotoAttachment);
     } else if (userType === 2) {
       // Institution user
       profilePhotoAttachment = attachments.find((att: any) => att.attConfigID === 2014);
-      console.log('🔍 Looking for config ID 2014 (institution user):', profilePhotoAttachment);
     }
 
     // If found, construct the image URL
     if (profilePhotoAttachment && profilePhotoAttachment.imgPath) {
       this.profilePhotoUrl = this.constructImageUrl(profilePhotoAttachment.imgPath);
-      console.log('✅ Profile photo URL set to:', this.profilePhotoUrl);
     } else {
-      console.log('❌ No profile photo attachment found in userData');
     }
   }
 
@@ -165,7 +155,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const masterId = userData.masterId;
 
     if (!masterId) {
-      console.log('❌ No masterId found');
       return;
     }
 
@@ -173,15 +162,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
       ? AttachmentsConfigType.FillInstitutionRegistrationData
       : AttachmentsConfigType.FillOutPublicLoginData;
 
-    console.log('🔍 Loading attachments from service - masterId:', masterId, 'type:', masterType);
-
     this.attachmentService.getListByMasterId(masterId, masterType).subscribe({
       next: (attachments) => {
-        console.log('📎 Attachments loaded from service:', attachments);
         if (attachments && attachments.length > 0) {
           this.findProfilePhotoInAttachments(attachments, userType);
         } else {
-          console.log('❌ No attachments found from service');
         }
       },
       error: (error) => {

@@ -86,6 +86,7 @@ export class EditProfileComponent implements OnInit {
   
   // Attachment data
   attachmentConfigs: AttachmentsConfigDto[] = [];
+  attachmentConfigsProfileImage: AttachmentsConfigDto[] = [];
   selectedFiles: { [key: number]: File } = {};
   filePreviews: { [key: number]: string } = {};
   existingAttachments: { [key: number]: AttachmentDto } = {};
@@ -214,13 +215,13 @@ export class EditProfileComponent implements OnInit {
         this.userMasterId = userResponse.masterId || null; // Extract master ID from response
 
         this.populateForm(userResponse);
-        await this.loadAttachmentConfigs();
+        await this.loadAttachmentConfigsProfileImage();
         
         // Check if attachments are included in user data
         if (userResponse.attachments && userResponse.attachments.length > 0) {
           this.loadAttachmentsFromUserData(userResponse.attachments);
         } else {
-          await this.loadExistingAttachments();
+          // await this.loadExistingAttachments();
         }
       }
 
@@ -417,16 +418,32 @@ export class EditProfileComponent implements OnInit {
     });
   }
 
-  private async loadAttachmentConfigs(): Promise<void> {
-    const configType = this.userType === 2 
-      ? AttachmentsConfigType.FillInstitutionRegistrationData 
-      : AttachmentsConfigType.FillOutPublicLoginData;
+  // private async loadAttachmentConfigs(): Promise<void> {
+  //   const configType = this.userType === 2 
+  //     ? AttachmentsConfigType.FillInstitutionRegistrationData 
+  //     : AttachmentsConfigType.FillOutPublicLoginData;
 
-    console.log('Loading attachment configs for user type:', this.userType, 'config type:', configType);
+  //   console.log('Loading attachment configs for user type:', this.userType, 'config type:', configType);
+
+  //   try {
+  //     const configs = await this.attachmentService.getAttachmentsConfigByType(
+  //       configType,
+  //       true,  // active: true
+  //       null   // mandatory: null
+  //     ).toPromise();
+  //     this.attachmentConfigs = configs || [];
+  //     console.log('Loaded attachment configs:', this.attachmentConfigs);
+  //   } catch (error) {
+  //     console.error('Error loading attachment configs:', error);
+  //     this.attachmentConfigs = [];
+  //   }
+  // }
+
+    private async loadAttachmentConfigsProfileImage(): Promise<void> {
 
     try {
       const configs = await this.attachmentService.getAttachmentsConfigByType(
-        configType,
+        AttachmentsConfigType.ProfileImage,
         true,  // active: true
         null   // mandatory: null
       ).toPromise();
@@ -446,6 +463,7 @@ export class EditProfileComponent implements OnInit {
     
     // Map attachments by config ID
     // Note: Backend provides full URLs in imgPath like "https://localhost:7156/Uploads/5/47/filename.jpg"
+    const profileConfig = this.getPreferredProfileImageConfig();
     attachments.forEach(attachment => {
       if (attachment.attConfigID) {
         console.log('Processing attachment with config ID:', attachment.attConfigID, attachment);
@@ -461,9 +479,10 @@ export class EditProfileComponent implements OnInit {
           
           this.filePreviews[attachment.attConfigID] = imageUrl;
           
-          // Special handling for profile photo (attConfigID 7 for individuals)
-          if (attachment.attConfigID === 7 && this.isIndividualUser()) {
-            console.log('Setting profile photo preview for individual user:', imageUrl);
+          // Special handling for profile photo (use profile config id)
+          const isProfileAttachment = !!profileConfig && attachment.attConfigID === profileConfig.id;
+          if (isProfileAttachment) {
+            console.log('Setting profile photo preview from attachment config:', attachment.attConfigID, imageUrl);
             this.profilePhotoPreview = imageUrl;
           }
         }
@@ -475,57 +494,6 @@ export class EditProfileComponent implements OnInit {
 
     // Sync profile photo display after loading attachments
     this.syncProfilePhotoFromAttachments();
-  }
-
-  private async loadExistingAttachments(): Promise<void> {
-    if (!this.userMasterId || this.attachmentConfigs.length === 0) return;
-
-    try {
-      const masterType = this.userType === 2 
-        ? AttachmentsConfigType.FillInstitutionRegistrationData 
-        : AttachmentsConfigType.FillOutPublicLoginData;
-
-      console.log('Loading existing attachments for master ID:', this.userMasterId, 'type:', masterType);
-
-      const attachments = await this.attachmentService.getListByMasterId(
-        this.userMasterId,
-        masterType
-      ).toPromise() || [];
-
-      console.log('Retrieved attachments from service:', attachments);
-
-      // Map attachments by config ID
-      // Note: Backend provides full URLs in imgPath like "https://localhost:7156/Uploads/5/47/filename.jpg"
-      attachments.forEach(attachment => {
-        if (attachment.attConfigID) {
-          console.log('Processing existing attachment with config ID:', attachment.attConfigID, attachment);
-          this.existingAttachments[attachment.attConfigID] = attachment;
-          
-          // Set preview for existing attachments
-          if (attachment.imgPath) {
-            // If it's an image, use the path; otherwise use a default file icon
-            const isImage = attachment.imgPath.match(/\.(jpg|jpeg|png|gif)$/i);
-            this.filePreviews[attachment.attConfigID] = isImage 
-              ? this.constructImageUrl(attachment.imgPath)
-              : 'assets/images/file.png';
-            
-            // Special handling for profile photo (attConfigID 7 for individuals)
-            if (attachment.attConfigID === 7 && this.isIndividualUser()) {
-              console.log('Setting profile photo preview for individual user from service:', this.constructImageUrl(attachment.imgPath));
-              this.profilePhotoPreview = this.constructImageUrl(attachment.imgPath);
-            }
-          }
-        }
-      });
-
-      console.log('Existing attachments after loading from service:', this.existingAttachments);
-      console.log('File previews after loading from service:', this.filePreviews);
-
-      // Sync profile photo display after loading attachments
-      this.syncProfilePhotoFromAttachments();
-    } catch (error) {
-      console.error('Error loading existing attachments:', error);
-    }
   }
 
   /**
@@ -778,7 +746,7 @@ export class EditProfileComponent implements OnInit {
       return;
     }
 
-    // Validate required attachments
+    // Validate required attachments (consider selectedProfilePhoto too)
     if (!this.validateRequiredAttachments() && !isChangePassword) {
       this.toastr.error(this.translate.instant('EDIT_PROFILE.REQUIRED_ATTACHMENTS_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
       return;
@@ -852,6 +820,17 @@ export class EditProfileComponent implements OnInit {
       // Handle attachments - First delete marked attachments, then handle uploads/updates
       if (Object.keys(this.attachmentsToDelete).length > 0) {
         await this.deleteAttachments();
+      }
+
+      // Handle profile photo if selected (ensure config and save/update)
+      if (this.selectedProfilePhoto) {
+        try {
+          await this.ensureProfileImageConfigLoaded();
+          await this.handleProfilePhotoAttachmentUpdate();
+        } catch (error) {
+          this.toastr.error(this.translate.instant('EDIT_PROFILE.PROFILE_PHOTO_UPDATE_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+          throw error;
+        }
       }
 
       if (Object.keys(this.selectedFiles).length > 0) {
@@ -1041,8 +1020,13 @@ export class EditProfileComponent implements OnInit {
    * Validate if all required attachments are present
    */
   validateRequiredAttachments(): boolean {
+    const profileConfig = this.getPreferredProfileImageConfig();
     for (const config of this.attachmentConfigs) {
-      if (this.isAttachmentRequired(config) && !this.hasExistingFile(config.id) && !this.hasNewFile(config.id)) {
+      const hasExisting = this.hasExistingFile(config.id);
+      const hasNew = this.hasNewFile(config.id);
+      const isProfileConfig = profileConfig ? config.id === profileConfig.id : false;
+      const hasSelectedProfile = isProfileConfig ? !!this.selectedProfilePhoto : false;
+      if (this.isAttachmentRequired(config) && !hasExisting && !hasNew && !hasSelectedProfile) {
         return false;
       }
     }
@@ -1184,6 +1168,7 @@ export class EditProfileComponent implements OnInit {
         // Handle profile photo attachment update if there's a new photo
         if (this.selectedProfilePhoto) {
           try {
+            console.log('Updating profile photo attachment...');
             await this.handleProfilePhotoAttachmentUpdate();
           } catch (error) {
             this.toastr.error(this.translate.instant('EDIT_PROFILE.PROFILE_PHOTO_UPDATE_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
@@ -1372,21 +1357,9 @@ export class EditProfileComponent implements OnInit {
       throw new Error('User master ID not available');
     }
 
-    // For individuals (userType 1 or 3), use attachment configuration ID 7 for profile photo
-    // For institutions (userType 2), use the existing logic
-    let identityPhotoConfig;
-    
-    if (this.isIndividualUser()) { // Individual (userType 1 or 3)
-      identityPhotoConfig = this.attachmentConfigs.find(config => config.id === 7);
-      console.log('Individual user (type ' + this.userType + ') - updating profile photo with config ID 7:', identityPhotoConfig);
-    } else { // Institution (userType 2)
-      identityPhotoConfig = this.attachmentConfigs.find(config => 
-        config.id === 2014 || 
-        (this.translate.currentLang === 'ar' ? config.name === 'صورة هوية المستخدم' : config.nameEn === 'User Identity Photo')
-      );
-      console.log('Institution user - updating profile photo with config:', identityPhotoConfig);
-    }
-
+    // Ensure profile image config is available, then determine preferred config (prioritize 1009)
+    await this.ensureProfileImageConfigLoaded();
+    const identityPhotoConfig = this.getPreferredProfileImageConfig();
     if (!identityPhotoConfig) {
       throw new Error('Identity photo attachment configuration not found');
     }
@@ -1459,22 +1432,8 @@ export class EditProfileComponent implements OnInit {
     console.log('Current profile photo preview:', this.profilePhotoPreview);
     console.log('================================');
     
-    // For individuals (userType 1 or 3), use attachment configuration ID 7 for profile photo
-    // For institutions (userType 2), use the existing logic
-    let identityPhotoConfig;
-    let profilePhotoAttachmentId = 7; // Default for individuals
-    
-    if (this.isIndividualUser()) { // Individual (userType 1 or 3)
-      identityPhotoConfig = this.attachmentConfigs.find(config => config.id === 7);
-      console.log('Individual user (type ' + this.userType + ') - looking for attachment config ID 7:', identityPhotoConfig);
-    } else { // Institution (userType 2)
-      identityPhotoConfig = this.attachmentConfigs.find(config => 
-        config.id === 2014 || 
-        (this.translate.currentLang === 'ar' ? config.name === 'صورة هوية المستخدم' : config.nameEn === 'User Identity Photo')
-      );
-      profilePhotoAttachmentId = 2014; // Default for institutions
-      console.log('Institution user - looking for attachment config:', identityPhotoConfig);
-    }
+    // Determine preferred profile image config (by attachmentsConfigType 1009)
+    const identityPhotoConfig = this.getPreferredProfileImageConfig();
 
     // First try to find the profile photo using the attachment configuration
     if (identityPhotoConfig && this.existingAttachments[identityPhotoConfig.id]) {
@@ -1493,14 +1452,14 @@ export class EditProfileComponent implements OnInit {
       }
     }
     
-    // Fallback: If no config found or no attachment via config, try to find attachment directly by ID
-    if (this.isIndividualUser() && this.existingAttachments[7]) {
-      const attachment = this.existingAttachments[7];
-      console.log('Found profile photo attachment directly by ID 7:', attachment);
-      if (attachment.imgPath && !this.selectedProfilePhoto) {
-        const isImage = attachment.imgPath.match(/\.(jpg|jpeg|png|gif)$/i);
+    // Fallback: If no config found or no attachment via config, try to find attachment directly by the resolved config id
+    if (identityPhotoConfig && this.existingAttachments[identityPhotoConfig.id]) {
+      const attachmentProfile = this.existingAttachments[identityPhotoConfig.id];
+      console.log('Found profile photo attachment directly by profile config id:', attachmentProfile);
+      if (attachmentProfile.imgPath && !this.selectedProfilePhoto) {
+        const isImage = attachmentProfile.imgPath.match(/\.(jpg|jpeg|png|gif)$/i);
         if (isImage) {
-          this.profilePhotoPreview = this.constructImageUrl(attachment.imgPath);
+          this.profilePhotoPreview = this.constructImageUrl(attachmentProfile.imgPath);
           console.log('Profile photo preview set via fallback to:', this.profilePhotoPreview);
           return;
         }
@@ -1522,15 +1481,17 @@ export class EditProfileComponent implements OnInit {
   // Debug method to manually set profile photo for testing
   debugSetProfilePhoto(): void {
     console.log('=== Manual Profile Photo Debug ===');
-    if (this.existingAttachments[7]) {
-      const attachment = this.existingAttachments[7];
-      console.log('Found attachment with ID 7:', attachment);
+    const config = this.getPreferredProfileImageConfig();
+    const direct = config ? this.existingAttachments[config.id] : undefined;
+    const attachment = (config && this.existingAttachments[config.id]) || direct;
+    if (attachment) {
+      console.log('Found attachment for profile photo:', attachment);
       if (attachment.imgPath) {
         this.profilePhotoPreview = this.constructImageUrl(attachment.imgPath);
         console.log('Manually set profile photo to:', this.profilePhotoPreview);
       }
     } else {
-      console.log('No attachment found with ID 7');
+      console.log('No attachment found for profile photo (by profile config id)');
       console.log('Available attachments:', Object.keys(this.existingAttachments));
     }
     console.log('==================================');
@@ -1647,5 +1608,26 @@ export class EditProfileComponent implements OnInit {
     }
     
     return phoneNumber;
+  }
+
+  // Helper: ensure profile image config is loaded
+  private async ensureProfileImageConfigLoaded(): Promise<void> {
+    if (!this.attachmentConfigs || this.attachmentConfigs.length === 0) {
+      await this.loadAttachmentConfigsProfileImage();
+    }
+  }
+
+  // Helper: get preferred profile image config (by attachmentsConfigType 1009)
+  private getPreferredProfileImageConfig(): AttachmentsConfigDto | null {
+    if (!this.attachmentConfigs || this.attachmentConfigs.length === 0) {
+      return null;
+    }
+    // Find by type (1009) or name fallback
+    let config = this.attachmentConfigs.find(c => (c as any).attachmentsConfigType === AttachmentsConfigType.ProfileImage) || null;
+    if (config) return config;
+    config = this.attachmentConfigs.find(c => (c as any).attachmentsConfigType === 1009) || null;
+    if (config) return config;
+    config = this.attachmentConfigs.find(c => (this.translate.currentLang === 'ar' ? c.name === 'صورة شخصية' : c.nameEn === 'Profile Image')) || null;
+    return config || null;
   }
 }

@@ -5,11 +5,13 @@ import { filter, take, finalize } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import { AuthService } from './auth.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class RefreshTokenService {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
+  private notificationService = inject(NotificationService);
 
   private isRefreshing = false;
   private refreshed$ = new BehaviorSubject<boolean | null>(null);
@@ -54,10 +56,18 @@ export class RefreshTokenService {
       req$
         .pipe(finalize(() => { this.isRefreshing = false; }))
         .subscribe({
-          next: (res) => {
+          next: async (res) => {
             // لو Bearer جديد
             if (res?.access_token) {
               this.auth.saveToken(res.access_token);
+              // مزامنة fcmToken تلقائي بعد كل refresh
+              try {
+                await this.notificationService.manuallyTriggerFCMTokenSync();
+                // Log للتأكيد فقط -- أتركه واضح!
+                console.log('%cFCM Token تمت مزامنته مع الباك اند بعد الـRefresh Token','color:green;font-weight:bold');
+              } catch (err) {
+                // ممكن تضيف هنا error handle خفيف إن أردت
+              }
             }
             this.lastOutcome = true;
             this.refreshed$.next(true);

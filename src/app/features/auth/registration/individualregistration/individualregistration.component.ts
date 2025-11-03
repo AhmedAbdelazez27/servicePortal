@@ -88,7 +88,8 @@ export class IndividualregistrationComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDropdownData();
-    this.loadAttachmentConfigs();
+    // this.loadAttachmentConfigs();
+    this.loadAttachmentConfigNew();
   }
 
   private initializeForm(): void {
@@ -259,6 +260,28 @@ export class IndividualregistrationComponent implements OnInit {
       }
     });
   }
+
+  
+  private loadAttachmentConfigNew(): void {
+  this.attachmentService.getAttachmentsConfigByTypes(
+    [AttachmentsConfigType.FillOutPublicLoginData , AttachmentsConfigType.ProfileImage], 
+    {
+      active: true,
+      mandatory: null,
+    }
+  ).subscribe({
+    next: (configs: AttachmentsConfigDto[]) => {
+      this.attachmentConfigs = configs;
+    },
+    error: (err) => { 
+      this.toastr.error(
+        this.translate.instant('REGISTRATION.TOASTR.ATTACHMENT_CONFIG_ERROR'),
+        this.translate.instant('TOAST.TITLE.ERROR')
+      );
+    }
+  });
+}
+
 
   onFileSelected(event: any, configId: number): void {
     const file = event.target.files[0];

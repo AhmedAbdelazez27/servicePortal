@@ -74,4 +74,18 @@ export enum AttachmentsConfigType {
   Comment = 1003,
  
   Partner = 1004,
+  ProfileImage = 1009,
+
+}
+
+export interface GetAllWithMultipleTypesParamters {
+  skip: number;
+  take: number;
+  attachmentConfigTypes: (AttachmentsConfigType | number)[];
+  active?: boolean | null;
+  mandatory?: boolean | null; 
+}
+
+export interface AttachmentsConfigPagedResponse {
+  data: AttachmentsConfigDto[];
 }

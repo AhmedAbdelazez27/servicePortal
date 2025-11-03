@@ -376,7 +376,6 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
           });
         }
       });
-      console.log("allWorkFlowComments = ",this.allWorkFlowComments);
       
     }
     
@@ -447,9 +446,6 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Map initialization for location display
   private initializeMap(): void {
-    console.log('Initializing map...');
-    console.log('Fasting tent service:', this.fastingTentService);
-    console.log('Location coordinates:', this.fastingTentService?.location?.locationCoordinates);
     
     if (!this.fastingTentService?.location?.locationCoordinates) {
       this.toastr.warning('No location coordinates available to display on map');
@@ -463,13 +459,12 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     const checkAndInitialize = () => {
       const mapElement = document.getElementById('viewMap');
       attempts++;
-      console.log(`Attempt ${attempts}: Map element found:`, !!mapElement);
       
       if (mapElement) {
-        console.log(`Map element dimensions: ${mapElement.offsetWidth}x${mapElement.offsetHeight}`);
+        
         // Check if map container has proper dimensions
         if (mapElement.offsetWidth === 0 || mapElement.offsetHeight === 0) {
-          console.log('Map container has zero dimensions, retrying...');
+          
           if (attempts < maxAttempts) {
             setTimeout(checkAndInitialize, 500);
           } else {
@@ -491,22 +486,10 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   private setupViewMap(): void {
     try {
-      console.log('Setting up view map...');
+      
       // Double-check that the map container exists and has dimensions
       const mapElement = document.getElementById('viewMap');
-      console.log('Map element:', mapElement);
-      console.log('Map element dimensions:', mapElement?.offsetWidth, 'x', mapElement?.offsetHeight);
-      console.log('Map element style:', mapElement?.style.display, mapElement?.style.visibility);
-      if (mapElement) {
-        const computedStyle = window.getComputedStyle(mapElement);
-        console.log('Map element computed style:', {
-          display: computedStyle.display,
-          visibility: computedStyle.visibility,
-          height: computedStyle.height,
-          width: computedStyle.width,
-          position: computedStyle.position
-        });
-      }
+      
       if (!mapElement) {
         this.toastr.error('Map container not found');
         this.mapLoadError = true;
@@ -514,11 +497,10 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       }
       
       if (mapElement.offsetWidth === 0 || mapElement.offsetHeight === 0) {
-        console.log('Map container has zero dimensions, ensuring proper CSS...');
         
         // Check if element is actually in the document
         if (!document.contains(mapElement)) {
-          console.log('Map element is not in document, retrying...');
+          
           setTimeout(() => this.setupViewMap(), 1000);
           return;
         }
@@ -526,7 +508,7 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         // Check if element is visible
         const computedStyle = window.getComputedStyle(mapElement);
         if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
-          console.log('Map element is hidden by CSS, retrying...');
+          
           setTimeout(() => this.setupViewMap(), 1000);
           return;
         }
@@ -534,16 +516,16 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         // Check if element is in viewport
         const rect = mapElement.getBoundingClientRect();
         if (rect.bottom < 0 || rect.top > window.innerHeight || rect.right < 0 || rect.left > window.innerWidth) {
-          console.log('Map element is not in viewport, retrying...');
+          
           setTimeout(() => this.setupViewMap(), 1000);
           return;
         }
         
         // Check if element has content or is empty
         if (mapElement.children.length === 0 && mapElement.innerHTML.trim() === '') {
-          console.log('Map element is empty, this is good for initialization');
+          
         } else {
-          console.log('Map element has content, clearing it for initialization');
+          
           mapElement.innerHTML = '';
         }
         
@@ -559,14 +541,12 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         
         // Check again after ensuring proper CSS
         if (mapElement.offsetWidth === 0 || mapElement.offsetHeight === 0) {
-          console.log('Map container still has zero dimensions after CSS fix, checking if element is in viewport...');
           
           // Check if element is in viewport
           const rect = mapElement.getBoundingClientRect();
-          console.log('Map element bounding rect:', rect);
           
           if (rect.width === 0 || rect.height === 0) {
-            console.log('Map element has zero bounding rect, retrying...');
+            
             setTimeout(() => this.setupViewMap(), 1000);
             return;
           }
@@ -587,7 +567,6 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       // Enhanced coordinate parsing with multiple format support
       let coordinates: string[] = [];
       const coordString = this.fastingTentService.location.locationCoordinates;
-      console.log('Coordinate string:', coordString);
       
       // Try to parse as JSON first (most common format)
       try {
@@ -635,7 +614,6 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
       const lat = parseFloat(coordinates[0].trim());
       const lng = parseFloat(coordinates[1].trim());
-      console.log('Parsed coordinates:', { lat, lng });
       
 
 
@@ -668,11 +646,9 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
       }
 
       try {
-        console.log('Creating map with coordinates:', [lat, lng]);
-        console.log('Leaflet available:', typeof L);
-        console.log('Leaflet map function:', typeof L.map);
+        
         this.map = L.map('viewMap').setView([lat, lng], 15);
-        console.log('Map created successfully:', this.map);
+        
       } catch (mapError) {
         this.toastr.error(this.translate.instant('FASTING_TENT.MAP_CREATION_FAILED'));
         this.mapLoadError = true;
@@ -1105,11 +1081,6 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Handle table cell clicks for attachment viewing
   onTableCellClick(event: any,id:any) {
-    // const btn = event.event?.target?.closest?.('.attachment-btn');
-    // if (btn) {
-    //   const id = parseInt(btn.getAttribute('data-comment-id'), 10);
-    //   if (id) this.fetchAndViewCommentAttachments(id);
-    // }
      if (id) this.fetchAndViewCommentAttachments(id);
   }
 

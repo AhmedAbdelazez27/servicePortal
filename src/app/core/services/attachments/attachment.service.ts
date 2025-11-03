@@ -15,6 +15,7 @@ import {
   GetAllAttachmentsConfigParamters,
   AttachmentsConfigType,
   AttachmentsConfigPagedResponse,
+  GetAllWithMultipleTypesParamters,
 } from '../../dtos/attachments/attachments-config.dto';
 import { PagedResultDto } from '../../dtos/Authentication/Entity/entity.dto';
 import { map } from 'rxjs/operators';
@@ -26,7 +27,7 @@ export class AttachmentService {
   private readonly BASE_URL = `${environment.apiBaseUrl}${ApiEndpoints.Attachments.Base}`;
   private readonly CONFIG_BASE_URL = `${environment.apiBaseUrl}${ApiEndpoints.AttachmentsConfig.Base}`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Create new attachment
   createAsync(dto: CreateAttachmentDto): Observable<AttachmentDto> {
@@ -161,4 +162,30 @@ export class AttachmentService {
       `${this.CONFIG_BASE_URL}${ApiEndpoints.AttachmentsConfig.GetById(id)}`
     );
   }
+
+  getAttachmentsConfigByTypes(
+    configTypes: (AttachmentsConfigType | number)[],
+    options?: {
+      active?: boolean | null;
+      mandatory?: boolean | null;
+      skip?: number;
+      take?: number;
+    }
+  ): Observable<AttachmentsConfigDto[]> {
+    const parameters: GetAllWithMultipleTypesParamters = {
+      skip: options?.skip ?? 0,
+      take: options?.take ?? 100,
+      attachmentConfigTypes: configTypes,
+      active: options?.active ?? null,
+      mandatory: options?.mandatory ?? null,
+    };
+
+    return this.http
+      .post<AttachmentsConfigPagedResponse>(
+        `${this.CONFIG_BASE_URL}${ApiEndpoints.AttachmentsConfig.GetAllWithMultipleTypes}`,
+        parameters
+      )
+      .pipe(map(res => res.data ?? []));
+  }   
+
 }
