@@ -12,6 +12,7 @@ import { ColDef } from 'ag-grid-community';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { GenericDataTableComponent } from '../../../../../shared/generic-data-table/generic-data-table.component';
+import { MainApplyServiceReportService } from '../../../../core/services/mainApplyService/mainApplyService.reports';
 type MainApplyServiceView = {
   id: number;
   userId: string;
@@ -87,7 +88,8 @@ export class ViewRequestplaintComponent implements OnInit {
     private workFlowCommentsService: WorkFlowCommentsService,
     private attachmentService: AttachmentService,
     private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private mainApplyServiceReportService: MainApplyServiceReportService
   ) {}
 
 
@@ -413,6 +415,14 @@ export class ViewRequestplaintComponent implements OnInit {
       return h?.noteAr || h?.serviceStatusName || '';
     }
     return h?.noteEn || h?.serviceStatusName || '';
+  }
+
+  printReport(): void {
+    const serviceId = this.mainApplyService?.serviceId ?? 0;
+    const id = this.mainApplyService?.id ?? '';
+    const serviceStatusName = this.mainApplyService?.serviceStatusName.includes("Approved") ? 'final' : 'initial';
+
+    this.mainApplyServiceReportService.printDatabyId(id.toString(), serviceId, serviceStatusName)
   }
   
 }

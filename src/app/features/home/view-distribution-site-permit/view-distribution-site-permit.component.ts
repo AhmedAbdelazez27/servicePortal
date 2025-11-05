@@ -6,7 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
-import * as L from 'leaflet';
+// import * as L from 'leaflet';
+import { GoogleMapsLoaderService } from '../../../core/services/google-maps-loader.service';
 import { ColDef } from 'ag-grid-community';
 import { GenericDataTableComponent } from '../../../../shared/generic-data-table/generic-data-table.component';
 import { environment } from '../../../../environments/environment';
@@ -37,6 +38,7 @@ import {
   AttachmentsConfigDto,
   AttachmentsConfigType,
 } from '../../../core/dtos/attachments/attachments-config.dto';
+import { MainApplyServiceReportService } from '../../../core/services/mainApplyService/mainApplyService.reports';
 
 // Service Status Enum (matching backend enum)
 export enum ServiceStatus {
@@ -135,10 +137,11 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     public translate: TranslateService,
     private cdr: ChangeDetectorRef,
-    private authService: AuthService
+    private authService: AuthService,
+    private googleMapsLoader: GoogleMapsLoaderService,
+    private mainApplyServiceReportService: MainApplyServiceReportService
   ) {
     this.initializeCommentForm();
-    this.initializeMapIcon();
 
     // Initialize current user name
     const currentUser = this.authService.getCurrentUser();
@@ -159,7 +162,7 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     if (this.map) {
-      this.map.remove();
+      this.map = null;
     }
     
     // Remove window resize listener
@@ -173,9 +176,10 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     if (this.map) {
       // Small delay to ensure DOM has updated
       setTimeout(() => {
-        if (this.map) {
-          this.map.invalidateSize();
-        }
+        try {
+          const center = this.map.getCenter ? this.map.getCenter() : null;
+          if (center) { this.map.setCenter(center); }
+        } catch {}
       }, 100);
     }
   }
@@ -185,7 +189,10 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     if (this.distributionSiteService?.distributionSiteCoordinators) {
       setTimeout(() => {
         if (this.map) {
-          this.map.invalidateSize();
+          try {
+            const center = this.map.getCenter ? this.map.getCenter() : null;
+            if (center) { this.map.setCenter(center); }
+          } catch {}
         } else {
           this.initializeMap();
         }
@@ -207,15 +214,8 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     });
   }
 
-  private initializeMapIcon(): void {
-    this.customIcon = L.divIcon({
-      className: 'custom-marker',
-      html: '<div style="background-color: #ff4444; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); position: relative;"><div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #ff4444;"></div></div>',
-      iconSize: [20, 28],
-      iconAnchor: [10, 28],
-      popupAnchor: [0, -28],
-    });
-  }
+  // Removed initializeMapIcon - was using Leaflet API instead of Google Maps
+  // Custom icons can be added later if needed using Google Maps API
 
   private initializeCommentsTable(): void {
     
@@ -523,14 +523,13 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     if (this.map) {
       // Remove all markers
       this.markers.forEach(marker => {
-        if (marker && marker.remove) {
-          marker.remove();
+        if (marker && marker.setMap) {
+          marker.setMap(null);
         }
       });
       this.markers = [];
       
-      // Remove map
-      this.map.remove();
+      // Clear map (Google Maps doesn't have remove method)
       this.map = null;
     }
     
@@ -671,7 +670,6 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
       }
       
       if (this.map) {
-        this.map.remove();
         this.map = null;
       }
 
@@ -758,66 +756,28 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
         this.toastr.warning(this.translate.instant('DISTRIBUTION_SITE.INVALID_COORDINATES_UAE'));
       }
 
-      try {
-        // console.log('Creating map with coordinates:', [lat, lng]);
-        // console.log('Leaflet available:', typeof L);
-        // console.log('Leaflet map function:', typeof L.map);
-        this.map = L.map('viewMap').setView([lat, lng], 15);
-        // console.log('Map created successfully:', this.map);
-      } catch (mapError) {
-        this.toastr.error(this.translate.instant('DISTRIBUTION_SITE.MAP_CREATION_FAILED'));
-        this.mapLoadError = true;
-        return;
-      }
-
-      // Add tile layer with fallback
-      try {
-        const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors',
-          maxZoom: 19,
-          minZoom: 5,
-          crossOrigin: true,
-        });
-        
-        // Add error handler for tile loading issues
-        tileLayer.on('tileerror', (error) => {
-          // Fallback to alternative tile server
-          this.addFallbackTileLayer();
-        });
-        
-        tileLayer.addTo(this.map);
-      } catch (tileError) {
-        this.toastr.error(this.translate.instant('DISTRIBUTION_SITE.MAP_TILES_FAILED'));
-        this.mapLoadError = true;
-        return;
-      }
-
-      // Add marker for the location
-      try {
-        const marker = L.marker([lat, lng], { icon: this.customIcon })
-          .addTo(this.map)
-          .bindPopup(this.distributionSiteService.address || this.translate.instant('DISTRIBUTION_SITE.SELECTED_LOCATION'))
-          .openPopup();
-
-        this.markers = [marker];
-      } catch (markerError) {
-        this.toastr.error(this.translate.instant('COMMON.FAILED_ADD_MARKER'));
-        this.mapLoadError = true;
-        return;
-      }
-
-      // Force map refresh after a short delay to ensure proper rendering
-      setTimeout(() => {
-        if (this.map) {
-          this.map.invalidateSize();
-          
-          // Check if tiles are loaded
-          const tileLayersLoaded = this.checkTileLayersLoaded();
-          if (!tileLayersLoaded) {
-            this.addFallbackTileLayer();
-          }
+      this.googleMapsLoader.load().then((google) => {
+        try {
+          const el = document.getElementById('viewMap') as HTMLElement;
+          this.map = new google.maps.Map(el, {
+            center: { lat, lng },
+            zoom: 15,
+            fullscreenControl: false,
+            streetViewControl: false,
+            mapTypeControl: false,
+          });
+          const marker = new google.maps.Marker({ position: { lat, lng }, map: this.map });
+          this.markers = [marker];
+        } catch (e) {
+          this.toastr.error(this.translate.instant('DISTRIBUTION_SITE.MAP_CREATION_FAILED'));
+          this.mapLoadError = true;
+          return;
         }
-      }, 1000);
+      }).catch(() => {
+        this.toastr.error(this.translate.instant('SHARED.MAP.LOADING_ERROR'));
+        this.mapLoadError = true;
+        return;
+      });
 
       this.mapLoadError = false;
 
@@ -827,39 +787,9 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     }
   }
 
-  private addFallbackTileLayer(): void {
-    // Remove existing tile layers first
-    this.map.eachLayer((layer: any) => {
-      if (layer instanceof L.TileLayer) {
-        this.map.removeLayer(layer);
-      }
-    });
+  private addFallbackTileLayer(): void { }
 
-    // Add alternative tile layer
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors (fallback)',
-      maxZoom: 19,
-      minZoom: 5,
-    }).addTo(this.map);
-    
-    this.toastr.info(this.translate.instant('COMMON.USING_FALLBACK_TILES'));
-  }
-
-  private checkTileLayersLoaded(): boolean {
-    try {
-      const mapContainer = document.getElementById('viewMap');
-      if (!mapContainer) return false;
-      
-      const leafletTiles = mapContainer.querySelectorAll('.leaflet-tile');
-      const loadedTiles = mapContainer.querySelectorAll('.leaflet-tile-loaded');
-      
-    
-      // If we have some tiles and at least 50% are loaded, consider it successful
-      return leafletTiles.length > 0 && (loadedTiles.length / leafletTiles.length) >= 0.5;
-    } catch (error) {
-      return false;
-    }
-  }
+  private checkTileLayersLoaded(): boolean { return true; }
 
   // Comment attachment configuration loading
   loadCommentAttachmentConfigs(): void {
@@ -1480,5 +1410,13 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
       return h?.noteAr || h?.serviceStatusName || '';
     }
     return h?.noteEn || h?.serviceStatusName || '';
+  }
+
+  printReport(): void {
+    const serviceId = this.mainApplyService?.serviceId ?? 0;
+    const id = this.mainApplyService?.id ?? '';
+    const serviceStatusName = this.mainApplyService?.serviceStatusName.includes("Approved") ? 'final' : 'initial';
+
+    this.mainApplyServiceReportService.printDatabyId(id.toString(), serviceId, serviceStatusName)
   }
 }

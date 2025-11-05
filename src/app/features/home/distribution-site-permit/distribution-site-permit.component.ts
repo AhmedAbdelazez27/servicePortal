@@ -15,7 +15,8 @@ import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
-import * as L from 'leaflet';
+// import * as L from 'leaflet';
+import { GoogleMapsLoaderService } from '../../../core/services/google-maps-loader.service';
 
 import { DistributionSiteRequestService } from '../../../core/services/distribution-site-request.service';
 import { AttachmentService } from '../../../core/services/attachments/attachment.service';
@@ -108,7 +109,8 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private googleMapsLoader: GoogleMapsLoaderService
   ) {
     this.initializeForms();
     this.initializePartnerTypes();
@@ -124,7 +126,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     if (this.map) {
-      this.map.remove();
+      this.map = null;
     }
   }
 
@@ -336,13 +338,8 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   }
 
   initializeCustomIcon(): void {
-    this.customIcon = L.divIcon({
-      className: 'custom-marker',
-      html: '<div style="background-color: #ff4444; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); position: relative;"><div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #ff4444;"></div></div>',
-      iconSize: [20, 28],
-      iconAnchor: [10, 28],
-      popupAnchor: [0, -28],
-    });
+    // Not used in Google Maps (we will use default marker). Keeping method for compatibility.
+    this.customIcon = null;
   }
 
   // Tab navigation
@@ -563,35 +560,30 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   setupMap(): void {
     try {
       if (this.map) {
-        this.map.remove();
         this.map = null;
       }
 
-      // Default to Dubai coordinates (UAE)
       const defaultLat = 25.2048;
       const defaultLng = 55.2708;
 
-      this.map = L.map('distributionMap').setView([defaultLat, defaultLng], 10);
+      this.googleMapsLoader.load().then((google) => {
+        const el = document.getElementById('distributionMap') as HTMLElement;
+        if (!el) { return; }
 
-      // Add tile layer
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19,
-        minZoom: 5,
-      }).addTo(this.map);
+        this.map = new google.maps.Map(el, {
+          center: { lat: defaultLat, lng: defaultLng },
+          zoom: 10,
+          fullscreenControl: false,
+          streetViewControl: false,
+          mapTypeControl: false,
+        });
 
-      // Add click handler for map
-      this.map.on('click', (e: any) => {
-        this.onMapClick(e);
+        this.map.addListener('click', (e: any) => {
+          this.onMapClick({ latlng: { lat: e.latLng.lat(), lng: e.latLng.lng() } });
+        });
+      }).catch(() => {
+        this.toastr.error(this.translate.instant('SHARED.MAP.LOADING_ERROR'));
       });
-
-      // Force map refresh after a short delay
-      setTimeout(() => {
-        if (this.map) {
-          this.map.invalidateSize();
-        }
-      }, 1000);
-
     } catch (error) {
     }
   }
@@ -599,24 +591,23 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   onMapClick(e: any): void {
     const lat = e.latlng.lat;
     const lng = e.latlng.lng;
-    
-    // Clear existing markers
+
     this.markers.forEach(marker => {
-      if (marker && marker.remove) {
-        marker.remove();
+      if (marker && marker.setMap) {
+        marker.setMap(null);
       }
     });
     this.markers = [];
 
-    // Add new marker
-    const marker = L.marker([lat, lng], { icon: this.customIcon })
-      .addTo(this.map)
-      .bindPopup(`Selected Location<br>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}`)
-      .openPopup();
+    if (this.map && (window as any).google) {
+      const google = (window as any).google;
+      const marker = new google.maps.Marker({
+        position: { lat, lng },
+        map: this.map,
+      });
+      this.markers.push(marker);
+    }
 
-    this.markers.push(marker);
-
-    // Update coordinates in form
     this.selectedCoordinates = `${lat}/${lng}`;
     this.mainInfoForm.patchValue({
       distributionSiteCoordinators: this.selectedCoordinates,

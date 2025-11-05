@@ -189,6 +189,7 @@ import { AttachmentBase64Dto, CreateWorkFlowCommentDto, WorkflowCommentsType } f
 import { AttachmentsConfigType } from '../../../../core/dtos/attachments/attachments-config.dto';
 import { AdvertisementsService } from '../../../../core/services/advertisement.service';
 import { IdentityCardReaderDto } from '../../../../core/dtos/identity-card/identity-card-reader.dto';
+import { MainApplyServiceReportService } from '../../../../core/services/mainApplyService/mainApplyService.reports';
 
 @Component({
   selector: 'app-view-requesteventpermit',
@@ -308,7 +309,8 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     public translationService: TranslationService,
     private _CharityEventPermitRequestService: CharityEventPermitRequestService,
-    private _AdvertisementsService: AdvertisementsService
+    private _AdvertisementsService: AdvertisementsService,
+    private mainApplyServiceReportService: MainApplyServiceReportService
   ) {
     this.commentForm = this.fb.group({ comment: [''] });
     this.initAdvertisementForm();
@@ -1347,6 +1349,14 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
       return h?.noteAr || h?.serviceStatusName || '';
     }
     return h?.noteEn || h?.serviceStatusName || '';
+  }
+
+  printReport(): void {
+    const serviceId = this.mainApplyService?.serviceId ?? 0;
+    const id = this.mainApplyService?.id ?? '';
+    const serviceStatusName = this.mainApplyService?.serviceStatusName.includes("Approved") ? 'final' : 'initial';
+
+    this.mainApplyServiceReportService.printDatabyId(id.toString(), serviceId, serviceStatusName)
   }
 }
 

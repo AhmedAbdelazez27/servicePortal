@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div *ngIf="!loading && !error && initiative">
+    <div *ngIf="(!loading || initiative) && !error && initiative">
 
       <!-- <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
@@ -133,7 +133,7 @@
 
 
         <!-- Map Section -->
-        <div class="col-xl-12 mb-5" *ngIf="initiative.initiativeDetails && initiative.initiativeDetails.length > 0">
+        <div class="col-xl-12 mb-5" *ngIf="initiative && initiative.initiativeDetails && initiative.initiativeDetails.length > 0">
           <h5 class="mb-3 gold">{{ 'INITIATIVES.LOCATIONS' | translate }}</h5>
           <div class="col-xl-6 mb-3">
             <label for="region" class="form-label">{{ 'INITIATIVES.RegionName' | translate }}</label>
@@ -144,6 +144,7 @@
                        [multiple]="false" 
                        [clearable]="true"
                        [searchable]="true"
+                       [disabled]="loading"
                        (change)='onRegionChange($event)'  
                        class="ng-select-custom"
                        placeholder="{{ 'COMMON.SELECT_OPTION' | translate }}">

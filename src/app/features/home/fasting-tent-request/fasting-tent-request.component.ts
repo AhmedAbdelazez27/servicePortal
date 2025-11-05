@@ -15,7 +15,8 @@ import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
-import * as L from 'leaflet';
+// import * as L from 'leaflet';
+import { GoogleMapsLoaderService } from '../../../core/services/google-maps-loader.service';
 
 import { FastingTentRequestService } from '../../../core/services/fasting-tent-request.service';
 import { AttachmentService } from '../../../core/services/attachments/attachment.service';
@@ -124,7 +125,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private googleMapsLoader: GoogleMapsLoaderService
   ) {
     this.initializeForms();
     this.initializePartnerTypes();
@@ -139,7 +141,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     if (this.map) {
-      this.map.remove();
+      this.map = null;
     }
   }
 
@@ -325,7 +327,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   // Method to manually refresh the map
   refreshMap(): void {
     if (this.map) {
-      this.map.invalidateSize();
+      try {
+        const center = this.map.getCenter ? this.map.getCenter() : null;
+        if (center) {
+          this.map.setCenter(center);
+        }
+      } catch {}
       this.toastr.info('Map refreshed');
     } else if (this.selectedScenario === 'distribution') {
       // console.log('Map not initialized, reinitializing...');
@@ -405,13 +412,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   initializeCustomIcon(): void {
-    this.customIcon = L.divIcon({
-      className: 'custom-marker',
-      html: '<div style="background-color: #ff4444; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); position: relative;"><div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #ff4444;"></div></div>',
-      iconSize: [20, 28],
-      iconAnchor: [10, 28],
-      popupAnchor: [0, -28],
-    });
+    this.customIcon = null;
   }
 
   // Tab navigation
@@ -927,210 +928,89 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   setupMap(): void {
     try {
       if (this.map) {
-        // console.log('Removing existing map instance');
-        this.map.remove();
         this.map = null;
       }
 
-      // Default to Dubai coordinates (UAE)
       const defaultLat = 25.2048;
       const defaultLng = 55.2708;
 
-      // console.log('Initializing map with center:', { lat: defaultLat, lng: defaultLng });
+      this.googleMapsLoader.load().then((google) => {
+        const el = document.getElementById('distributionMap') as HTMLElement;
+        if (!el) { return; }
 
-      this.map = L.map('distributionMap').setView([defaultLat, defaultLng], 10);
+        this.map = new google.maps.Map(el, {
+          center: { lat: defaultLat, lng: defaultLng },
+          zoom: 10,
+          fullscreenControl: false,
+          streetViewControl: false,
+          mapTypeControl: false,
+        });
 
-      // Add tile layer with fallback
-      const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: ' OpenStreetMap contributors',
-        maxZoom: 19,
-        minZoom: 5,
-        crossOrigin: true,
+        this.addMapMarkers();
+      }).catch(() => {
+        this.toastr.error(this.translate.instant('SHARED.MAP.LOADING_ERROR'));
       });
-
-      // Add error handler for tile loading issues
-      tileLayer.on('tileerror', (error) => {
-        // console.warn('Tile loading error:', error);
-        // Fallback to alternative tile server
-        this.addFallbackTileLayer();
-      });
-
-      tileLayer.addTo(this.map);
-
-      // console.log('Map initialized successfully, adding markers...');
-      this.addMapMarkers();
-
-      // Add a simple click handler for debugging
-      this.map.on('click', (e: any) => {
-        // console.log('Map clicked at:', e.latlng);
-      });
-
-      // Force map refresh after a short delay to ensure proper rendering
-      setTimeout(() => {
-        if (this.map) {
-          // console.log('Forcing map invalidateSize...');
-          this.map.invalidateSize();
-
-          // Check if tiles are loaded
-          const tileLayersLoaded = this.checkTileLayersLoaded();
-          if (!tileLayersLoaded) {
-            // console.warn('Tiles not loaded, trying fallback...');
-            this.addFallbackTileLayer();
-          }
-        }
-      }, 1000);
-
     } catch (error) {
-      // console.error('Error setting up map:', error);
       this.toastr.error('Failed to initialize map');
     }
   }
 
-  addFallbackTileLayer(): void {
-    // console.log('Adding fallback tile layer...');
-    // Remove existing tile layers first
-    this.map.eachLayer((layer: any) => {
-      if (layer instanceof L.TileLayer) {
-        this.map.removeLayer(layer);
-      }
-    });
+  addFallbackTileLayer(): void { }
 
-    // Add alternative tile layer
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: ' OpenStreetMap contributors (fallback)',
-      maxZoom: 19,
-      minZoom: 5,
-    }).addTo(this.map);
-
-    this.toastr.info('Using fallback map tiles');
-  }
-
-  checkTileLayersLoaded(): boolean {
-    try {
-      const mapContainer = document.getElementById('distributionMap');
-      if (!mapContainer) return false;
-
-      const leafletTiles = mapContainer.querySelectorAll('.leaflet-tile');
-      const loadedTiles = mapContainer.querySelectorAll('.leaflet-tile-loaded');
-
-      // console.log(`Tile check: ${loadedTiles.length} loaded out of ${leafletTiles.length} total tiles`);
-
-      // If we have some tiles and at least 50% are loaded, consider it successful
-      return leafletTiles.length > 0 && (loadedTiles.length / leafletTiles.length) >= 0.5;
-    } catch (error) {
-      // console.error('Error checking tile loading status:', error);
-      return false;
-    }
-  }
+  checkTileLayersLoaded(): boolean { return true; }
 
   addMapMarkers(): void {
     this.markers = [];
-    // console.log(`Adding markers for ${this.interactiveMapLocations.length} locations`);
+    if (!this.map) return;
+    const google = (window as any).google;
+    if (!google || !google.maps) return;
+    
+    const bounds = new google.maps.LatLngBounds();
     const t = (k: string) => this.translate.instant(k);
-
-
-    if (this.interactiveMapLocations.length === 0) {
-      // console.warn('No locations available to add markers');
-      this.toastr.warning('No locations found to display on map');
-      return;
-    }
-
-    let markersAdded = 0;
-    let markersSkipped = 0;
-
-    this.interactiveMapLocations.forEach((location, index) => {
-      // console.log(`Processing location ${index + 1}:`, {
-      //   id: location.id,
-      //   name: location.locationName,
-      //   coordinates: location.locationCoordinates,
-      //   isAvailable: location.isAvailable
-      // });
-
-      if (!location.locationCoordinates) {
-        // console.warn(`Location ${location.id} (${location.locationName}) has no coordinates`);
-        markersSkipped++;
-        return;
-      }
-
-      try {
-        const coords = this.parseCoordinates(location.locationCoordinates);
-        if (coords) {
-          // Validate coordinate ranges (roughly UAE bounds)
-          if (coords.lat < 22 || coords.lat > 27 || coords.lng < 51 || coords.lng > 57) {
-            // console.warn(`Location ${location.id} has coordinates outside UAE bounds:`, coords);
-          }
-
-          const markerColor = location.isAvailable ? '#28a745' : '#dc3545'; // Green for available, red for unavailable
-
-          const markerIcon = L.divIcon({
-            className: 'custom-marker',
-            html: `<div style="background-color: ${markerColor}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); cursor: pointer;"></div>`,
-            iconSize: [20, 20],
-            iconAnchor: [10, 10],
-          });
-
-          const marker = L.marker([coords.lat, coords.lng], { icon: markerIcon })
-            .addTo(this.map)
-            .bindPopup(`
-              <div>
-                <h6>${location.locationName || t('COMMON.UNKNOWN_LOCATION')}</h6>
-                <p><strong>${t('FASTING_TENT_REQ.ADDRESS')}:</strong> ${location.address || t('COMMON.N_A')}</p>
-                <p><strong>${t('FASTING_TENT_REQ.REGION_NAME')}:</strong> ${location.region || t('COMMON.N_A')}</p>
-                <p><strong>${t('COMMON.STATUS')}:</strong> ${location.isAvailable ? t('COMMON.AVAILABLE') : t('COMMON.NOT_AVAILABLE')}</p>
-              </div>
-            `)
-            .on('click', () => {
-              this.onMapLocationClick(location);
-            });
-
-          (marker as any).locationId = location.id; // Associate location ID with marker
-          this.markers.push(marker);
-          markersAdded++;
-          // console.log(`Added marker for location ${location.id} at coordinates:`, coords);
-        } else {
-          // console.error(`Failed to parse coordinates for location ${location.id}:`, location.locationCoordinates);
-          markersSkipped++;
-        }
-      } catch (error) {
-        // console.error(`Error processing location ${location.id}:`, error);
-        markersSkipped++;
-      }
+    this.interactiveMapLocations.forEach((location) => {
+      if (!location.locationCoordinates) return;
+      const coords = this.parseCoordinates(location.locationCoordinates);
+      if (!coords) return;
+      
+      // Get icon based on availability
+      const icon = this.getMarkerIcon(location.isAvailable, google);
+      
+      const marker = new google.maps.Marker({
+        position: { lat: coords.lat, lng: coords.lng },
+        map: this.map,
+        title: location.locationName || t('COMMON.UNKNOWN_LOCATION'),
+        icon: icon,
+      });
+      (marker as any).locationId = location.id;
+      marker.addListener('click', () => this.onMapLocationClick(location));
+      this.markers.push(marker);
+      bounds.extend(marker.getPosition());
     });
+    if (!bounds.isEmpty()) {
+      this.map.fitBounds(bounds, 50);
+    }
+  }
 
-    // console.log(`Markers summary: ${markersAdded} added, ${markersSkipped} skipped`);
-
-    if (markersAdded === 0) {
-      // this.toastr.warning('No valid locations could be displayed on the map');
+  getMarkerIcon(isAvailable: boolean, google: any): any {
+    if (isAvailable === false) {
+      // Red marker for unavailable locations
+      return {
+        url: 'http://maps.google.com/mapfiles/ms/icons/red.png',
+      };
     } else {
-      // this.toastr.success(`${markersAdded} locations loaded on the map`);
-
-      // Fit map to show all markers if we have any
-      if (this.markers.length > 0) {
-        const group = new L.FeatureGroup(this.markers);
-        this.map.fitBounds(group.getBounds().pad(0.1));
-      }
+      // Yellow marker for available locations
+      return {
+        url: 'http://maps.google.com/mapfiles/ms/icons/yellow.png',
+      };
     }
   }
 
   centerMapOnLocation(coordinates: string, locationId: number): void {
-    if (!this.map || !coordinates) {
-      // console.warn('Map not initialized or no coordinates provided for centering.');
-      return;
-    }
-
+    if (!this.map || !coordinates) { return; }
     const coords = this.parseCoordinates(coordinates);
     if (coords) {
-      // console.log(`Centering map on [${coords.lat}, ${coords.lng}]`);
-      this.map.setView([coords.lat, coords.lng], 15); // Zoom level 15 for a closer view
-
-      // Find and open the popup for the selected marker
-      const markerToOpen = this.markers.find(m => (m as any).locationId === locationId);
-
-      if (markerToOpen) {
-        markerToOpen.openPopup();
-      }
-    } else {
-      // console.error('Could not parse coordinates for map centering:', coordinates);
+      this.map.setCenter({ lat: coords.lat, lng: coords.lng });
+      this.map.setZoom(15);
     }
   }
 

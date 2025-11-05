@@ -25,6 +25,7 @@ import { TranslationService } from '../../../../core/services/translation.servic
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CharityEventPermitRequestService } from '../../../../core/services/charity-event-permit-request.service';
 import { AdvertisementsService } from '../../../../core/services/advertisement.service';
+import { MainApplyServiceReportService } from '../../../../core/services/mainApplyService/mainApplyService.reports';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -299,7 +300,8 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     public translationService: TranslationService,
     private _CharityEventPermitRequestService: CharityEventPermitRequestService,
-    private _AdvertisementsService: AdvertisementsService
+    private _AdvertisementsService: AdvertisementsService,
+    private mainApplyServiceReportService: MainApplyServiceReportService
   ) {
     this.commentForm = this.fb.group({ comment: [''] });
     this.initAdvertisementForm();
@@ -1330,6 +1332,14 @@ hasFileFor(ad?: RequestAdvertisement, configId?: number): boolean {
     const up = this.getAdUpload(ad, cfg.id!);
     if (!up?.imgPath) return;
     this.downloadAttachment(up);
+  }
+
+  printReport(): void {
+    const serviceId = this.mainApplyService?.serviceId ?? 0;
+    const id = this.mainApplyService?.id ?? '';
+    const serviceStatusName = this.mainApplyService?.serviceStatusName.includes("Approved") ? 'final' : 'initial';
+
+    this.mainApplyServiceReportService.printDatabyId(id.toString(), serviceId, serviceStatusName)
   }
 
 

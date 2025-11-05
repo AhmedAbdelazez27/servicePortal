@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ServiceStatus } from '../../../../core/dtos/appEnum.dto';
 import { WorkFlowStepDto } from '../../../../core/dtos/mainApplyService/mainApplyService.dto';
+import { MainApplyServiceReportService } from '../../../../core/services/mainApplyService/mainApplyService.reports';
 
 @Component({
   selector: 'app-view-complaintrequest',
@@ -28,7 +29,8 @@ export class ViewComplaintrequestComponent implements OnInit {
     private router: Router,
     private mainApplyServiceService: MainApplyService,
     private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private mainApplyServiceReportService: MainApplyServiceReportService
   ) { }
 
   ngOnInit(): void {
@@ -210,5 +212,13 @@ export class ViewComplaintrequestComponent implements OnInit {
       return h?.noteAr || h?.serviceStatusName || '';
     }
     return h?.noteEn || h?.serviceStatusName || '';
+  }
+
+  printReport(): void {
+    const serviceId = this.mainApplyService?.serviceId ?? 0;
+    const id = this.mainApplyService?.id ?? '';
+    const serviceStatusName = this.mainApplyService?.serviceStatusName.includes("Approved") ? 'final' : 'initial';
+
+    this.mainApplyServiceReportService.printDatabyId(id.toString(), serviceId, serviceStatusName)
   }
 }

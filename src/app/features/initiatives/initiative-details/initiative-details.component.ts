@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LangChangeEvent, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { map, Observable, startWith, Subscription } from 'rxjs';
-import * as L from 'leaflet';
+// import * as L from 'leaflet';
+import { GoogleMapsLoaderService } from '../../../core/services/google-maps-loader.service';
 import { InitiativeService } from '../../../core/services/initiative.service';
 import { InitiativeDto, InitiativeDetailsDto, FilterById } from '../../../core/dtos/UserSetting/initiatives/initiative.dto';
 import { TranslationService } from '../../../core/services/translation.service';
@@ -15,12 +16,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 
 // Fix for Leaflet marker icons
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
+// Leaflet icon setup not needed for Google Maps
 
 @Component({
   selector: 'app-initiative-details',
@@ -38,8 +34,8 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   searchParams = new FilterById();
 
   // Map properties
-  private map: L.Map | null = null;
-  private markers: L.Marker[] = [];
+  private map: any = null;
+  private markers: any[] = [];
   private mapInitialized = false;
   lang$: Observable<any>;
   private subscriptions = new Subscription();
@@ -57,7 +53,8 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     private translationService: TranslationService,
     private cdr: ChangeDetectorRef,
     private toastr: ToastrService,
-    private select2Service: Select2Service
+    private select2Service: Select2Service,
+    private googleMapsLoader: GoogleMapsLoaderService
   ) {
     this.lang$ = this.translateService.onLangChange.pipe(
       startWith({ lang: this.translateService.currentLang || this.translateService.defaultLang || 'ar' } as LangChangeEvent),
@@ -105,16 +102,14 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   ngAfterViewInit(): void {
-    // Initialize map after view is ready
-    setTimeout(() => {
-      this.initializeMap();
-    }, 100);
+    // Map will be initialized after data is loaded in loadInitiativeDetails()
+    // This ensures we have both the DOM element and the data ready
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
     if (this.map) {
-      this.map.remove();
+      this.map = null;
     }
 
     // Clean up global function
@@ -167,7 +162,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
       this.regionName = null;
       this.selectedRegion = null;
     }
-    // Reset map initialization to allow reinitialization with new data
+    // Load details - resetMap will be called inside loadInitiativeDetails
     this.resetMap();
     this.loadInitiativeDetails();
   }
@@ -187,16 +182,22 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     
     this.initiativeService.getById(params).subscribe({
       next: (response: any) => {
-         this.initiative = response || null;
+        // Clear markers before updating data
+        this.markers.forEach(marker => { 
+          if (marker && marker.setMap) {
+            marker.setMap(null);
+          }
+        });
+        this.markers = [];
+        
+        // Update initiative data
+        this.initiative = response || null;
         this.loading = false;
 
-        // Initialize map after data is loaded
+        // Initialize/update map after data is loaded
         setTimeout(() => {
           this.initializeMap();
-          if (this.map) {
-            this.addMarkersToMap();
-          }
-        }, 500); // Increased timeout to ensure DOM is ready
+        }, 100); // Reduced timeout for faster response
       },
       error: (error: any) => {
         this.error = 'ERRORS.FAILED_LOAD_INITIATIVE_DETAILS';
@@ -206,19 +207,24 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   resetMap(): void {
-    // Clear existing map and reset initialization flag
+    // Clear existing markers first
+    this.markers.forEach(marker => { 
+      if (marker && marker.setMap) {
+        marker.setMap(null);
+      }
+    });
+    this.markers = [];
+    
+    // Clear existing map completely - only use this when truly needed
     if (this.map) {
-      this.map.remove();
       this.map = null;
     }
-    // Clear markers array
-    this.markers = [];
+    
+    // Reset initialization flag to allow reinitialization
     this.mapInitialized = false;
   }
 
   initializeMap(): void {
-    if (this.mapInitialized) return;
-
     // Only initialize if we have initiative data and it has locations
     if (!this.initiative || !this.initiative.initiativeDetails || this.initiative.initiativeDetails.length === 0) {
       return;
@@ -226,35 +232,66 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
 
     const mapContainer = document.getElementById('initiative-map');
     if (!mapContainer) {
+      // Retry if container not found yet
+      setTimeout(() => this.initializeMap(), 100);
       return;
     }
 
-    // Clear any existing map
-    if (this.map) {
-      this.map.remove();
+    // Check if map container has dimensions
+    if (mapContainer.offsetWidth === 0 || mapContainer.offsetHeight === 0) {
+      // Retry after a short delay
+      setTimeout(() => this.initializeMap(), 100);
+      return;
+    }
+
+    // If map already exists and is valid, just update markers without recreating the map
+    if (this.map && this.mapInitialized) {
+      // Add new markers (old markers already cleared in loadInitiativeDetails)
+      this.addMarkersToMap();
+      return;
     }
 
     // Initialize map with default center (UAE coordinates)
-    this.map = L.map('initiative-map', {
-      center: [25.2048, 55.2708], // Dubai coordinates
-      zoom: 10,
-      zoomControl: true,
-      attributionControl: true
+    this.googleMapsLoader.load().then((google) => {
+      const el = document.getElementById('initiative-map') as HTMLElement;
+      if (!el) {
+        return;
+      }
+      
+      // Double check dimensions
+      if (el.offsetWidth === 0 || el.offsetHeight === 0) {
+        setTimeout(() => this.initializeMap(), 200);
+        return;
+      }
+      
+      // Clear any existing content in the map container
+      el.innerHTML = '';
+      
+      this.map = new google.maps.Map(el, {
+        center: { lat: 25.2048, lng: 55.2708 },
+        zoom: 10,
+        fullscreenControl: false,
+        streetViewControl: false,
+        mapTypeControl: false,
+      });
+      
+      this.mapInitialized = true;
+      
+      // Add markers after map is initialized
+      if (this.map) {
+        this.addMarkersToMap();
+      }
+    }).catch(() => {
+      this.toastr.error('Failed to load Google Maps');
+      return;
     });
-
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(this.map);
-
-    this.mapInitialized = true;
   }
 
   addMarkersToMap(): void {
     if (!this.map || !this.initiative?.initiativeDetails) return;
 
     // Clear existing markers
-    this.markers.forEach(marker => marker.remove());
+    this.markers.forEach(marker => { if (marker && marker.setMap) marker.setMap(null); });
     this.markers = [];
 
     const locations = this.initiative.initiativeDetails.filter(detail => detail.isActive);
@@ -263,7 +300,8 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
       return;
     }
 
-    const bounds = L.latLngBounds([]);
+    const google = (window as any).google;
+    const bounds = new google.maps.LatLngBounds();
     let markersAdded = 0;
 
     // Ensure translations are loaded before creating markers
@@ -273,12 +311,13 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
           const coordinates = this.parseCoordinates(location.locationCoordinates);
 
           if (coordinates) {
-            const marker = L.marker([coordinates.lat, coordinates.lng])
-              .addTo(this.map!)
-              .bindPopup(this.createPopupContent(location, index + 1));
-
+            const marker = new google.maps.Marker({
+              position: { lat: coordinates.lat, lng: coordinates.lng },
+              map: this.map,
+              title: this.getLocationName(location)
+            });
             this.markers.push(marker);
-            bounds.extend([coordinates.lat, coordinates.lng]);
+            bounds.extend(marker.getPosition());
             markersAdded++;
           }
         } catch (error) {
@@ -286,8 +325,10 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
       });
 
       // Fit map to show all markers
-      if (bounds.isValid() && markersAdded > 0) {
-        this.map!.fitBounds(bounds, { padding: [20, 20] });
+      if (!bounds.isEmpty && markersAdded > 0) {
+        this.map.fitBounds(bounds, 50);
+      } else if (markersAdded > 0) {
+        this.map.fitBounds(bounds, 50);
       }
     });
   }
@@ -445,26 +486,28 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     if (!this.map || !this.initiative?.initiativeDetails) return;
 
     // Clear existing markers
-    this.markers.forEach(marker => marker.remove());
+    this.markers.forEach(marker => { if (marker && marker.setMap) marker.setMap(null); });
     this.markers = [];
 
     const locations = this.initiative.initiativeDetails.filter(detail => detail.isActive);
 
     if (locations.length === 0) return;
 
-    const bounds = L.latLngBounds([]);
+    const google = (window as any).google;
+    const bounds = new google.maps.LatLngBounds();
 
     locations.forEach((location, index) => {
       try {
         const coordinates = this.parseCoordinates(location.locationCoordinates);
 
         if (coordinates) {
-          const marker = L.marker([coordinates.lat, coordinates.lng])
-            .addTo(this.map!)
-            .bindPopup(this.createPopupContent(location, index + 1));
-
+          const marker = new google.maps.Marker({
+            position: { lat: coordinates.lat, lng: coordinates.lng },
+            map: this.map,
+            title: this.getLocationName(location)
+          });
           this.markers.push(marker);
-          bounds.extend([coordinates.lat, coordinates.lng]);
+          bounds.extend(marker.getPosition());
         }
       } catch (error) {
         // Handle error silently
@@ -472,9 +515,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     });
 
     // Fit map to show all markers
-    if (bounds.isValid()) {
-      this.map.fitBounds(bounds, { padding: [20, 20] });
-    }
+    try { this.map.fitBounds(bounds, 50); } catch {}
   }
 
   private initializeTranslationService(): void {

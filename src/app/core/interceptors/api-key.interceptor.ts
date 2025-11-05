@@ -1,4 +1,3 @@
- 
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const apiKeyInterceptor: HttpInterceptorFn = (req, next) => {
@@ -8,10 +7,11 @@ export const apiKeyInterceptor: HttpInterceptorFn = (req, next) => {
   const clonedReq = req.clone({
     withCredentials: true,
     setHeaders: {
-      ApiKey: 'Apikeytest' ,
-      'Accept-Language':language
-    }
+      ApiKey: 'Apikeytest',
+      'Accept-Language': language,
+      'X-Portal-Type': 'Service',
+    },
   });
 
-  return next(clonedReq); 
+  return next(clonedReq);
 };

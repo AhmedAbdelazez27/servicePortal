@@ -7,7 +7,6 @@ import { mainApplyServiceDto, FiltermainApplyServiceByIdDto } from "../../dtos/m
 import { SpinnerService } from "../spinner.service";
 import { MainApplyService } from "./mainApplyService.service";
 import { ServicesType } from "../../dtos/appEnum.dto";
-import QRCode from "qrcode"
 
 
 @Injectable({
@@ -48,6 +47,7 @@ export class MainApplyServiceReportService {
       this.qrCodeBase64 = await this.generateQRCodeWithRetry(qrUrl, 2, 3000);
     } catch {
       console.warn('QR generation failed, using fallback QR');
+      const QRCode = (await import("qrcode")).default;
       this.qrCodeBase64 = await QRCode.toDataURL('Fallback QR', { width: 120 });
     }
 
@@ -64,7 +64,8 @@ export class MainApplyServiceReportService {
             console.log("reportDatas", reportDatas);
 
             const baseUrl = window.location.origin;
-            this.reportHeader = `${baseUrl}/assets/images/council-logo.png`;
+            //this.reportHeader = `${baseUrl}/assets/images/council-logo.png`;
+            this.reportHeader = `${baseUrl}/assets/images/reportHeaderNew.png`;
             this.reportFooter = `${baseUrl}/assets/images/reportFooter.png`;
             this.reportFooter1 = `${baseUrl}/assets/images/reportFooter1.png`;
             this.reportFooter2 = `${baseUrl}/assets/images/reportFooter2.png`;
@@ -305,6 +306,9 @@ export class MainApplyServiceReportService {
 
 
   private async generateQRCodeWithRetry(url: string, retries: number, timeout: number): Promise<string> {
+    // Dynamic import QRCode
+    const QRCode = (await import("qrcode")).default;
+
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const qrPromise = QRCode.toDataURL(url, {

@@ -57,7 +57,6 @@ export class MainApplyServiceComponent {
   loadformData: mainApplyServiceDto = {} as mainApplyServiceDto;
   currecntDept: string | null = null;
 
-
   constructor(
     private mainApplyService: MainApplyService,
     private toastr: ToastrService,
@@ -313,36 +312,70 @@ export class MainApplyServiceComponent {
     }
 
     else if (event.action === 'onPrintPDF') {
-
+      console.log("onPrintPDF", event.row)
       if (!event?.row) return;
 
       const serviceName = event.row.service?.serviceName ?? '';
+      const serviceStatusName = event.row.serviceStatusName ?? '';
       const lastStatus = event.row.lastStatus ?? '';
-      const permitNumber = event.row.permitNumber ?? '';
       const serviceId = event.row.serviceId ?? '';
       const id = event.row.id ?? '';
-
-      if (serviceName === "تصريح خيمة / موقع إفطار" && lastStatus.includes("تمت الموافقة")) {
-        this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+      if (serviceId === 1) {
+        if (serviceStatusName.includes("Approved")) {
+          this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+        }
+        else {
+          this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'initial');
+        }
       }
-      else if (serviceName === "تصريح خيمة / موقع إفطار" && permitNumber.trim() !== '' && ['2009', '2010', '2011'].some(d => this.currecntDept?.includes(d))) {
-        this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'initial');
-      }
-      else if (lastStatus.includes("تمت الموافقة")) {
-        this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+      else if (serviceId != 1) {
+        if (serviceStatusName.includes("Approved")) {
+          this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+        }
+        else {
+          this.translate
+            .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+            .subscribe(translations => {
+              this.toastr.error(
+                `${translations['mainApplyServiceResourceName.NoPermission']}`,
+              );
+            });
+          return;
+        }
       }
       else {
-        this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
-
-        //this.translate
-        //  .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
-        //  .subscribe(translations => {
-        //    this.toastr.error(
-        //      `${translations['mainApplyServiceResourceName.NoPermission']}`,
-        //    );
-        //  });
-        //return;
+        this.translate
+          .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+          .subscribe(translations => {
+            this.toastr.error(
+              `${translations['mainApplyServiceResourceName.NoPermission']}`,
+            );
+          });
+        return;
       }
+
+
+      //if (serviceName === "تصريح خيمة / موقع إفطار" && lastStatus.includes("تمت الموافقة")) {
+      //  this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+      //}
+      //else if (serviceName === "تصريح خيمة / موقع إفطار" && permitNumber.trim() !== '' && ['2009', '2010', '2011'].some(d => this.currecntDept?.includes(d))) {
+      //  this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'initial');
+      //}
+      //else if (lastStatus.includes("تمت الموافقة")) {
+      //  this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+      //}
+      //else {
+      // // this.mainApplyServiceReportService.printDatabyId(id, serviceId, 'final');
+
+      //  this.translate
+      //    .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+      //    .subscribe(translations => {
+      //      this.toastr.error(
+      //        `${translations['mainApplyServiceResourceName.NoPermission']}`,
+      //      );
+      //    });
+      //  return;
+      //}
     }
   }
 
