@@ -465,7 +465,7 @@
             </div>
 
             <!-- Documents/Attachments Section -->
-            <div class="login-box mb-4 documents-section" *ngIf="attachmentConfigs.length > 0 && userType !== 1">
+            <div class="login-box mb-4 documents-section" *ngIf="attachmentConfigs.length > 0 && (userType === 2 || userType === 3)">
               <div class="card-header">
                 <h2 class="title gold mb-4">{{ 'EDIT_PROFILE.DOCUMENTS' | translate }}</h2>
                 <button 

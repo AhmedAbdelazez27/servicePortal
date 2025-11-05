@@ -46,7 +46,7 @@
                 {{mainApplyService.permitNumber}}
               </p>
             </div>
-            <div class="col-xl-6" *ngIf="mainApplyService.serviceStatusName.includes('Approved')">
+            <div class="col-xl-6" *ngIf="isApproved">
               <button type="button"
                       class="btn btn-outline-secondary"
                       (click)="printReport()">

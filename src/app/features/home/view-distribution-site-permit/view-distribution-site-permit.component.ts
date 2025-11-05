@@ -1412,10 +1412,35 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     return h?.noteEn || h?.serviceStatusName || '';
   }
 
+  get isApproved(): boolean {
+    const lang = (this.translate?.currentLang || localStorage.getItem('lang') || 'ar').toLowerCase();
+
+    if (lang.startsWith('ar')) {
+      return this.mainApplyService?.serviceStatusName?.includes('معتمد') ?? false;
+    }
+    else {
+      return this.mainApplyService?.serviceStatusName?.includes('Approved') ?? false;
+    }
+  }
+
+
   printReport(): void {
     const serviceId = this.mainApplyService?.serviceId ?? 0;
     const id = this.mainApplyService?.id ?? '';
-    const serviceStatusName = this.mainApplyService?.serviceStatusName.includes("Approved") ? 'final' : 'initial';
+    var serviceStatusName = null
+    const lang = (this.translate?.currentLang || localStorage.getItem('lang') || 'ar').toLowerCase();
+    if (lang.startsWith('ar')) {
+      serviceStatusName =
+        (this.mainApplyService?.serviceStatusName?.includes("معتمد") ?? false)
+          ? 'final'
+          : 'initial';
+    }
+    else {
+      serviceStatusName =
+        (this.mainApplyService?.serviceStatusName?.includes("Approved") ?? false)
+          ? 'final'
+          : 'initial';
+    }
 
     this.mainApplyServiceReportService.printDatabyId(id.toString(), serviceId, serviceStatusName)
   }

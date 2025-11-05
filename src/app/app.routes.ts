@@ -58,8 +58,11 @@ export const routes: Routes = [
         { path: 'view-services-requests', canMatch: [authMatchGuard], loadChildren: () => import('./features/services/servicesViews/servicesView.routes').then(m => m.servicesViewsRoutes) },
       ]
     },
+
+    
   ],
 },
-{ path: 'forbidden', loadComponent: () => import('./shared/components/forbidden/forbidden.component').then(m => m.ForbiddenComponent) },
-{ path: '**', component: PageNotFoundComponent },
+  { path: 'forbidden', loadComponent: () => import('./shared/components/forbidden/forbidden.component').then(m => m.ForbiddenComponent) },
+  { path: 'report-view/:id/:serviceId/:status', loadComponent: () => import('./pages/report-viewer/report-viewer.component').then(m => m.ReportViewerComponent) },
+  { path: '**', component: PageNotFoundComponent },
 ];

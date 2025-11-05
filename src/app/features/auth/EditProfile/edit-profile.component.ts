@@ -215,6 +215,11 @@ export class EditProfileComponent implements OnInit {
         this.userMasterId = userResponse.masterId || null; // Extract master ID from response
 
         this.populateForm(userResponse);
+        
+        // Load attachment configs based on user type (for attachments section)
+        await this.loadAttachmentConfigs();
+        
+        // Load profile image configs (for profile photo)
         await this.loadAttachmentConfigsProfileImage();
         
         // Check if attachments are included in user data
@@ -418,32 +423,16 @@ export class EditProfileComponent implements OnInit {
     });
   }
 
-  // private async loadAttachmentConfigs(): Promise<void> {
-  //   const configType = this.userType === 2 
-  //     ? AttachmentsConfigType.FillInstitutionRegistrationData 
-  //     : AttachmentsConfigType.FillOutPublicLoginData;
+  private async loadAttachmentConfigs(): Promise<void> {
+    const configType = (this.userType === 2 || this.userType === 3)
+      ? AttachmentsConfigType.FillInstitutionRegistrationData 
+      : AttachmentsConfigType.FillOutPublicLoginData;
 
-  //   console.log('Loading attachment configs for user type:', this.userType, 'config type:', configType);
-
-  //   try {
-  //     const configs = await this.attachmentService.getAttachmentsConfigByType(
-  //       configType,
-  //       true,  // active: true
-  //       null   // mandatory: null
-  //     ).toPromise();
-  //     this.attachmentConfigs = configs || [];
-  //     console.log('Loaded attachment configs:', this.attachmentConfigs);
-  //   } catch (error) {
-  //     console.error('Error loading attachment configs:', error);
-  //     this.attachmentConfigs = [];
-  //   }
-  // }
-
-    private async loadAttachmentConfigsProfileImage(): Promise<void> {
+    console.log('Loading attachment configs for user type:', this.userType, 'config type:', configType);
 
     try {
       const configs = await this.attachmentService.getAttachmentsConfigByType(
-        AttachmentsConfigType.ProfileImage,
+        configType,
         true,  // active: true
         null   // mandatory: null
       ).toPromise();
@@ -452,6 +441,21 @@ export class EditProfileComponent implements OnInit {
     } catch (error) {
       console.error('Error loading attachment configs:', error);
       this.attachmentConfigs = [];
+    }
+  }
+
+  private async loadAttachmentConfigsProfileImage(): Promise<void> {
+    try {
+      const configs = await this.attachmentService.getAttachmentsConfigByType(
+        AttachmentsConfigType.ProfileImage,
+        true,  // active: true
+        null   // mandatory: null
+      ).toPromise();
+      this.attachmentConfigsProfileImage = configs || [];
+      console.log('Loaded profile image attachment configs:', this.attachmentConfigsProfileImage);
+    } catch (error) {
+      console.error('Error loading profile image attachment configs:', error);
+      this.attachmentConfigsProfileImage = [];
     }
   }
 
@@ -827,8 +831,10 @@ export class EditProfileComponent implements OnInit {
         try {
           await this.ensureProfileImageConfigLoaded();
           await this.handleProfilePhotoAttachmentUpdate();
-        } catch (error) {
-          this.toastr.error(this.translate.instant('EDIT_PROFILE.PROFILE_PHOTO_UPDATE_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+        } catch (error: any) {
+          const errorMessage = error?.message || this.translate.instant('EDIT_PROFILE.PROFILE_PHOTO_UPDATE_ERROR');
+          console.error('Error updating profile photo:', error);
+          this.toastr.error(errorMessage, this.translate.instant('TOAST.TITLE.ERROR'));
           throw error;
         }
       }
@@ -1119,7 +1125,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   async saveBasicInfo(): Promise<void> {
-    if (this.validateSection(['nameEn', 'name', 'userName', 'civilId', 'foundationType', 'foundationName', 'licenseNumber', 'licenseEndDate', 'entityId'])) {
+    if (this.validateSection(['nameEn', 'name', 'userName', 'civilId',  'entityId'])) {
       
       this.isLoading = true;
       this.spinnerService.show();
@@ -1170,8 +1176,10 @@ export class EditProfileComponent implements OnInit {
           try {
             console.log('Updating profile photo attachment...');
             await this.handleProfilePhotoAttachmentUpdate();
-          } catch (error) {
-            this.toastr.error(this.translate.instant('EDIT_PROFILE.PROFILE_PHOTO_UPDATE_ERROR'), this.translate.instant('TOAST.TITLE.ERROR'));
+          } catch (error: any) {
+            const errorMessage = error?.message || this.translate.instant('EDIT_PROFILE.PROFILE_PHOTO_UPDATE_ERROR');
+            console.error('Error updating profile photo:', error);
+            this.toastr.error(errorMessage, this.translate.instant('TOAST.TITLE.ERROR'));
             throw error;
           }
         }
@@ -1354,6 +1362,7 @@ export class EditProfileComponent implements OnInit {
   // Method to handle profile photo attachment update
   private async handleProfilePhotoAttachmentUpdate(): Promise<void> {
     if (!this.userMasterId) {
+      console.error('User master ID not available:', this.userMasterId);
       throw new Error('User master ID not available');
     }
 
@@ -1361,64 +1370,57 @@ export class EditProfileComponent implements OnInit {
     await this.ensureProfileImageConfigLoaded();
     const identityPhotoConfig = this.getPreferredProfileImageConfig();
     if (!identityPhotoConfig) {
-      throw new Error('Identity photo attachment configuration not found');
+      console.error('Profile image config not found. Available configs:', this.attachmentConfigsProfileImage);
+      throw new Error('Identity photo attachment configuration not found. Please ensure profile image configuration exists.');
     }
 
-    if (this.selectedProfilePhoto) {
-      try {
-        // Convert file to base64
-        const fileBase64 = await this.fileToBase64(this.selectedProfilePhoto);
-        
-        // Check if there's an existing attachment to update
-        const existingAttachment = this.existingAttachments[identityPhotoConfig.id];
-        
-        if (existingAttachment) {
-          // Update existing attachment
-          const updateAttachmentDto = {
-            id: existingAttachment.id,
-            fileBase64: fileBase64,
-            fileName: this.selectedProfilePhoto.name,
-            masterId: existingAttachment.masterId || this.userMasterId,
-            attConfigID: identityPhotoConfig.id
-          };
-          
-          await this.attachmentService.updateAsync(updateAttachmentDto).toPromise();
-        } else {
-          // Create new attachment
-          const newAttachmentDto = {
-            fileBase64: fileBase64,
-            fileName: this.selectedProfilePhoto.name,
-            masterId: this.userMasterId,
-            attConfigID: identityPhotoConfig.id
-          };
-          
-          await this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise();
-        }
+    if (!this.selectedProfilePhoto) {
+      console.warn('No profile photo selected');
+      return;
+    }
 
-        // Update the existing attachments and file previews
-        if (existingAttachment) {
-          // Update existing attachment preview
-          this.filePreviews[identityPhotoConfig.id] = this.profilePhotoPreview || '';
-        } else {
-          // Add to existing attachments
-          this.existingAttachments[identityPhotoConfig.id] = {
-            id: Date.now(), // Temporary ID until reload
-            masterId: this.userMasterId,
-            attConfigID: identityPhotoConfig.id,
-            imgPath: this.profilePhotoPreview || ''
-          };
-          this.filePreviews[identityPhotoConfig.id] = this.profilePhotoPreview || '';
-        }
-
-        // Clear the selected profile photo since it's now handled by attachments
-        this.selectedProfilePhoto = null;
+    try {
+      // Convert file to base64
+      const fileBase64 = await this.fileToBase64(this.selectedProfilePhoto);
+      
+      // Check if there's an existing attachment to update
+      const existingAttachment = this.existingAttachments[identityPhotoConfig.id];
+      
+      if (existingAttachment && existingAttachment.id) {
+        // Update existing attachment
+        const updateAttachmentDto = {
+          id: existingAttachment.id,
+          fileBase64: fileBase64,
+          fileName: this.selectedProfilePhoto.name,
+          masterId: existingAttachment.masterId || this.userMasterId,
+          attConfigID: identityPhotoConfig.id
+        };
         
-        this.toastr.success(this.translate.instant('EDIT_PROFILE.PROFILE_PHOTO_UPDATED'), this.translate.instant('TOAST.TITLE.SUCCESS'));
+        console.log('Updating existing attachment:', updateAttachmentDto);
+        await this.attachmentService.updateAsync(updateAttachmentDto).toPromise();
+      } else {
+        // Create new attachment
+        const newAttachmentDto = {
+          fileBase64: fileBase64,
+          fileName: this.selectedProfilePhoto.name,
+          masterId: this.userMasterId,
+          attConfigID: identityPhotoConfig.id
+        };
         
-      } catch (error) {
-        console.error('Error updating profile photo attachment:', error);
-        throw error;
+        console.log('Creating new attachment:', newAttachmentDto);
+        await this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise();
       }
+
+      // Update the existing attachments and file previews after successful save
+      // Reload will be handled by calling loadUserData()
+      this.selectedProfilePhoto = null;
+      
+      this.toastr.success(this.translate.instant('EDIT_PROFILE.PROFILE_PHOTO_UPDATED'), this.translate.instant('TOAST.TITLE.SUCCESS'));
+      
+    } catch (error: any) {
+      console.error('Error updating profile photo attachment:', error);
+      const errorMessage = error?.error?.message || error?.message || 'Failed to update profile photo';
+      throw new Error(errorMessage);
     }
   }
 
@@ -1612,22 +1614,51 @@ export class EditProfileComponent implements OnInit {
 
   // Helper: ensure profile image config is loaded
   private async ensureProfileImageConfigLoaded(): Promise<void> {
-    if (!this.attachmentConfigs || this.attachmentConfigs.length === 0) {
+    if (!this.attachmentConfigsProfileImage || this.attachmentConfigsProfileImage.length === 0) {
       await this.loadAttachmentConfigsProfileImage();
     }
   }
 
   // Helper: get preferred profile image config (by attachmentsConfigType 1009)
   private getPreferredProfileImageConfig(): AttachmentsConfigDto | null {
-    if (!this.attachmentConfigs || this.attachmentConfigs.length === 0) {
+    if (!this.attachmentConfigsProfileImage || this.attachmentConfigsProfileImage.length === 0) {
+      console.warn('No profile image configs available');
       return null;
     }
-    // Find by type (1009) or name fallback
-    let config = this.attachmentConfigs.find(c => (c as any).attachmentsConfigType === AttachmentsConfigType.ProfileImage) || null;
-    if (config) return config;
-    config = this.attachmentConfigs.find(c => (c as any).attachmentsConfigType === 1009) || null;
-    if (config) return config;
-    config = this.attachmentConfigs.find(c => (this.translate.currentLang === 'ar' ? c.name === 'صورة شخصية' : c.nameEn === 'Profile Image')) || null;
-    return config || null;
+    
+    console.log('Available profile image configs:', this.attachmentConfigsProfileImage);
+    
+    // Find by type (1009) or enum value
+    let config = this.attachmentConfigsProfileImage.find(c => {
+      const configType = (c as any).attachmentsConfigType || (c as any).attachmentConfigType;
+      return configType === AttachmentsConfigType.ProfileImage || configType === 1009;
+    }) || null;
+    
+    if (config) {
+      console.log('Found profile image config by type:', config);
+      return config;
+    }
+    
+    // Find by name fallback
+    config = this.attachmentConfigsProfileImage.find(c => {
+      const name = this.translate.currentLang === 'ar' ? c.name : c.nameEn;
+      return name?.toLowerCase().includes('profile') || 
+             name?.toLowerCase().includes('صورة') ||
+             c.name === 'صورة شخصية' || 
+             c.nameEn === 'Profile Image';
+    }) || null;
+    
+    if (config) {
+      console.log('Found profile image config by name:', config);
+      return config;
+    }
+    
+    // If still not found, return the first config as fallback
+    if (this.attachmentConfigsProfileImage.length > 0) {
+      console.warn('Profile image config not found by type or name, using first config:', this.attachmentConfigsProfileImage[0]);
+      return this.attachmentConfigsProfileImage[0];
+    }
+    
+    return null;
   }
 }

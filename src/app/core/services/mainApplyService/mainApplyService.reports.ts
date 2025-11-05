@@ -40,11 +40,15 @@ export class MainApplyServiceReportService {
     this.spinnerService.show();
 
     const params: FiltermainApplyServiceByIdDto = { id };
-    const qrUrl = `${environment.apiBaseUrl}login/PrintD?no=${id}&status=${status}`;
+    //const qrUrl = `${environment.apiBaseUrl}login/PrintD?no=${id}&status=${status}`;
+    const baseUrl = window.location.origin;
+
+    const qrUrl = `${baseUrl}/report-view/${id}/${serviceId}/${status}`;
 
     try {
       // Generate QR with fallback
       this.qrCodeBase64 = await this.generateQRCodeWithRetry(qrUrl, 2, 3000);
+      
     } catch {
       console.warn('QR generation failed, using fallback QR');
       const QRCode = (await import("qrcode")).default;
@@ -61,7 +65,6 @@ export class MainApplyServiceReportService {
             const reportDatas = Array.isArray(result.mischeaderdata)
               ? result.mischeaderdata[0] ?? ({} as mainApplyServiceDto)
               : result.mischeaderdata;
-            console.log("reportDatas", reportDatas);
 
             const baseUrl = window.location.origin;
             //this.reportHeader = `${baseUrl}/assets/images/council-logo.png`;
@@ -74,6 +77,277 @@ export class MainApplyServiceReportService {
             this.id = id;
             // Open new window for report
             const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+              alert('Please allow pop-ups for this site.');
+              return;
+            }
+
+            // ✅ Strict A4 styling
+            // ✅ Strict one-page A4 style
+            const isArabic = this.translate.currentLang === 'ar';
+
+            const a4Style = `
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  html {
+    overflow: auto !important;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 190mm !important;
+    height: 277mm !important;
+    background: #fff;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: ${isArabic ? '"DIN Next LT Arabic Regular", "Tahoma", sans-serif' : '"Arial", sans-serif'} !important;
+    direction: ${isArabic ? 'rtl' : 'ltr'};
+    text-align: ${isArabic ? 'right' : 'left'};
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: #f2f2f2; /* light gray background outside A4 */
+  }
+
+  .a4-page {
+    box-sizing: border-box;
+    width: 190mm;
+    height: 277mm;
+    margin: 0 auto;
+    padding: 2mm 2mm 35mm 2mm; /* leave space for footer */
+    background: #fff;
+    border: 1px solid #ddd;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: ${isArabic ? 'right' : 'left'};
+  }
+
+  .report-content {
+    flex: 1 0 auto;
+    text-align: inherit;
+  }
+
+  .report-footer {
+    flex-shrink: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    direction: ${isArabic ? 'rtl' : 'ltr'};
+  }
+
+  td, th {
+    border: 1px solid #ccc;
+    padding: 5px;
+    vertical-align: top;
+    word-break: break-word;
+    text-align: ${isArabic ? 'right' : 'left'};
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .badge {
+    padding: 4px 10px;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  /* ✅ Toolbar for download button */
+  .toolbar {
+    text-align: right;
+    background: #f8f9fa;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    position: sticky;
+    top: 0;
+  }
+
+  .btn-download {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .btn-download:hover {
+    background: #0056b3;
+  }
+
+  @media print {
+    html, body {
+      overflow: hidden !important;
+    }
+    .toolbar { display: none !important; }
+    .a4-page {
+      box-shadow: none !important;
+      border: none !important;
+      width: 190mm !important;
+      height: 277mm !important;
+    }
+  }
+</style>`;
+
+
+
+            let reportHtml = '';
+
+            if (serviceId === ServicesType.TentPermission) {
+              if (status === 'final') {
+                reportHtml = this.buildFinalFastingTentServiceReport();
+              } else {
+                reportHtml = this.buildInitialFastingTentServiceReport();
+              }
+            }
+            else if (serviceId === ServicesType.CharityEventPermit) {
+              reportHtml = this.buildCharityEventPermitReport();
+            }
+            else if (serviceId === ServicesType.RequestForStaffAppointment) {
+              this.translate
+                .get(['mainApplyServiceReportsResourceName.NO_REPORT'])
+                .subscribe(translations => {
+                  this.toastr.error(
+                    `${translations['mainApplyServiceReportsResourceName.NO_REPORT']}`,
+                  );
+                });
+              return;
+            }
+            else if (serviceId === ServicesType.ReligiousInstitutionRequest) {
+              this.translate
+                .get(['mainApplyServiceReportsResourceName.NoPermission'])
+                .subscribe(translations => {
+                  this.toastr.error(
+                    `${translations['mainApplyServiceReportsResourceName.NO_REPORT']}`,
+                  );
+                });
+              return;
+            }
+            else if (serviceId === ServicesType.RequestAnEventAnnouncement) {
+              this.translate
+                .get(['mainApplyServiceReportsResourceName.NoPermission'])
+                .subscribe(translations => {
+                  this.toastr.error(
+                    `${translations['mainApplyServiceReportsResourceName.NO_REPORT']}`,
+                  );
+                });
+              return;
+            }
+            else if (serviceId === ServicesType.DonationCampaignPermitRequest) {
+              reportHtml = this.buildDonationCampaignPermitRequestReport();
+            }
+            else if (serviceId === ServicesType.GrievanceRequest) {
+              reportHtml = this.buildGrievanceRequestReport();
+            }
+            else if (serviceId === ServicesType.DistributionSitePermitApplication) {
+              reportHtml = this.buildDistributionSitePermitApplicationReport();
+            }
+            else if (serviceId === ServicesType.RequestComplaint) {
+              reportHtml = this.buildRequestComplaintReport();
+            }
+            else {
+              reportHtml = `<p>No report template available for this service.</p>`;
+            }
+
+            printWindow.document.open();
+            printWindow.document.write(`
+            <html><head>${a4Style}</head>
+
+            <body>
+            <div class="a4-page" id="reportContent">
+            ${reportHtml}
+            </div>
+            <script>
+            document.getElementById('btnDownloadPDF').addEventListener('click', function() {
+              window.print();
+              });
+              </script>
+              </body>
+              </html>
+              `);
+            printWindow.document.close();
+
+
+          } catch (error) {
+            console.error('Error showing report:', error);
+          } finally {
+            this.spinnerService.hide();
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching data:', err);
+          this.spinnerService.hide();
+        },
+      });
+  }
+
+  async printData(id: string, serviceId: number, status: string): Promise<void> {
+    this.spinnerService.show();
+
+    const params: FiltermainApplyServiceByIdDto = { id };
+    //const qrUrl = `${environment.apiBaseUrl}login/PrintD?no=${id}&status=${status}`;
+    const baseUrl = window.location.origin;
+
+    const qrUrl = `${baseUrl}/report-view/${id}/${serviceId}/${status}`;
+
+    try {
+      // Generate QR with fallback
+      this.qrCodeBase64 = await this.generateQRCodeWithRetry(qrUrl, 2, 3000);
+
+    } catch {
+      console.warn('QR generation failed, using fallback QR');
+      const QRCode = (await import("qrcode")).default;
+      this.qrCodeBase64 = await QRCode.toDataURL('Fallback QR', { width: 120 });
+    }
+
+    forkJoin({
+      mischeaderdata: this.mainApplyService.getDetailById(params) as Observable<mainApplyServiceDto | mainApplyServiceDto[]>,
+    })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result) => {
+          try {
+            const reportDatas = Array.isArray(result.mischeaderdata)
+              ? result.mischeaderdata[0] ?? ({} as mainApplyServiceDto)
+              : result.mischeaderdata;
+
+            const baseUrl = window.location.origin;
+            //this.reportHeader = `${baseUrl}/assets/images/council-logo.png`;
+            this.reportHeader = `${baseUrl}/assets/images/reportHeaderNew.png`;
+            this.reportFooter = `${baseUrl}/assets/images/reportFooter.png`;
+            this.reportFooter1 = `${baseUrl}/assets/images/reportFooter1.png`;
+            this.reportFooter2 = `${baseUrl}/assets/images/reportFooter2.png`;
+            this.reportHeaderIcon = `${baseUrl}/assets/images/reportHeaderIcon.png`;
+            this.reportData = reportDatas;
+            this.id = id;
+            // Open new window for report
+            const printWindow = window;
             if (!printWindow) {
               alert('Please allow pop-ups for this site.');
               return;
