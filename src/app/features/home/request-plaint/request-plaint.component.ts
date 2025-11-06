@@ -248,6 +248,8 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
 
     return this.requestPlaintService.getMainApplyServiceSelect2(request).pipe(
       map((response) => {
+        console.log("response ",response);
+        
         this.mainApplyServiceOptions = response.results || [];
         return response;
       })
@@ -718,7 +720,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   }
 
   // Submit form
-  onSubmit(): void {
+  onSubmit(isDraft: boolean = false): void {
     // Prevent multiple submissions
     if (this.isSaving) {
       return;
@@ -763,19 +765,26 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
         requestPlaintEvidences: this.evidences,
         requestPlaintJustifications: this.justifications,
         requestPlaintReasons: this.reasons,
+        isDraft: isDraft, // Set draft flag based on parameter
         // Note: requestingEntityId is not included as it's only for display purposes
       };
 
       const sub = this.requestPlaintService.create(createDto).subscribe({
         next: (response) => {
-          this.toastr.success(
-            this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED')
-          );
+          if (isDraft) {
+            this.toastr.success(
+              this.translate.instant('SUCCESS.REQUEST_PLAINT_SAVED_AS_DRAFT')
+            );
+          } else {
+            this.toastr.success(
+              this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED')
+            );
+          }
           this.router.navigate(['/request']);
           this.isSaving = false;
         },
         error: (error) => {
-          console.error('Error creating request plaint:', error);
+          console.error(`Error ${isDraft ? 'saving draft' : 'creating'} request plaint:`, error);
 
           // Check if it's a business error with a specific reason
           if (error.error && error.error.reason) {
@@ -783,9 +792,15 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
             this.toastr.error(error.error.reason);
           } else {
             // Fallback to generic error message
-            this.toastr.error(
-              this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
-            );
+            if (isDraft) {
+              this.toastr.error(
+                this.translate.instant('ERRORS.FAILED_SAVE_DRAFT')
+              );
+            } else {
+              this.toastr.error(
+                this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+              );
+            }
           }
 
           this.isSaving = false;
@@ -793,7 +808,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
       });
       this.subscriptions.push(sub);
     } catch (error: any) {
-      console.error('Error in onSubmit:', error);
+      console.error(`Error in onSubmit (isDraft: ${isDraft}):`, error);
 
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
@@ -801,13 +816,25 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
         this.toastr.error(error.error.reason);
       } else {
         // Fallback to generic error message
-        this.toastr.error(
-          this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
-        );
+        if (isDraft) {
+          this.toastr.error(
+            this.translate.instant('ERRORS.FAILED_SAVE_DRAFT')
+          );
+        } else {
+          this.toastr.error(
+            this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+          );
+        }
       }
 
       this.isSaving = false;
     }
+  }
+
+  // Save as Draft
+  onSaveDraft(): void {
+    // Call onSubmit with isDraft = true
+    this.onSubmit(true);
   }
 
   // Utility methods

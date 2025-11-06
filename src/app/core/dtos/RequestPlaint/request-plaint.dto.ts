@@ -24,6 +24,7 @@ export interface CreateRequestPlaintDto {
   requestPlaintEvidences: RequestPlaintEvidenceDto[];
   requestPlaintJustifications: RequestPlaintJustificationDto[];
   requestPlaintReasons: RequestPlaintReasonDto[];
+  isDraft?: boolean;
 }
 
 export interface RequestPlaintAttachmentDto {

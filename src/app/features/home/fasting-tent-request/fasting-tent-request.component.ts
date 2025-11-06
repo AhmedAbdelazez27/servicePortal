@@ -1442,7 +1442,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   // Form submission
-  onSubmit(): void {
+  onSubmit(isDraft: boolean = false): void {
     if (this.isSaving) {
       return;
     }
@@ -1491,16 +1491,21 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         distributionSiteCoordinators: formData.distributionSiteCoordinators,
         attachments: validAttachments,
         partners: this.partners,
+        isDraft: isDraft, // Set draft flag based on parameter
       };
 
       const sub = this.fastingTentRequestService.create(createDto).subscribe({
         next: (response) => {
-          this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_CREATED'));
+          if (isDraft) {
+            this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_SAVED_AS_DRAFT'));
+          } else {
+            this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_CREATED'));
+          }
           this.router.navigate(['/request']);
           this.isSaving = false;
         },
         error: (error) => {
-          console.error('Error creating fasting tent request:', error);
+          console.error(`Error ${isDraft ? 'saving draft' : 'creating'} fasting tent request:`, error);
 
           // Check if it's a business error with a specific reason
           if (error.error && error.error.reason) {
@@ -1508,7 +1513,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
             this.toastr.error(error.error.reason);
           } else {
             // Fallback to generic error message
-            this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+            if (isDraft) {
+              this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+            } else {
+              this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+            }
           }
 
           this.isSaving = false;
@@ -1517,7 +1526,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       this.subscriptions.push(sub);
 
     } catch (error: any) {
-      console.error('Error in onSubmit:', error);
+      console.error(`Error in onSubmit (isDraft: ${isDraft}):`, error);
 
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
@@ -1525,11 +1534,21 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         this.toastr.error(error.error.reason);
       } else {
         // Fallback to generic error message
-        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+        if (isDraft) {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+        } else {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+        }
       }
 
       this.isSaving = false;
     }
+  }
+
+  // Save as Draft
+  onSaveDraft(): void {
+    // Call onSubmit with isDraft = true
+    this.onSubmit(true);
   }
 
   validateAttachmentsTab(showToastr = false): boolean {

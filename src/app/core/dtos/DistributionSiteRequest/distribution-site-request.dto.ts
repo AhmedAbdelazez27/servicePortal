@@ -53,6 +53,7 @@ export interface CreateDistributionSiteRequestDto {
   distributionSiteCoordinators?: string;
   attachments?: DistributionSiteAttachmentDto[];
   partners?: DistributionSitePartnerDto[];
+  isDraft?: boolean;
 }
 
 export interface UpdateDistributionSiteRequestDto {

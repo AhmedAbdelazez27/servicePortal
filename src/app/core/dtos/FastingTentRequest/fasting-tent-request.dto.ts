@@ -52,6 +52,7 @@ export interface CreateFastingTentRequestDto {
   distributionSiteCoordinators?: string;
   attachments?: FastingTentAttachmentDto[];
   partners?: FastingTentPartnerDto[];
+  isDraft?: boolean;
 }
 
 export interface UpdateFastingTentRequestDto {

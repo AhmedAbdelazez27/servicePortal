@@ -1299,13 +1299,16 @@
   "SUCCESS": {
 
     "REQUEST_PLAINT_CREATED": "Your grievance request has been submitted successfully!",
+    "REQUEST_PLAINT_SAVED_AS_DRAFT": "Your grievance request has been saved as draft successfully!",
     "REQUEST_Project_Campaign": "Your Project/Campaign Donation Statement request has been submitted successfully!",
 
     "REQUEST_COMPLAINT_CREATED": "Complaint request created successfully",
 
     "FASTING_TENT_REQUEST_CREATED": "Fasting tent request submitted successfully!",
+    "FASTING_TENT_REQUEST_SAVED_AS_DRAFT": "Fasting tent request has been saved as draft successfully!",
 
     "DISTRIBUTION_SITE_REQUEST_CREATED": "Distribution site permit request submitted successfully!",
+    "DISTRIBUTION_SITE_REQUEST_SAVED_AS_DRAFT": "Distribution site permit request has been saved as draft successfully!",
 
     "LOCATION_AVAILABLE": "Location is available",
 
@@ -1336,6 +1339,8 @@
     "FAILED_LOAD_DATA": "Failed to load data. Please try again.",
 
     "FAILED_CREATE_REQUEST_PLAINT": "Failed to create grievance request. Please try again.",
+
+    "FAILED_SAVE_DRAFT": "Failed to save draft. Please try again.",
 
     "FAILED_CREATE_REQUEST_COMPLAINT": "Failed to create complaint request",
 
@@ -1506,6 +1511,8 @@
     "NEXT": "Next",
 
     "SUBMIT": "Submit",
+
+    "SAVE_AS_DRAFT": "Save as Draft",
 
     "READ_CARD": "Read Card",
 

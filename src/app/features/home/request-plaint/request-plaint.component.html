@@ -3,7 +3,6 @@
         <div class="container services">
             <h4 class="title">{{ 'REQUEST_PLAINT.TITLE' | translate }}</h4>
             <p class="mb-5">{{ 'REQUEST_PLAINT.DESCRIPTION' | translate }}</p>
-
             <!-- Loading state -->
             <div *ngIf="isLoading" class="text-center py-5">
                 <div class="spinner-border" role="status">
@@ -370,7 +369,7 @@
                                     {{ 'COMMON.PREVIOUS' | translate }}
                                 </button>
                                 
-                                <div>
+                                <div class="d-flex gap-2">
                                     <button *ngIf="currentStep < totalSteps" 
                                             type="button" 
                                             class="btn btn-primary" 
@@ -380,14 +379,21 @@
                                     </button>
                                     
                                     <button *ngIf="currentStep === totalSteps" 
+                                            type="button" 
+                                            class="btn btn-outline-secondary" 
+                                            (click)="onSaveDraft()"
+                                            [disabled]="!canSubmit() || isSaving">
+                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                        {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                                    </button>
+                                    
+                                    <button *ngIf="currentStep === totalSteps" 
                                             type="submit" 
                                             class="btn btn-success" 
                                             [disabled]="!canSubmit() || isSaving">
                                         <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
                                         {{ 'COMMON.SUBMIT' | translate }}
                                     </button>
-                                    
-
                                 </div>
                             </div>
                         </form>

@@ -959,7 +959,7 @@ addPartner(): void {
   }
 
   // Form submission
-  onSubmit(): void {
+  onSubmit(isDraft: boolean = false): void {
     if (this.isSaving) {
       return;
     }
@@ -1007,16 +1007,21 @@ addPartner(): void {
         distributionSiteCoordinators: formData.distributionSiteCoordinators,
         attachments: validAttachments,
         partners: this.partners,
+        isDraft: isDraft, // Set draft flag based on parameter
       };
 
       const sub = this.distributionSiteRequestService.create(createDto).subscribe({
         next: (response) => {
-          this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_CREATED'));
+          if (isDraft) {
+            this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_SAVED_AS_DRAFT'));
+          } else {
+            this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_CREATED'));
+          }
           this.router.navigate(['/services']);
           this.isSaving = false;
         },
         error: (error) => {
-          console.error('Error creating distribution site request:', error);
+          console.error(`Error ${isDraft ? 'saving draft' : 'creating'} distribution site request:`, error);
           
           // Check if it's a business error with a specific reason
           if (error.error && error.error.reason) {
@@ -1024,7 +1029,11 @@ addPartner(): void {
             this.toastr.error(error.error.reason);
           } else {
             // Fallback to generic error message
-            this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+            if (isDraft) {
+              this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+            } else {
+              this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+            }
           }
           
           this.isSaving = false;
@@ -1033,7 +1042,7 @@ addPartner(): void {
       this.subscriptions.push(sub);
       
     } catch (error: any) {
-      console.error('Error in onSubmit:', error);
+      console.error(`Error in onSubmit (isDraft: ${isDraft}):`, error);
       
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
@@ -1041,11 +1050,21 @@ addPartner(): void {
         this.toastr.error(error.error.reason);
       } else {
         // Fallback to generic error message
-        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+        if (isDraft) {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+        } else {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+        }
       }
       
       this.isSaving = false;
     }
+  }
+
+  // Save as Draft
+  onSaveDraft(): void {
+    // Call onSubmit with isDraft = true
+    this.onSubmit(true);
   }
 
   isFieldMandatory(fieldName: string): boolean {
