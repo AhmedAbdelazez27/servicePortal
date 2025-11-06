@@ -245,6 +245,23 @@ export class MainApplyServiceComponent {
   }
 
   onTableAction(event: { action: string, row: any }) {
+    if (event.action === 'onUpdate') {
+      // Handle update action - route to edit page for draft requests
+      if (event.row.serviceId == this.appEnum.serviceId7) {
+        // Route to request-plaint with id as param for draft update
+        this.router.navigate(['/request-plaint', event.row.id]);
+      } else {
+        this.translate
+          .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+          .subscribe(translations => {
+            this.toastr.error(
+              `${translations['mainApplyServiceResourceName.NoPermission']}`,
+            );
+          });
+      }
+      return;
+    }
+
     if (event.action === 'onViewInfo') {
 
 

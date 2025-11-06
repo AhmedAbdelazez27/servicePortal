@@ -743,6 +743,7 @@
     "ERROR": "خطأ",
     "SUCCESS": "نجح",
     "VIEW": "عرض",
+    "UPDATE": "تعديل",
     "DELETE": "حذف",
     "BACK": "رجوع",
     "SERVICE_INFO": "معلومات الخدمة",

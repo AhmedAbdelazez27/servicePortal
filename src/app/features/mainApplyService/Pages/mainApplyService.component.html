@@ -418,6 +418,13 @@
                 {{ 'Common.ViewInfo' | translate }}
               </button>
             </li>
+            <!-- Show Update action only for draft Request Plaint (serviceId = 7) -->
+            <li *ngIf="row?.serviceId === 7 && (row?.lastStatus === 'مسودة' || row?.lastStatusEN === 'Draft')">
+              <button class="dropdown-item"
+                      (click)="onTableAction({ action: 'onUpdate', row })">
+                {{ 'COMMON.UPDATE' | translate }}
+              </button>
+            </li>
             <li>
               <button class="dropdown-item"
                       (click)="onTableAction({ action: 'onPrintPDF', row })">

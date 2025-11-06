@@ -9,6 +9,7 @@ import { FndLookUpValuesSelect2RequestDto } from '../dtos/FndLookUpValuesdtos/Fn
 import {
   RequestPlaintDto,
   CreateRequestPlaintDto,
+  UpdateRequestPlaintDto,
   MainApplyServiceSelect2RequestDto,
   Select2Result,
   PlaintReasonsDto,
@@ -31,6 +32,14 @@ export class RequestPlaintService {
   create(dto: CreateRequestPlaintDto): Observable<RequestPlaintDto> {
     return this.http.post<RequestPlaintDto>(
       `${this.BASE_URL}${ApiEndpoints.RequestPlaint.Create}`,
+      dto
+    );
+  }
+
+  // Update RequestPlaint
+  update(dto: UpdateRequestPlaintDto): Observable<RequestPlaintDto> {
+    return this.http.post<RequestPlaintDto>(
+      `${this.BASE_URL}${ApiEndpoints.RequestPlaint.Update}`,
       dto
     );
   }

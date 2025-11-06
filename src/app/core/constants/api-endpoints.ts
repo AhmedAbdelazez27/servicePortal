@@ -334,6 +334,7 @@ export class ApiEndpoints {
   static readonly RequestPlaint = {
     Base: '/RequestPlaint',
     Create: '/Create',
+    Update: '/Update',
     GetByMainApplyServiceId: (mainApplyServiceId: number) =>
       `/GetByMainApplyServiceId/${mainApplyServiceId}`,
   };

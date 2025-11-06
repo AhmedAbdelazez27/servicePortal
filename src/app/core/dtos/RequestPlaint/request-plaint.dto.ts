@@ -27,6 +27,20 @@ export interface CreateRequestPlaintDto {
   isDraft?: boolean;
 }
 
+export interface UpdateRequestPlaintDto {
+  id: number;
+  mainApplyServiceId: number;
+  requestMainApplyServiceId: number;
+  requestNo: number;
+  requestDate: string;
+  details: string;
+  notes?: string | null;
+  isDraft?: boolean;
+  requestPlaintEvidences?: RequestPlaintEvidenceDto[] | null;
+  requestPlaintJustifications?: RequestPlaintJustificationDto[] | null;
+  requestPlaintReasons?: RequestPlaintReasonDto[] | null;
+}
+
 export interface RequestPlaintAttachmentDto {
   fileBase64: string;
   fileName: string;

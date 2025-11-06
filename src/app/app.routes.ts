@@ -45,6 +45,7 @@ export const routes: Routes = [
       children: [
         { path: 'request', loadComponent: () => import('./features/mainApplyService/Pages/mainApplyService.component').then(m => m.MainApplyServiceComponent) },
         { path: 'request-plaint', loadComponent: () => import('./features/home/request-plaint/request-plaint.component').then(m => m.RequestPlaintComponent) },
+        { path: 'request-plaint/:id', loadComponent: () => import('./features/home/request-plaint/request-plaint.component').then(m => m.RequestPlaintComponent) },
         { path: 'request-complaint', loadComponent: () => import('./features/home/RequestComplaint/request-complaint.component').then(m => m.RequestComplaintComponent) },
         { path: 'fasting-tent-request', loadComponent: () => import('./features/home/fasting-tent-request/fasting-tent-request.component').then(m => m.FastingTentRequestComponent) },
         { path: 'view-fasting-tent-request/:id', loadComponent: () => import('./features/home/view-fasting-tent-request/view-fasting-tent-request.component').then(m => m.ViewFastingTentRequestComponent) },
