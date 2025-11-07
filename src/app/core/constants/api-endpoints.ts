@@ -411,6 +411,11 @@ export class ApiEndpoints {
     Create: '/Advertisement/Create'
   };
 
+  static readonly Partner = {
+    Base: '/Partner',
+    Create: '/Create',
+    Delete: (id: number) => `/Delete/${id}`,
+  };
 
  static readonly UAE_PASS_CONFIG = {
    // baseUrl: 'https://stg-id.uaepass.ae/idshub',

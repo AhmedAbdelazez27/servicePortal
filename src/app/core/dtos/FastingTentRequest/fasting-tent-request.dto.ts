@@ -80,8 +80,8 @@ export interface UpdateFastingTentRequestDto {
   serviceType?: number;
   distributionSitePhotoPath?: string;
   distributionSiteCoordinators?: string;
-  attachments?: FastingTentAttachmentDto[];
-  partners?: FastingTentPartnerDto[];
+  isDraft?: boolean;
+  // Note: attachments and partners are handled separately via their own APIs
 }
 
 export interface FastingTentAttachmentDto {
@@ -92,13 +92,16 @@ export interface FastingTentAttachmentDto {
 }
 
 export interface FastingTentPartnerDto {
+  id?: number; // For existing partners in update mode
   name: string;
+  nameEn?: string;
   type: PartnerType;
   licenseIssuer?: string;
   licenseExpiryDate?: string;
   licenseNumber?: string;
   contactDetails?: string;
-  mainApplyServiceId?: number; // will send as 0 for create
+  jobRequirementsDetails?: string;
+  mainApplyServiceId?: number; // will send as 0 for create, mainApplyServiceId for update
   attachments?: FastingTentAttachmentDto[]; // Partner-specific attachments
 }
 

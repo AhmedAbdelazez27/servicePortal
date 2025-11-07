@@ -250,6 +250,9 @@ export class MainApplyServiceComponent {
       if (event.row.serviceId == this.appEnum.serviceId7) {
         // Route to request-plaint with id as param for draft update
         this.router.navigate(['/request-plaint', event.row.id]);
+      } else if (event.row.serviceId === 1) {
+        // Route to fasting-tent-request with id as param for draft update
+        this.router.navigate(['/fasting-tent-request', event.row.id]);
       } else {
         this.translate
           .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])

@@ -681,60 +681,138 @@
                                                 {{ config.nameEn || config.name | translate }}
                                                 <span *ngIf="isAttachmentMandatory(config.id!)"
                                                     class="text-danger ms-1">*</span>
-                                                <div *ngIf="isAttachmentMandatory(config.id!) && selectedFiles[config.id!]"
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && (selectedFiles[config.id!] || existingAttachments[config.id!])"
                                                     class="text-success small">
                                                     <i class="fas fa-check-circle"></i> {{ 'VALIDATION.UPLOADED' |
                                                     translate }}
                                                 </div>
                                             </div>
                                             <div>
-                                                <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
-                                                    (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
-                                                    (drop)="onDrop($event, config.id!)" [class.drag-over]="isDragOver"
-                                                    [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 4 || submitted)"
-                                                    [class.border-success]="selectedFiles[config.id!]">
-                                                    <input type="file" class="d-none" [id]="'file-' + config.id"
-                                                        (change)="onFileSelected($event, config.id!)"
-                                                        [accept]="supportedAttachmentFormats">
+                                                <!-- Upload area (shown when no file is selected and no existing attachment) -->
+                                                <div *ngIf="!selectedFiles[config.id!] && !existingAttachments[config.id!]" 
+                                                     class="upload-area"
+                                                     (dragover)="onDragOver($event)" 
+                                                     (dragleave)="onDragLeave($event)"
+                                                     (drop)="onDrop($event, config.id!)" 
+                                                     [class.drag-over]="isDragOver"
+                                                     [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && !existingAttachments[config.id!] && (currentTab === 4 || submitted)"
+                                                     [class.border-success]="selectedFiles[config.id!] || existingAttachments[config.id!]">
+                                                    <input type="file" 
+                                                           class="d-none" 
+                                                           [id]="'file-' + config.id"
+                                                           (change)="onFileSelected($event, config.id!)"
+                                                           [accept]="supportedAttachmentFormats">
                                                     <label [for]="'file-' + config.id" class="upload-label">
                                                         <i class="fas fa-cloud-upload-alt"></i>
                                                         <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
                                                     </label>
                                                 </div>
-                                                <div *ngIf="selectedFiles[config.id!]" class="uploaded-file">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <img *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type.startsWith('image/')"
-                                                            [src]="filePreviews[config.id!]"
-                                                            class="img-thumbnail uploaded-img">
 
-                                                        <div>
-                                                            <span class="file-name">{{ selectedFiles[config.id!].name
-                                                                }}</span>
-                                                            <small class="text-muted d-block">{{
-                                                                (selectedFiles[config.id!].size / 1024).toFixed(1) }}
-                                                                KB</small>
+                                                <!-- عرض الملف الموجود (existing attachment) -->
+                                                <div *ngIf="existingAttachments[config.id!] && !selectedFiles[config.id!]" 
+                                                     class="file-preview existing-attachment-container"
+                                                     style="position: relative;">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <!-- Preview Image/Icon -->
+                                                        <div style="position: relative; display: inline-block;">
+                                                            <img style="width:150px;height:100px"
+                                                                 *ngIf="filePreviews[config.id!] && isImageFile(existingAttachments[config.id!]?.imgPath)"
+                                                                 [src]="filePreviews[config.id!]"
+                                                                 class="preview-image">
+                                                            <div *ngIf="!filePreviews[config.id!] || !isImageFile(existingAttachments[config.id!]?.imgPath)"
+                                                                 class="file-icon">
+                                                                <i class="fas fa-file"></i>
+                                                            </div>
+                                                            
+                                                            <!-- Hover overlay with edit button -->
+                                                            <div class="attachment-hover-overlay">
+                                                                <button type="button"
+                                                                        class="btn btn-sm btn-primary"
+                                                                        (click)="triggerFileInput(config.id!); $event.stopPropagation()"
+                                                                        title="{{ 'EDIT_PROFILE.UPDATE_ATTACHMENT' | translate }}">
+                                                                    <i class="fas fa-edit"></i>
+                                                                    {{ 'COMMON.UPDATE' | translate }}
+                                                                </button>
+                                                                <button type="button"
+                                                                        class="btn btn-sm btn-info"
+                                                                        (click)="viewAttachment(config.id!); $event.stopPropagation()"
+                                                                        title="{{ 'COMMON.VIEW' | translate }}">
+                                                                    <i class="fas fa-eye"></i>
+                                                                    {{ 'COMMON.VIEW' | translate }}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- File Info and Actions -->
+                                                        <div class="d-flex flex-column gap-2">
+                                                            <span class="file-name">
+                                                                {{ getFileNameFromPath(existingAttachments[config.id!]?.imgPath) }}
+                                                            </span>
+                                                            
+                                                            <!-- Action Buttons -->
+                                                            <div class="d-flex gap-2">
+                                                                <button type="button"
+                                                                        class="btn btn-sm btn-info"
+                                                                        (click)="viewAttachment(config.id!)"
+                                                                        [title]="'COMMON.VIEW' | translate">
+                                                                    <i class="fas fa-eye me-1"></i>
+                                                                    {{ 'COMMON.VIEW' | translate }}
+                                                                </button>
+                                                                
+                                                                <button type="button"
+                                                                        class="btn btn-sm btn-primary"
+                                                                        (click)="triggerFileInput(config.id!)"
+                                                                        [title]="'COMMON.UPDATE' | translate">
+                                                                    <i class="fas fa-edit me-1"></i>
+                                                                    {{ 'COMMON.UPDATE' | translate }}
+                                                                </button>
+                                                                
+                                                                <button type="button"
+                                                                        class="btn btn-sm btn-danger"
+                                                                        (click)="removeExistingFile(config.id!)"
+                                                                        [title]="'COMMON.REMOVE' | translate">
+                                                                    <i class="fas fa-trash me-1"></i>
+                                                                    {{ 'COMMON.REMOVE' | translate }}
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <button *ngIf="selectedFiles[config.id!]" type="button"
-                                                        class="btn-remove-uploaded-file"
-                                                        (click)="removeFile(config.id!)">
-
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                            viewBox="0 0 24 24" fill="none">
-                                                            <path
-                                                                d="M21 4H17.9C17.6679 2.87141 17.0538 1.85735 16.1613 1.12872C15.2687 0.40009 14.1522 0.00145452 13 0H11C9.8478 0.00145452 8.73132 0.40009 7.83875 1.12872C6.94618 1.85735 6.3321 2.87141 6.1 4H3C2.73478 4 2.48043 4.10536 2.29289 4.29289C2.10536 4.48043 2 4.73478 2 5C2 5.26522 2.10536 5.51957 2.29289 5.70711C2.48043 5.89464 2.73478 6 3 6H4V19C4.00159 20.3256 4.52888 21.5964 5.46622 22.5338C6.40356 23.4711 7.67441 23.9984 9 24H15C16.3256 23.9984 17.5964 23.4711 18.5338 22.5338C19.4711 21.5964 19.9984 20.3256 20 19V6H21C21.2652 6 21.5196 5.89464 21.7071 5.70711C21.8946 5.51957 22 5.26522 22 5C22 4.73478 21.8946 4.48043 21.7071 4.29289C21.5196 4.10536 21.2652 4 21 4ZM11 2H13C13.6203 2.00076 14.2251 2.19338 14.7316 2.55144C15.2381 2.90951 15.6214 3.41549 15.829 4H8.171C8.37858 3.41549 8.7619 2.90951 9.26839 2.55144C9.77487 2.19338 10.3797 2.00076 11 2ZM18 19C18 19.7956 17.6839 20.5587 17.1213 21.1213C16.5587 21.6839 15.7956 22 15 22H9C8.20435 22 7.44129 21.6839 6.87868 21.1213C6.31607 20.5587 6 19.7956 6 19V6H18V19Z"
-                                                                fill="#5B5B5B" />
-                                                            <path
-                                                                d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18Z"
-                                                                fill="#5B5B5B" />
-                                                            <path
-                                                                d="M14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8947 17.5196 15 17.2652 15 17V11C15 10.7348 14.8947 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z"
-                                                                fill="#5B5B5B" />
-                                                        </svg>
-                                                    </button>
-
+                                                    
+                                                    <!-- Hidden file input for existing attachments -->
+                                                    <input type="file"
+                                                           class="d-none"
+                                                           [id]="'file-' + config.id"
+                                                           (change)="onFileSelected($event, config.id!)"
+                                                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                                                 </div>
-                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 4 || submitted)"
+
+                                                <!-- المعاينة للملف الجديد (new file preview) -->
+                                                <div *ngIf="selectedFiles[config.id!]" class="file-preview">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <!-- Preview Image/Icon -->
+                                                        <div>
+                                                            <img style="width:150px;height:100px"
+                                                                 *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type?.startsWith('image/')"
+                                                                 [src]="filePreviews[config.id!]"
+                                                                 class="preview-image">
+                                                        </div>
+                                                        
+                                                        <!-- File Info and Actions -->
+                                                        <div class="d-flex flex-column gap-2">
+                                                            <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
+                                                            
+                                                            <!-- Action Button -->
+                                                            <button type="button"
+                                                                    class="btn btn-sm btn-danger"
+                                                                    (click)="removeFile(config.id!)"
+                                                                    [title]="'COMMON.REMOVE' | translate">
+                                                                <i class="fas fa-trash me-1"></i>
+                                                                {{ 'COMMON.REMOVE' | translate }}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && !existingAttachments[config.id!] && (currentTab === 4 || submitted)"
                                                     class="mt-2">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none">

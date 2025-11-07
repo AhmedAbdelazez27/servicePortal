@@ -20,9 +20,12 @@ import { GoogleMapsLoaderService } from '../../../core/services/google-maps-load
 
 import { FastingTentRequestService } from '../../../core/services/fasting-tent-request.service';
 import { AttachmentService } from '../../../core/services/attachments/attachment.service';
+import { PartnerService } from '../../../core/services/partner.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TranslationService } from '../../../core/services/translation.service';
 import { LocationService } from '../../../core/services/UserSetting/location.service';
+import { MainApplyService } from '../../../core/services/mainApplyService/mainApplyService.service';
+import { SpinnerService } from '../../../core/services/spinner.service';
 
 import {
   CreateFastingTentRequestDto,
@@ -35,11 +38,22 @@ import {
   LocationDetailsDto,
   Select2Item,
   ServiceType,
+  UpdateFastingTentRequestDto,
 } from '../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
 import {
   AttachmentsConfigDto,
   AttachmentsConfigType,
 } from '../../../core/dtos/attachments/attachments-config.dto';
+import {
+  AttachmentDto,
+  UpdateAttachmentBase64Dto,
+  AttachmentBase64Dto,
+} from '../../../core/dtos/attachments/attachment.dto';
+import {
+  FiltermainApplyServiceByIdDto,
+  mainApplyServiceDto,
+} from '../../../core/dtos/mainApplyService/mainApplyService.dto';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-fasting-tent-request',
@@ -91,16 +105,25 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   markers: any[] = [];
   customIcon: any;
 
-  // Partners data (keeping for compatibility but removing management methods)
+  // Partners data
   partners: FastingTentPartnerDto[] = [];
+  existingPartners: FastingTentPartnerDto[] = []; // Partners loaded from API
+  partnersToDelete: number[] = []; // Partner IDs to delete
 
   // Attachments data
   attachmentConfigs: AttachmentsConfigDto[] = [];
   attachments: FastingTentAttachmentDto[] = [];
   selectedFiles: { [key: number]: File } = {};
   filePreviews: { [key: number]: string } = {};
+  existingAttachments: { [key: number]: AttachmentDto } = {}; // Existing attachments from API
+  attachmentsToDelete: { [key: number]: number } = {}; // Track attachments marked for deletion
   isDragOver = false;
   showLocationPhotoOverlay = false;
+
+  // Update mode properties
+  fastingTentRequestId: number | null = null;
+  mainApplyServiceId: number | null = null;
+  loadformData: mainApplyServiceDto | null = null;
 
   // Partner attachments data
   partnerAttachmentConfigs: AttachmentsConfigDto[] = [];
@@ -118,6 +141,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private fastingTentRequestService: FastingTentRequestService,
     private attachmentService: AttachmentService,
+    private partnerService: PartnerService,
     private authService: AuthService,
     private locationService: LocationService,
     public translationService: TranslationService,
@@ -126,7 +150,9 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private googleMapsLoader: GoogleMapsLoaderService
+    private googleMapsLoader: GoogleMapsLoaderService,
+    private mainApplyService: MainApplyService,
+    private spinnerService: SpinnerService
   ) {
     this.initializeForms();
     this.initializePartnerTypes();
@@ -134,8 +160,17 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.clearAllToasts();
-    this.loadInitialData();
-    this.initializeCustomIcon();
+    
+    // Check if we have an id in route params (update mode)
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      // Load request details for update mode
+      this.loadRequestDetails(id);
+    } else {
+      // Create mode - load initial data normally
+      this.loadInitialData();
+      this.initializeCustomIcon();
+    }
   }
 
   ngOnDestroy(): void {
@@ -244,7 +279,9 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   loadInitialData(): void {
-    this.isLoading = true;
+    if (!this.fastingTentRequestId) { // Only set isLoading to true if not in update mode
+      this.isLoading = true;
+    }
 
     const currentUser = this.authService.getCurrentUser();
     if (currentUser?.id) {
@@ -266,11 +303,35 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
             // console.log(`Tent Type ${index}:`, type);
           });
 
-          this.isLoading = false;
+          // In update mode, patch locationTypeId after tentTypes are loaded
+          // Use location.locationTypeId if available, otherwise use fastingTentService.locationTypeId
+          if (this.fastingTentRequestId) {
+            const locationTypeId = this.loadformData?.fastingTentService?.location?.locationTypeId 
+              || this.loadformData?.fastingTentService?.locationTypeId;
+            if (locationTypeId) {
+              setTimeout(() => {
+                this.mainInfoForm.patchValue({
+                  tentLocationType: locationTypeId,
+                });
+                this.cdr.detectChanges();
+              }, 0);
+            }
+          }
+
+          if (!this.fastingTentRequestId) {
+            this.isLoading = false;
+          }
           this.isFormInitialized = true;
 
           // Load location data immediately on page load
-          this.loadLocationDataOnInit();
+          if (!this.fastingTentRequestId) {
+            this.loadLocationDataOnInit();
+          } else {
+            // In update mode, load location data after form is populated
+            setTimeout(() => {
+              this.loadLocationDataOnInit();
+            }, 100);
+          }
 
           // Load attachment configs
           this.loadAttachmentConfigs();
@@ -288,6 +349,119 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
       this.router.navigate(['/login']);
     }
+  }
+
+  /**
+   * Load request details from API for update mode
+   */
+  private loadRequestDetails(id: string): void {
+    this.isLoading = true;
+    this.spinnerService.show();
+
+    const params: FiltermainApplyServiceByIdDto = { id };
+    const sub = this.mainApplyService.getDetailById(params).subscribe({
+      next: (response: any) => {
+        this.loadformData = response;
+        const locationTypeId = response?.fastingTentService?.location?.locationTypeId;
+
+        // Extract fasting tent service data
+        const fastingTentService = response.fastingTentService;
+        if (fastingTentService) {
+          this.fastingTentRequestId = fastingTentService.id || null;
+          this.mainApplyServiceId = response.id || null;
+
+          // Populate main info form
+          // Use location.locationTypeId for tentLocationType (not fastingTentService.locationTypeId)
+          // Use fastingTentService.locationId for locationId (convert to string for select2)
+          this.mainInfoForm.patchValue({
+            tentLocationType: locationTypeId || fastingTentService.locationTypeId || null,
+            locationId: fastingTentService.locationId ? fastingTentService.locationId.toString() : null,
+            ownerName: fastingTentService.ownerName || '',
+            regionName: fastingTentService.regionName || '',
+            streetName: fastingTentService.streetName || '',
+            groundNo: fastingTentService.groundNo || '',
+            address: fastingTentService.address || '',
+            notes: fastingTentService.notes || '',
+            distributionSiteCoordinators: fastingTentService.distributionSiteCoordinators || '',
+            startDate: fastingTentService.startDate
+              ? (fastingTentService.startDate instanceof Date
+                  ? fastingTentService.startDate.toISOString().split('T')[0]
+                  : new Date(fastingTentService.startDate).toISOString().split('T')[0])
+              : '',
+            endDate: fastingTentService.endDate
+              ? (fastingTentService.endDate instanceof Date
+                  ? fastingTentService.endDate.toISOString().split('T')[0]
+                  : new Date(fastingTentService.endDate).toISOString().split('T')[0])
+              : '',
+          });
+
+          // Populate supervisor form
+          this.supervisorForm.patchValue({
+            supervisorName: fastingTentService.supervisorName || '',
+            jopTitle: fastingTentService.jopTitle || '',
+            supervisorMobile: fastingTentService.supervisorMobile?.replace('971', '') || '',
+          });
+
+          // Load existing partners
+          if (response.partners && response.partners.length > 0) {
+            this.existingPartners = response.partners.map((p: any) => ({
+              id: p.id,
+              name: p.name || '',
+              nameEn: p.nameEn || '',
+              type: p.type,
+              licenseIssuer: p.licenseIssuer || '',
+              licenseExpiryDate: p.licenseExpiryDate
+                ? (p.licenseExpiryDate instanceof Date
+                    ? p.licenseExpiryDate.toISOString().split('T')[0]
+                    : new Date(p.licenseExpiryDate).toISOString().split('T')[0])
+                : '',
+              licenseNumber: p.licenseNumber || '',
+              contactDetails: p.contactDetails || '',
+              jobRequirementsDetails: p.jobRequirementsDetails || '',
+              mainApplyServiceId: p.mainApplyServiceId || this.mainApplyServiceId || 0,
+              attachments: p.attachments || [],
+            }));
+            // Also add to partners array for display
+            this.partners = [...this.existingPartners];
+          }
+
+          // Load existing attachments
+          if (response.attachments && response.attachments.length > 0) {
+            const attachmentsData = response.attachments.map((att: any) => ({
+              id: att.id,
+              imgPath: att.imgPath,
+              masterId: att.masterId,
+              attConfigID: att.attConfigID,
+              lastModified: att.lastModified,
+            }));
+            this.loadExistingAttachments(attachmentsData);
+          } else if (this.mainApplyServiceId) {
+            // If attachments not available, load from API
+            this.loadAttachmentsFromAPI(this.mainApplyServiceId);
+          }
+
+          // Load location details if locationId exists
+          // Skip availability check in update mode since location is already saved
+          if (fastingTentService.locationId) {
+            this.loadLocationDetails(fastingTentService.locationId, true);
+          }
+        }
+
+        // Load initial data (dropdowns, etc.) - this will also load attachment configs
+        this.loadInitialData();
+        this.initializeCustomIcon();
+        this.isLoading = false;
+        this.spinnerService.hide();
+      },
+      error: (error) => {
+        console.error('Error loading request details:', error);
+        this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
+        this.router.navigate(['/request']);
+        this.isLoading = false;
+        this.spinnerService.hide();
+      }
+    });
+    this.subscriptions.push(sub);
   }
 
   // Temporary test method for debugging API
@@ -363,13 +537,23 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (configs) => {
         this.attachmentConfigs = configs || [];
-        // Initialize attachments array based on configs
-        this.attachments = this.attachmentConfigs.map(config => ({
-          fileBase64: '',
-          fileName: '',
-          masterId: 0,
-          attConfigID: config.id!
-        }));
+        
+        // In update mode, ensure we have all configs even if some attachments weren't uploaded initially
+        if (this.fastingTentRequestId) {
+          configs.forEach((config) => {
+            if (!this.existingAttachments[config.id!]) {
+              // This config doesn't have an attachment yet - user can upload it now
+            }
+          });
+        } else {
+          // Initialize attachments array based on configs (only for new attachments)
+          this.attachments = this.attachmentConfigs.map(config => ({
+            fileBase64: '',
+            fileName: '',
+            masterId: 0,
+            attConfigID: config.id!
+          }));
+        }
       },
       error: (error) => {
         // console.error('Error loading attachment configs:', error);
@@ -395,6 +579,302 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
     });
     this.subscriptions.push(sub);
+  }
+
+  /**
+   * Load attachments from API using masterId and masterType
+   */
+  private loadAttachmentsFromAPI(masterId: number): void {
+    // Master type for FastingTentRequest - use AttachmentsConfigType.PermissionForFastingPerson
+    // Master ID should be the mainApplyServiceId
+    const masterType = AttachmentsConfigType.PermissionForFastingPerson;
+    
+    const sub = this.attachmentService.getListByMasterId(masterId, masterType).subscribe({
+      next: (attachments: AttachmentDto[]) => {
+        console.log('Loaded attachments from API:', attachments);
+        
+        // Convert API attachments to the format expected by loadExistingAttachments
+        const attachmentsData = attachments.map(att => ({
+          id: att.id,
+          imgPath: att.imgPath,
+          masterId: att.masterId,
+          attConfigID: att.attConfigID,
+          lastModified: att.lastModified,
+        }));
+        
+        if (attachmentsData.length > 0) {
+          this.loadExistingAttachments(attachmentsData);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading attachments from API:', error);
+        // Don't show error to user, just log it - attachments might not exist yet
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Load existing attachments from request data
+   */
+  private loadExistingAttachments(attachmentsData: any[]): void {
+    console.log('Loading existing attachments:', attachmentsData);
+    
+    attachmentsData.forEach((attachment: any) => {
+      if (attachment.attConfigID && attachment.id) {
+        // Store existing attachment info - only if id exists
+        this.existingAttachments[attachment.attConfigID] = {
+          id: attachment.id,
+          imgPath: attachment.imgPath,
+          masterId: attachment.masterId || this.mainApplyServiceId || 0,
+          attConfigID: attachment.attConfigID,
+          lastModified: attachment.lastModified ? new Date(attachment.lastModified) : undefined,
+        };
+        
+        // Set preview for existing attachments
+        if (attachment.imgPath) {
+          const isImage = attachment.imgPath.match(/\.(jpg|jpeg|png|gif)$/i);
+          const imageUrl = isImage 
+            ? this.constructImageUrl(attachment.imgPath)
+            : 'assets/images/file.png';
+          
+          this.filePreviews[attachment.attConfigID] = imageUrl;
+        }
+      }
+    });
+    
+    console.log('Existing attachments after loading:', this.existingAttachments);
+  }
+
+  /**
+   * Construct full image URL from path
+   */
+  private constructImageUrl(path: string): string {
+    if (!path) return '';
+    // If path already contains http/https, return as is
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    // Otherwise, construct URL with base URL
+    const baseUrl = environment.apiBaseUrl.replace('/api', '');
+    return `${baseUrl}${path}`;
+  }
+
+  /**
+   * Convert file to base64 string
+   */
+  private async fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /**
+   * Delete attachments marked for deletion
+   */
+  private async deleteAttachments(): Promise<void> {
+    const deletePromises = Object.values(this.attachmentsToDelete).map(attachmentId => {
+      return this.attachmentService.deleteAsync(attachmentId).toPromise();
+    });
+
+    try {
+      await Promise.all(deletePromises);
+      console.log('Attachments deleted successfully');
+    } catch (error) {
+      console.error('Error deleting attachments:', error);
+      throw error;
+    }
+  }  
+
+  /**
+   * Handle attachment operations (create, update, delete) in update mode
+   */
+  async handleAttachmentOperations(): Promise<void> {
+    const attachmentPromises: Promise<any>[] = [];
+    
+    // First handle deletions
+    if (Object.keys(this.attachmentsToDelete).length > 0) {
+      try {
+        await this.deleteAttachments();
+      } catch (error) {
+        console.error('Error deleting attachments:', error);
+        throw error;
+      }
+    }
+    
+    // Then handle new file uploads and updates
+    for (const [configId, file] of Object.entries(this.selectedFiles)) {
+      const configIdNum = parseInt(configId);
+      // Check if there was an existing attachment (even if user selected a new file)
+      const existingAttachment = this.existingAttachments[configIdNum];
+      
+      if (existingAttachment) {
+        // Update existing attachment - use existing masterId
+        const updateAttachmentDto: UpdateAttachmentBase64Dto = {
+          id: existingAttachment.id,
+          fileBase64: await this.fileToBase64(file as File),
+          fileName: (file as File).name,
+          masterId: existingAttachment.masterId || this.mainApplyServiceId || 0,
+          attConfigID: configIdNum
+        };
+        
+        console.log('Updating existing attachment:', updateAttachmentDto);
+        attachmentPromises.push(
+          this.attachmentService.updateAsync(updateAttachmentDto).toPromise()
+        );
+      } else {
+        // Create new attachment - use mainApplyServiceId as masterId
+        const newAttachmentDto: AttachmentBase64Dto = {
+          fileBase64: await this.fileToBase64(file as File),
+          fileName: (file as File).name,
+          masterId: this.mainApplyServiceId || 0,
+          attConfigID: configIdNum
+        };
+        
+        console.log('Creating new attachment:', newAttachmentDto);
+        attachmentPromises.push(
+          this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise()
+        );
+      }
+    }
+
+    // Execute all attachment operations
+    if (attachmentPromises.length > 0) {
+      try {
+        await Promise.all(attachmentPromises);
+        console.log('Attachments handled successfully');
+      } catch (attachmentError) {
+        console.error('Error handling attachments:', attachmentError);
+        throw attachmentError;
+      }
+    }
+    
+    // Clear deletion tracking after successful operations
+    this.attachmentsToDelete = {};
+  }
+
+  /**
+   * Handle partner operations (create new, delete) in update mode
+   */
+  async handlePartnerOperations(): Promise<void> {
+    // First handle deletions
+    if (this.partnersToDelete.length > 0) {
+      const deletePromises = this.partnersToDelete.map(partnerId => {
+        return this.partnerService.delete(partnerId).toPromise();
+      });
+
+      try {
+        await Promise.all(deletePromises);
+        console.log('Partners deleted successfully');
+      } catch (error) {
+        console.error('Error deleting partners:', error);
+        throw error;
+      }
+    }
+
+    // Then handle new partners (only partners without id are new)
+    const newPartners = this.partners.filter(p => !p.id);
+    for (const partner of newPartners) {
+      try {
+        const partnerDto: FastingTentPartnerDto = {
+          name: partner.name,
+          nameEn: partner.nameEn,
+          type: partner.type,
+          licenseIssuer: partner.licenseIssuer ,
+          licenseExpiryDate: partner.licenseExpiryDate ,
+          licenseNumber: partner.licenseNumber ,
+          contactDetails: partner.contactDetails ,
+          jobRequirementsDetails: partner.jobRequirementsDetails ,
+          mainApplyServiceId: this.mainApplyServiceId || 0,
+          attachments: partner.attachments ,
+        };
+        
+        await this.partnerService.create(partnerDto).toPromise();
+        console.log('Partner created successfully:', partnerDto);
+      } catch (error) {
+        console.error('Error creating partner:', error);
+        throw error;
+      }
+    }
+
+    // Clear deletion tracking after successful operations
+    this.partnersToDelete = [];
+  }
+
+  /**
+   * Trigger file input click programmatically
+   */
+  triggerFileInput(configId: number): void {
+    const fileInput = document.getElementById(`file-${configId}`) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  /**
+   * View attachment in new tab
+   */
+  viewAttachment(configId: number): void {
+    const attachment = this.existingAttachments[configId];
+    if (attachment && attachment.imgPath) {
+      const imageUrl = this.constructImageUrl(attachment.imgPath);
+      window.open(imageUrl, '_blank');
+    }
+  }
+
+  /**
+   * Remove existing attachment (mark for deletion)
+   */
+  removeExistingFile(configId: number): void {
+    const existingAttachment = this.existingAttachments[configId];
+    const config = this.attachmentConfigs.find(c => c.id === configId);
+    
+    if (!existingAttachment || !config) return;
+    
+    // Show confirmation dialog
+    const confirmMessage = this.translate.instant('EDIT_PROFILE.CONFIRM_DELETE_ATTACHMENT') || 'Are you sure you want to delete this attachment?';
+    if (confirm(confirmMessage)) {
+      // Mark for deletion (will be processed during form submission)
+      this.attachmentsToDelete[configId] = existingAttachment.id;
+      
+      // Remove from UI - this will show the upload area
+      delete this.existingAttachments[configId];
+      delete this.filePreviews[configId];
+      
+      // Reset file input
+      const fileInput = document.getElementById(`file-${configId}`) as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      
+      this.toastr.success(
+        this.translate.instant('EDIT_PROFILE.ATTACHMENT_MARKED_FOR_DELETION') || 'Attachment marked for deletion',
+        this.translate.instant('TOAST.TITLE.SUCCESS') || 'Success'
+      );
+    }
+  }
+
+  /**
+   * Check if file path is an image
+   */
+  isImageFile(imgPath: string | undefined | null): boolean {
+    if (!imgPath) return false;
+    return /\.(jpg|jpeg|png|gif)$/i.test(imgPath);
+  }
+
+  /**
+   * Get file name from path
+   */
+  getFileNameFromPath(imgPath: string | undefined | null): string {
+    if (!imgPath) return this.translate.instant('EDIT_PROFILE.FILE') || 'File';
+    const fileName = imgPath.split('/').pop() || imgPath.split('\\').pop() || '';
+    return fileName || this.translate.instant('EDIT_PROFILE.FILE') || 'File';
   }
 
   initializePartnerAttachments(): void {
@@ -472,10 +952,9 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         return true;
     }
   }
-
   validateMainInfoTab(showToastr = false): boolean {
     const form = this.mainInfoForm;
-
+    
     // Check tent location type (required)
     const tentLocationType = form.get('tentLocationType')?.value;
     if (!tentLocationType) {
@@ -488,15 +967,25 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     // Check location selection - either dropdown or map must have a valid selection
     const hasDropdownSelection = form.get('locationId')?.value;
     const hasMapSelection = this.selectedLocationDetails && this.lastSelectionSource === 'map';
+    const hasExistingLocation = this.fastingTentRequestId && hasDropdownSelection; // In update mode, if locationId exists, consider it valid
 
-    if (!hasDropdownSelection && !hasMapSelection) {
+    if (!hasDropdownSelection && !hasMapSelection && !hasExistingLocation) {
       if (showToastr) {
         this.toastr.error(this.translate.instant('VALIDATION.LOCATION_REQUIRED'));
       }
       return false;
     }
 
-    // Check if location availability check is in progress
+    // In update mode, if location exists and is marked as available, skip availability checks
+    if (hasExistingLocation && this.locationAvailabilityStatus === 'available') {
+      // Location was loaded from saved data and is available, proceed to date validation
+      // Continue to date validation below
+    } else if (hasExistingLocation && this.locationAvailabilityStatus !== 'available') {
+      // Location exists but status is not set, this shouldn't happen but handle it gracefully
+      // Continue to availability checks below
+    }
+
+    // Check if location availability check is in progress (only for new selections)
     if (this.locationAvailabilityStatus === 'checking') {
       if (showToastr) {
         this.toastr.warning(this.translate.instant('COMMON.PLEASE_WAIT_CHECKING_AVAILABILITY'));
@@ -504,7 +993,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // Check if location is available
+    // Check if location is available (only for new selections)
     if (this.locationAvailabilityStatus === 'unavailable') {
       if (showToastr) {
         this.toastr.error(this.translate.instant('VALIDATION.LOCATION_NOT_AVAILABLE'));
@@ -512,8 +1001,9 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // Location must be available to proceed
-    if (this.locationAvailabilityStatus !== 'available') {
+    // Location must be available to proceed (only for new selections)
+    // In update mode, if locationId exists and selectedLocationDetails is set, consider it valid
+    if (this.locationAvailabilityStatus !== 'available' && !hasExistingLocation) {
       if (showToastr) {
         this.toastr.error(this.translate.instant('VALIDATION.PLEASE_SELECT_VALID_LOCATION'));
       }
@@ -607,9 +1097,9 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     // Partners tab is optional and should be considered completed when visited
     // This allows users to proceed without adding partners (since it's not mandatory)
 
-    if (!this.visitedTabs.has(4)) {
-      return false;
-    }
+    // if (!this.visitedTabs.has(4)) {
+    //   return false;
+    // }
 
     // If user has visited the tab, consider it completed (optional tab)
     // User can choose not to add partners, which is valid
@@ -695,10 +1185,37 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         // console.log('Location options response:', response);
         this.locationOptions = response.results || [];
         // console.log('Assigned locationOptions:', this.locationOptions);
-        const selectedId = this.mainInfoForm.get('locationId')?.value;
-        if (selectedId && !this.locationOptions.find(opt => opt.id === selectedId)) {
-          // Optionally push the selected value if not present
-          this.locationOptions.push({ id: selectedId, text: 'Selected Location' });
+        
+        // In update mode, ensure locationId is patched after options are loaded
+        if (this.fastingTentRequestId && this.loadformData?.fastingTentService?.locationId) {
+          const savedLocationId = this.loadformData.fastingTentService.locationId.toString();
+          const selectedId = this.mainInfoForm.get('locationId')?.value;
+          
+          // Check if the saved locationId exists in the options
+          const locationExists = this.locationOptions.find(opt => opt.id === savedLocationId || opt.id === Number(savedLocationId));
+          
+          if (!locationExists) {
+            // If location not found in options, add it
+            const locationName = this.loadformData.fastingTentService.location?.locationName 
+              || this.loadformData.fastingTentService.location?.address
+              || 'Selected Location';
+            this.locationOptions.push({ id: savedLocationId, text: locationName });
+          }
+          
+          // Patch the locationId after options are loaded
+          setTimeout(() => {
+            this.mainInfoForm.patchValue({
+              locationId: savedLocationId
+            });
+            this.cdr.detectChanges();
+          }, 0);
+        } else {
+          // In create mode, check if there's a selected value that's not in options
+          const selectedId = this.mainInfoForm.get('locationId')?.value;
+          if (selectedId && !this.locationOptions.find(opt => opt.id === selectedId || opt.id === Number(selectedId))) {
+            // Optionally push the selected value if not present
+            this.locationOptions.push({ id: selectedId, text: 'Selected Location' });
+          }
         }
       },
       error: (error) => {
@@ -803,15 +1320,28 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  loadLocationDetails(locationId: number): void {
+  loadLocationDetails(locationId: number, skipAvailabilityCheck: boolean = false): void {
     const sub = this.fastingTentRequestService.getLocationById(locationId).subscribe({
       next: (location) => {
         this.selectedLocationDetails = location;
         this.populateLocationFields(location);
+        
+        // In update mode or when loading existing location, set status to available
+        // Skip availability check if this is called from loadRequestDetails (update mode)
+        if (skipAvailabilityCheck || this.fastingTentRequestId) {
+          this.locationAvailabilityStatus = 'available';
+          // Only set lastSelectionSource if it's not already set (to distinguish between saved and newly selected)
+          if (!this.lastSelectionSource) {
+            this.lastSelectionSource = 'dropdown'; // Set source to dropdown for existing locations
+          }
+        }
       },
       error: (error) => {
         // console.error('Error loading location details:', error);
         this.toastr.error(this.translate.instant('ERRORS.FAILED_LOAD_LOCATION_DETAILS'));
+        if (skipAvailabilityCheck || this.fastingTentRequestId) {
+          this.locationAvailabilityStatus = null;
+        }
       }
     });
     this.subscriptions.push(sub);
@@ -1197,7 +1727,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       licenseExpiryDate: licenseExpiry || null,
       licenseNumber,
       contactDetails:contactDetails.toString(),
-      mainApplyServiceId: 0,
+      mainApplyServiceId: this.mainApplyServiceId || 0, // Use mainApplyServiceId in update mode, 0 in create mode
       attachments: partnerAttachments
     };
 
@@ -1213,7 +1743,24 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
 
   removePartner(index: number): void {
+    const partner = this.partners[index];
+    
+    // If partner has an id, it's an existing partner - mark for deletion
+    if (partner.id) {
+      this.partnersToDelete.push(partner.id);
+    }
+    
+    // Remove from display array
     this.partners.splice(index, 1);
+    
+    // Also remove from existingPartners if it was there
+    if (partner.id) {
+      const existingIndex = this.existingPartners.findIndex(p => p.id === partner.id);
+      if (existingIndex !== -1) {
+        this.existingPartners.splice(existingIndex, 1);
+      }
+    }
+    
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_REMOVED'));
   }
 
@@ -1378,23 +1925,29 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // IMPORTANT: In update mode, if there's an existing attachment, we keep it in existingAttachments
+    // so we can call update (not create) when saving. We don't delete it here.
+    // The existing attachment will be updated when saving via handleAttachmentOperations
     this.selectedFiles[configId] = file;
 
+    // Create preview for the new file
     const reader = new FileReader();
     reader.onload = (e) => {
       this.filePreviews[configId] = e.target?.result as string;
 
-      const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
-      if (attachmentIndex !== -1) {
-        this.attachments[attachmentIndex] = {
-          ...this.attachments[attachmentIndex],
-          fileBase64: (e.target?.result as string).split(',')[1],
-          fileName: file.name
-        };
-        // console.log('[handleFileUpload] Updated attachment:', this.attachments[attachmentIndex]); // DEBUG
-      } else {
-        // console.warn('[handleFileUpload] No attachment found for configId:', configId); // DEBUG
+      // Update attachment data (only for create mode)
+      if (!this.fastingTentRequestId) {
+        const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
+        if (attachmentIndex !== -1) {
+          this.attachments[attachmentIndex] = {
+            ...this.attachments[attachmentIndex],
+            fileBase64: (e.target?.result as string).split(',')[1], // Remove data:image/... prefix
+            fileName: file.name,
+          };
+        }
       }
+      // Note: In update mode, we don't update the attachments array here
+      // because attachments are handled separately via handleAttachmentOperations
 
       // Trigger change detection for submit button state
       this.cdr.detectChanges();
@@ -1420,16 +1973,37 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   removeFile(configId: number): void {
+    // Only remove new file selection, not existing attachments
+    // For existing attachments, use removeExistingFile() instead
     delete this.selectedFiles[configId];
-    delete this.filePreviews[configId];
+    
+    // Remove preview for new file
+    const existingAttachment = this.existingAttachments[configId];
+    if (!existingAttachment) {
+      // No existing attachment, so remove preview completely
+      delete this.filePreviews[configId];
+    } else {
+      // Restore existing attachment preview
+      if (existingAttachment.imgPath) {
+        const isImage = existingAttachment.imgPath.match(/\.(jpg|jpeg|png|gif)$/i);
+        this.filePreviews[configId] = isImage 
+          ? this.constructImageUrl(existingAttachment.imgPath)
+          : 'assets/images/file.png';
+      } else {
+        this.filePreviews[configId] = 'assets/images/file.png';
+      }
+    }
 
-    const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
-    if (attachmentIndex !== -1) {
-      this.attachments[attachmentIndex] = {
-        ...this.attachments[attachmentIndex],
-        fileBase64: '',
-        fileName: ''
-      };
+    // Update attachments array (only for create mode)
+    if (!this.fastingTentRequestId) {
+      const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
+      if (attachmentIndex !== -1) {
+        this.attachments[attachmentIndex] = {
+          ...this.attachments[attachmentIndex],
+          fileBase64: '',
+          fileName: '',
+        };
+      }
     }
 
     // Trigger change detection for submit button state
@@ -1442,7 +2016,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   // Form submission
-  onSubmit(isDraft: boolean = false): void {
+  async onSubmit(isDraft: boolean = false): Promise<void> {
     if (this.isSaving) {
       return;
     }
@@ -1467,63 +2041,159 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         return;
       }
 
-      const validAttachments = this.attachments.filter(a => a.fileBase64 && a.fileName);
-      // console.log('[onSubmit] All attachments:', this.attachments); // DEBUG
-      // console.log('[onSubmit] Valid attachments:', validAttachments); // DEBUG
-      const createDto: CreateFastingTentRequestDto = {
-        mainApplyServiceId: 0,
-        locationType: this.getSelectedLocationTypeName(),
-        locationTypeId: formData.tentLocationType,
-        ownerName: formData.ownerName,
-        regionName: formData.regionName,
-        streetName: formData.streetName,
-        groundNo: formData.groundNo,
-        address: formData.address,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        notes: formData.notes,
-        locationId: formData.locationId,
-        supervisorName: supervisorData.supervisorName,
-        jopTitle: supervisorData.jopTitle,
-        supervisorMobile: `971${supervisorData.supervisorMobile}`, // Add 971 prefix
-        // tentDate: dateDetailsData.tentDate || null,
-        serviceType: ServiceType.TentPermission, // Always send as enum value
-        distributionSiteCoordinators: formData.distributionSiteCoordinators,
-        attachments: validAttachments,
-        partners: this.partners,
-        isDraft: isDraft, // Set draft flag based on parameter
-      };
+      // Determine if this is update or create
+      const isUpdateMode = !!this.fastingTentRequestId && !!this.mainApplyServiceId;
 
-      const sub = this.fastingTentRequestService.create(createDto).subscribe({
-        next: (response) => {
-          if (isDraft) {
-            this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_SAVED_AS_DRAFT'));
-          } else {
-            this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_CREATED'));
+      if (isUpdateMode) {
+        // Handle attachments separately (update/create/delete)
+        if (this.mainApplyServiceId) {
+          try {
+            await this.handleAttachmentOperations();
+          } catch (attachmentError) {
+            console.error('Error handling attachments:', attachmentError);
+            this.toastr.warning(
+              this.translate.instant('EDIT_PROFILE.ATTACHMENT_SAVE_WARNING')
+            );
           }
-          this.router.navigate(['/request']);
-          this.isSaving = false;
-        },
-        error: (error) => {
-          console.error(`Error ${isDraft ? 'saving draft' : 'creating'} fasting tent request:`, error);
-
-          // Check if it's a business error with a specific reason
-          if (error.error && error.error.reason) {
-            // Show the specific reason from the API response
-            this.toastr.error(error.error.reason);
-          } else {
-            // Fallback to generic error message
-            if (isDraft) {
-              this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
-            } else {
-              this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
-            }
-          }
-
-          this.isSaving = false;
         }
-      });
-      this.subscriptions.push(sub);
+
+        // Handle partners separately (create new, delete)
+        try {
+          await this.handlePartnerOperations();
+        } catch (partnerError) {
+          console.error('Error handling partners:', partnerError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_PARTNERS') || 'Warning saving partners'
+          );
+        }
+
+        // Format dates properly
+        let startDateValue: string = formData.startDate || '';
+        let endDateValue: string = formData.endDate || '';
+        
+        if (startDateValue && !startDateValue.includes('T')) {
+          startDateValue = new Date(startDateValue).toISOString();
+        }
+        if (endDateValue && !endDateValue.includes('T')) {
+          endDateValue = new Date(endDateValue).toISOString();
+        }
+
+        const updateDto: UpdateFastingTentRequestDto = {
+          id: this.fastingTentRequestId!,
+          mainApplyServiceId: this.mainApplyServiceId!,
+          userId: currentUser.id,
+          locationType: this.getSelectedLocationTypeName(),
+          locationTypeId: formData.tentLocationType,
+          ownerName: formData.ownerName || null,
+          regionName: formData.regionName || null,
+          streetName: formData.streetName || null,
+          groundNo: formData.groundNo || null,
+          address: formData.address || null,
+          startDate: startDateValue,
+          endDate: endDateValue,
+          notes: formData.notes || null,
+          locationId: formData.locationId || null,
+          isConsultantFromAjman: this.loadformData?.fastingTentService?.isConsultantFromAjman ?? true,
+          isConsultantApprovedFromPolice: this.loadformData?.fastingTentService?.isConsultantApprovedFromPolice ?? true,
+          supervisorName: supervisorData.supervisorName || null,
+          jopTitle: supervisorData.jopTitle || null,
+          supervisorMobile: `971${supervisorData.supervisorMobile}`,
+          tentIsSetUp: this.loadformData?.fastingTentService?.tentIsSetUp ?? true,
+          // tentDate: this.loadformData?.fastingTentService?.tentDate 
+          //   ? (this.loadformData.fastingTentService.tentDate instanceof Date
+          //       ? this.loadformData.fastingTentService.tentDate.toISOString()
+          //       : new Date(this.loadformData.fastingTentService.tentDate).toISOString())
+          //   : null,
+          serviceType: ServiceType.TentPermission,
+          // distributionSitePhotoPath: this.loadformData?.fastingTentService?.distributionSitePhotoPath || null,
+          distributionSiteCoordinators: formData.distributionSiteCoordinators || null,
+          isDraft: isDraft,
+        };
+
+        const sub = this.fastingTentRequestService.update(updateDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_SAVED_AS_DRAFT'));
+            } else {
+              this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_CREATED'));
+            }
+            this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'updating'} fasting tent request:`, error);
+
+            if (error.error && error.error.reason) {
+              this.toastr.error(error.error.reason);
+            } else {
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+              }
+            }
+
+            this.isSaving = false;
+          }
+        });
+        this.subscriptions.push(sub);
+      } else {
+        // Create mode
+        const validAttachments = this.attachments.filter(a => a.fileBase64 && a.fileName);
+        const createDto: CreateFastingTentRequestDto = {
+          mainApplyServiceId: 0,
+          locationType: this.getSelectedLocationTypeName(),
+          locationTypeId: formData.tentLocationType,
+          ownerName: formData.ownerName,
+          regionName: formData.regionName,
+          streetName: formData.streetName,
+          groundNo: formData.groundNo,
+          address: formData.address,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          notes: formData.notes,
+          locationId: formData.locationId,
+          supervisorName: supervisorData.supervisorName,
+          jopTitle: supervisorData.jopTitle,
+          supervisorMobile: `971${supervisorData.supervisorMobile}`, // Add 971 prefix
+          serviceType: ServiceType.TentPermission, // Always send as enum value
+          distributionSiteCoordinators: formData.distributionSiteCoordinators,
+          attachments: validAttachments,
+          partners: this.partners,
+          isDraft: isDraft, // Set draft flag based on parameter
+        };
+
+        const sub = this.fastingTentRequestService.create(createDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_SAVED_AS_DRAFT'));
+            } else {
+              this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_CREATED'));
+            }
+            this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'creating'} fasting tent request:`, error);
+
+            // Check if it's a business error with a specific reason
+            if (error.error && error.error.reason) {
+              // Show the specific reason from the API response
+              this.toastr.error(error.error.reason);
+            } else {
+              // Fallback to generic error message
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+              }
+            }
+
+            this.isSaving = false;
+          }
+        });
+        this.subscriptions.push(sub);
+      }
 
     } catch (error: any) {
       console.error(`Error in onSubmit (isDraft: ${isDraft}):`, error);
@@ -1565,8 +2235,21 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     }
 
     for (const config of mandatoryAttachments) {
-      const attachment = this.attachments.find(a => a.attConfigID === config.id);
-      if (!attachment || !attachment.fileBase64 || !attachment.fileName) {
+      // Check if attachment exists in either new attachments or existing attachments
+      const newAttachment = this.attachments.find(a => a.attConfigID === config.id);
+      const existingAttachment = this.existingAttachments[config.id!];
+      const selectedFile = this.selectedFiles[config.id!];
+      
+      // Attachment is valid if:
+      // 1. There's a new attachment with fileBase64 and fileName (create mode)
+      // 2. There's an existing attachment (update mode)
+      // 3. There's a selected file (update mode - will be saved)
+      const hasValidAttachment = 
+        (newAttachment && newAttachment.fileBase64 && newAttachment.fileName) ||
+        existingAttachment ||
+        selectedFile;
+      
+      if (!hasValidAttachment) {
         if (showToastr) {
           const attachmentName = this.getAttachmentName(config);
           this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + attachmentName);
@@ -1671,8 +2354,14 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         if (!isValid) {
           const mandatoryConfigs = this.attachmentConfigs.filter(c => c.mendatory);
           mandatoryConfigs.forEach(config => {
-            const attachment = this.attachments.find(a => a.attConfigID === config.id);
-            if (!attachment || !attachment.fileBase64) {
+            const newAttachment = this.attachments.find(a => a.attConfigID === config.id);
+            const existingAttachment = this.existingAttachments[config.id!];
+            const selectedFile = this.selectedFiles[config.id!];
+            const hasValidAttachment = 
+              (newAttachment && newAttachment.fileBase64) ||
+              existingAttachment ||
+              selectedFile;
+            if (!hasValidAttachment) {
               errors.push(`${this.getAttachmentName(config)} is required`);
             }
           });

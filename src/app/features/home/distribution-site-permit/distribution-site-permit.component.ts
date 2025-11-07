@@ -39,7 +39,6 @@ import {
   AttachmentsConfigDto,
   AttachmentsConfigType,
 } from '../../../core/dtos/attachments/attachments-config.dto';
-import { FastingTentPartnerDto } from '../../../core/dtos/FastingTentRequest/fasting-tent-request.dto';
 
 @Component({
   selector: 'app-distribution-site-permit',
@@ -717,13 +716,13 @@ addPartner(): void {
     // ====== تمّر، ابني الـ Partner ======
     const partnerAttachments = this.getPartnerAttachmentsForType(partnerType);
 
-    const newPartner: FastingTentPartnerDto = {
+    const newPartner: DistributionSitePartnerDto = {
       ...this.partnersForm.value,
       name, // ناخد النسخة الـ trimmed
       licenseIssuer,
-      licenseExpiryDate: licenseExpiry || null,
+      licenseExpiryDate: licenseExpiry || undefined,
       licenseNumber,
-      contactDetails:contactDetails.toString(),
+      contactDetails: contactDetails.toString(),
       mainApplyServiceId: 0,
       attachments: partnerAttachments
     };
