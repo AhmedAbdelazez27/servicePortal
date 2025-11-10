@@ -291,20 +291,40 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           
           if (Array.isArray(locationTypes) && locationTypes.length > 0) {
             this.distributionLocationTypes = [...locationTypes]; // Create a new array
+            console.log(this.distributionLocationTypes);
             
             // In update mode, patch locationTypeId after locationTypes are loaded
             if (this.distributionSiteRequestId) {
               // Check both distributionSiteRequest and fastingTentService (API may return either)
               const distributionSiteRequest = this.loadformData?.distributionSiteRequest || this.loadformData?.fastingTentService;
               // For fastingTentService, locationTypeId may be in location object, for distributionSiteRequest it's directly on the object
-              const locationTypeId = (distributionSiteRequest as any)?.location?.locationTypeId || distributionSiteRequest?.locationTypeId;
+              let locationTypeId = (distributionSiteRequest as any)?.location?.locationTypeId || distributionSiteRequest?.locationTypeId;
+              locationTypeId =locationTypeId ? locationTypeId :  '11';
+              
               if (locationTypeId) {
+                // Convert to number to ensure type matching
+                const locationTypeIdNum = Number(locationTypeId);
+                // Use a longer timeout to ensure select2 is ready and options are available
                 setTimeout(() => {
-                  this.mainInfoForm.patchValue({
-                    locationTypeId: locationTypeId,
-                  });
-                  this.cdr.detectChanges();
-                }, 0);
+                  // Verify the locationTypeId exists in the options
+                  const locationTypeExists = this.distributionLocationTypes.some(lt => lt.id === locationTypeIdNum);
+                  if (locationTypeExists) {
+                    this.mainInfoForm.patchValue({
+                      locationTypeId: locationTypeIdNum,
+                    });
+                    // Force change detection and trigger select2 update
+                    this.cdr.detectChanges();
+                    // Additional timeout to ensure select2 renders the value
+                    setTimeout(() => {
+                      this.cdr.detectChanges();
+                    }, 50);
+                  } else {
+                    console.warn(`LocationTypeId ${locationTypeIdNum} not found in distributionLocationTypes`, {
+                      locationTypeId: locationTypeIdNum,
+                      availableTypes: this.distributionLocationTypes.map(lt => lt.id)
+                    });
+                  }
+                }, 150);
               }
             }
           } else if (Array.isArray(locationTypes) && locationTypes.length === 0) {
@@ -380,10 +400,8 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           this.mainApplyServiceId = response.id || null;
 
           // Populate main info form
-          // Use distributionSiteRequest.locationTypeId for locationTypeId (may be null, will use location.locationTypeId if available)
-          const locationTypeId = distributionSiteRequest.location?.locationTypeId || distributionSiteRequest.locationTypeId;
+          // Note: locationTypeId will be patched in loadInitialData after options are loaded
           this.mainInfoForm.patchValue({
-            locationTypeId: locationTypeId || null,
             regionName: distributionSiteRequest.regionName || '',
             streetName: distributionSiteRequest.streetName || '',
             address: distributionSiteRequest.address || '',
