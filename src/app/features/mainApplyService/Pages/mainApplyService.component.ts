@@ -106,8 +106,13 @@ export class MainApplyServiceComponent {
   GetHomeTotalRequestSummaryPortal(){
     this.mainApplyService.GetHomeTotalRequestSummaryPortal().subscribe({
       next :(res)=>{
-        console.log(res);
-        this.summaryRequests = res.requestSummary ;
+        console.log('GetHomeTotalRequestSummaryPortal response:', res);
+        this.summaryRequests = res?.requestSummary || [];
+        console.log('summaryRequests after assignment:', this.summaryRequests);
+      },
+      error: (error) => {
+        console.error('Error loading summary requests:', error);
+        this.summaryRequests = [];
       }
     })
   }
@@ -253,6 +258,9 @@ export class MainApplyServiceComponent {
       } else if (event.row.serviceId === 1) {
         // Route to fasting-tent-request with id as param for draft update
         this.router.navigate(['/fasting-tent-request', event.row.id]);
+      } else if (event.row.serviceId === 1001) {
+        // Route to distribution-site-permit with id as param for draft update
+        this.router.navigate(['/distribution-site-permit', event.row.id]);
       } else {
         this.translate
           .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])

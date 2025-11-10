@@ -77,3 +77,59 @@
     opacity: 1;
   }
 }
+
+/* Existing attachment hover effect */
+.existing-attachment-container {
+  position: relative;
+  
+  .attachment-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+    
+    button {
+      padding: 6px 12px;
+      font-size: 0.875rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &.btn-primary {
+        background: #8D734D;
+        color: white;
+        
+        &:hover {
+          background: #7a6543;
+          transform: translateY(-1px);
+        }
+      }
+      
+      &.btn-info {
+        background: #0dcaf0;
+        color: white;
+        
+        &:hover {
+          background: #0aa2c0;
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+  
+  &:hover .attachment-hover-overlay {
+    opacity: 1;
+  }
+}

@@ -656,11 +656,12 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div *ngIf="!selectedFiles[config.id!]" class="upload-area"
+                                                <!-- Upload area - show if no file selected and no existing attachment -->
+                                                <div *ngIf="!selectedFiles[config.id!] && !existingAttachments[config.id!]" class="upload-area"
                                                     (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
                                                     (drop)="onDrop($event, config.id!)" [class.drag-over]="isDragOver"
-                                                    [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 4 || submitted)"
-                                                    [class.border-success]="selectedFiles[config.id!]">
+                                                    [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && !existingAttachments[config.id!] && (currentTab === 4 || submitted)"
+                                                    [class.border-success]="selectedFiles[config.id!] || existingAttachments[config.id!]">
                                                     <input type="file" class="d-none" [id]="'file-' + config.id"
                                                         (change)="onFileSelected($event, config.id!)"
                                                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
@@ -669,12 +670,39 @@
                                                         <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
                                                     </label>
                                                 </div>
+
+                                                <!-- Existing attachment display (update mode) -->
+                                                <div *ngIf="existingAttachments[config.id!] && !selectedFiles[config.id!]" class="existing-attachment-container">
+                                                    <div class="d-flex align-items-center position-relative">
+                                                        <i *ngIf="!isImageFile(existingAttachments[config.id!]?.imgPath)" class="fas fa-file me-2"></i>
+                                                        <img *ngIf="isImageFile(existingAttachments[config.id!]?.imgPath)" 
+                                                            [src]="filePreviews[config.id!]" 
+                                                            class="preview-image me-2"
+                                                            style="max-width: 100px; max-height: 100px; border-radius: 4px;">
+                                                        <div class="flex-grow-1">
+                                                            <span class="file-name">{{ getFileNameFromPath(existingAttachments[config.id!]?.imgPath) }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Hover overlay for existing attachments -->
+                                                    <div class="attachment-hover-overlay">
+                                                        <button type="button" class="btn btn-sm btn-info" (click)="viewAttachment(config.id!)">
+                                                            <i class="fas fa-eye"></i> {{ 'COMMON.VIEW' | translate }}
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-primary" (click)="triggerFileInput(config.id!)">
+                                                            <i class="fas fa-edit"></i> {{ 'COMMON.UPDATE' | translate }}
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-danger" (click)="removeExistingFile(config.id!)">
+                                                            <i class="fas fa-trash"></i> {{ 'COMMON.REMOVE' | translate }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- New file preview (when user selects a new file) -->
                                                 <div *ngIf="selectedFiles[config.id!]" class="file-preview">
                                                     <div class="d-flex align-items-center">
                                                         <i class="fas fa-file me-2"></i>
                                                         <div>
-                                                            <span class="file-name">{{ selectedFiles[config.id!].name
-                                                                }}</span>
+                                                            <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
                                                             <small class="text-muted d-block">{{
                                                                 (selectedFiles[config.id!].size / 1024).toFixed(1) }}
                                                                 KB</small>
@@ -684,7 +712,8 @@
                                                         [src]="filePreviews[config.id!]" class="preview-image mt-2"
                                                         style="max-width: 200px; max-height: 100px; border-radius: 4px;">
                                                 </div>
-                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && (currentTab === 4 || submitted)"
+
+                                                <div *ngIf="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && !existingAttachments[config.id!] && (currentTab === 4 || submitted)"
                                                     class="text-danger small mt-1">
                                                     <i class="fas fa-exclamation-triangle"></i> {{
                                                     'VALIDATION.ATTACHMENT_REQUIRED' | translate }}

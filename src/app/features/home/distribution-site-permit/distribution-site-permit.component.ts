@@ -20,11 +20,15 @@ import { GoogleMapsLoaderService } from '../../../core/services/google-maps-load
 
 import { DistributionSiteRequestService } from '../../../core/services/distribution-site-request.service';
 import { AttachmentService } from '../../../core/services/attachments/attachment.service';
+import { PartnerService } from '../../../core/services/partner.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TranslationService } from '../../../core/services/translation.service';
+import { MainApplyService } from '../../../core/services/mainApplyService/mainApplyService.service';
+import { SpinnerService } from '../../../core/services/spinner.service';
 
 import {
   CreateDistributionSiteRequestDto,
+  UpdateDistributionSiteRequestDto,
   DistributionSiteRequestDto,
   DistributionSiteAttachmentDto,
   DistributionSitePartnerDto,
@@ -39,6 +43,16 @@ import {
   AttachmentsConfigDto,
   AttachmentsConfigType,
 } from '../../../core/dtos/attachments/attachments-config.dto';
+import {
+  AttachmentDto,
+  UpdateAttachmentBase64Dto,
+  AttachmentBase64Dto,
+} from '../../../core/dtos/attachments/attachment.dto';
+import {
+  FiltermainApplyServiceByIdDto,
+  mainApplyServiceDto,
+} from '../../../core/dtos/mainApplyService/mainApplyService.dto';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-distribution-site-permit',
@@ -78,15 +92,30 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   customIcon: any;
   selectedCoordinates: string = '';
 
+  // Location data
+  selectedLocationDetails: LocationDetailsDto | null = null;
+  locationAvailabilityStatus: 'checking' | 'available' | 'unavailable' | null = null;
+  lastSelectionSource: 'dropdown' | 'map' | null = null;
+  isCheckingAvailability = false;
+
   // Partners data
   partners: DistributionSitePartnerDto[] = [];
+  existingPartners: DistributionSitePartnerDto[] = []; // Partners loaded from API
+  partnersToDelete: number[] = []; // Partner IDs to delete
 
   // Attachments data
   attachmentConfigs: AttachmentsConfigDto[] = [];
   attachments: DistributionSiteAttachmentDto[] = [];
   selectedFiles: { [key: number]: File } = {};
   filePreviews: { [key: number]: string } = {};
+  existingAttachments: { [key: number]: AttachmentDto } = {}; // Existing attachments from API
+  attachmentsToDelete: { [key: number]: number } = {}; // Track attachments marked for deletion
   isDragOver = false;
+
+  // Update mode properties
+  distributionSiteRequestId: number | null = null;
+  mainApplyServiceId: number | null = null;
+  loadformData: mainApplyServiceDto | null = null;
 
   // Partner attachments data
   partnerAttachmentConfigs: AttachmentsConfigDto[] = [];
@@ -102,6 +131,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private distributionSiteRequestService: DistributionSiteRequestService,
     private attachmentService: AttachmentService,
+    private partnerService: PartnerService,
     private authService: AuthService,
     public translationService: TranslationService,
     private translate: TranslateService,
@@ -109,7 +139,9 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private googleMapsLoader: GoogleMapsLoaderService
+    private googleMapsLoader: GoogleMapsLoaderService,
+    private mainApplyService: MainApplyService,
+    private spinnerService: SpinnerService
   ) {
     this.initializeForms();
     this.initializePartnerTypes();
@@ -117,9 +149,18 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.clearAllToasts();
-    this.loadInitialData();
-    this.initializeCustomIcon();
-    this.initializeMap();
+    
+    // Check if we have an id in route params (update mode)
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      // Load request details for update mode
+      this.loadRequestDetails(id);
+    } else {
+      // Create mode - load initial data normally
+      this.loadInitialData();
+      this.initializeCustomIcon();
+      this.initializeMap();
+    }
   }
 
   ngOnDestroy(): void {
@@ -251,9 +292,21 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           if (Array.isArray(locationTypes) && locationTypes.length > 0) {
             this.distributionLocationTypes = [...locationTypes]; // Create a new array
             
-            // Log each item to see the structure
-            this.distributionLocationTypes.forEach((item, index) => {
-            });
+            // In update mode, patch locationTypeId after locationTypes are loaded
+            if (this.distributionSiteRequestId) {
+              // Check both distributionSiteRequest and fastingTentService (API may return either)
+              const distributionSiteRequest = this.loadformData?.distributionSiteRequest || this.loadformData?.fastingTentService;
+              // For fastingTentService, locationTypeId may be in location object, for distributionSiteRequest it's directly on the object
+              const locationTypeId = (distributionSiteRequest as any)?.location?.locationTypeId || distributionSiteRequest?.locationTypeId;
+              if (locationTypeId) {
+                setTimeout(() => {
+                  this.mainInfoForm.patchValue({
+                    locationTypeId: locationTypeId,
+                  });
+                  this.cdr.detectChanges();
+                }, 0);
+              }
+            }
           } else if (Array.isArray(locationTypes) && locationTypes.length === 0) {
             this.distributionLocationTypes = [];
           } else {
@@ -262,7 +315,28 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           
           this.regionOptions = (regions && 'results' in regions) ? regions.results : [];
           
-          this.isLoading = false;
+          // In update mode, patch regionName after options are loaded
+          if (this.distributionSiteRequestId) {
+            // Check both distributionSiteRequest and fastingTentService (API may return either)
+            const distributionSiteRequest = this.loadformData?.distributionSiteRequest || this.loadformData?.fastingTentService;
+            const regionName = distributionSiteRequest?.regionName;
+            if (regionName) {
+              setTimeout(() => {
+                if (!this.regionOptions.find(opt => opt.text === regionName)) {
+                  // If region not found in options, add it
+                  this.regionOptions.push({ id: regionName, text: regionName });
+                }
+                this.mainInfoForm.patchValue({
+                  regionName: regionName
+                });
+                this.cdr.detectChanges();
+              }, 0);
+            }
+          }
+          
+          if (!this.distributionSiteRequestId) {
+            this.isLoading = false;
+          }
           this.isFormInitialized = true;
           
           // Force change detection
@@ -286,25 +360,141 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Load request details from API for update mode
+   */
+  private loadRequestDetails(id: string): void {
+    this.isLoading = true;
+    this.spinnerService.show();
+
+    const params: FiltermainApplyServiceByIdDto = { id };
+    const sub = this.mainApplyService.getDetailById(params).subscribe({
+      next: (response: any) => {
+        this.loadformData = response;
+
+        // Extract distribution site request data
+        // Note: API may return fastingTentService instead of distributionSiteRequest for serviceId = 1001
+        const distributionSiteRequest = response.distributionSiteRequest || response.fastingTentService;
+        if (distributionSiteRequest) {
+          this.distributionSiteRequestId = distributionSiteRequest.id || null;
+          this.mainApplyServiceId = response.id || null;
+
+          // Populate main info form
+          // Use distributionSiteRequest.locationTypeId for locationTypeId (may be null, will use location.locationTypeId if available)
+          const locationTypeId = distributionSiteRequest.location?.locationTypeId || distributionSiteRequest.locationTypeId;
+          this.mainInfoForm.patchValue({
+            locationTypeId: locationTypeId || null,
+            regionName: distributionSiteRequest.regionName || '',
+            streetName: distributionSiteRequest.streetName || '',
+            address: distributionSiteRequest.address || '',
+            notes: distributionSiteRequest.notes || '',
+            distributionSiteCoordinators: distributionSiteRequest.distributionSiteCoordinators || '',
+            startDate: distributionSiteRequest.startDate
+              ? (distributionSiteRequest.startDate instanceof Date
+                  ? distributionSiteRequest.startDate.toISOString().split('T')[0]
+                  : new Date(distributionSiteRequest.startDate).toISOString().split('T')[0])
+              : '',
+            endDate: distributionSiteRequest.endDate
+              ? (distributionSiteRequest.endDate instanceof Date
+                  ? distributionSiteRequest.endDate.toISOString().split('T')[0]
+                  : new Date(distributionSiteRequest.endDate).toISOString().split('T')[0])
+              : '',
+            supervisorName: distributionSiteRequest.supervisorName || '',
+            jopTitle: distributionSiteRequest.jopTitle || '',
+            supervisorMobile: distributionSiteRequest.supervisorMobile?.replace('971', '') || '',
+          });
+
+          // Load existing partners
+          if (response.partners && response.partners.length > 0) {
+            this.existingPartners = response.partners.map((p: any) => ({
+              id: p.id,
+              name: p.name || '',
+              nameEn: p.nameEn || '',
+              type: p.type,
+              licenseIssuer: p.licenseIssuer || '',
+              licenseExpiryDate: p.licenseExpiryDate
+                ? (p.licenseExpiryDate instanceof Date
+                    ? p.licenseExpiryDate.toISOString().split('T')[0]
+                    : new Date(p.licenseExpiryDate).toISOString().split('T')[0])
+                : '',
+              licenseNumber: p.licenseNumber || '',
+              contactDetails: p.contactDetails || '',
+              jobRequirementsDetails: p.jobRequirementsDetails || '',
+              mainApplyServiceId: p.mainApplyServiceId || this.mainApplyServiceId || 0,
+              attachments: p.attachments || [],
+            }));
+            // Also add to partners array for display
+            this.partners = [...this.existingPartners];
+          }
+
+          // Load existing attachments
+          if (response.attachments && response.attachments.length > 0) {
+            const attachmentsData = response.attachments.map((att: any) => ({
+              id: att.id,
+              imgPath: att.imgPath,
+              masterId: att.masterId,
+              attConfigID: att.attConfigID,
+              lastModified: att.lastModified,
+            }));
+            this.loadExistingAttachments(attachmentsData);
+          } else if (this.mainApplyServiceId) {
+            // If attachments not available, load from API
+            this.loadAttachmentsFromAPI(this.mainApplyServiceId);
+          }
+
+          // Note: distribution-site-permit uses map coordinates, not locationId dropdown
+          // So we don't need to load location details here
+        }
+
+        // Load initial data (dropdowns, etc.) - this will also load attachment configs
+        this.loadInitialData();
+        this.initializeCustomIcon();
+        this.initializeMap();
+        this.isLoading = false;
+        this.spinnerService.hide();
+      },
+      error: (error) => {
+        console.error('Error loading request details:', error);
+        this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
+        this.router.navigate(['/request']);
+        this.isLoading = false;
+        this.spinnerService.hide();
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
   loadAttachmentConfigs(): void {
-    this.attachmentService.getAttachmentsConfigByType(
+    const sub = this.attachmentService.getAttachmentsConfigByType(
       AttachmentsConfigType.RequestADistributionSitePermit,
       true,
       null
     ).subscribe({
       next: (configs) => {
         this.attachmentConfigs = configs || [];
-        // Initialize attachments array based on configs
-        this.attachments = this.attachmentConfigs.map(config => ({
-          fileBase64: '',
-          fileName: '',
-          masterId: 0,
-          attConfigID: config.id!
-        }));
+        
+        // In update mode, ensure we have all configs even if some attachments weren't uploaded initially
+        if (this.distributionSiteRequestId) {
+          configs.forEach((config) => {
+            if (!this.existingAttachments[config.id!]) {
+              // This config doesn't have an attachment yet - user can upload it now
+            }
+          });
+        } else {
+          // Initialize attachments array based on configs (only for new attachments)
+          this.attachments = this.attachmentConfigs.map(config => ({
+            fileBase64: '',
+            fileName: '',
+            masterId: 0,
+            attConfigID: config.id!
+          }));
+        }
       },
       error: (error) => {
+        console.error('Error loading attachment configs:', error);
       }
     });
+    this.subscriptions.push(sub);
   }
 
   loadPartnerAttachmentConfigs(): void {
@@ -334,6 +524,388 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       this.partnerSelectedFiles[partnerType] = {};
       this.partnerFilePreviews[partnerType] = {};
     });
+  }
+
+  /**
+   * Load attachments from API using masterId and masterType
+   */
+  private loadAttachmentsFromAPI(masterId: number): void {
+    // Master type for DistributionSiteRequest - use AttachmentsConfigType.RequestADistributionSitePermit
+    // Master ID should be the mainApplyServiceId
+    const masterType = AttachmentsConfigType.RequestADistributionSitePermit;
+    
+    const sub = this.attachmentService.getListByMasterId(masterId, masterType).subscribe({
+      next: (attachments: AttachmentDto[]) => {
+        console.log('Loaded attachments from API:', attachments);
+        
+        // Convert API attachments to the format expected by loadExistingAttachments
+        const attachmentsData = attachments.map(att => ({
+          id: att.id,
+          imgPath: att.imgPath,
+          masterId: att.masterId,
+          attConfigID: att.attConfigID,
+          lastModified: att.lastModified,
+        }));
+        
+        if (attachmentsData.length > 0) {
+          this.loadExistingAttachments(attachmentsData);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading attachments from API:', error);
+        // Don't show error to user, just log it - attachments might not exist yet
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Load existing attachments from request data
+   */
+  private loadExistingAttachments(attachmentsData: any[]): void {
+    console.log('Loading existing attachments:', attachmentsData);
+    
+    attachmentsData.forEach((attachment: any) => {
+      if (attachment.attConfigID && attachment.id) {
+        // Store existing attachment info - only if id exists
+        this.existingAttachments[attachment.attConfigID] = {
+          id: attachment.id,
+          imgPath: attachment.imgPath,
+          masterId: attachment.masterId || this.mainApplyServiceId || 0,
+          attConfigID: attachment.attConfigID,
+          lastModified: attachment.lastModified ? new Date(attachment.lastModified) : undefined,
+        };
+        
+        // Set preview for existing attachments
+        if (attachment.imgPath) {
+          const isImage = attachment.imgPath.match(/\.(jpg|jpeg|png|gif)$/i);
+          const imageUrl = isImage 
+            ? this.constructImageUrl(attachment.imgPath)
+            : 'assets/images/file.png';
+          
+          this.filePreviews[attachment.attConfigID] = imageUrl;
+        }
+      }
+    });
+    
+    console.log('Existing attachments after loading:', this.existingAttachments);
+  }
+
+  /**
+   * Construct full image URL from path
+   */
+  private constructImageUrl(path: string): string {
+    if (!path) return '';
+    // If path already contains http/https, return as is
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    // Otherwise, construct URL with base URL
+    const baseUrl = environment.apiBaseUrl.replace('/api', '');
+    return `${baseUrl}${path}`;
+  }
+
+  /**
+   * Convert file to base64 string
+   */
+  private async fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /**
+   * Delete attachments marked for deletion
+   */
+  private async deleteAttachments(): Promise<void> {
+    const deletePromises = Object.values(this.attachmentsToDelete).map(attachmentId => {
+      return this.attachmentService.deleteAsync(attachmentId).toPromise();
+    });
+
+    try {
+      await Promise.all(deletePromises);
+      console.log('Attachments deleted successfully');
+    } catch (error) {
+      console.error('Error deleting attachments:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle attachment operations (create, update, delete) in update mode
+   */
+  async handleAttachmentOperations(): Promise<void> {
+    const attachmentPromises: Promise<any>[] = [];
+    
+    // First handle deletions
+    if (Object.keys(this.attachmentsToDelete).length > 0) {
+      try {
+        await this.deleteAttachments();
+      } catch (error) {
+        console.error('Error deleting attachments:', error);
+        throw error;
+      }
+    }
+    
+    // Then handle new file uploads and updates
+    for (const [configId, file] of Object.entries(this.selectedFiles)) {
+      const configIdNum = parseInt(configId);
+      // Check if there was an existing attachment (even if user selected a new file)
+      const existingAttachment = this.existingAttachments[configIdNum];
+      
+      if (existingAttachment) {
+        // Update existing attachment - use existing masterId
+        const updateAttachmentDto: UpdateAttachmentBase64Dto = {
+          id: existingAttachment.id,
+          fileBase64: await this.fileToBase64(file as File),
+          fileName: (file as File).name,
+          masterId: existingAttachment.masterId || this.mainApplyServiceId || 0,
+          attConfigID: configIdNum
+        };
+        
+        console.log('Updating existing attachment:', updateAttachmentDto);
+        attachmentPromises.push(
+          this.attachmentService.updateAsync(updateAttachmentDto).toPromise()
+        );
+      } else {
+        // Create new attachment - use mainApplyServiceId as masterId
+        const newAttachmentDto: AttachmentBase64Dto = {
+          fileBase64: await this.fileToBase64(file as File),
+          fileName: (file as File).name,
+          masterId: this.mainApplyServiceId || 0,
+          attConfigID: configIdNum
+        };
+        
+        console.log('Creating new attachment:', newAttachmentDto);
+        attachmentPromises.push(
+          this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise()
+        );
+      }
+    }
+
+    // Execute all attachment operations
+    if (attachmentPromises.length > 0) {
+      try {
+        await Promise.all(attachmentPromises);
+        console.log('Attachments handled successfully');
+      } catch (attachmentError) {
+        console.error('Error handling attachments:', attachmentError);
+        throw attachmentError;
+      }
+    }
+    
+    // Clear deletion tracking after successful operations
+    this.attachmentsToDelete = {};
+  }
+
+  /**
+   * Handle partner operations (create new, delete) in update mode
+   */
+  async handlePartnerOperations(): Promise<void> {
+    // First handle deletions
+    if (this.partnersToDelete.length > 0) {
+      const deletePromises = this.partnersToDelete.map(partnerId => {
+        return this.partnerService.delete(partnerId).toPromise();
+      });
+
+      try {
+        await Promise.all(deletePromises);
+        console.log('Partners deleted successfully');
+      } catch (error) {
+        console.error('Error deleting partners:', error);
+        throw error;
+      }
+    }
+
+    // Then handle new partners (only partners without id are new)
+    const newPartners = this.partners.filter(p => !p.id);
+    for (const partner of newPartners) {
+      try {
+        const partnerDto: DistributionSitePartnerDto = {
+          name: partner.name,
+          nameEn: partner.nameEn,
+          type: partner.type,
+          licenseIssuer: partner.licenseIssuer,
+          licenseExpiryDate: partner.licenseExpiryDate,
+          licenseNumber: partner.licenseNumber,
+          contactDetails: partner.contactDetails,
+          jobRequirementsDetails: partner.jobRequirementsDetails,
+          mainApplyServiceId: this.mainApplyServiceId || 0,
+          attachments: partner.attachments,
+        };
+        
+        await this.partnerService.create(partnerDto).toPromise();
+        console.log('Partner created successfully:', partnerDto);
+      } catch (error) {
+        console.error('Error creating partner:', error);
+        throw error;
+      }
+    }
+
+    // Clear deletion tracking after successful operations
+    this.partnersToDelete = [];
+  }
+
+  /**
+   * Trigger file input click programmatically
+   */
+  triggerFileInput(configId: number): void {
+    const fileInput = document.getElementById(`file-${configId}`) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  /**
+   * View attachment in new tab
+   */
+  viewAttachment(configId: number): void {
+    const attachment = this.existingAttachments[configId];
+    if (attachment && attachment.imgPath) {
+      const imageUrl = this.constructImageUrl(attachment.imgPath);
+      window.open(imageUrl, '_blank');
+    }
+  }
+
+  /**
+   * Remove existing attachment (mark for deletion)
+   */
+  removeExistingFile(configId: number): void {
+    const existingAttachment = this.existingAttachments[configId];
+    const config = this.attachmentConfigs.find(c => c.id === configId);
+    
+    if (!existingAttachment || !config) return;
+    
+    // Mark for deletion
+    if (existingAttachment.id) {
+      this.attachmentsToDelete[configId] = existingAttachment.id;
+    }
+    
+    // Remove from existing attachments
+    delete this.existingAttachments[configId];
+    delete this.filePreviews[configId];
+    
+    // Clear selected file if any
+    delete this.selectedFiles[configId];
+    
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Check if file path is an image
+   */
+  isImageFile(imgPath: string | undefined | null): boolean {
+    if (!imgPath) return false;
+    return /\.(jpg|jpeg|png|gif)$/i.test(imgPath);
+  }
+
+  /**
+   * Get file name from path
+   */
+  getFileNameFromPath(imgPath: string | undefined | null): string {
+    if (!imgPath) return this.translate.instant('FILE') || 'File';
+    const fileName = imgPath.split('/').pop() || '';
+    return fileName || this.translate.instant('FILE') || 'File';
+  }
+
+  /**
+   * Load location details by ID
+   */
+  loadLocationDetails(locationId: number, skipAvailabilityCheck: boolean = false): void {
+    const sub = this.distributionSiteRequestService.getLocationById(locationId).subscribe({
+      next: (location) => {
+        this.selectedLocationDetails = location;
+        this.populateLocationFields(location);
+        
+        // In update mode or when loading existing location, set status to available
+        // Skip availability check if this is called from loadRequestDetails (update mode)
+        if (skipAvailabilityCheck || this.distributionSiteRequestId) {
+          this.locationAvailabilityStatus = 'available';
+          // Only set lastSelectionSource if it's not already set (to distinguish between saved and newly selected)
+          if (!this.lastSelectionSource) {
+            this.lastSelectionSource = 'dropdown'; // Set source to dropdown for existing locations
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error loading location details:', error);
+        this.toastr.error(this.translate.instant('ERRORS.FAILED_LOAD_LOCATION_DETAILS') || 'Failed to load location details');
+        if (skipAvailabilityCheck || this.distributionSiteRequestId) {
+          this.locationAvailabilityStatus = null;
+        }
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Populate location fields in form
+   */
+  populateLocationFields(location: LocationDetailsDto): void {
+    this.mainInfoForm.patchValue({
+      locationId: location.id ? location.id.toString() : null,
+      regionName: location.region || '',
+      streetName: location.street || '',
+      address: location.address || '',
+      locationTypeId: location.locationTypeId || null,
+      distributionSiteCoordinators: location.locationCoordinates || '',
+    });
+
+    // Ensure the dropdown retains and displays the selected option
+    if (location.id && !this.regionOptions.find(opt => opt.id === location.id)) {
+      const label =
+        location.address ||
+        location.locationOwner ||
+        location.locationNo ||
+        (this.translationService.currentLang === 'ar' ? 'الموقع المحدد' : 'Selected Location');
+      this.regionOptions = [...this.regionOptions, { id: location.id.toString(), text: label }];
+    }
+
+    // Center map on the selected location
+    if (location.locationCoordinates) {
+      this.centerMapOnLocation(location.locationCoordinates, location.id);
+    }
+  }
+
+  /**
+   * Center map on location coordinates
+   */
+  centerMapOnLocation(coordinates: string, locationId: number): void {
+    if (!this.map || !coordinates) { return; }
+    const coords = this.parseCoordinates(coordinates);
+    if (coords) {
+      this.map.setCenter({ lat: coords.lat, lng: coords.lng });
+      this.map.setZoom(15);
+    }
+  }
+
+  /**
+   * Parse coordinates string to lat/lng object
+   */
+  parseCoordinates(coordinates: string): { lat: number; lng: number } | null {
+    if (!coordinates || coordinates.trim() === '') {
+      return null;
+    }
+
+    try {
+      const parts = coordinates.split('/');
+      if (parts.length === 2) {
+        const lat = parseFloat(parts[0].trim());
+        const lng = parseFloat(parts[1].trim());
+        if (!isNaN(lat) && !isNaN(lng)) {
+          return { lat, lng };
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing coordinates:', error);
+    }
+    return null;
   }
 
   initializeCustomIcon(): void {
@@ -401,13 +973,24 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   }
 
   validateMainInfoTab(showToastr = false): boolean {
-    // Check specific fields for tab 1 - only fields that belong to this tab
-    const requiredFieldsForTab1 = ['locationTypeId', 'regionName', 'streetName'];
+    const form = this.mainInfoForm;
+    
+    // Check location type (required)
+    const locationTypeId = form.get('locationTypeId')?.value;
+    if (!locationTypeId) {
+      if (showToastr) {
+        this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('DIST_SITE.REQUEST_TYPE'));
+      }
+      return false;
+    }
+
+    // Check specific fields for tab 1
+    const requiredFieldsForTab1 = ['regionName', 'streetName'];
     
     let isValid = true;
     
     for (const fieldName of requiredFieldsForTab1) {
-      const control = this.mainInfoForm.get(fieldName);
+      const control = form.get(fieldName);
       if (!control?.value || (control.value === null || control.value === '')) {
         if (showToastr) {
           this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + `: ${fieldName}`);
@@ -417,11 +1000,39 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     }
     
     // Check if location coordinates are selected
-    if (!this.selectedCoordinates) {
+    const hasCoordinates = this.selectedCoordinates || form.get('distributionSiteCoordinators')?.value;
+    const hasExistingLocation = this.distributionSiteRequestId && hasCoordinates; // In update mode, if coordinates exist, consider it valid
+
+    if (!hasCoordinates && !hasExistingLocation) {
       if (showToastr) {
         this.toastr.error(this.translate.instant('VALIDATION.LOCATION_REQUIRED'));
       }
       isValid = false;
+    }
+
+    // Validate dates moved here from Date tab
+    const startDate = form.get('startDate')?.value;
+    const endDate = form.get('endDate')?.value;
+    if (!startDate) {
+      if (showToastr) this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('DIST_SITE.START_DATE'));
+      return false;
+    }
+    if (!endDate) {
+      if (showToastr) this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('DIST_SITE.END_DATE'));
+      return false;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    if (startDateObj < today) {
+      if (showToastr) this.toastr.error(this.translate.instant('VALIDATION.START_DATE_PAST'));
+      return false;
+    }
+    if (endDateObj <= startDateObj) {
+      if (showToastr) this.toastr.error(this.translate.instant('VALIDATION.END_DATE_BEFORE_START'));
+      return false;
     }
     
     return isValid;
@@ -523,7 +1134,12 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     let isValid = true;
     
     for (const config of mandatoryAttachments) {
-      if (!this.selectedFiles[config.id!]) {
+      // In update mode, check for existing attachments or newly selected files
+      const hasAttachment = this.distributionSiteRequestId
+        ? (this.selectedFiles[config.id!] || this.existingAttachments[config.id!])
+        : (this.selectedFiles[config.id!] || this.attachments.find(a => a.attConfigID === config.id && a.fileBase64 && a.fileName));
+      
+      if (!hasAttachment) {
         if (showToastr) {
           const attachmentName = this.getAttachmentName(config);
           this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + `: ${attachmentName}`);
@@ -562,8 +1178,24 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
         this.map = null;
       }
 
-      const defaultLat = 25.2048;
-      const defaultLng = 55.2708;
+      // In update mode, use saved coordinates if available
+      let defaultLat = 25.2048;
+      let defaultLng = 55.2708;
+      let defaultZoom = 10;
+
+      if (this.distributionSiteRequestId) {
+        // Check both distributionSiteRequest and fastingTentService (API may return either)
+        const distributionSiteRequest = this.loadformData?.distributionSiteRequest || this.loadformData?.fastingTentService;
+        if (distributionSiteRequest?.distributionSiteCoordinators) {
+          const coords = this.parseCoordinates(distributionSiteRequest.distributionSiteCoordinators);
+          if (coords) {
+            defaultLat = coords.lat;
+            defaultLng = coords.lng;
+            defaultZoom = 15;
+            this.selectedCoordinates = distributionSiteRequest.distributionSiteCoordinators;
+          }
+        }
+      }
 
       this.googleMapsLoader.load().then((google) => {
         const el = document.getElementById('distributionMap') as HTMLElement;
@@ -571,11 +1203,23 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
 
         this.map = new google.maps.Map(el, {
           center: { lat: defaultLat, lng: defaultLng },
-          zoom: 10,
+          zoom: defaultZoom,
           fullscreenControl: false,
           streetViewControl: false,
           mapTypeControl: false,
         });
+
+        // In update mode, add marker for saved location
+        if (this.distributionSiteRequestId && this.selectedCoordinates) {
+          const coords = this.parseCoordinates(this.selectedCoordinates);
+          if (coords) {
+            const marker = new google.maps.Marker({
+              position: { lat: coords.lat, lng: coords.lng },
+              map: this.map,
+            });
+            this.markers.push(marker);
+          }
+        }
 
         this.map.addListener('click', (e: any) => {
           this.onMapClick({ latlng: { lat: e.latLng.lat(), lng: e.latLng.lng() } });
@@ -736,6 +1380,14 @@ addPartner(): void {
   }
 
   removePartner(index: number): void {
+    const partner = this.partners[index];
+    
+    // If partner has an id, it's an existing partner - mark for deletion
+    if (partner.id) {
+      this.partnersToDelete.push(partner.id);
+    }
+    
+    // Remove from display array
     this.partners.splice(index, 1);
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_REMOVED'));
   }
@@ -896,22 +1548,30 @@ addPartner(): void {
       return;
     }
 
+    // IMPORTANT: In update mode, if there's an existing attachment, we keep it in existingAttachments
+    // so we can call update (not create) when saving. We don't delete it here.
+    // The existing attachment will be updated when saving via handleAttachmentOperations
     this.selectedFiles[configId] = file;
-    
+
+    // Create preview for the new file
     const reader = new FileReader();
     reader.onload = (e) => {
       this.filePreviews[configId] = e.target?.result as string;
-      
-      const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
-      if (attachmentIndex !== -1) {
-        this.attachments[attachmentIndex] = {
-          ...this.attachments[attachmentIndex],
-          fileBase64: (e.target?.result as string).split(',')[1],
-          fileName: file.name
-        };
-      } else {
+
+      // Update attachment data (only for create mode)
+      if (!this.distributionSiteRequestId) {
+        const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
+        if (attachmentIndex !== -1) {
+          this.attachments[attachmentIndex] = {
+            ...this.attachments[attachmentIndex],
+            fileBase64: (e.target?.result as string).split(',')[1], // Remove data:image/... prefix
+            fileName: file.name,
+          };
+        }
       }
-      
+      // Note: In update mode, we don't update the attachments array here
+      // because attachments are handled separately via handleAttachmentOperations
+
       // Trigger change detection for submit button state
       this.cdr.detectChanges();
     };
@@ -936,16 +1596,37 @@ addPartner(): void {
   }
 
   removeFile(configId: number): void {
+    // Only remove new file selection, not existing attachments
+    // For existing attachments, use removeExistingFile() instead
     delete this.selectedFiles[configId];
-    delete this.filePreviews[configId];
     
-    const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
-    if (attachmentIndex !== -1) {
-      this.attachments[attachmentIndex] = {
-        ...this.attachments[attachmentIndex],
-        fileBase64: '',
-        fileName: ''
-      };
+    // Remove preview for new file
+    const existingAttachment = this.existingAttachments[configId];
+    if (!existingAttachment) {
+      // No existing attachment, so remove preview completely
+      delete this.filePreviews[configId];
+    } else {
+      // Restore existing attachment preview
+      if (existingAttachment.imgPath) {
+        const isImage = existingAttachment.imgPath.match(/\.(jpg|jpeg|png|gif)$/i);
+        this.filePreviews[configId] = isImage 
+          ? this.constructImageUrl(existingAttachment.imgPath)
+          : 'assets/images/file.png';
+      } else {
+        this.filePreviews[configId] = 'assets/images/file.png';
+      }
+    }
+
+    // Update attachments array (only for create mode)
+    if (!this.distributionSiteRequestId) {
+      const attachmentIndex = this.attachments.findIndex(a => a.attConfigID === configId);
+      if (attachmentIndex !== -1) {
+        this.attachments[attachmentIndex] = {
+          ...this.attachments[attachmentIndex],
+          fileBase64: '',
+          fileName: '',
+        };
+      }
     }
     
     // Trigger change detection for submit button state
@@ -958,7 +1639,7 @@ addPartner(): void {
   }
 
   // Form submission
-  onSubmit(isDraft: boolean = false): void {
+  async onSubmit(isDraft: boolean = false): Promise<void> {
     if (this.isSaving) {
       return;
     }
@@ -980,65 +1661,151 @@ addPartner(): void {
         this.isSaving = false;
         return;
       }
-      
-      const validAttachments = this.attachments.filter(a => a.fileBase64 && a.fileName);
-      
-      const createDto: CreateDistributionSiteRequestDto = {
-        mainApplyServiceId: 0,
-        userId: currentUser.id,
-        locationType: this.getSelectedLocationTypeName(),
-        locationTypeId: formData.locationTypeId,
-        // ownerName: formData.ownerName,
-        regionName: formData.regionName,
-        streetName: formData.streetName,
-        // groundNo: formData.groundNo,
-        address: formData.address,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        notes: formData.notes,
-        locationId: formData.locationId,
 
-        supervisorName: formData.supervisorName,
-        jopTitle: formData.jopTitle,
-        supervisorMobile: `971${formData.supervisorMobile}`, // Add 971 prefix
+      // Check if we're in update mode
+      const isUpdateMode = !!this.distributionSiteRequestId && !!this.mainApplyServiceId;
 
-        serviceType: ServiceType.DistributionSitePermitApplication,
-        distributionSiteCoordinators: formData.distributionSiteCoordinators,
-        attachments: validAttachments,
-        partners: this.partners,
-        isDraft: isDraft, // Set draft flag based on parameter
-      };
-
-      const sub = this.distributionSiteRequestService.create(createDto).subscribe({
-        next: (response) => {
-          if (isDraft) {
-            this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_SAVED_AS_DRAFT'));
-          } else {
-            this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_CREATED'));
-          }
-          this.router.navigate(['/services']);
-          this.isSaving = false;
-        },
-        error: (error) => {
-          console.error(`Error ${isDraft ? 'saving draft' : 'creating'} distribution site request:`, error);
-          
-          // Check if it's a business error with a specific reason
-          if (error.error && error.error.reason) {
-            // Show the specific reason from the API response
-            this.toastr.error(error.error.reason);
-          } else {
-            // Fallback to generic error message
-            if (isDraft) {
-              this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
-            } else {
-              this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
-            }
-          }
-          
-          this.isSaving = false;
+      if (isUpdateMode) {
+        // Update mode - handle attachments and partners separately
+        try {
+          await this.handleAttachmentOperations();
+        } catch (attachmentError) {
+          console.error('Error handling attachments:', attachmentError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_ATTACHMENTS') || 'Warning saving attachments'
+          );
         }
-      });
-      this.subscriptions.push(sub);
+
+        try {
+          await this.handlePartnerOperations();
+        } catch (partnerError) {
+          console.error('Error handling partners:', partnerError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_PARTNERS') || 'Warning saving partners'
+          );
+        }
+
+        // Format dates properly
+        let startDateValue: string = formData.startDate || '';
+        let endDateValue: string = formData.endDate || '';
+        
+        if (startDateValue && !startDateValue.includes('T')) {
+          startDateValue = new Date(startDateValue).toISOString();
+        }
+        if (endDateValue && !endDateValue.includes('T')) {
+          endDateValue = new Date(endDateValue).toISOString();
+        }
+
+        const updateDto: UpdateDistributionSiteRequestDto = {
+          id: this.distributionSiteRequestId!,
+          mainApplyServiceId: this.mainApplyServiceId!,
+          userId: currentUser.id,
+          locationType: this.getSelectedLocationTypeName(),
+          locationTypeId: formData.locationTypeId,
+          regionName: formData.regionName,
+          streetName: formData.streetName,
+          address: formData.address,
+          startDate: startDateValue,
+          endDate: endDateValue,
+          notes: formData.notes,
+          locationId: formData.locationId ? Number(formData.locationId) : undefined,
+          supervisorName: formData.supervisorName,
+          jopTitle: formData.jopTitle,
+          supervisorMobile: formData.supervisorMobile ? `971${formData.supervisorMobile}` : undefined,
+          serviceType: ServiceType.DistributionSitePermitApplication,
+          distributionSiteCoordinators: formData.distributionSiteCoordinators,
+          isDraft: isDraft,
+        };
+
+        const sub = this.distributionSiteRequestService.update(updateDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_SAVED_AS_DRAFT'));
+            } else {
+              this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_CREATED'));
+            }
+            this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'updating'} distribution site request:`, error);
+
+            // Check if it's a business error with a specific reason
+            if (error.error && error.error.reason) {
+              // Show the specific reason from the API response
+              this.toastr.error(error.error.reason);
+            } else {
+              // Fallback to generic error message
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_UPDATE_DISTRIBUTION_SITE_REQUEST') || 'Failed to update distribution site request');
+              }
+            }
+
+            this.isSaving = false;
+          }
+        });
+        this.subscriptions.push(sub);
+      } else {
+        // Create mode
+        const validAttachments = this.attachments.filter(a => a.fileBase64 && a.fileName);
+        
+        const createDto: CreateDistributionSiteRequestDto = {
+          mainApplyServiceId: 0,
+          userId: currentUser.id,
+          locationType: this.getSelectedLocationTypeName(),
+          locationTypeId: formData.locationTypeId,
+          regionName: formData.regionName,
+          streetName: formData.streetName,
+          address: formData.address,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          notes: formData.notes,
+          locationId: formData.locationId,
+
+          supervisorName: formData.supervisorName,
+          jopTitle: formData.jopTitle,
+          supervisorMobile: `971${formData.supervisorMobile}`, // Add 971 prefix
+
+          serviceType: ServiceType.DistributionSitePermitApplication,
+          distributionSiteCoordinators: formData.distributionSiteCoordinators,
+          attachments: validAttachments,
+          partners: this.partners,
+          isDraft: isDraft, // Set draft flag based on parameter
+        };
+
+        const sub = this.distributionSiteRequestService.create(createDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_SAVED_AS_DRAFT'));
+            } else {
+              this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_CREATED'));
+            }
+             this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'creating'} distribution site request:`, error);
+            
+            // Check if it's a business error with a specific reason
+            if (error.error && error.error.reason) {
+              // Show the specific reason from the API response
+              this.toastr.error(error.error.reason);
+            } else {
+              // Fallback to generic error message
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+              }
+            }
+            
+            this.isSaving = false;
+          }
+        });
+        this.subscriptions.push(sub);
+      }
       
     } catch (error: any) {
       console.error(`Error in onSubmit (isDraft: ${isDraft}):`, error);

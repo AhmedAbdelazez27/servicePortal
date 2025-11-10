@@ -51,6 +51,7 @@ export const routes: Routes = [
         { path: 'fasting-tent-request/:id', loadComponent: () => import('./features/home/fasting-tent-request/fasting-tent-request.component').then(m => m.FastingTentRequestComponent) },
         { path: 'view-fasting-tent-request/:id', loadComponent: () => import('./features/home/view-fasting-tent-request/view-fasting-tent-request.component').then(m => m.ViewFastingTentRequestComponent) },
         { path: 'distribution-site-permit', loadComponent: () => import('./features/home/distribution-site-permit/distribution-site-permit.component').then(m => m.DistributionSitePermitComponent) },
+        { path: 'distribution-site-permit/:id', loadComponent: () => import('./features/home/distribution-site-permit/distribution-site-permit.component').then(m => m.DistributionSitePermitComponent) },
         { path: 'view-distribution-site-permit/:id', loadComponent: () => import('./features/home/view-distribution-site-permit/view-distribution-site-permit.component').then(m => m.ViewDistributionSitePermitComponent) },
 
         // lazy modules

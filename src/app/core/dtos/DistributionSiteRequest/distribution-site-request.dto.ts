@@ -81,8 +81,8 @@ export interface UpdateDistributionSiteRequestDto {
   serviceType?: number;
   distributionSitePhotoPath?: string;
   distributionSiteCoordinators?: string;
-  attachments?: DistributionSiteAttachmentDto[];
-  partners?: DistributionSitePartnerDto[];
+  isDraft?: boolean;
+  // Note: attachments and partners are handled separately via their own APIs
 }
 
 export interface DistributionSiteAttachmentDto {
