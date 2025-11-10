@@ -126,6 +126,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   invalidEndDate: boolean = false;
+  private isUpdatingLocationType: boolean = false; // Flag to prevent infinite loop
 
   constructor(
     private fb: FormBuilder,
@@ -291,15 +292,13 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           
           if (Array.isArray(locationTypes) && locationTypes.length > 0) {
             this.distributionLocationTypes = [...locationTypes]; // Create a new array
-            console.log(this.distributionLocationTypes);
             
             // In update mode, patch locationTypeId after locationTypes are loaded
             if (this.distributionSiteRequestId) {
               // Check both distributionSiteRequest and fastingTentService (API may return either)
               const distributionSiteRequest = this.loadformData?.distributionSiteRequest || this.loadformData?.fastingTentService;
               // For fastingTentService, locationTypeId may be in location object, for distributionSiteRequest it's directly on the object
-              let locationTypeId = (distributionSiteRequest as any)?.location?.locationTypeId || distributionSiteRequest?.locationTypeId;
-              locationTypeId =locationTypeId ? locationTypeId :  '11';
+              const locationTypeId = (distributionSiteRequest as any)?.location?.locationTypeId || distributionSiteRequest?.locationTypeId;
               
               if (locationTypeId) {
                 // Convert to number to ensure type matching
@@ -309,15 +308,31 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
                   // Verify the locationTypeId exists in the options
                   const locationTypeExists = this.distributionLocationTypes.some(lt => lt.id === locationTypeIdNum);
                   if (locationTypeExists) {
-                    this.mainInfoForm.patchValue({
-                      locationTypeId: locationTypeIdNum,
-                    });
-                    // Force change detection and trigger select2 update
-                    this.cdr.detectChanges();
-                    // Additional timeout to ensure select2 renders the value
-                    setTimeout(() => {
+                    // Set flag to prevent onLocationTypeChange from being triggered
+                    this.isUpdatingLocationType = true;
+                    try {
+                      const selectedType = this.distributionLocationTypes.find(lt => lt.id === locationTypeIdNum);
+                      const currentLang = this.translationService.currentLang;
+                      const locationTypeText = selectedType 
+                        ? (currentLang === 'ar' ? selectedType.text : selectedType.value)
+                        : '';
+                      
+                      this.mainInfoForm.patchValue({
+                        locationType: locationTypeText,
+                        locationTypeId: locationTypeIdNum,
+                      }, { emitEvent: false }); // Prevent triggering change events
+                      
+                      // Force change detection and trigger select2 update
                       this.cdr.detectChanges();
-                    }, 50);
+                      // Additional timeout to ensure select2 renders the value
+                      setTimeout(() => {
+                        this.cdr.detectChanges();
+                      }, 50);
+                    } finally {
+                      setTimeout(() => {
+                        this.isUpdatingLocationType = false;
+                      }, 100);
+                    }
                   } else {
                     console.warn(`LocationTypeId ${locationTypeIdNum} not found in distributionLocationTypes`, {
                       locationTypeId: locationTypeIdNum,
@@ -1894,6 +1909,10 @@ addPartner(): void {
   }
 
   onLocationTypeChange(selectedId: number | any) {
+    // Prevent infinite loop
+    if (this.isUpdatingLocationType) {
+      return;
+    }
     
     // Handle both direct ID and event object
     let id: number;
@@ -1905,34 +1924,59 @@ addPartner(): void {
       return;
     }
     
+    // Check if the value is already set to prevent unnecessary updates
+    const currentValue = this.mainInfoForm.get('locationTypeId')?.value;
+    if (currentValue === id) {
+      return; // Value already set, no need to update
+    }
+    
     const selected = this.distributionLocationTypes.find(item => item.id === id);
     
     if (selected) {
-      // Use current language to determine which text to use
-      const currentLang = this.translationService.currentLang;
-      let locationTypeText: string;
+      // Set flag to prevent recursive calls
+      this.isUpdatingLocationType = true;
       
-      if (currentLang === 'ar') {
-        // For Arabic, use the 'text' field (Arabic text)
-        locationTypeText = selected.text;
-      } else {
-        // For English, use the 'value' field (English value)
-        locationTypeText = selected.value;
+      try {
+        // Use current language to determine which text to use
+        const currentLang = this.translationService.currentLang;
+        let locationTypeText: string;
+        
+        if (currentLang === 'ar') {
+          // For Arabic, use the 'text' field (Arabic text)
+          locationTypeText = selected.text;
+        } else {
+          // For English, use the 'value' field (English value)
+          locationTypeText = selected.value;
+        }
+        
+        // Use setValue with emitEvent: false to prevent triggering change events
+        this.mainInfoForm.patchValue({
+          locationType: locationTypeText,
+          locationTypeId: id
+        }, { emitEvent: false });
+        
+        // Force change detection
+        this.cdr.detectChanges();
+      } finally {
+        // Reset flag after a short delay to allow the update to complete
+        setTimeout(() => {
+          this.isUpdatingLocationType = false;
+        }, 0);
       }
-      
-      this.mainInfoForm.patchValue({
-        locationType: locationTypeText,
-        locationTypeId: id
-      });
-      
-      // Force change detection
-      this.cdr.detectChanges();
-      
     } else {
-      this.mainInfoForm.patchValue({
-        locationType: '',
-        locationTypeId: null
-      });
+      // Set flag to prevent recursive calls
+      this.isUpdatingLocationType = true;
+      
+      try {
+        this.mainInfoForm.patchValue({
+          locationType: '',
+          locationTypeId: null
+        }, { emitEvent: false });
+      } finally {
+        setTimeout(() => {
+          this.isUpdatingLocationType = false;
+        }, 0);
+      }
     }
   }
 

@@ -137,7 +137,6 @@
                                             [bindLabel]="getBindLabelField()" bindValue="id"
                                             [items]="distributionLocationTypes" [clearable]="true"
                                             (change)="onLocationTypeChange($event)"
-                                            (ngModelChange)="onLocationTypeChange($event)"
                                             [class.is-invalid]="isFieldInvalid('locationTypeId')"
                                             [class.is-valid]="isFieldValid('locationTypeId')">
                                         </ng-select>
