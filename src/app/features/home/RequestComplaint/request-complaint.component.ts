@@ -251,8 +251,6 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
           this.isSaving = false;
         },
         error: (error) => {
-          console.error('Error creating request complaint:', error);
-          
           // Check if it's a business error with a specific reason
           if (error.error && error.error.reason) {
             // Show the specific reason from the API response
@@ -269,8 +267,6 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
       });
       this.subscriptions.push(sub);
     } catch (error: any) {
-      console.error('Error in onSubmit:', error);
-      
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
         // Show the specific reason from the API response

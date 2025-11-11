@@ -58,7 +58,6 @@ export class ViewComplaintrequestComponent implements OnInit {
           : null;
         this.findTargetWorkFlowStep();
 
-        console.log(resp);
       },
       error: () => {
         this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));

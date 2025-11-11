@@ -32,7 +32,6 @@ export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
       const status: number = rawErr?.status ?? rawErr?.httpStatus ?? 0;
       const url = rawErr?.url ?? req.url;
 
-      // console.log('[REFRESH] caught:', status, url, rawErr);
 
       //passing any another errors 401 to errorInterceptor
       if (![401, 419, 440].includes(status)) {
@@ -48,7 +47,6 @@ export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
       return refreshSvc.refresh().pipe(
         take(1),
         switchMap((ok) => {
-          // console.log('[REFRESH] result:', ok);
 
           if (!ok) {
             

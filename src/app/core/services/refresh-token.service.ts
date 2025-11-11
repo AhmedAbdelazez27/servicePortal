@@ -64,7 +64,6 @@ export class RefreshTokenService {
               try {
                 await this.notificationService.manuallyTriggerFCMTokenSync();
                 // Log للتأكيد فقط -- أتركه واضح!
-                console.log('%cFCM Token تمت مزامنته مع الباك اند بعد الـRefresh Token','color:green;font-weight:bold');
               } catch (err) {
                 // ممكن تضيف هنا error handle خفيف إن أردت
               }

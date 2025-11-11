@@ -54,9 +54,6 @@ export class DepartmentService {
       isActive: parameters.isActive,
     };
 
-    console.log('API URL:', url);
-    console.log('Request body:', requestBody);
-
     return this.http.post<any>(url, requestBody);
   }
 

@@ -170,7 +170,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        console.error('❌ Error loading attachments from service:', error);
+        error: () => {}
       }
     });
   }
@@ -295,7 +295,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   //         const url = this.router.url;
   //         if (this.userData && !url.includes('/edit-profile') && !url.includes('/login')) {
   //           // Refresh to get latest profile photo
-  //           console.log('🔄 Refreshing user data after navigation to:', url);
   //           this.refreshUserData();
   //         }
   //       }

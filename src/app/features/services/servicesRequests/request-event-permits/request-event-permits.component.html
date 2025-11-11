@@ -214,7 +214,7 @@
                     </div>
                   </div>
                   <!-- Beneficiary ID Number - Show only for individual request type -->
-                  <div class="col-xl-6 mb-4" *ngIf="isIndividualRequestType()">
+                  <div class="col-xl-12 mb-4" *ngIf="isIndividualRequestType()">
                     <label class="form-label">
                       {{
                       "event.beneficiaryIdNumber" | translate
@@ -231,6 +231,11 @@
                         <span *ngIf="isLoadingIdentityCard" class="spinner-border spinner-border-sm me-1"></span>
                         <i *ngIf="!isLoadingIdentityCard" class="fas fa-id-card me-1"></i>
                         {{ "COMMON.READ_CARD" | translate }}
+                      </button>
+                      <button type="button" class="btn btn-outline-info" (click)="navigateToPreviousAidRequests()"
+                        [disabled]="!firstStepForm.get('beneficiaryIdNumber')?.value">
+                        <i class="fas fa-history me-1"></i>
+                        {{ "AID_REQUESTS.PREVIOUS_AID_REQUESTS" | translate }}
                       </button>
                     </div>
 

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ApiEndpoints } from '../constants/api-endpoints';
 import {
@@ -74,7 +73,6 @@ export class DistributionSiteRequestService {
       'Content-Type': 'application/json',
       'Apikey': 'Apikeytest' 
     });
-    console.log('Making API call to Location Select2:', `${this.LOCATION_URL}${ApiEndpoints.Location.Select2}`);
     
     return this.http.post<Select2Result>(
       `${this.LOCATION_URL}${ApiEndpoints.Location.Select2}`,
@@ -101,7 +99,6 @@ export class DistributionSiteRequestService {
       'Content-Type': 'application/json',
       'Apikey': 'Apikeytest' 
     });
-    console.log('Making API call to GetLocationById:', `${this.LOCATION_URL}${ApiEndpoints.Location.GetById(id)}`);
     
     return this.http.get<LocationDetailsDto>(
       `${this.LOCATION_URL}${ApiEndpoints.Location.GetById(id)}`,
@@ -115,7 +112,6 @@ export class DistributionSiteRequestService {
       'Apikey': 'Apikeytest' 
     });
     const url = `${this.LOCATION_URL}${ApiEndpoints.Location.GetInteractiveMap}`;
-    console.log('Making API call to GetInteractiveMap:', url);
     
     return this.http.post<LocationMapDto[]>(
       url,
@@ -128,19 +124,11 @@ export class DistributionSiteRequestService {
   getDistributionLocationTypes(): Observable<DistributionLocationTypeDto[]> {
     const headers = new HttpHeaders({ Apikey: 'Apikeytest' });
     const url = `${this.LOOKUP_URL}${ApiEndpoints.Lookup.DistributionLocationType}`;
-    console.log('Making API call to getDistributionLocationTypes:', url);
-    console.log('Request headers:', headers);
     
     return this.http.post<DistributionLocationTypeDto[]>(
       url,
       {},
       { headers }
-    ).pipe(
-      tap(response => {
-        console.log('getDistributionLocationTypes API response:', response);
-        console.log('Response type:', typeof response);
-        console.log('Is response array?', Array.isArray(response));
-      })
     );
   }
 

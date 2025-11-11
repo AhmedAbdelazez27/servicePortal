@@ -39,16 +39,12 @@ export class RequestComplaintService {
   // Get ComplaintTypes for dropdown
   getComplaintTypes(): Observable<ComplaintTypeDto[]> {
     const url = `${environment.apiBaseUrl}${ApiEndpoints.Lookup.ComplaintType}`;
-    console.log('Making API call to:', url);
-    console.log('Environment base URL:', environment.apiBaseUrl);
-    console.log('API endpoint:', ApiEndpoints.Lookup.ComplaintType);
     return this.http.get<ComplaintTypeDto[]>(url);
   }
 
   // Test method to directly test the ComplaintType endpoint
   testComplaintTypesEndpoint(): Observable<any> {
     const url = `${environment.apiBaseUrl}${ApiEndpoints.Lookup.ComplaintType}`;
-    console.log('Testing ComplaintType endpoint:', url);
     return this.http.get(url);
   }
 }

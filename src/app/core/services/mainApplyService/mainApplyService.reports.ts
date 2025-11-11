@@ -50,7 +50,6 @@ export class MainApplyServiceReportService {
       this.qrCodeBase64 = await this.generateQRCodeWithRetry(qrUrl, 2, 3000);
       
     } catch {
-      console.warn('QR generation failed, using fallback QR');
       const QRCode = (await import("qrcode")).default;
       this.qrCodeBase64 = await QRCode.toDataURL('Fallback QR', { width: 120 });
     }
@@ -294,14 +293,12 @@ export class MainApplyServiceReportService {
             printWindow.document.close();
 
 
-          } catch (error) {
-            console.error('Error showing report:', error);
+          } catch {
           } finally {
             this.spinnerService.hide();
           }
         },
-        error: (err) => {
-          console.error('Error fetching data:', err);
+        error: () => {
           this.spinnerService.hide();
         },
       });
@@ -321,7 +318,6 @@ export class MainApplyServiceReportService {
       this.qrCodeBase64 = await this.generateQRCodeWithRetry(qrUrl, 2, 3000);
 
     } catch {
-      console.warn('QR generation failed, using fallback QR');
       const QRCode = (await import("qrcode")).default;
       this.qrCodeBase64 = await QRCode.toDataURL('Fallback QR', { width: 120 });
     }
@@ -565,14 +561,12 @@ export class MainApplyServiceReportService {
             printWindow.document.close();
 
 
-          } catch (error) {
-            console.error('Error showing report:', error);
+          } catch {
           } finally {
             this.spinnerService.hide();
           }
         },
-        error: (err) => {
-          console.error('Error fetching data:', err);
+        error: () => {
           this.spinnerService.hide();
         },
       });
@@ -596,9 +590,8 @@ export class MainApplyServiceReportService {
         ]);
 
         return result;
-      } catch (error) {
-        console.warn(`QR generation attempt ${attempt + 1} failed:`, error);
-        if (attempt === retries) throw error;
+      } catch {
+        if (attempt === retries) throw new Error('QR generation failed');
       }
     }
     throw new Error('QR generation failed after retries');

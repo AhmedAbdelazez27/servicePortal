@@ -85,7 +85,6 @@ export class FastingTentRequestService {
       'Content-Type': 'application/json',
       'Apikey': 'Apikeytest' 
     });
-    console.log('Making API call to CheckAvailable:', `${this.LOCATION_URL}${ApiEndpoints.Location.CheckAvailable}`);
     
     return this.http.post<boolean>(
       `${this.LOCATION_URL}${ApiEndpoints.Location.CheckAvailable}`,
@@ -99,7 +98,6 @@ export class FastingTentRequestService {
       'Content-Type': 'application/json',
       'Apikey': 'Apikeytest' 
     });
-    console.log('Making API call to GetLocationById:', `${this.LOCATION_URL}${ApiEndpoints.Location.GetById(id)}`);
     
     return this.http.get<LocationDetailsDto>(
       `${this.LOCATION_URL}${ApiEndpoints.Location.GetById(id)}`,
@@ -113,7 +111,6 @@ export class FastingTentRequestService {
       'Apikey': 'Apikeytest' 
     });
     const url = `${this.LOCATION_URL}${ApiEndpoints.Location.GetInteractiveMap}`;
-    console.log('Making API call to GetInteractiveMap:', url);
     
     return this.http.post<LocationMapDto[]>(
       url,
@@ -126,7 +123,6 @@ export class FastingTentRequestService {
   getTentLocationTypes(): Observable<TentLocationTypeDto[]> {
     const headers = new HttpHeaders({ Apikey: 'Apikeytest' });
     const url = `${this.LOOKUP_URL}${ApiEndpoints.Lookup.TentLocationType}`;
-    console.log('Making API call to:', url);
     
     return this.http.post<TentLocationTypeDto[]>(
       url,

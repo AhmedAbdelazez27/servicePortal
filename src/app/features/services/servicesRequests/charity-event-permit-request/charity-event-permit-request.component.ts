@@ -296,8 +296,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           this.advertisementMethodType = res.advertisementMethodType?.results;
           this.advertisementTargetType = res.advertisementTargetType?.results;
           // this.partnerTypes = res.partnerTypes?.data;
-          // console.log(this.partnerTypes);
-          // console.log(res.donationChannelsLookup, "ddddddd");
 
           this.donationChannelsLookup = res.donationChannelsLookup.results?.length ? res.donationChannelsLookup.results : [
 
@@ -315,8 +313,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           this.loadAttachmentConfigs(AttachmentsConfigType.Partner);
 
         },
-        error: (error: any) => {
-          console.error('Error loading essential data:', error);
+        error: () => {
           this.toastr.error(this.translate.instant('ERRORS.FAILED_LOAD_DATA'));
           this.isLoading = false;
           this.isFormInitialized = true;
@@ -396,7 +393,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
   //     mainApplyServiceId: v.mainApplyServiceId ?? null,
   //     attachments: partnerAttachments,
   //   });
-    // console.log(this.partners);
   //   this.resetAttachments(partnerAttachType);
   //   this.partnerForm.reset();
   // }
@@ -517,7 +513,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       ...a,
       masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
     }));
-    // console.log("partnerAttachments = ", partnerAttachments);
 
     if (partnerType === PartnerType.Person || partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
 
@@ -541,14 +536,12 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       mainApplyServiceId: v.mainApplyServiceId ?? null,
       attachments: partnerAttachments,
     });
-    // console.log(this.partners);
     this.resetAttachments(partnerAttachType);
     this.partnerForm.reset();
 
 
     this.showPartnerAttachments = false;
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
-    // console.log("partners ", this.partners);
 
   }
 
@@ -559,7 +552,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     } else {
       this.showPartnerAttachments = false;
     }
-    // console.log(this.partnerForm.get('type')?.value);
 
   }
   isPartnerAttachmentAllowed(cfgId: number): boolean {
@@ -597,7 +589,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           s.previews = {};
         });
       },
-      error: e => console.error('Error loading multi attachment configs', e)
+      error: () => {}
     });
   }
 
@@ -739,14 +731,13 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         s.selected = {};
         s.previews = {};
       },
-      error: (e) => console.error('Error loading attachment configs for type', type, e)
+      error: () => {}
     });
   }
   ////////////////////////////////////////////// end attachment functions
 
   // Navigation methods
   nextStep(): void {
-    // console.log(this.firstStepForm.value);
 
     if (this.currentStep < this.totalSteps) {
       // Only validate if we're not in loading state and form is ready
@@ -913,19 +904,15 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           attachments: p.attachments
         })),
       };
-      // console.log("payload = ", payload);
 
       const sub = this._CharityEventPermitRequestService.create(payload).subscribe({
         next: (res) => {
-          // console.log(res);
 
           this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
           this.router.navigate(['/request']);
           this.isSaving = false;
         },
         error: (error: any) => {
-          console.error('Error creating charity event permit request:', error);
-
           // Check if it's a business error with a specific reason
           if (error.error && error.error.reason) {
             // Show the specific reason from the API response
@@ -941,8 +928,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       this.subscriptions.push(sub);
 
     } catch (error: any) {
-      console.error('Error in onSubmit:', error);
-
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
         // Show the specific reason from the API response
@@ -964,7 +949,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
   canProceedToNext(): boolean {
     // Only validate if user is actively trying to proceed, not during initial load
-    // console.log();
     if (this.isLoading || !this.firstStepForm || !this.isFormInitialized) {
 
       return this.currentStep < this.totalSteps;
@@ -978,7 +962,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     this.firstStepForm.markAllAsTouched();
 
     const isValidStep1 = this.firstStepForm.valid && !this.firstStepForm.hasError('dateRange');
-    // console.log(this.firstStepForm.value);
 
     if (this.currentStep === 1) {
       if (isValidStep1) {
@@ -1106,7 +1089,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     };
 
     this.requestAdvertisements.push(ad);
-    // console.log('requestAdvertisements', this.requestAdvertisements);
 
     this.resetAttachments(adAttachType);
 

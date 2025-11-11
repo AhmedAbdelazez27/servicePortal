@@ -97,7 +97,6 @@ export class IndividualregistrationComponent implements OnInit {
     if (storedInfo) {
       this.uaePassInfo = JSON.parse(storedInfo) as UAEPassDto;
     }
-    console.log(this.uaePassInfo);
 
     this.registrationForm = this.fb.group({
       // Basic Information
@@ -405,7 +404,7 @@ export class IndividualregistrationComponent implements OnInit {
       });
 
     } catch (error: any) {
-      console.error('Error in onSubmit:', error);
+    
       
      
       if (error.error && error.error.reason) {

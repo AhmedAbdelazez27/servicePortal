@@ -29,7 +29,7 @@ export class ReportViewerComponent {
     if (id && status && serviceId) {
       this.printDatabyId(id, serviceId, status);
     } else {
-      console.error('Missing required route parameters (id, serviceId, status)');
+      // Missing required route parameters
     }
   }
 

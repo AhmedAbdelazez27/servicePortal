@@ -1393,7 +1393,8 @@
   "COMMON": {
 
     "LOADING": "Loading...",
-
+    "CLEAR": "Clear",
+    "SEARCH": "Search",
     "LOADING_DATA": "Loading data, please wait...",
 
     "ERROR": "Error",
@@ -3174,6 +3175,8 @@
 
     "REQUEST": "Request",
 
+    "PREVIOUS_AID_REQUESTS": "Previous Aid Requests",
+
     "INITIATIVES": "Initiatives",
 
     "CHARITY_ORGANIZATIONS": "Charity Organizations",
@@ -3763,7 +3766,15 @@
 
     "TARGET_TYPE": "Target Type",
 
-    "NO_ADS": "No advertisements"
+    "NO_ADS": "No advertisements",
+
+    "COLLECTED_AMOUNT": "Collected Amount",
+
+    "UPDATE_COLLECTED_AMOUNT": "Update Collected Amount",
+
+    "ENTER_COLLECTED_AMOUNT": "Enter collected amount",
+
+    "COLLECTED_AMOUNT_UPDATED": "Collected amount updated successfully"
 
   },
 
@@ -4249,7 +4260,64 @@
       "TERMS_AND_CONDITIONS": "Terms and Conditions",
       "CONDITION_1": "Please review the terms, conditions, and privacy policy available on our website."
     }
+  },
+  "AidRequestsResourceName": {
+    "Title": "Previous Aid Requests",
+    "entitY_NAME": "Entity Name",
+    "namE_AR": "Name (Arabic)",
+    "source": "Source",
+    "aiD_TYPE": "Aid Type",
+    "comitY_DATE": "Committee Date",
+    "requesT_TYPE_DESC": "Request Type",
+    "status": "Status",
+    "caseNo": "Case Number",
+    "amount": "Amount",
+    "referencenumber": "Reference Number",
+    "aiD_REQUEST_DATE": "Aid Request Date",
+    "statuscodE_DESC": "Request Status",
+    "casE_BIRTH_DATE": "Birth Date",
+    "casE_ID_NUMBER": "ID Number",
+    "iD_END_DATE": "ID Expiry Date",
+    "gender": "Gender",
+    "nationality": "Nationality",
+    "healtH_STATUS_DESC": "Health Status",
+    "joB_DESC": "Job",
+    "maritaL_STATUS_DESC": "Marital Status",
+    "htel": "Home Phone",
+    "mtel": "Mobile",
+    "mteL2": "Mobile 2",
+    "familY_PERS_NO": "Family Members",
+    "toT_INCOME": "Total Income",
+    "toT_DUTIES": "Total Obligations",
+    "incomes": "Income",
+    "wifE_NAME": "Wife Name",
+    "wifE_ID": "Wife ID",
+    "wifeiD_END_DATE": "Wife ID Expiry",
+    "branchE_NAME": "Branch",
+    "city": "City",
+    "studY_NO": "Study Number",
+    "tX_DATE": "Date",
+    "casE_SIGNATURE_DESC": "Case Signature",
+    "refrenceNo": "Reference Number",
+    "researcheR_NAME": "Researcher Name",
+    "casE_DESCRIPTION": "Case Description",
+    "casE_INFO_BREIF": "Brief Info",
+    "mgR_DECEISION": "Manager Decision",
+    "quotatioN_NUMBER": "Quotation Number",
+    "quotatioN_DATE": "Quotation Date",
+    "statuS_DESC": "Status",
+    "vendoR_NAME": "Vendor Name",
+    "headeR_NO": "Header Number",
+    "headeR_DATE": "Header Date",
+    "categorY_DESC": "Category",
+    "notes": "Notes"
+  },
+  "AID_REQUESTS": {
+    "ID_NUMBER": "ID Number",
+    "PREVIOUS_AID_REQUESTS": "Previous Aid Requests",
+    "SEARCH_BY_ID_NUMBER": "Search by ID Number",
+    "ENTER_ID_NUMBER": "Enter ID Number",
+    "ENTER_ID_TO_SEARCH": "Please enter an ID number to search for previous aid requests"
   }
-
 }
 

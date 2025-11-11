@@ -112,4 +112,12 @@ export class CharityEventPermitRequestService {
             `${this.BASE_URL}/ScIdentityCardReader/Get/${id}`
         );
     }
+
+    // Update Collected Amount
+    updateCollectedAmount(id: number, collectedAmount: number): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.RequestEventPermits.Base}${ApiEndpoints.RequestEventPermits.UpdateCollectedAmount}`,
+            { id, collectedAmount }
+        );
+    }
 }

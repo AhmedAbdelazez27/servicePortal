@@ -149,6 +149,7 @@ type RequestEventPermitDto = {
   email?: string | null;
   notes?: string | null;
   targetedAmount?: number | null;
+  collectedAmount?: number | null;
   beneficiaryIdNumber?: string | null;
   scIdentityCardReaderId?: number | null;
   requestAdvertisements?: RequestAdvertisementDto[] | null;
@@ -314,6 +315,7 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
   ) {
     this.commentForm = this.fb.group({ comment: [''] });
     this.initAdvertisementForm();
+    this.initCollectedAmountForm();
     
     // Initialize current user name
     const currentUser = this.authService.getCurrentUser();
@@ -1319,6 +1321,12 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
 
   historyForModal: any[] = [];
   private historyModalInstance: any = null;
+  
+  // Collected Amount Modal
+  collectedAmountForm!: FormGroup;
+  private collectedAmountModalInstance: any = null;
+  isSubmittingCollectedAmount = false;
+
   openHistoryModal(history: any[] = []): void {
     this.historyForModal = (history || []).slice().sort((a, b) =>
       new Date(b.historyDate).getTime() - new Date(a.historyDate).getTime()
@@ -1360,6 +1368,100 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     else {
       return this.mainApplyService?.serviceStatusName?.includes('Approved') ?? false;
     }
+  }
+
+  // Check if can show collected amount button (approved + after end date)
+  get canShowCollectedAmountButton(): boolean {
+    // Must be approved
+    if (!this.isApproved) {
+      return false;
+    }
+    
+    // If no end date, show button if approved
+    if (!this.requestEventPermit?.endDate) {
+      return true;
+    }
+    
+    // Show button if after end date
+    try {
+      const endDate = new Date(this.requestEventPermit.endDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+      
+      return today >= endDate; // Changed to >= to include same day
+    } catch (e) {
+      return true; // If date parsing fails, show button
+    }
+  }
+
+  initCollectedAmountForm(): void {
+    this.collectedAmountForm = this.fb.group({
+      collectedAmount: [null, [Validators.required, Validators.min(0)]]
+    });
+  }
+
+  openCollectedAmountModal(): void {
+    const mainApplyServiceId = this.requestEventPermit?.mainApplyServiceId || this.mainApplyService?.id;
+    if (!mainApplyServiceId) {
+      this.toastr.error(this.translate.instant('COMMON.INVALID_ID'));
+      return;
+    }
+
+    // Set current value if exists
+    const currentValue = this.requestEventPermit?.collectedAmount ?? null;
+    this.collectedAmountForm.patchValue({ collectedAmount: currentValue });
+
+    const el = document.getElementById('collectedAmountModal');
+    if (el) {
+      if (this.collectedAmountModalInstance) {
+        this.collectedAmountModalInstance.dispose();
+      }
+      this.collectedAmountModalInstance = new (window as any).bootstrap.Modal(el, {
+        backdrop: 'static',
+        keyboard: false
+      });
+      this.collectedAmountModalInstance.show();
+    }
+  }
+
+  closeCollectedAmountModal(): void {
+    if (this.collectedAmountModalInstance) {
+      this.collectedAmountModalInstance.hide();
+    }
+    this.collectedAmountForm.reset();
+  }
+
+  saveCollectedAmount(): void {
+    const mainApplyServiceId = this.requestEventPermit?.mainApplyServiceId || this.mainApplyService?.id;
+    if (this.collectedAmountForm.invalid || !mainApplyServiceId) {
+      this.collectedAmountForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmittingCollectedAmount = true;
+    const collectedAmount = this.collectedAmountForm.value.collectedAmount;
+
+    const sub = this._CharityEventPermitRequestService.updateCollectedAmount(
+      mainApplyServiceId,
+      collectedAmount
+    ).subscribe({
+      next: (resp) => {
+        this.toastr.success(this.translate.instant('REQUEST_EVENT_PERMIT.COLLECTED_AMOUNT_UPDATED'));
+        // Update local data
+        if (this.requestEventPermit) {
+          this.requestEventPermit.collectedAmount = collectedAmount;
+        }
+        this.closeCollectedAmountModal();
+        this.isSubmittingCollectedAmount = false;
+      },
+      error: (err) => {
+        this.toastr.error(this.translate.instant('COMMON.ERROR_OCCURRED'));
+        this.isSubmittingCollectedAmount = false;
+      }
+    });
+
+    this.subscriptions.push(sub);
   }
 
 

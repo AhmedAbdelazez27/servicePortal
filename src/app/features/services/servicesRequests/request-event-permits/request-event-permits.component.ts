@@ -456,11 +456,9 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           this.advertisementMethodType = res.advertisementMethodType?.results;
           this.advertisementTargetType = res.advertisementTargetType?.results;
           // this.partnerTypes = res.partnerTypes?.data;
-          console.log, 'testttst' + this.partnerTypes;
 
           this.requestTypes = res.requestTypes?.results;
           this.permitsTypes = res.permitsTypes?.results;
-          console.log(res.donationChannelsLookup, 'ddddddd');
 
           this.donationChannelsLookup = res.donationChannelsLookup.results
             ?.length
@@ -484,7 +482,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           this.loadAttachmentConfigs(AttachmentsConfigType.Partner);
         },
         error: (error: any) => {
-          console.error('Error loading essential data:', error);
           this.toastr.error(this.translate.instant('ERRORS.FAILED_LOAD_DATA'));
           this.isLoading = false;
           this.isFormInitialized = true;
@@ -548,7 +545,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   //     mainApplyServiceId: v.mainApplyServiceId ?? null,
   //     attachments: partnerAttachments,
   //   });
-  //   console.log(this.partners);
   //   this.resetAttachments(partnerAttachType);
   //   this.partnerForm.reset();
   // }
@@ -664,7 +660,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       ...a,
       masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
     }));
-    // console.log("partnerAttachments = ", partnerAttachments);
 
     if (partnerType === PartnerType.Person || partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
 
@@ -687,14 +682,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       mainApplyServiceId: v.mainApplyServiceId ?? null,
       attachments: partnerAttachments,
     });
-    // console.log(this.partners);
     this.resetAttachments(partnerAttachType);
     this.partnerForm.reset();
 
 
     this.showPartnerAttachments = false;
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
-    // console.log("partners ", this.partners);
 
   }
 
@@ -744,7 +737,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           s.previews = {};
         });
       },
-      error: (e) => console.error('Error loading multi attachment configs', e),
+      error: () => {},
     });
   }
 
@@ -920,15 +913,13 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           s.selected = {};
           s.previews = {};
         },
-        error: (e) =>
-          console.error('Error loading attachment configs for type', type, e),
-      });
+        error: (e) =>{}
+        });
   }
   ////////////////////////////////////////////// end attachment functions
 
   // Navigation methods
   nextStep(): void {
-    console.log(this.firstStepForm.value);
 
     if (this.currentStep < this.totalSteps) {
       // Only validate if we're not in loading state and form is ready
@@ -1276,13 +1267,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           attachments: p.attachments,
         })),
       };
-      // console.log('payload = ', payload);
 
       const sub = this._CharityEventPermitRequestService
         .createRequestEvent(payload)
         .subscribe({
           next: (res) => {
-            // console.log(res);
 
             this.toastr.success(
               this.translate.instant('SUCCESS.REQUEST_Project_Campaign')
@@ -1291,7 +1280,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
             this.isSaving = false;
           },
           error: (error: any) => {
-            console.error('Error creating request event permit:', error);
 
             // Check if it's a business error with a specific reason
             if (error.error && error.error.reason) {
@@ -1309,7 +1297,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         });
       this.subscriptions.push(sub);
     } catch (error: any) {
-      console.error('Error in onSubmit:', error);
 
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
@@ -1332,7 +1319,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
   canProceedToNext(): boolean {
     // Only validate if user is actively trying to proceed, not during initial load
-    // console.log();
     if (this.isLoading || !this.firstStepForm || !this.isFormInitialized) {
       return this.currentStep < this.totalSteps;
     }
@@ -1345,7 +1331,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     const isValidStep1 =
       this.firstStepForm.valid && !this.firstStepForm.hasError('dateRange');
-    // console.log(this.firstStepForm.value);
 
     if (this.currentStep === 1) {
       if (isValidStep1) {
@@ -1476,7 +1461,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     };
 
     this.requestAdvertisements.push(ad);
-    // console.log('requestAdvertisements', this.requestAdvertisements);
 
     this.resetAttachments(adAttachType);
 
@@ -1637,7 +1621,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   //     const startDate = new Date(start);
   //     const endDate = new Date(end);
 
-  //     console.log('start:', startDate, 'end:', endDate);
   //     return endDate >= startDate ? null : { timeRangeInvalid: true };
   //   };
 
@@ -1785,7 +1768,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Error reading identity card:', error);
         this.isLoadingIdentityCard = false;
 
         if (error.error && error.error.reason) {
@@ -1797,6 +1779,25 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  // Navigate to Previous Aid Requests
+  navigateToPreviousAidRequests(): void {
+    const idNumber = this.firstStepForm.get('beneficiaryIdNumber')?.value;
+
+    if (!idNumber || idNumber.toString().trim() === '') {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
+      return;
+    }
+
+    // Clean the ID number (remove dashes and spaces)
+    const cleanIdNumber = idNumber.toString().trim().replace(/[-\s]/g, '');
+    
+    // Encode the ID number for URL
+    const encodedIdNumber = btoa(cleanIdNumber);
+
+    // Navigate to previous aid requests page with encoded ID number as parameter
+    this.router.navigate(['/services-requests/previous-aid-requests', encodedIdNumber]);
   }
 
   getStatusColor(statusId: number | null): string {

@@ -1,0 +1,411 @@
+<div class="request-plaint-container">
+  <section>
+    <div class="container services">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="title">{{ 'AidRequestsResourceName.Title' | translate }}</h4>
+        <button type="button" class="btn btn-outline-secondary" (click)="goBack()">
+          <i class="fas fa-arrow-left me-2"></i>
+          {{ "COMMON.BACK" | translate }}
+        </button>
+      </div>
+
+      <!-- Search by ID Number -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row align-items-end">
+            <div class="col-md-4">
+              <label for="searchIdNumber" class="form-label">
+                <strong>{{ "AID_REQUESTS.SEARCH_BY_ID_NUMBER" | translate }}</strong>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="searchIdNumber"
+                [(ngModel)]="searchIdNumber"
+                [placeholder]="'AID_REQUESTS.ENTER_ID_NUMBER' | translate"
+                (keyup.enter)="onSearchByIdNumber()"
+              />
+            </div>
+      
+            <div class="col-md-8 d-flex gap-2">
+              <button type="button" class="btn btn-primary" (click)="onSearchByIdNumber()">
+                <i class="fas fa-search me-1"></i>
+                {{ "COMMON.SEARCH" | translate }}
+              </button>
+      
+              <button type="button" class="btn btn-outline-secondary" (click)="onClearSearch()">
+                <i class="fas fa-times me-1"></i>
+                {{ "COMMON.CLEAR" | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="mb-3" *ngIf="idNumber">
+        <p class="text-muted">
+          <strong>{{ "AID_REQUESTS.ID_NUMBER" | translate }}:</strong> {{ idNumber }}
+        </p>
+      </div>
+
+      <div *ngIf="idNumber">
+        <app-generic-data-table [columnDefs]="columnDefs"
+                                [rowData]="loadgridData"
+                                [totalCount]="pagination.totalCount"
+                                [pageSize]="pagination.take"
+                                [currentPage]="pagination.currentPage - 1"
+                                [rowActions]="rowActions"
+                                (actionClick)="onTableAction($event)"
+                                (pageChange)="onPageChange($event)"
+                                [showActionColumn]="true"
+                                (search)="onTableSearch($event)"
+                                (languageChanged)="buildColumnDefs()">
+        </app-generic-data-table>
+      </div>
+
+      <div *ngIf="!idNumber" class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        {{ "AID_REQUESTS.ENTER_ID_TO_SEARCH" | translate }}
+      </div>
+
+      <!-- View Details Modal -->
+      <div class="modal fade" id="viewdetails" tabindex="-1" aria-labelledby="viewLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl custom-modal-width">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="viewLabel">{{ 'AidRequestsResourceName.Title' | translate }}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+              <div class="border-bottom mb-4">
+                <h4 class="gold bold">{{ 'Common.Information' | translate }}</h4>
+
+                <div class="row">
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="referenceNumber" class="black bold">{{ 'AidRequestsResourceName.referencenumber' | translate }}</label>
+                    <p id="referenceNumber">{{ loadformData.referenceNumber }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputaiD_REQUEST_DATEstr" class="black bold">{{ 'AidRequestsResourceName.aiD_REQUEST_DATE' | translate }}</label>
+                    <p id="aiD_REQUEST_DATEstr">{{ loadformData.aidRequestDateStr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputstatuscodE_DESC" class="black bold">{{ 'AidRequestsResourceName.statuscodE_DESC' | translate }}</label>
+                    <p id="statuscodE_DESC">{{ loadformData.statusCodeDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputnamE_AR" class="black bold">{{ 'AidRequestsResourceName.namE_AR' | translate }}</label>
+                    <p id="namE_AR">{{ loadformData.nameAr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputcasE_BIRTH_DATEstr" class="black bold">{{ 'AidRequestsResourceName.casE_BIRTH_DATE' | translate }}</label>
+                    <p id="casE_BIRTH_DATEstr">{{ loadformData.caseBirthDateStr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputcasE_ID_NUMBER" class="black bold">{{ 'AidRequestsResourceName.casE_ID_NUMBER' | translate }}</label>
+                    <p id="casE_ID_NUMBER">{{ loadformData.caseIdNumber }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputiD_END_DATE" class="black bold">{{ 'AidRequestsResourceName.iD_END_DATE' | translate }}</label>
+                    <p id="iD_END_DATE">{{ loadformData.idEndDateStr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputgendeR_DESC" class="black bold">{{ 'AidRequestsResourceName.gender' | translate }}</label>
+                    <p id="gendeR_DESC">{{ loadformData.genderDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputnationalitY_DESC" class="black bold">{{ 'AidRequestsResourceName.nationality' | translate }}</label>
+                    <p id="nationalitY_DESC">{{ loadformData.nationalityDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputhealtH_STATUS_DESC" class="black bold">{{ 'AidRequestsResourceName.healtH_STATUS_DESC' | translate }}</label>
+                    <p id="healtH_STATUS_DESC">{{ loadformData.healthStatusDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputjoB_DESC" class="black bold">{{ 'AidRequestsResourceName.joB_DESC' | translate }}</label>
+                    <p id="joB_DESC">{{ loadformData.jobDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputmaritaL_STATUS_DESC" class="black bold">{{ 'AidRequestsResourceName.maritaL_STATUS_DESC' | translate }}</label>
+                    <p id="maritaL_STATUS_DESC">{{ loadformData.maritalStatusDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputhtel" class="black bold">{{ 'AidRequestsResourceName.htel' | translate }}</label>
+                    <p id="htel">{{ loadformData.htel }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputmtel" class="black bold">{{ 'AidRequestsResourceName.mtel' | translate }}</label>
+                    <p id="mtel">{{ loadformData.mtel }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputmteL2" class="black bold">{{ 'AidRequestsResourceName.mteL2' | translate }}</label>
+                    <p id="mteL2">{{ loadformData.mtel2 }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputfamilY_PERS_NO" class="black bold">{{ 'AidRequestsResourceName.familY_PERS_NO' | translate }}</label>
+                    <p id="familY_PERS_NO">{{ loadformData.familyPersNo }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputtoT_INCOME" class="black bold">{{ 'AidRequestsResourceName.toT_INCOME' | translate }}</label>
+                    <p id="toT_INCOME">{{ loadformData.totIncome }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputtoT_DUTIES" class="black bold">{{ 'AidRequestsResourceName.toT_DUTIES' | translate }}</label>
+                    <p id="toT_DUTIES">{{ loadformData.totDuties }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputincomes" class="black bold">{{ 'AidRequestsResourceName.incomes' | translate }}</label>
+                    <p id="incomes">{{ loadformData.incomes }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputwifE_NAME" class="black bold">{{ 'AidRequestsResourceName.wifE_NAME' | translate }}</label>
+                    <p id="wifE_NAME">{{ loadformData.wifeName }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputwifE_ID" class="black bold">{{ 'AidRequestsResourceName.wifE_ID' | translate }}</label>
+                    <p id="wifE_ID">{{ loadformData.wifeId }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputwifeiD_END_DATE" class="black bold">{{ 'AidRequestsResourceName.wifeiD_END_DATE' | translate }}</label>
+                    <p id="wifeiD_END_DATE">{{ loadformData.wifeIdEndDateStr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputbranchE_NAME" class="black bold">{{ 'AidRequestsResourceName.branchE_NAME' | translate }}</label>
+                    <p id="branchE_NAME">{{ loadformData.brancheName }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputcitY_DESC" class="black bold">{{ 'AidRequestsResourceName.city' | translate }}</label>
+                    <p id="citY_DESC">{{ loadformData.cityDesc }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" data-bs-dismiss="modal">{{ 'Common.Close' | translate }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View Study Details Modal -->
+      <div class="modal fade" id="viewstudydetails" tabindex="-1" aria-labelledby="viewLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl custom-modal-width">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="viewLabel">{{ 'AidRequestsResourceName.Title' | translate }}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="border-bottom mb-4">
+                <h4 class="gold bold">{{ 'Common.Information' | translate }}</h4>
+
+              <div class="row">
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputentitY_NAME" class="black bold">{{ 'AidRequestsResourceName.entitY_NAME' | translate }}</label>
+                  <p id="entitY_NAME">{{ loadstudydetailformData.entityName }}</p>
+                </div>
+
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputstudY_NO" class="black bold">{{ 'AidRequestsResourceName.studY_NO' | translate }}</label>
+                  <p id="studY_NO">{{ loadstudydetailformData.studyNo }}</p>
+                </div>
+
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputtX_DATE" class="black bold">{{ 'AidRequestsResourceName.tX_DATE' | translate }}</label>
+                  <p id="tX_DATE">{{ loadstudydetailformData.txDate }}</p>
+                </div>
+
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputcasE_SIGNATURE_DESC" class="black bold">{{ 'AidRequestsResourceName.casE_SIGNATURE_DESC' | translate }}</label>
+                  <p id="casE_SIGNATURE_DESC">{{ loadstudydetailformData.caseSignatureDesc }}</p>
+                </div>
+
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputrefrenceNo" class="black bold">{{ 'AidRequestsResourceName.refrenceNo' | translate }}</label>
+                  <p id="refrenceNo">{{ loadstudydetailformData.refrenceNo }}</p>
+                </div>
+
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputnamE_AR" class="black bold">{{ 'AidRequestsResourceName.namE_AR' | translate }}</label>
+                  <p id="namE_AR">{{ loadstudydetailformData.nameAr }}</p>
+                </div>
+
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputresearcheR_NAME" class="black bold">{{ 'AidRequestsResourceName.researcheR_NAME' | translate }}</label>
+                  <p id="researcheR_NAME">{{ loadstudydetailformData.researcherName }}</p>
+                </div>
+
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputcasE_DESCRIPTION" class="black bold">{{ 'AidRequestsResourceName.casE_DESCRIPTION' | translate }}</label>
+                  <p id="casE_DESCRIPTION">{{ loadstudydetailformData.caseDescription }}</p>
+                </div>
+
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputcasE_INFO_BREIF" class="black bold">{{ 'AidRequestsResourceName.casE_INFO_BREIF' | translate }}</label>
+                  <p id="casE_INFO_BREIF">{{ loadstudydetailformData.caseInfoBreif }}</p>
+                </div>
+
+                <div class="col-xxl-4 col-xl-6">
+                  <label for="inputmgR_DECEISION" class="black bold">{{ 'AidRequestsResourceName.mgR_DECEISION' | translate }}</label>
+                  <p id="mgR_DECEISION">{{ loadstudydetailformData.mgrDecision }}</p>
+                </div>
+              </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" data-bs-dismiss="modal">{{ 'Common.Close' | translate }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View Zakat Details Modal -->
+      <div class="modal fade" id="viewzakatdetails" tabindex="-1" aria-labelledby="viewLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl custom-modal-width">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="viewLabel">{{ 'AidRequestsResourceName.Title' | translate }}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="border-bottom mb-4">
+                <h4 class="gold bold">{{ 'Common.Information' | translate }}</h4>
+
+                <div class="row">
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputHeaderNo" class="black bold">{{ 'AidRequestsResourceName.headeR_NO' | translate }}</label>
+                    <p id="headerNo">{{ loadZakatdetailformData.headerNo }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputHeaderDate" class="black bold">{{ 'AidRequestsResourceName.headeR_DATE' | translate }}</label>
+                    <p id="headerDate">{{ loadZakatdetailformData.headerDateStr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputStatusDesc" class="black bold">{{ 'AidRequestsResourceName.statuS_DESC' | translate }}</label>
+                    <p id="statusDesc">{{ loadZakatdetailformData.statusDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputRefrenceNo" class="black bold">{{ 'AidRequestsResourceName.refrenceNo' | translate }}</label>
+                    <p id="refrenceNo">{{ loadZakatdetailformData.refrenceNo }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputNameAr" class="black bold">{{ 'AidRequestsResourceName.namE_AR' | translate }}</label>
+                    <p id="nameAr">{{ loadZakatdetailformData.nameAr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputResearcherDesc" class="black bold">{{ 'AidRequestsResourceName.researcheR_DESC' | translate }}</label>
+                    <p id="researcherDesc">{{ loadZakatdetailformData.researcherDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputCategoryDesc" class="black bold">{{ 'AidRequestsResourceName.categorY_DESC' | translate }}</label>
+                    <p id="categoryDesc">{{ loadZakatdetailformData.categoryDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputAmount" class="black bold">{{ 'AidRequestsResourceName.amount' | translate }}</label>
+                    <p id="amount">{{ loadZakatdetailformData.amountStr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputNotes" class="black bold">{{ 'AidRequestsResourceName.notes' | translate }}</label>
+                    <p id="notes">{{ loadZakatdetailformData.notes }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" data-bs-dismiss="modal">{{ 'Common.Close' | translate }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View Quotation Details Modal -->
+      <div class="modal fade" id="viewquotationdetails" tabindex="-1" aria-labelledby="viewLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl custom-modal-width">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="viewLabel">{{ 'AidRequestsResourceName.Title' | translate }}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="border-bottom mb-4">
+                <h4 class="gold bold">{{ 'Common.Information' | translate }}</h4>
+
+                <div class="row">
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputQuotationNumber" class="black bold">{{ 'AidRequestsResourceName.quotatioN_NUMBER' | translate }}</label>
+                    <p id="quotationNumber">{{ loadQuotationDetailFormData.quotationNumber }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputQuotationDate" class="black bold">{{ 'AidRequestsResourceName.quotatioN_DATE' | translate }}</label>
+                    <p id="quotationDate">{{ loadQuotationDetailFormData.quotationDateStr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputStatusDesc" class="black bold">{{ 'AidRequestsResourceName.statuS_DESC' | translate }}</label>
+                    <p id="statusDesc">{{ loadQuotationDetailFormData.statusDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputRefrenceNo" class="black bold">{{ 'AidRequestsResourceName.refrenceNo' | translate }}</label>
+                    <p id="refrenceNo">{{ loadQuotationDetailFormData.refrenceNo }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputNameAr" class="black bold">{{ 'AidRequestsResourceName.namE_AR' | translate }}</label>
+                    <p id="nameAr">{{ loadQuotationDetailFormData.nameAr }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputVendorName" class="black bold">{{ 'AidRequestsResourceName.vendoR_NAME' | translate }}</label>
+                    <p id="vendorName">{{ loadQuotationDetailFormData.vendorName }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline" data-bs-dismiss="modal">{{ 'Common.Close' | translate }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -299,7 +299,6 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     const subscription = this.mainApplyServiceService.getDetailById({ id }).subscribe({
       next: (response) => {
-        console.log("Main Apply Service Data:", response);
         this.mainApplyService = response;
         this.fastingTentService = response.fastingTentService;
         this.workFlowSteps = response.workFlowSteps || [];
@@ -332,11 +331,9 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
 
         this.findTargetWorkFlowStep();
         // if (this.targetWorkFlowStep) {
-        //   console.log("truuuuuuuue");
           
           this.loadWorkFlowComments();
         // }else{
-        //   console.log("faaaaaaaaaaaaaalsssssse");
           
         // }
         

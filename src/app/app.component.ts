@@ -72,13 +72,11 @@ export class AppComponent implements OnInit, OnDestroy {
     
     // Check if user logged in (new session or different user)
     if (isLoggedIn && currentUserId && currentUserId !== this.lastLoggedInUserId) {
-      console.log('🔔 New user session detected:', currentUserId);
       this.initializeUserNotificationSession();
       this.lastLoggedInUserId = currentUserId;
     }
     // Check if user logged out
     else if (!isLoggedIn && this.lastLoggedInUserId) {
-      console.log('🔔 User session ended');
       this.lastLoggedInUserId = null;
       // Notification service will be cleared by navbar component on logout
     }
@@ -89,24 +87,18 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   private async initializeUserNotificationSession(): Promise<void> {
     try {
-      console.log('🔔 App-level: Initializing user notification session...');
-      
       // Request notification permission if needed
       const permissionGranted = await this.notificationService.requestPermission();
       
       if (permissionGranted) {
-        console.log('🔔 Notification permission granted');
-        
         // Initialize the user session (this will only run once per session)
         await this.notificationService.initializeUserSession();
         
         // Setup global notification listeners (once per session)
         this.setupGlobalNotificationListeners();
-      } else {
-        console.warn('🔔 Notification permission denied');
       }
     } catch (error) {
-      console.error('🔔 Error initializing user notification session:', error);
+      // Error handled silently
     }
   }
 
@@ -117,10 +109,9 @@ export class AppComponent implements OnInit, OnDestroy {
     // Only setup if not already listening for this session
     if (this.lastLoggedInUserId === this.authService.getUserId()) {
       // Subscribe to notification updates for global app behavior
-      this.notificationService.notifications$
+        this.notificationService.notifications$
         .pipe(takeUntil(this.destroy$))
         .subscribe(notifications => {
-          console.log('🔔 App received notifications update:', notifications?.length || 0);
           // You can add global notification handling here (e.g., update window title badge)
         });
 
@@ -128,7 +119,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.notificationService.unseenCount$
         .pipe(takeUntil(this.destroy$))
         .subscribe(count => {
-          console.log('🔔 App received unseen count update:', count);
           // You can update global UI elements here (e.g., page title, favicon badge)
           this.updatePageTitle(count);
         });

@@ -163,7 +163,6 @@ export class TextProcessingService {
         ...options
       });
     } catch (error) {
-      console.error('Error processing API text:', error);
       return '';
     }
   }

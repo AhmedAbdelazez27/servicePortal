@@ -19,6 +19,20 @@ export const servicesRequestsRoutes: Routes = [
           import('./request-event-permits/request-event-permits.component')
             .then(m => m.RequestEventPermitsComponent),
       },
+      {
+        path: 'previous-aid-requests/:idNumber',
+         canActivate: [authGuard],
+        loadComponent: () =>
+          import('./previous-aid-requests/previous-aid-requests.component')
+            .then(m => m.PreviousAidRequestsComponent),
+      },
+      {
+        path: 'previous-aid-requests',
+         canActivate: [authGuard],
+        loadComponent: () =>
+          import('./previous-aid-requests/previous-aid-requests.component')
+            .then(m => m.PreviousAidRequestsComponent),
+      },
     ],
   },
 ]; 

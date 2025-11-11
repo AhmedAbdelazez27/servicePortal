@@ -142,24 +142,19 @@ submit(): void {
 
           this.router.navigate(['/home']);
         },
-        error: (err) => {
-          console.log("err ",err);
-          
+        error: () => {
           this.toastr.error(
             this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'),
             this.translate.instant('TOAST.TITLE.ERROR')
           );
-          console.debug('GetMyProfile error:', err);
         },
         complete: () => this.spinnerService.hide()
       });
     },
     error: (error) => {
-      console.log("error = ",error?.error?.reason);
-      
       this.toastr.error(
         error?.error?.reason ? error?.error?.reason:this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'),
-        this.translate.instant('TOAST.TITLE.ERROR')+"tttttttt"
+        this.translate.instant('TOAST.TITLE.ERROR')
       );
       this.spinnerService.hide();
     }
@@ -201,7 +196,6 @@ submit(): void {
           this.translate.instant('AUTH.MESSAGES.LOGIN_FAILED'),
           this.translate.instant('TOAST.TITLE.ERROR')
         );
-        console.debug('GetMyProfile error:', err);
       },
       complete: () => this.spinnerService.hide()
     });
@@ -304,7 +298,6 @@ submit(): void {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: res => {
-          console.log(res);
           this.handleUAEPassInstitutionSignupSuccess(res);
         },
         error: err => {
@@ -378,7 +371,7 @@ submit(): void {
     try {
       await this.notificationService.initializeUserSession();
     } catch (error) {
-      console.error('Notification session init error:', error);
+      // Error handled silently
     }
   }
 

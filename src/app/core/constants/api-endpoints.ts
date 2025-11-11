@@ -251,13 +251,11 @@ export class ApiEndpoints {
     AidRequestsStudiesBase: '/AidRequestsStudies',
     QuotationHeaderBase: '/QuotationHeader',
     GetAll: '/GetAll',
-    GetShowDetailById: (caseCode: string, entityId: string) =>
-      `/GetPortaCAidRequest/${caseCode}/${entityId}`,
-    GetZakatStudyDetailById: (headerId: string, entityId: string) =>
-      `/GetAidRequestsZakat/${headerId}/${entityId}`,
-    GetAidRequestsStudyDetailById: (headerId: string, entityId: string) =>
-      `/GetAidRequestsStudy/${headerId}/${entityId}`,
-    GetQuotationHeaderDetailById: (headerId: string, entityId: string) =>`/GetQuotationHeader/${headerId}/${entityId}`,
+    GetShowDetailById: '/GetPortaCAidRequest',
+    GetZakatStudyDetailById: '/GetAidRequestsZakat',
+    GetAidRequestsStudyDetailById: '/GetAidRequestsStudy',
+    GetQuotationHeaderDetailById: '/GetQuotationHeader',
+    GetAidRequestByIdNumber: (idNumber: string) => `/GetAidRequest/${idNumber}`,
   };
 
   static readonly SocialCasesReports = {
@@ -385,7 +383,8 @@ export class ApiEndpoints {
   };
   static readonly RequestEventPermits = {
     Base: '/RequestEventPermits',
-    Create: '/Create'
+    Create: '/Create',
+    UpdateCollectedAmount: '/UpdateCollectedAmount'
   };
   static readonly CharityEventPermit = {
     Base: '/CharityEventPermit',

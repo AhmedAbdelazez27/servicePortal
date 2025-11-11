@@ -104,7 +104,6 @@ export class InstitutionregistrationComponent implements OnInit {
     if (storedInfo) {
       this.uaePassInfo = JSON.parse(storedInfo) as UAEPassDto;
     }
-    console.log(this.uaePassInfo);
 
     this.registrationForm = this.fb.group({
       // Basic Information
@@ -420,8 +419,6 @@ export class InstitutionregistrationComponent implements OnInit {
           this.router.navigate(['/register/pending']);
         },
         error: (error) => {
-          console.error('Error creating institution registration:', error);
-          
           // Check if it's a business error with a specific reason
           if (error.error && error.error.reason) {
             // Show the specific reason from the API response
@@ -438,8 +435,6 @@ export class InstitutionregistrationComponent implements OnInit {
       });
 
     } catch (error: any) {
-      console.error('Error in onSubmit:', error);
-      
       // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
         // Show the specific reason from the API response
