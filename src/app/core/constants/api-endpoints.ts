@@ -384,6 +384,8 @@ export class ApiEndpoints {
   static readonly RequestEventPermits = {
     Base: '/RequestEventPermits',
     Create: '/Create',
+    Update: '/Update',
+    Delete: (id: number) => `/Delete/${id}`,
     UpdateCollectedAmount: '/UpdateCollectedAmount'
   };
   static readonly CharityEventPermit = {
@@ -407,7 +409,10 @@ export class ApiEndpoints {
   };
   
   static readonly Advertisement = {
-    Create: '/Advertisement/Create'
+    Base: '/Advertisement',
+    Create: '/Create',
+    Update: '/Update',
+    Delete: (id: number) => `/Delete/${id}`
   };
 
   static readonly Partner = {

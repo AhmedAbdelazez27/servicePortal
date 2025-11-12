@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 import { AppEnum } from '../../../core/dtos/appEnum.dto';
 import { MainApplyServiceReportService } from '../../../core/services/mainApplyService/mainApplyService.reports';
 import { AuthService } from '../../../core/services/auth.service';
+import { CharityEventPermitRequestService } from '../../../core/services/charity-event-permit-request.service';
  
 
 declare var bootstrap: any;
@@ -68,6 +69,7 @@ export class MainApplyServiceComponent {
     private router: Router,
     private mainApplyServiceReportService: MainApplyServiceReportService,
     private authService: AuthService,
+    private charityEventPermitRequestService: CharityEventPermitRequestService,
   )
   {  
     
@@ -255,6 +257,9 @@ export class MainApplyServiceComponent {
         } else if (event.row.serviceId === 1001) {
         // Route to distribution-site-permit with id as param for draft update
         this.router.navigate(['/distribution-site-permit', event.row.id]);
+      } else if (event.row.serviceId == this.appEnum.serviceId6) {
+        // Route to request-event-permits with id as param for draft update
+        this.router.navigate(['/services-requests/request-event-permits', event.row.id]);
       } else {
         this.translate
           .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
@@ -319,7 +324,18 @@ export class MainApplyServiceComponent {
     }
     if (event.action === 'onRequestComplaint') {
       if (event.row.serviceId == this.appEnum.serviceId1002) {
-        this.getFormDatabyId(event.row.id, event.row.serviceId);
+        // Convert id to string if it exists
+        const requestId = event.row.id;
+        if (!requestId) {
+          this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
+          return;
+        }
+        const serviceId = event.row.serviceId;
+        if (!serviceId) {
+          this.toastr.error(this.translate.instant('ERRORS.INVALID_SERVICE_ID') || 'Invalid service ID');
+          return;
+        }
+        this.getFormDatabyId(String(requestId), String(serviceId));
       }
       else {
         this.translate
@@ -411,6 +427,48 @@ export class MainApplyServiceComponent {
           return;
         }
       }
+    }
+
+    if (event.action === 'onDelete') {
+      // Handle delete action - only for RequestEventPermits (serviceId = 6) for now
+      if (event.row.serviceId == this.appEnum.serviceId6 || event.row.serviceId === 6) {
+        // Check if id exists and is a number
+        const requestId = event.row.id;
+        if (!requestId || typeof requestId !== 'number') {
+          this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
+          return;
+        }
+        
+        // Show confirmation dialog
+        if (confirm(this.translate.instant('COMMON.CONFIRM_DELETE') || 'Are you sure you want to delete this request?')) {
+          this.spinnerService.show();
+          this.charityEventPermitRequestService.deleteRequestEvent(requestId).subscribe({
+            next: () => {
+              this.toastr.success(this.translate.instant('SUCCESS.REQUEST_DELETED') || 'Request deleted successfully');
+              this.spinnerService.hide();
+              // Refresh the grid data
+              this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
+            },
+            error: (error: any) => {
+              this.spinnerService.hide();
+              if (error.error && error.error.reason) {
+                this.toastr.error(error.error.reason);
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
+              }
+            }
+          });
+        }
+      } else {
+        this.translate
+          .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+          .subscribe(translations => {
+            this.toastr.error(
+              `${translations['mainApplyServiceResourceName.NoPermission']}`,
+            );
+          });
+      }
+      return;
     }
   }
 

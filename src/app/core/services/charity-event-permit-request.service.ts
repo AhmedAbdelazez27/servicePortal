@@ -99,6 +99,41 @@ export class CharityEventPermitRequestService {
         );
     }
 
+    updateRequestEvent(dto: any): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.RequestEventPermits.Base}${ApiEndpoints.RequestEventPermits.Update}`,
+            dto
+        );
+    }
+
+    deleteAdvertisement(id: number): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.Advertisement.Base}${ApiEndpoints.Advertisement.Delete(id)}`,
+            null
+        );
+    }
+
+    createAdvertisement(dto: any): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.Advertisement.Base}${ApiEndpoints.Advertisement.Create}`,
+            dto
+        );
+    }
+
+    deleteRequestEvent(id: number): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.RequestEventPermits.Base}${ApiEndpoints.RequestEventPermits.Delete(id)}`,
+            null
+        );
+    }
+
+    updateAdvertisement(dto: any): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.Advertisement.Base}${ApiEndpoints.Advertisement.Update}`,
+            dto
+        );
+    }
+
     // Read Identity Card Data by IDN
     readIdentityCard(idn: string): Observable<IdentityCardReaderDto> {
         return this.http.get<IdentityCardReaderDto>(

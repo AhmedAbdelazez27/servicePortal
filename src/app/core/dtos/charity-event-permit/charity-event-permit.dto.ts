@@ -51,6 +51,7 @@ export interface RequestAdvertisementAttachment {
 }
 
 export interface RequestAdvertisement {
+  id ?: number | null;
   parentId: number | null;
   mainApplyServiceId: number | null;
   requestNo: number | null;

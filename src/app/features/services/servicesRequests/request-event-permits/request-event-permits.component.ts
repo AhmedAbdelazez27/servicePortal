@@ -16,7 +16,7 @@ import { AttachmentService } from '../../../../core/services/attachments/attachm
 import { AuthService } from '../../../../core/services/auth.service';
 import { TranslationService } from '../../../../core/services/translation.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {
   AttachmentsConfigDto,
   AttachmentsConfigType,
@@ -47,6 +47,19 @@ import { PartnerType } from '../../../../core/dtos/FastingTentRequest/fasting-te
 import { IdentityCardReaderDto } from '../../../../core/dtos/identity-card/identity-card-reader.dto';
 import { ServiceStatus } from '../../../../core/dtos/appEnum.dto';
 import { notBeforeTodayFor } from '../../../../shared/customValidators/date.validators';
+import { MainApplyService } from '../../../../core/services/mainApplyService/mainApplyService.service';
+import { SpinnerService } from '../../../../core/services/spinner.service';
+import { PartnerService } from '../../../../core/services/partner.service';
+import {
+  FiltermainApplyServiceByIdDto,
+  mainApplyServiceDto,
+} from '../../../../core/dtos/mainApplyService/mainApplyService.dto';
+import {
+  AttachmentDto,
+  UpdateAttachmentBase64Dto,
+  AttachmentBase64Dto,
+} from '../../../../core/dtos/attachments/attachment.dto';
+import { environment } from '../../../../../environments/environment';
 
 type AttachmentState = {
   configs: AttachmentsConfigDto[];
@@ -93,14 +106,30 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   }
 
   public hasSelected(type: AttachmentsConfigType, id: number): boolean {
-    return !!this.ensureState(type).selected[id];
+    const state = this.ensureState(type);
+    // Check if file is selected OR if there's an existing attachment
+    if (type === AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit) {
+      return !!state.selected[id] || !!this.existingAttachments[id];
+    }
+    // For advertisement attachments, check if there's an existing attachment for current advertisement
+    // Note: This will be handled separately in advertisement attachment display
+    return !!state.selected[id];
   }
 
   public selectedFileName(
     type: AttachmentsConfigType,
     id: number
   ): string | null {
-    return this.ensureState(type).selected[id]?.name ?? null;
+    const state = this.ensureState(type);
+    // If file is selected, return its name
+    if (state.selected[id]) {
+      return state.selected[id]?.name ?? null;
+    }
+    // If there's an existing attachment, return its file name from path
+    if (type === AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit && this.existingAttachments[id]) {
+      return this.getFileNameFromPath(this.existingAttachments[id].imgPath);
+    }
+    return null;
   }
 
   currentStep: number = 1;
@@ -168,6 +197,28 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   isLoadingIdentityCard = false;
   showIdentityCardData = false;
 
+  // Update mode properties
+  requestEventPermitId: number | null = null;
+  mainApplyServiceId: number | null = null;
+  loadformData: mainApplyServiceDto | null = null;
+  
+  // Existing data for update mode
+  existingAttachments: { [key: number]: AttachmentDto } = {}; // Existing attachments from API (main request)
+  existingAdvertisementAttachments: { [adIndex: number]: { [key: number]: AttachmentDto } } = {}; // Existing attachments for each advertisement
+  attachmentsToDelete: { [key: number]: number } = {}; // Track attachments marked for deletion (main request)
+  advertisementAttachmentsToDelete: { [adIndex: number]: { [key: number]: number } } = {}; // Track attachments marked for deletion for each advertisement
+  
+  existingPartners: any[] = []; // Partners loaded from API
+  partnersToDelete: number[] = []; // Partner IDs to delete
+  
+  existingAdvertisements: RequestAdvertisement[] = []; // Advertisements loaded from API
+  advertisementsToDelete: number[] = []; // Advertisement IDs to delete
+  advertisementsToUpdate: RequestAdvertisement[] = []; // Advertisements to update (have id)
+  
+  pendingFormData: any = null; // Store form data to patch after dropdowns are loaded
+  pendingAttachmentsData: any[] = []; // Store attachments data to load after configs are loaded
+  pendingAttachmentsMasterId: number | null = null; // Store masterId to load attachments from API after configs are loaded
+
 
   constructor(
     private fb: FormBuilder,
@@ -177,8 +228,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private toastr: ToastrService,
     private router: Router,
+    private route: ActivatedRoute,
     private _CharityEventPermitRequestService: CharityEventPermitRequestService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private mainApplyService: MainApplyService,
+    private spinnerService: SpinnerService,
+    private partnerService: PartnerService
   ) {
     this.initializeForm();
     this.initPartnerForm();
@@ -187,7 +242,16 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.clearAllToasts();
-    this.loadInitialData();
+    
+    // Check if we have an id in route params (update mode)
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      // Load request details for update mode
+      this.loadRequestDetails(id);
+    } else {
+      // Create mode - load initial data normally
+      this.loadInitialData();
+    }
 
     this.setPartnerTypes();
 
@@ -492,6 +556,488 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       this.router.navigate(['/login']);
     }
   }
+
+  /**
+   * Load initial data for update mode (without resetting form)
+   */
+  private loadInitialDataForUpdate(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser?.id) {
+      return;
+    }
+
+    forkJoin({
+      advertisementMethodType:
+        this._CharityEventPermitRequestService.getAdvertisementMethodType({}),
+      advertisementTargetType:
+        this._CharityEventPermitRequestService.getAdvertisementTargetType({}),
+      advertisementType:
+        this._CharityEventPermitRequestService.getAdvertisementType(),
+      donationChannelsLookup:
+        this._CharityEventPermitRequestService.getDonationCollectionChannel(
+          {}
+        ),
+      requestTypes:
+        this._CharityEventPermitRequestService.getPermitRequestTypeSelect2(
+          {}
+        ),
+      permitsTypes:
+        this._CharityEventPermitRequestService.getPermitTypeSelect2({}),
+    }).subscribe({
+      next: (res: any) => {
+        this.advertisementType = res.advertisementType;
+        this.advertisementMethodType = res.advertisementMethodType?.results;
+        this.advertisementTargetType = res.advertisementTargetType?.results;
+
+        this.requestTypes = res.requestTypes?.results;
+        this.permitsTypes = res.permitsTypes?.results;
+
+        this.donationChannelsLookup = res.donationChannelsLookup.results
+          ?.length
+          ? res.donationChannelsLookup.results
+          : [
+            { id: 1, text: 'SMS' },
+            { id: 2, text: 'Bank Transfer' },
+            { id: 3, text: 'POS' },
+          ];
+
+        // Patch form data after dropdowns are loaded (for update mode)
+        if (this.pendingFormData) {
+          setTimeout(() => {
+            // Convert select2 options to proper format if needed
+            const lkpRequestTypeId = this.pendingFormData.lkpRequestTypeId;
+            if (lkpRequestTypeId && this.requestTypes) {
+              // Ensure the value exists in options - convert id to string for comparison
+              const requestTypeOption = this.requestTypes.find((opt: any) => {
+                const optId = String(opt.id);
+                const searchId = String(lkpRequestTypeId);
+                return optId === searchId;
+              });
+              if (!requestTypeOption && lkpRequestTypeId) {
+                // If not found, add it (might be a new option)
+                this.requestTypes.push({ id: String(lkpRequestTypeId), text: String(lkpRequestTypeId) });
+              }
+            }
+            
+            const lkpPermitTypeId = this.pendingFormData.lkpPermitTypeId;
+            if (lkpPermitTypeId && this.permitsTypes && lkpPermitTypeId !== 0 && lkpPermitTypeId !== null) {
+              // Ensure the value exists in options (skip if 0 or null)
+              const permitTypeOption = this.permitsTypes.find((opt: any) => {
+                const optId = String(opt.id);
+                const searchId = String(lkpPermitTypeId);
+                return optId === searchId;
+              });
+              if (!permitTypeOption && lkpPermitTypeId) {
+                this.permitsTypes.push({ id: String(lkpPermitTypeId), text: String(lkpPermitTypeId) });
+              }
+            }
+            
+            // Handle donationCollectionChannelIds - ensure all IDs exist in options
+            const donationChannelIds = this.pendingFormData.donationCollectionChannelIds || [];
+            if (donationChannelIds.length > 0 && this.donationChannelsLookup) {
+              donationChannelIds.forEach((channelId: number) => {
+                const channelOption = this.donationChannelsLookup.find((opt: any) => {
+                  const optId = String(opt.id);
+                  const searchId = String(channelId);
+                  return optId === searchId;
+                });
+                if (!channelOption) {
+                  // If not found, try to find it in the response data
+                  // For now, we'll skip adding it - it should exist in the API response
+                  console.warn(`Donation channel with id ${channelId} not found in options`);
+                }
+              });
+            }
+            
+            // Patch form values - convert IDs to strings if needed for ng-select compatibility
+            const formDataToPatch = { ...this.pendingFormData };
+            
+            // Convert lkpRequestTypeId to string if requestTypes use string IDs
+            if (formDataToPatch.lkpRequestTypeId && this.requestTypes.length > 0) {
+              const firstOption = this.requestTypes[0];
+              if (typeof firstOption.id === 'string') {
+                formDataToPatch.lkpRequestTypeId = String(formDataToPatch.lkpRequestTypeId);
+              }
+            }
+            
+            // Convert lkpPermitTypeId to string if permitsTypes use string IDs (and not 0/null)
+            if (formDataToPatch.lkpPermitTypeId && formDataToPatch.lkpPermitTypeId !== 0 && this.permitsTypes.length > 0) {
+              const firstOption = this.permitsTypes[0];
+              if (typeof firstOption.id === 'string') {
+                formDataToPatch.lkpPermitTypeId = String(formDataToPatch.lkpPermitTypeId);
+              }
+            }
+            
+            // Convert donationCollectionChannelIds to strings if needed
+            if (formDataToPatch.donationCollectionChannelIds && formDataToPatch.donationCollectionChannelIds.length > 0 && this.donationChannelsLookup.length > 0) {
+              const firstOption = this.donationChannelsLookup[0];
+              if (typeof firstOption.id === 'string') {
+                formDataToPatch.donationCollectionChannelIds = formDataToPatch.donationCollectionChannelIds.map((id: number) => String(id));
+              }
+            }
+            
+            // Patch form values
+            this.firstStepForm.patchValue(formDataToPatch, { emitEvent: false });
+            this.cdr.detectChanges();
+            
+            // Clear pending data
+            this.pendingFormData = null;
+          }, 150);
+        }
+
+        this.isFormInitialized = true;
+
+        // Load attachment configs - use forkJoin to wait for all configs to load
+        forkJoin({
+          mainPermitConfigs: this.attachmentService.getAttachmentsConfigByType(
+            AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit,
+            true
+          ),
+          advertisementConfigs: this.attachmentService.getAttachmentsConfigByType(
+            AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign,
+            true
+          ),
+          partnerConfigs: this.attachmentService.getAttachmentsConfigByType(
+            AttachmentsConfigType.Partner,
+            true
+          ),
+        }).subscribe({
+          next: (configs) => {
+            // Initialize attachment states with configs
+            const mainState = this.ensureState(AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit);
+            mainState.configs = configs.mainPermitConfigs || [];
+            mainState.items = mainState.configs.map((cfg) => ({
+              fileBase64: '',
+              fileName: '',
+              masterId: 0,
+              attConfigID: cfg.id!,
+            }));
+
+            const adState = this.ensureState(AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign);
+            adState.configs = configs.advertisementConfigs || [];
+            adState.items = adState.configs.map((cfg) => ({
+              fileBase64: '',
+              fileName: '',
+              masterId: 0,
+              attConfigID: cfg.id!,
+            }));
+
+            const partnerState = this.ensureState(AttachmentsConfigType.Partner);
+            partnerState.configs = configs.partnerConfigs || [];
+            partnerState.items = partnerState.configs.map((cfg) => ({
+              fileBase64: '',
+              fileName: '',
+              masterId: 0,
+              attConfigID: cfg.id!,
+            }));
+
+            // Load attachments after configs are loaded (for update mode)
+            if (this.pendingAttachmentsData && this.pendingAttachmentsData.length > 0) {
+              setTimeout(() => {
+                this.loadExistingAttachments(this.pendingAttachmentsData);
+                this.pendingAttachmentsData = [];
+                this.cdr.detectChanges();
+              }, 100);
+            } else if (this.pendingAttachmentsMasterId) {
+              setTimeout(() => {
+                this.loadAttachmentsFromAPI(this.pendingAttachmentsMasterId);
+                this.pendingAttachmentsMasterId = null;
+                this.cdr.detectChanges();
+              }, 100);
+            }
+          },
+          error: (error) => {
+            console.error('Error loading attachment configs:', error);
+            // Still try to load attachments even if configs fail
+            if (this.pendingAttachmentsData && this.pendingAttachmentsData.length > 0) {
+              setTimeout(() => {
+                this.loadExistingAttachments(this.pendingAttachmentsData);
+                this.pendingAttachmentsData = [];
+              }, 100);
+            } else if (this.pendingAttachmentsMasterId) {
+              setTimeout(() => {
+                this.loadAttachmentsFromAPI(this.pendingAttachmentsMasterId);
+                this.pendingAttachmentsMasterId = null;
+              }, 100);
+            }
+          },
+        });
+
+        this.isLoading = false;
+        this.spinnerService.hide();
+      },
+      error: (error: any) => {
+        this.toastr.error(this.translate.instant('ERRORS.FAILED_LOAD_DATA'));
+        this.isLoading = false;
+        this.isFormInitialized = true;
+        this.spinnerService.hide();
+      },
+    });
+  }
+
+  /**
+   * Load request details from API for update mode
+   */
+  private loadRequestDetails(id: string): void {
+    this.isLoading = true;
+    this.spinnerService.show();
+
+    const params: FiltermainApplyServiceByIdDto = { id };
+    const sub = this.mainApplyService.getDetailById(params).subscribe({
+      next: (response: any) => {
+        this.loadformData = response;
+
+        // Extract request event permit data
+        const requestEventPermit = response.requestEventPermit;
+        if (requestEventPermit) {
+          this.requestEventPermitId = requestEventPermit.id || null;
+          this.mainApplyServiceId = response.id || null;
+
+          // Populate main form
+          const toDateString = (date: any) => {
+            if (!date) return '';
+            if (date instanceof Date) {
+              return date.toISOString();
+            }
+            return new Date(date).toISOString();
+          };
+
+          // Store form data to patch after dropdowns are loaded
+          const formDataToPatch = {
+            requestDate: toDateString(requestEventPermit.requestDate) || new Date().toISOString(),
+            lkpRequestTypeId: requestEventPermit.lkpRequestTypeId || null,
+            requestSide: requestEventPermit.requestSide || '',
+            supervisingSide: requestEventPermit.supervisingSide || null,
+            eventName: requestEventPermit.eventName || '',
+            startDate: toDateString(requestEventPermit.startDate) || '',
+            endDate: toDateString(requestEventPermit.endDate) || '',
+            lkpPermitTypeId: requestEventPermit.lkpPermitTypeId || null,
+            eventLocation: requestEventPermit.eventLocation || null,
+            amStartTime: requestEventPermit.amStartTime ? toDateString(requestEventPermit.amStartTime) : null,
+            amEndTime: requestEventPermit.amEndTime ? toDateString(requestEventPermit.amEndTime) : null,
+            pmStartTime: requestEventPermit.pmStartTime ? toDateString(requestEventPermit.pmStartTime) : null,
+            pmEndTime: requestEventPermit.pmEndTime ? toDateString(requestEventPermit.pmEndTime) : null,
+            admin: requestEventPermit.admin || '',
+            delegateName: requestEventPermit.delegateName || null,
+            alternateName: requestEventPermit.alternateName || null,
+            adminTel: requestEventPermit.adminTel?.replace('971', '') || '',
+            telephone: requestEventPermit.telephone?.replace('971', '') || null,
+            email: requestEventPermit.email || null,
+            notes: requestEventPermit.notes || null,
+            targetedAmount: requestEventPermit.targetedAmount || null,
+            beneficiaryIdNumber: requestEventPermit.beneficiaryIdNumber || null,
+            donationCollectionChannelIds: requestEventPermit.donationCollectionChannels?.map((c: any) => c.id) || [],
+          };
+          
+          // Store form data for later patching after dropdowns are loaded
+          this.pendingFormData = formDataToPatch;
+
+          // Load Identity Card Data if available
+          if (requestEventPermit.scIdentityCardReaderId) {
+            this._CharityEventPermitRequestService.getIdentityCardById(requestEventPermit.scIdentityCardReaderId)
+              .subscribe({
+                next: (identityCard) => {
+                  this.identityCardData = identityCard;
+                  this.showIdentityCardData = true;
+                },
+                error: () => {
+                  // Ignore errors for identity card
+                }
+              });
+          }
+
+          // Load existing partners
+          if (response.partners && response.partners.length > 0) {
+            this.existingPartners = response.partners.map((p: any) => ({
+              id: p.id,
+              name: p.name || '',
+              nameEn: p.nameEn || '',
+              type: p.type,
+              licenseIssuer: p.licenseIssuer || '',
+              licenseExpiryDate: p.licenseExpiryDate
+                ? (p.licenseExpiryDate instanceof Date
+                    ? p.licenseExpiryDate.toISOString().split('T')[0]
+                    : new Date(p.licenseExpiryDate).toISOString().split('T')[0])
+                : '',
+              licenseNumber: p.licenseNumber || '',
+              contactDetails: p.contactDetails || '',
+              jobRequirementsDetails: p.jobRequirementsDetails || '',
+              mainApplyServiceId: p.mainApplyServiceId || this.mainApplyServiceId || 0,
+              attachments: p.attachments || [],
+            }));
+            // Also add to partners array for display
+            this.partners = [...this.existingPartners];
+          }
+
+          // Load existing advertisements
+          if (requestEventPermit.requestAdvertisements && requestEventPermit.requestAdvertisements.length > 0) {
+            this.existingAdvertisements = requestEventPermit.requestAdvertisements.map((ad: any, index: number) => {
+              // Store existing attachments for this advertisement
+              if (ad.attachments && ad.attachments.length > 0) {
+                this.existingAdvertisementAttachments[index] = {};
+                ad.attachments.forEach((att: any) => {
+                  if (att.attConfigID && att.id) {
+                    this.existingAdvertisementAttachments[index][att.attConfigID] = {
+                      id: att.id,
+                      imgPath: att.imgPath,
+                      masterId: att.masterId || this.mainApplyServiceId || 0,
+                      attConfigID: att.attConfigID,
+                      lastModified: att.lastModified ? new Date(att.lastModified) : undefined,
+                    };
+                  }
+                });
+              }
+
+              return {
+                id: ad.id,
+                parentId: ad.parentId || null,
+                mainApplyServiceId: ad.mainApplyServiceId || this.mainApplyServiceId || null,
+                // Preserve requestNo as is (even if 0) - it might be a valid value from API
+                requestNo: ad.requestNo !== null && ad.requestNo !== undefined ? Number(ad.requestNo) : null,
+                serviceType: ad.serviceType || 1,
+                workFlowServiceType: ad.workFlowServiceType || 1,
+                requestDate: ad.requestDate || new Date().toISOString(),
+                provider: ad.provider || null,
+                adTitle: ad.adTitle || '',
+                adLang: ad.adLang || 'ar',
+                startDate: toDateString(ad.startDate) || '',
+                endDate: toDateString(ad.endDate) || '',
+                mobile: ad.mobile || null,
+                supervisorName: ad.supervisorName || null,
+                fax: ad.fax || null,
+                eMail: ad.eMail || null,
+                targetedAmount: ad.targetedAmount || null,
+                newAd: ad.newAd || null,
+                reNewAd: ad.reNewAd || null,
+                oldPermNumber: ad.oldPermNumber || null,
+                requestEventPermitId: ad.requestEventPermitId || this.requestEventPermitId || null,
+                notes: ad.notes || null,
+                attachments: ad.attachments || [],
+                requestAdvertisementTargets: ad.requestAdvertisementTargets || [],
+                requestAdvertisementAdLocations: ad.requestAdvertisementAdLocations || [],
+                requestAdvertisementAdMethods: ad.requestAdvertisementAdMethods || [],
+              };
+            });
+            // Also add to requestAdvertisements array for display
+            this.requestAdvertisements = [...this.existingAdvertisements];
+          }
+
+          // Store attachments data to load after configs are loaded (main request)
+          if (response.attachments && response.attachments.length > 0) {
+            this.pendingAttachmentsData = response.attachments.map((att: any) => ({
+              id: att.id,
+              imgPath: att.imgPath,
+              masterId: att.masterId,
+              attConfigID: att.attConfigID,
+              lastModified: att.lastModified,
+            }));
+          } else if (this.mainApplyServiceId) {
+            // If attachments not available, store masterId to load from API after configs
+            this.pendingAttachmentsMasterId = this.mainApplyServiceId;
+          }
+        }
+
+        // Load initial data (dropdowns, etc.) - this will also load attachment configs
+        // In update mode, we need to load dropdowns without resetting form data
+        this.loadInitialDataForUpdate();
+      },
+      error: (error) => {
+        console.error('Error loading request details:', error);
+        this.toastr.error(this.translate.instant('COMMON.ERROR_LOADING_DATA'));
+        this.router.navigate(['/request']);
+        this.isLoading = false;
+        this.spinnerService.hide();
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Load attachments from API using masterId and masterType
+   */
+  private loadAttachmentsFromAPI(masterId: number | null): void {
+    // Check if masterId is valid - must be a number
+    if (masterId === null || masterId === undefined || typeof masterId !== 'number') {
+      console.warn('Cannot load attachments: invalid masterId', masterId);
+      return;
+    }
+    
+    // At this point, TypeScript knows masterId is a number
+    const validMasterId: number = masterId;
+    const masterType = AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit;
+    
+    const sub = this.attachmentService.getListByMasterId(validMasterId, masterType).subscribe({
+      next: (attachments: AttachmentDto[]) => {
+        console.log('Loaded attachments from API:', attachments);
+        
+        const attachmentsData = attachments.map(att => ({
+          id: att.id,
+          imgPath: att.imgPath,
+          masterId: att.masterId,
+          attConfigID: att.attConfigID,
+          lastModified: att.lastModified,
+        }));
+        
+        if (attachmentsData.length > 0) {
+          this.loadExistingAttachments(attachmentsData);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading attachments from API:', error);
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Load existing attachments from request data
+   */
+  private loadExistingAttachments(attachmentsData: any[]): void {
+    console.log('Loading existing attachments:', attachmentsData);
+    
+    attachmentsData.forEach((attachment: any) => {
+      if (attachment.attConfigID && attachment.id) {
+        this.existingAttachments[attachment.attConfigID] = {
+          id: attachment.id,
+          imgPath: attachment.imgPath,
+          masterId: attachment.masterId || this.mainApplyServiceId || 0,
+          attConfigID: attachment.attConfigID,
+          lastModified: attachment.lastModified ? new Date(attachment.lastModified) : undefined,
+        };
+        
+        // Set preview for existing attachments
+        if (attachment.imgPath) {
+          const isImage = this.isImageFile(attachment.imgPath);
+          const imageUrl = isImage 
+            ? this.constructImageUrl(attachment.imgPath)
+            : undefined;
+          
+          // Set preview in the appropriate attachment state
+          const mainAttachType = AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit;
+          const state = this.ensureState(mainAttachType);
+          if (imageUrl) {
+            state.previews[attachment.attConfigID] = imageUrl;
+          }
+        }
+      }
+    });
+    
+    console.log('Existing attachments after loading:', this.existingAttachments);
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Construct full image URL from path
+   */
+  private constructImageUrl(path: string): string {
+    if (!path) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    const baseUrl = environment.apiBaseUrl.replace('/api', '');
+    return `${baseUrl}${path}`;
+  }
+
   // start partners
   initPartnerForm(): void {
     this.partnerForm = this.fb.group({
@@ -705,7 +1251,16 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   }
 
   removePartner(i: number): void {
+    const partner = this.partners[i];
+    
+    // If partner has an id, it's an existing partner - mark for deletion
+    if (partner?.id) {
+      this.partnersToDelete.push(partner.id);
+    }
+    
+    // Remove from display array
     this.partners.splice(i, 1);
+    this.toastr.success(this.translate.instant('SUCCESS.PARTNER_REMOVED'));
   }
 
   getPartnerTypeLabel(id: number): string {
@@ -826,6 +1381,13 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
   removeFile(type: AttachmentsConfigType, configId: number): void {
     const s = this.ensureState(type);
+    // If there's an existing attachment, mark it for deletion instead of just removing from UI
+    if (type === AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit && this.existingAttachments[configId]) {
+      this.removeExistingFile(configId);
+      return;
+    }
+    
+    // Otherwise, just remove the selected file
     delete s.selected[configId];
     delete s.previews[configId];
     delete this.selectedFiles[configId];
@@ -849,7 +1411,92 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     type: AttachmentsConfigType,
     configId: number
   ): string | undefined {
-    return this.ensureState(type).previews[configId];
+    const state = this.ensureState(type);
+    // If there's a selected file preview, return it
+    if (state.previews[configId]) {
+      return state.previews[configId];
+    }
+    // If there's an existing attachment, return its preview URL
+    if (type === AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit && this.existingAttachments[configId]) {
+      const attachment = this.existingAttachments[configId];
+      if (attachment.imgPath) {
+        const isImage = this.isImageFile(attachment.imgPath);
+        return isImage 
+          ? this.constructImageUrl(attachment.imgPath)
+          : undefined;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Check if file path is an image
+   */
+  isImageFile(imgPath: string | undefined | null): boolean {
+    if (!imgPath) return false;
+    return /\.(jpg|jpeg|png|gif)$/i.test(imgPath);
+  }
+
+  /**
+   * Get file name from path
+   */
+  getFileNameFromPath(imgPath: string | undefined | null): string {
+    if (!imgPath) return this.translate.instant('EDIT_PROFILE.FILE') || 'File';
+    const fileName = imgPath.split('/').pop() || imgPath.split('\\').pop() || '';
+    return fileName || this.translate.instant('EDIT_PROFILE.FILE') || 'File';
+  }
+
+  /**
+   * View attachment in new tab
+   */
+  viewAttachment(configId: number): void {
+    const attachment = this.existingAttachments[configId];
+    if (attachment && attachment.imgPath) {
+      const imageUrl = this.constructImageUrl(attachment.imgPath);
+      window.open(imageUrl, '_blank');
+    }
+  }
+
+  /**
+   * Trigger file input click programmatically
+   */
+  triggerFileInput(configId: number, type?: AttachmentsConfigType): void {
+    const typeStr = type === AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit 
+      ? 'permit' 
+      : type === AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign
+      ? 'reqAd'
+      : '';
+    const fileInput = document.getElementById(`file-${typeStr}-${configId}`) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  /**
+   * Remove existing attachment (mark for deletion)
+   */
+  removeExistingFile(configId: number): void {
+    const existingAttachment = this.existingAttachments[configId];
+    if (!existingAttachment) return;
+    
+    // Show confirmation dialog
+    const confirmMessage = this.translate.instant('EDIT_PROFILE.CONFIRM_DELETE_ATTACHMENT') || 'Are you sure you want to delete this attachment?';
+    if (confirm(confirmMessage)) {
+      // Mark for deletion (will be processed during form submission)
+      this.attachmentsToDelete[configId] = existingAttachment.id;
+      
+      // Remove from UI - this will show the upload area
+      delete this.existingAttachments[configId];
+      
+      // Remove from state previews
+      const mainAttachType = AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit;
+      const state = this.ensureState(mainAttachType);
+      delete state.previews[configId];
+      
+      this.toastr.success(
+        this.translate.instant('EDIT_PROFILE.ATTACHMENT_MARKED_FOR_DELETION') || 'Attachment marked for deletion'
+      );
+    }
   }
 
   // ==============
@@ -1200,12 +1847,489 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     return true;
   }
 
+  /**
+   * Convert file to base64 string
+   */
+  private async fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /**
+   * Delete attachments marked for deletion
+   */
+  private async deleteAttachments(attachmentsToDelete: { [key: number]: number }): Promise<void> {
+    const deletePromises = Object.values(attachmentsToDelete).map(attachmentId => {
+      return this.attachmentService.deleteAsync(attachmentId).toPromise();
+    });
+
+    try {
+      await Promise.all(deletePromises);
+      console.log('Attachments deleted successfully');
+    } catch (error) {
+      console.error('Error deleting attachments:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle attachment operations (create, update, delete) for main request in update mode
+   */
+  async handleMainAttachmentOperations(): Promise<void> {
+    const attachmentPromises: Promise<any>[] = [];
+    
+    // First handle deletions
+    if (Object.keys(this.attachmentsToDelete).length > 0) {
+      try {
+        await this.deleteAttachments(this.attachmentsToDelete);
+      } catch (error) {
+        console.error('Error deleting attachments:', error);
+        throw error;
+      }
+    }
+    
+    // Then handle new file uploads and updates
+    const mainAttachType = AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit;
+    const state = this.ensureState(mainAttachType);
+    
+    for (const [configId, file] of Object.entries(state.selected)) {
+      const configIdNum = parseInt(configId);
+      const existingAttachment = this.existingAttachments[configIdNum];
+      
+      if (existingAttachment) {
+        // Update existing attachment
+        const updateAttachmentDto: UpdateAttachmentBase64Dto = {
+          id: existingAttachment.id,
+          fileBase64: await this.fileToBase64(file as File),
+          fileName: (file as File).name,
+          masterId: existingAttachment.masterId || this.mainApplyServiceId || 0,
+          attConfigID: configIdNum
+        };
+        
+        attachmentPromises.push(
+          this.attachmentService.updateAsync(updateAttachmentDto).toPromise()
+        );
+      } else {
+        // Create new attachment
+        const newAttachmentDto: AttachmentBase64Dto = {
+          fileBase64: await this.fileToBase64(file as File),
+          fileName: (file as File).name,
+          masterId: this.mainApplyServiceId || 0,
+          attConfigID: configIdNum
+        };
+        
+        attachmentPromises.push(
+          this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise()
+        );
+      }
+    }
+
+    // Execute all attachment operations
+    if (attachmentPromises.length > 0) {
+      try {
+        await Promise.all(attachmentPromises);
+        console.log('Main attachments handled successfully');
+      } catch (attachmentError) {
+        console.error('Error handling attachments:', attachmentError);
+        throw attachmentError;
+      }
+    }
+    
+    // Clear deletion tracking after successful operations
+    this.attachmentsToDelete = {};
+  }
+
+  /**
+   * Handle partner operations (create new, delete) in update mode
+   */
+  async handlePartnerOperations(): Promise<void> {
+    // First handle deletions
+    if (this.partnersToDelete.length > 0) {
+      const deletePromises = this.partnersToDelete.map(partnerId => {
+        return this.partnerService.delete(partnerId).toPromise();
+      });
+
+      try {
+        await Promise.all(deletePromises);
+        console.log('Partners deleted successfully');
+      } catch (error) {
+        console.error('Error deleting partners:', error);
+        throw error;
+      }
+    }
+
+    // Then handle new partners (only partners without id are new)
+    const newPartners = this.partners.filter(p => !p.id);
+    for (const partner of newPartners) {
+      try {
+        const toISO = (input: string | Date) => {
+          const s =
+            typeof input === 'string' && input.length === 16
+              ? input + ':00'
+              : input;
+          const d = new Date(s as any);
+          return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+        };
+
+        const partnerDto: any = {
+          name: partner.name,
+          nameEn: partner.nameEn,
+          type: partner.type,
+          licenseIssuer: partner.licenseIssuer || undefined,
+          licenseExpiryDate: partner.licenseExpiryDate
+            ? toISO(partner.licenseExpiryDate)
+            : undefined,
+          licenseNumber: partner.licenseNumber || undefined,
+          contactDetails: partner.contactDetails?.toString() || undefined,
+          jobRequirementsDetails: partner.jobRequirementsDetails || undefined,
+          mainApplyServiceId: this.mainApplyServiceId || 0,
+          attachments: partner.attachments || [],
+        };
+        
+        await this.partnerService.create(partnerDto).toPromise();
+        console.log('Partner created successfully:', partnerDto);
+      } catch (error) {
+        console.error('Error creating partner:', error);
+        throw error;
+      }
+    }
+
+    // Clear deletion tracking after successful operations
+    this.partnersToDelete = [];
+  }
+
+  /**
+   * Handle advertisement operations (create, update, delete) in update mode
+   */
+  async handleAdvertisementOperations(isDraft: boolean = false): Promise<void> {
+    // Helper function to convert date to ISO string
+    const toISO = (input: string | Date) => {
+      if (!input) return '';
+      const s =
+        typeof input === 'string' && input.length === 16
+          ? input + ':00'
+          : input;
+      const d = new Date(s as any);
+      return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+    };
+
+    // Helper function to get advertisement attachments for update
+    // Note: For update, we only send new attachments (files that were selected)
+    // Existing attachments are handled separately via attachment service
+    const getAdvertisementAttachmentsForUpdate = async (adIndex: number): Promise<any[]> => {
+      const attachments: any[] = [];
+
+      // Get newly selected files from state and convert to base64
+      const adAttachType = AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
+      const state = this.state(adAttachType);
+
+      if (state.configs) {
+        for (const cfg of state.configs) {
+          const selectedFile = state.selected[cfg.id!];
+          if (selectedFile) {
+            try {
+              const base64 = await this.fileToBase64(selectedFile);
+              attachments.push({
+                fileBase64: base64,
+                fileName: selectedFile.name,
+                masterId: this.mainApplyServiceId || 0,
+                attConfigID: cfg.id!,
+              });
+            } catch (error) {
+              console.error('Error converting file to base64:', error);
+            }
+          }
+        }
+      }
+
+      // Note: Existing attachments are not included in update DTO
+      // They are handled separately via attachment service if needed
+      return attachments;
+    };
+
+    // First handle deletions
+    if (this.advertisementsToDelete.length > 0) {
+      const deletePromises = this.advertisementsToDelete.map(adId => {
+        return this._CharityEventPermitRequestService.deleteAdvertisement(adId).toPromise();
+      });
+
+      try {
+        await Promise.all(deletePromises);
+        console.log('Advertisements deleted successfully');
+      } catch (error) {
+        console.error('Error deleting advertisements:', error);
+        throw error;
+      }
+    }
+
+    // Then handle updates and creates
+    for (let i = 0; i < this.requestAdvertisements.length; i++) {
+      const advertisement = this.requestAdvertisements[i];
+      
+      if (advertisement.id) {
+        // Update existing advertisement
+        try {
+          // For existing advertisements, if we're submitting (not draft), set isDraft = false
+          // If we're saving as draft, keep the existing isDraft value or set to true
+          const advertisementIsDraft = isDraft ? true : false;
+
+          // Get new attachments if any (files that were selected but not yet uploaded)
+          const adAttachments = await getAdvertisementAttachmentsForUpdate(i);
+
+          const updateDto: any = {
+            id: advertisement.id,
+            parentId: this.mainApplyServiceId || null, // parentId like partner - use mainApplyServiceId
+            mainApplyServiceId: advertisement.mainApplyServiceId || this.mainApplyServiceId || null,
+            // Only include requestNo if it's a valid number (not null/undefined/0)
+            ...(advertisement.requestNo !== null && advertisement.requestNo !== undefined && advertisement.requestNo !== 0
+              ? { requestNo: Number(advertisement.requestNo) }
+              : {}),
+            serviceType: advertisement.serviceType || 1,
+            workFlowServiceType: advertisement.workFlowServiceType || 1,
+            requestDate: toISO(advertisement.requestDate || new Date()),
+            provider: advertisement.provider || null,
+            adTitle: advertisement.adTitle || '',
+            adLang: advertisement.adLang || 'ar',
+            startDate: toISO(advertisement.startDate),
+            endDate: toISO(advertisement.endDate),
+            mobile: advertisement.mobile || null,
+            supervisorName: advertisement.supervisorName || null,
+            fax: advertisement.fax || null,
+            eMail: advertisement.eMail || null,
+            targetedAmount: advertisement.targetedAmount || null,
+            newAd: advertisement.newAd || null,
+            reNewAd: advertisement.reNewAd || null,
+            oldPermNumber: advertisement.oldPermNumber || null,
+            requestEventPermitId: advertisement.requestEventPermitId || this.requestEventPermitId || null,
+            notes: advertisement.notes || null,
+            isDraft: advertisementIsDraft,
+            // Only include attachments if there are new files to upload
+            ...(adAttachments.length > 0 ? { attachments: adAttachments } : {}),
+            requestAdvertisementTargets: advertisement.requestAdvertisementTargets?.map((t: any) => ({
+              id: t.id || undefined,
+              mainApplyServiceId: t.mainApplyServiceId || this.mainApplyServiceId || null,
+              lkpTargetTypeId: t.lkpTargetTypeId || t.id,
+              lkpTargetTypeText: t.lkpTargetTypeText || null,
+              othertxt: t.othertxt || null,
+            })) || [],
+            requestAdvertisementAdLocations: advertisement.requestAdvertisementAdLocations?.map((l: any) => ({
+              id: l.id || undefined,
+              mainApplyServiceId: l.mainApplyServiceId || this.mainApplyServiceId || null,
+              location: l.location || null,
+            })) || [],
+            requestAdvertisementAdMethods: advertisement.requestAdvertisementAdMethods?.map((m: any) => ({
+              id: m.id || undefined,
+              mainApplyServiceId: m.mainApplyServiceId || this.mainApplyServiceId || null,
+              lkpAdMethodId: m.lkpAdMethodId || m.id,
+              lkpAdMethodText: m.lkpAdMethodText || null,
+              othertxt: m.othertxt || null,
+            })) || [],
+          };
+          
+          await this._CharityEventPermitRequestService.updateAdvertisement(updateDto).toPromise();
+          console.log('Advertisement updated successfully:', updateDto);
+
+          // Note: Existing attachments deletion is handled separately via attachment service
+          // New attachments are included in the updateDto above
+        } catch (error) {
+          console.error('Error updating advertisement:', error);
+          throw error;
+        }
+      } else {
+        // Create new advertisement using Create API
+        try {
+          // Get attachments for this advertisement - need to convert files to base64
+          const adAttachType = AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
+          const state = this.state(adAttachType);
+          const attachments: any[] = [];
+
+          // Get newly selected files and convert to base64
+          if (state.configs) {
+            for (const cfg of state.configs) {
+              const selectedFile = state.selected[cfg.id!];
+              if (selectedFile) {
+                try {
+                  const base64 = await this.fileToBase64(selectedFile);
+                  attachments.push({
+                    fileBase64: base64,
+                    fileName: selectedFile.name,
+                    masterId: this.mainApplyServiceId || 0,
+                    attConfigID: cfg.id!,
+                  });
+                } catch (error) {
+                  console.error('Error converting file to base64:', error);
+                }
+              }
+            }
+          }
+
+          const createDto: any = {
+            parentId: this.mainApplyServiceId || null, // parentId like partner - use mainApplyServiceId
+            mainApplyServiceId: this.mainApplyServiceId || null,
+            // Only include requestNo if it's a valid number (not null/undefined/0)
+            // In create mode, requestNo is typically set by the backend
+            ...(advertisement.requestNo !== null && advertisement.requestNo !== undefined && advertisement.requestNo !== 0
+              ? { requestNo: Number(advertisement.requestNo) }
+              : {}),
+            serviceType: advertisement.serviceType || 1,
+            workFlowServiceType: advertisement.workFlowServiceType || 1,
+            requestDate: toISO(advertisement.requestDate || new Date()),
+            provider: advertisement.provider || null,
+            adTitle: advertisement.adTitle || '',
+            adLang: advertisement.adLang || 'ar',
+            startDate: toISO(advertisement.startDate),
+            endDate: toISO(advertisement.endDate),
+            mobile: advertisement.mobile || null,
+            supervisorName: advertisement.supervisorName || null,
+            fax: advertisement.fax || null,
+            eMail: advertisement.eMail || null,
+            targetedAmount: advertisement.targetedAmount || null,
+            newAd: advertisement.newAd || null,
+            reNewAd: advertisement.reNewAd || null,
+            oldPermNumber: advertisement.oldPermNumber || null,
+            requestEventPermitId: this.requestEventPermitId || null,
+            notes: advertisement.notes || null,
+            isDraft: isDraft, // Use isDraft parameter - true for draft, false for submit
+            attachments: attachments,
+            requestAdvertisementTargets: advertisement.requestAdvertisementTargets?.map((t: any) => ({
+              mainApplyServiceId: this.mainApplyServiceId || null,
+              lkpTargetTypeId: t.lkpTargetTypeId || t.id,
+              othertxt: t.othertxt || null,
+            })) || [],
+            requestAdvertisementAdLocations: advertisement.requestAdvertisementAdLocations?.map((l: any) => ({
+              mainApplyServiceId: this.mainApplyServiceId || null,
+              location: l.location || '',
+            })) || [],
+            requestAdvertisementAdMethods: advertisement.requestAdvertisementAdMethods?.map((m: any) => ({
+              mainApplyServiceId: this.mainApplyServiceId || null,
+              lkpAdMethodId: m.lkpAdMethodId || m.id,
+              othertxt: m.othertxt || null,
+            })) || [],
+          };
+          
+          await this._CharityEventPermitRequestService.createAdvertisement(createDto).toPromise();
+          console.log('Advertisement created successfully:', createDto);
+        } catch (error) {
+          console.error('Error creating advertisement:', error);
+          throw error;
+        }
+      }
+    }
+
+    // Clear deletion tracking after successful operations
+    this.advertisementsToDelete = [];
+  }
+
+  /**
+   * Handle advertisement creation in create mode (after main request is created)
+   */
+  async handleAdvertisementOperationsCreate(isDraft: boolean = false): Promise<void> {
+    // Helper function to convert date to ISO string
+    const toISO = (input: string | Date) => {
+      if (!input) return '';
+      const s =
+        typeof input === 'string' && input.length === 16
+          ? input + ':00'
+          : input;
+      const d = new Date(s as any);
+      return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+    };
+
+    // Create all advertisements using the Create API
+    for (let i = 0; i < this.requestAdvertisements.length; i++) {
+      const advertisement = this.requestAdvertisements[i];
+      
+      try {
+        // Get attachments for this advertisement - need to convert files to base64
+        const adAttachType = AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
+        const state = this.state(adAttachType);
+        const attachments: any[] = [];
+
+        // Get attachments from advertisement.attachments (stored when addAdvertisement was called)
+        // These attachments are already in the correct format from getValidAttachments
+        // RequestAdvertisementAttachment contains: fileBase64, fileName, masterId, attConfigID
+        if (advertisement.attachments && advertisement.attachments.length > 0) {
+          // Attachments are already in the correct format - just use them directly
+          for (const att of advertisement.attachments) {
+            if (att.fileBase64 && att.fileName) {
+              attachments.push({
+                fileBase64: att.fileBase64,
+                fileName: att.fileName,
+                masterId: this.mainApplyServiceId || 0,
+                attConfigID: att.attConfigID,
+              });
+            }
+          }
+        }
+
+        const createDto: any = {
+          parentId: this.mainApplyServiceId || null, // parentId like partner - use mainApplyServiceId
+          mainApplyServiceId: this.mainApplyServiceId || null,
+          // Only include requestNo if it's a valid number (not null/undefined/0)
+          // In create mode, requestNo is typically set by the backend
+          ...(advertisement.requestNo !== null && advertisement.requestNo !== undefined && advertisement.requestNo !== 0
+              ? { requestNo: Number(advertisement.requestNo) }
+              : {}),
+          serviceType: advertisement.serviceType || 1,
+          workFlowServiceType: advertisement.workFlowServiceType || 1,
+          requestDate: toISO(advertisement.requestDate || new Date()),
+          provider: advertisement.provider || null,
+          adTitle: advertisement.adTitle || '',
+          adLang: advertisement.adLang || 'ar',
+          startDate: toISO(advertisement.startDate),
+          endDate: toISO(advertisement.endDate),
+          mobile: advertisement.mobile || null,
+          supervisorName: advertisement.supervisorName || null,
+          fax: advertisement.fax || null,
+          eMail: advertisement.eMail || null,
+          targetedAmount: advertisement.targetedAmount || null,
+          newAd: advertisement.newAd || null,
+          reNewAd: advertisement.reNewAd || null,
+          oldPermNumber: advertisement.oldPermNumber || null,
+          requestEventPermitId: this.requestEventPermitId || null,
+          notes: advertisement.notes || null,
+          isDraft: isDraft, // Use isDraft parameter - true for draft, false for submit
+          attachments: attachments,
+          requestAdvertisementTargets: advertisement.requestAdvertisementTargets?.map((t: any) => ({
+            mainApplyServiceId: this.mainApplyServiceId || null,
+            lkpTargetTypeId: t.lkpTargetTypeId || t.id,
+            othertxt: t.othertxt || null,
+          })) || [],
+          requestAdvertisementAdLocations: advertisement.requestAdvertisementAdLocations?.map((l: any) => ({
+            mainApplyServiceId: this.mainApplyServiceId || null,
+            location: l.location || '',
+          })) || [],
+          requestAdvertisementAdMethods: advertisement.requestAdvertisementAdMethods?.map((m: any) => ({
+            mainApplyServiceId: this.mainApplyServiceId || null,
+            lkpAdMethodId: m.lkpAdMethodId || m.id,
+            othertxt: m.othertxt || null,
+          })) || [],
+        };
+        
+        await this._CharityEventPermitRequestService.createAdvertisement(createDto).toPromise();
+        console.log('Advertisement created successfully:', createDto);
+      } catch (error) {
+        console.error('Error creating advertisement:', error);
+        throw error;
+      }
+    }
+  }
+
   // Submit form
-  onSubmit(): void {
+  async onSubmit(isDraft: boolean = false): Promise<void> {
     if (this.isSaving) return;
 
     this.submitted = true;
-    if (!this.canSubmit()) {
+    // For draft, we don't need strict validation - allow saving even if form is incomplete
+    // For final submit, we need all validations to pass
+    if (!isDraft && !this.canSubmit()) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
       return;
     }
@@ -1220,97 +2344,243 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // helpers
-      const toISO = (input: string | Date) => {
-        const s =
-          typeof input === 'string' && input.length === 16
-            ? input + ':00'
-            : input;
-        const d = new Date(s as any);
-        return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
-      };
+      // Check if we're in update mode
+      const isUpdateMode = !!this.requestEventPermitId && !!this.mainApplyServiceId;
 
-      const mainAttachType =
-        AttachmentsConfigType.DeclarationOfCharityEffectiveness;
-      const mainAttachments = this.getValidAttachments(mainAttachType).map(
-        (a) => ({
-          ...a,
-          masterId: a.masterId || 0,
-        })
-      );
+      if (isUpdateMode) {
+        // Update mode - handle attachments, partners, and advertisements separately
+        try {
+          await this.handleMainAttachmentOperations();
+        } catch (attachmentError) {
+          console.error('Error handling attachments:', attachmentError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_ATTACHMENTS') || 'Warning saving attachments'
+          );
+        }
 
-      const formData = this.firstStepForm.value;
-      const payload: any = {
-        ...formData,
-        lkpPermitTypeId: formData.lkpPermitTypeId,
-        lkpRequestTypeId: +formData.lkpRequestTypeId,
+        try {
+          await this.handlePartnerOperations();
+        } catch (partnerError) {
+          console.error('Error handling partners:', partnerError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_PARTNERS') || 'Warning saving partners'
+          );
+        }
 
-        requestDate: toISO(formData.requestDate ?? new Date()),
-        startDate: toISO(formData.startDate),
-        endDate: toISO(formData.endDate),
-        adminTel: `971${formData.adminTel}`, // Add 971 prefix
-        telephone: formData.telephone ? `971${formData.telephone}` : null, // Add 971 prefix
+        try {
+          await this.handleAdvertisementOperations(isDraft);
+        } catch (advertisementError) {
+          console.error('Error handling advertisements:', advertisementError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_ADVERTISEMENTS') || 'Warning saving advertisements'
+          );
+        }
 
-        scIdentityCardReaderId: this.identityCardData?.id || null, // Add identity card reader ID
-        requestAdvertisements: this.requestAdvertisements,
-        attachments: mainAttachments,
-        partners: (this.partners || []).map((p) => ({
-          name: p.name,
-          type: Number(p.type),
-          licenseIssuer: p.licenseIssuer ?? null,
-          licenseExpiryDate: p.licenseExpiryDate
-            ? toISO(p.licenseExpiryDate)
-            : null,
-          licenseNumber: p.licenseNumber ?? null,
-          contactDetails: p.contactDetails.toString() ?? null,
-          mainApplyServiceId: p.mainApplyServiceId ?? null,
-          attachments: p.attachments,
-        })),
-      };
+        // helpers
+        const toISO = (input: string | Date) => {
+          const s =
+            typeof input === 'string' && input.length === 16
+              ? input + ':00'
+              : input;
+          const d = new Date(s as any);
+          return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+        };
 
-      const sub = this._CharityEventPermitRequestService
-        .createRequestEvent(payload)
-        .subscribe({
-          next: (res) => {
+        const formData = this.firstStepForm.value;
+        const updatePayload: any = {
+          id: this.requestEventPermitId!,
+          mainApplyServiceId: this.mainApplyServiceId!,
+          requestDate: toISO(formData.requestDate ?? new Date()),
+          lkpRequestTypeId: +formData.lkpRequestTypeId,
+          requestSide: formData.requestSide || '',
+          supervisingSide: formData.supervisingSide || null,
+          eventName: formData.eventName || '',
+          startDate: toISO(formData.startDate),
+          endDate: toISO(formData.endDate),
+          lkpPermitTypeId: formData.lkpPermitTypeId,
+          eventLocation: formData.eventLocation || null,
+          admin: formData.admin || '',
+          delegateName: formData.delegateName || null,
+          alternateName: formData.alternateName || null,
+          adminTel: formData.adminTel ? `971${formData.adminTel}` : null,
+          telephone: formData.telephone ? `971${formData.telephone}` : null,
+          email: formData.email || null,
+          notes: formData.notes || null,
+          targetedAmount: formData.targetedAmount || null,
+          beneficiaryIdNumber: formData.beneficiaryIdNumber || null,
+          isDraft: isDraft,
+          donationCollectionChannelIds: formData.donationCollectionChannelIds || [],
+        };
 
-            this.toastr.success(
-              this.translate.instant('SUCCESS.REQUEST_Project_Campaign')
-            );
-            this.router.navigate(['/request']);
-            this.isSaving = false;
-          },
-          error: (error: any) => {
+        const sub = this._CharityEventPermitRequestService
+          .updateRequestEvent(updatePayload)
+          .subscribe({
+            next: (res) => {
+              if (isDraft) {
+                this.toastr.success(
+                  this.translate.instant('SUCCESS.REQUEST_SAVED_AS_DRAFT') || 'Request saved as draft'
+                );
+              } else {
+                this.toastr.success(
+                  this.translate.instant('SUCCESS.REQUEST_UPDATED') || 'Request updated successfully'
+                );
+              }
+              this.router.navigate(['/request']);
+              this.isSaving = false;
+            },
+            error: (error: any) => {
+              if (error.error && error.error.reason) {
+                this.toastr.error(error.error.reason);
+              } else {
+                if (isDraft) {
+                  this.toastr.error(
+                    this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft'
+                  );
+                } else {
+                  this.toastr.error(
+                    this.translate.instant('ERRORS.FAILED_UPDATE_REQUEST') || 'Failed to update request'
+                  );
+                }
+              }
+              this.isSaving = false;
+            },
+          });
+        this.subscriptions.push(sub);
+      } else {
+        // Create mode
+        // helpers
+        const toISO = (input: string | Date) => {
+          const s =
+            typeof input === 'string' && input.length === 16
+              ? input + ':00'
+              : input;
+          const d = new Date(s as any);
+          return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+        };
 
-            // Check if it's a business error with a specific reason
-            if (error.error && error.error.reason) {
-              // Show the specific reason from the API response
-              this.toastr.error(error.error.reason);
-            } else {
-              // Fallback to generic error message
-              this.toastr.error(
-                this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
-              );
-            }
+        const mainAttachType =
+          AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit;
+        const mainAttachments = this.getValidAttachments(mainAttachType).map(
+          (a) => ({
+            ...a,
+            masterId: a.masterId || 0,
+          })
+        );
 
-            this.isSaving = false;
-          },
-        });
-      this.subscriptions.push(sub);
+        const formData = this.firstStepForm.value;
+
+        // Don't include advertisements in the main create payload - they will be created separately
+        const payload: any = {
+          ...formData,
+          lkpPermitTypeId: formData.lkpPermitTypeId,
+          lkpRequestTypeId: +formData.lkpRequestTypeId,
+
+          requestDate: toISO(formData.requestDate ?? new Date()),
+          startDate: toISO(formData.startDate),
+          endDate: toISO(formData.endDate),
+          adminTel: `971${formData.adminTel}`, // Add 971 prefix
+          telephone: formData.telephone ? `971${formData.telephone}` : null, // Add 971 prefix
+
+          scIdentityCardReaderId: this.identityCardData?.id || null, // Add identity card reader ID
+          requestAdvertisements: [], // Don't include advertisements - they will be created separately
+          attachments: mainAttachments,
+          partners: (this.partners || []).map((p) => ({
+            name: p.name,
+            nameEn: p.nameEn,
+            type: Number(p.type),
+            licenseIssuer: p.licenseIssuer ?? null,
+            licenseExpiryDate: p.licenseExpiryDate
+              ? toISO(p.licenseExpiryDate)
+              : null,
+            licenseNumber: p.licenseNumber ?? null,
+            contactDetails: p.contactDetails?.toString() ?? null,
+            jobRequirementsDetails: p.jobRequirementsDetails ?? null,
+            mainApplyServiceId: null, // Will be set by backend
+            attachments: p.attachments || [],
+          })),
+          isDraft: isDraft,
+        };
+
+        const sub = this._CharityEventPermitRequestService
+          .createRequestEvent(payload)
+          .subscribe({
+            next: async (res) => {
+              // After creating the main request, get the mainApplyServiceId and requestEventPermitId
+              const createdMainApplyServiceId = res?.id || res?.mainApplyServiceId || null;
+              const createdRequestEventPermitId = res?.requestEventPermit?.id || res?.requestEventPermitId || null;
+
+              // Update the component's IDs for advertisement creation
+              if (createdMainApplyServiceId) {
+                this.mainApplyServiceId = createdMainApplyServiceId;
+              }
+              if (createdRequestEventPermitId) {
+                this.requestEventPermitId = createdRequestEventPermitId;
+              }
+
+              // Now create advertisements separately using the Create API
+              if (this.requestAdvertisements.length > 0) {
+                try {
+                  await this.handleAdvertisementOperationsCreate(isDraft);
+                } catch (advertisementError) {
+                  console.error('Error creating advertisements:', advertisementError);
+                  this.toastr.warning(
+                    this.translate.instant('ERRORS.FAILED_SAVE_ADVERTISEMENTS') || 'Warning saving advertisements'
+                  );
+                }
+              }
+
+              if (isDraft) {
+                this.toastr.success(
+                  this.translate.instant('SUCCESS.REQUEST_SAVED_AS_DRAFT') || 'Request saved as draft'
+                );
+              } else {
+                this.toastr.success(
+                  this.translate.instant('SUCCESS.REQUEST_Project_Campaign')
+                );
+              }
+              this.router.navigate(['/request']);
+              this.isSaving = false;
+            },
+            error: (error: any) => {
+              if (error.error && error.error.reason) {
+                this.toastr.error(error.error.reason);
+              } else {
+                if (isDraft) {
+                  this.toastr.error(
+                    this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft'
+                  );
+                } else {
+                  this.toastr.error(
+                    this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+                  );
+                }
+              }
+              this.isSaving = false;
+            },
+          });
+        this.subscriptions.push(sub);
+      }
     } catch (error: any) {
-
-      // Check if it's a business error with a specific reason
       if (error.error && error.error.reason) {
-        // Show the specific reason from the API response
         this.toastr.error(error.error.reason);
       } else {
-        // Fallback to generic error message
-        this.toastr.error(
-          this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
-        );
+        if (isDraft) {
+          this.toastr.error(
+            this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft'
+          );
+        } else {
+          this.toastr.error(
+            this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+          );
+        }
       }
-
       this.isSaving = false;
     }
+  }
+
+  // Save as Draft
+  onSaveDraft(): void {
+    this.onSubmit(true);
   }
 
   isStepActive(step: number): boolean {
@@ -1409,9 +2679,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     }));
 
     const ad: any = {
-      parentId: Number(v.parentId ?? 0),
+      parentId: this.mainApplyServiceId || mainId || null, // parentId like partner - use mainApplyServiceId
       mainApplyServiceId: mainId,
-      requestNo: Number(v.requestNo ?? 0),
+      // In create mode, requestNo is not set - it will be set by the backend
+      // Only set requestNo if it's a valid number (not 0 or null)
+      requestNo: (v.requestNo && v.requestNo !== 0) ? Number(v.requestNo) : null,
 
       serviceType: Number(v.serviceType) as any,
       workFlowServiceType: Number(v.workFlowServiceType) as any,
@@ -1481,7 +2753,21 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   }
 
   removeAdvertisement(i: number): void {
+    const advertisement = this.requestAdvertisements[i];
+    
+    // If advertisement has an id, it's an existing advertisement - mark for deletion
+    if (advertisement?.id) {
+      this.advertisementsToDelete.push(advertisement.id);
+      // Also remove from existingAdvertisements if it's there
+      const existingIndex = this.existingAdvertisements.findIndex(ad => ad.id === advertisement.id);
+      if (existingIndex !== -1) {
+        this.existingAdvertisements.splice(existingIndex, 1);
+      }
+    }
+    
+    // Remove from display array
     this.requestAdvertisements.splice(i, 1);
+    this.toastr.success(this.translate.instant('SUCCESS.AD_REMOVED') || 'Advertisement removed');
   }
 
   // new helper

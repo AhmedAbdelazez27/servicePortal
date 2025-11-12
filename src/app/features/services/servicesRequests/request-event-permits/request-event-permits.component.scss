@@ -77,3 +77,65 @@
     opacity: 1;
   }
 }
+
+// Existing attachment container styles
+.existing-attachment-container {
+  position: relative;
+  padding: 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #8d734d;
+    background-color: #fff;
+
+    .attachment-hover-overlay {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  .file-icon {
+    width: 150px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    font-size: 2rem;
+    color: #6c757d;
+  }
+
+  .file-name {
+    font-weight: 500;
+    color: #495057;
+    word-break: break-word;
+  }
+}
+
+.attachment-hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 10;
+
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+}
