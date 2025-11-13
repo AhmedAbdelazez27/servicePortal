@@ -595,6 +595,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         const charityEventPermit = response.charityEventPermit;
         if (charityEventPermit) {
           this.mainApplyServiceId = response.id || null;
+          const charityEventPermitId = charityEventPermit.id || null; // Store charityEventPermit.id
 
           // Populate main form
           const toDateString = (date: any) => {
@@ -659,6 +660,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           }
 
           // Load existing advertisements
+          console.log('Loading advertisements from charityEventPermit:', charityEventPermit.requestAdvertisements);
           if (charityEventPermit.requestAdvertisements && charityEventPermit.requestAdvertisements.length > 0) {
             this.existingAdvertisements = charityEventPermit.requestAdvertisements.map((ad: any, index: number) => {
               // Store existing attachments for this advertisement
@@ -698,6 +700,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
                 newAd: ad.newAd || null,
                 reNewAd: ad.reNewAd || null,
                 oldPermNumber: ad.oldPermNumber || null,
+                charityEventPermitId: ad.charityEventPermitId || charityEventPermitId || null, // Add charityEventPermitId
                 notes: ad.notes || null,
                 attachments: ad.attachments || [],
                 requestAdvertisementTargets: ad.requestAdvertisementTargets || [],
@@ -707,6 +710,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
             });
             // Also add to requestAdvertisements array for display
             this.requestAdvertisements = [...this.existingAdvertisements];
+            console.log('requestAdvertisements after loading:', this.requestAdvertisements);
             
             // Load advertisement locations
             if (this.requestAdvertisements.length > 0) {
@@ -1578,6 +1582,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
             newAd: advertisement.newAd || null,
             reNewAd: advertisement.reNewAd || null,
             oldPermNumber: advertisement.oldPermNumber || null,
+            charityEventPermitId: advertisement.charityEventPermitId || this.loadformData?.charityEventPermit?.id || null,
             notes: advertisement.notes || null,
             isDraft: advertisementIsDraft,
             ...(adAttachments.length > 0 ? { attachments: adAttachments } : {}),
@@ -1649,6 +1654,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
             newAd: advertisement.newAd || null,
             reNewAd: advertisement.reNewAd || null,
             oldPermNumber: advertisement.oldPermNumber || null,
+            charityEventPermitId: this.loadformData?.charityEventPermit?.id || null,
             notes: advertisement.notes || null,
             isDraft: isDraft,
             attachments: attachments,
@@ -1954,10 +1960,12 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       masterId: a.masterId || mainId
     }));
 
-    const ad: RequestAdvertisement = {
-      parentId: Number(v.parentId ?? 0),
+    const ad: any = {
+      parentId: this.mainApplyServiceId || mainId || null, // Use mainApplyServiceId if available
       mainApplyServiceId: mainId,
-      requestNo: Number(v.requestNo ?? 0),
+      // In create mode, requestNo is not set - it will be set by the backend
+      // Only set requestNo if it's a valid number (not 0 or null)
+      requestNo: (v.requestNo && v.requestNo !== 0) ? Number(v.requestNo) : null,
 
       serviceType: Number(v.serviceType) as any,
       workFlowServiceType: Number(v.workFlowServiceType) as any,
@@ -1967,7 +1975,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
       provider: v.provider ?? null,
       adTitle: v.adTitle,
-      adLang: v.adLang,
+      adLang: 'ar', // Default to Arabic since adLang is not in the form
 
       startDate: toRFC3339(v.startDate)!,
       endDate: toRFC3339(v.endDate)!,
@@ -1982,9 +1990,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       newAd: v.newAd === true ? true : (v.reNewAd ? false : true),
       reNewAd: v.reNewAd === true ? true : false,
       oldPermNumber: v.oldPermNumber ?? null,
+      charityEventPermitId: this.loadformData?.charityEventPermit?.id || null, // Use charityEventPermit.id if available in update mode
       notes: v.notes ?? null,
-
-      requestEventPermitId: v.requestEventPermitId != null ? Number(v.requestEventPermitId) : null,
 
       attachments: adAttachments,
 
@@ -2014,10 +2021,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       serviceType: 1,
       workFlowServiceType: 1,
       requestDate: new Date().toISOString(),
-      userId: v.userId,
-      adLang: 'ar',
-      newAd: true,
-      reNewAd: false,
       targetTypeIds: [],
       adMethodIds: []
     });
