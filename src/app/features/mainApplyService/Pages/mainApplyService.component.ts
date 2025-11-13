@@ -254,6 +254,9 @@ export class MainApplyServiceComponent {
       } else if (event.row.serviceId === 1) {
         // Route to fasting-tent-request with id as param for draft update
         this.router.navigate(['/fasting-tent-request', event.row.id]);
+      } else if (event.row.serviceId == this.appEnum.serviceId2 || event.row.serviceId === 2) {
+        // Route to charity-event-permit-request with id as param for draft update
+        this.router.navigate(['/services-requests/charity-event-permit-request', event.row.id]);
         } else if (event.row.serviceId === 1001) {
         // Route to distribution-site-permit with id as param for draft update
         this.router.navigate(['/distribution-site-permit', event.row.id]);
@@ -443,6 +446,36 @@ export class MainApplyServiceComponent {
         if (confirm(this.translate.instant('COMMON.CONFIRM_DELETE') || 'Are you sure you want to delete this request?')) {
           this.spinnerService.show();
           this.charityEventPermitRequestService.deleteRequestEvent(requestId).subscribe({
+            next: () => {
+              this.toastr.success(this.translate.instant('SUCCESS.REQUEST_DELETED') || 'Request deleted successfully');
+              this.spinnerService.hide();
+              // Refresh the grid data
+              this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
+            },
+            error: (error: any) => {
+              this.spinnerService.hide();
+              if (error.error && error.error.reason) {
+                this.toastr.error(error.error.reason);
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
+              }
+            }
+          });
+        }
+      } else if (event.row.serviceId == this.appEnum.serviceId2 || event.row.serviceId === 2) {
+        // Handle delete action for CharityEventPermit (serviceId = 2)
+        // Check if id exists and is a number
+        const mainApplyServiceId = event.row.id;
+        if (!mainApplyServiceId || typeof mainApplyServiceId !== 'number') {
+          this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
+          return;
+        }
+        
+        // Show confirmation dialog
+        if (confirm(this.translate.instant('COMMON.CONFIRM_DELETE') || 'Are you sure you want to delete this request?')) {
+          this.spinnerService.show();
+          // Convert id to string as API expects string
+          this.charityEventPermitRequestService.delete(mainApplyServiceId.toString()).subscribe({
             next: () => {
               this.toastr.success(this.translate.instant('SUCCESS.REQUEST_DELETED') || 'Request deleted successfully');
               this.spinnerService.hide();

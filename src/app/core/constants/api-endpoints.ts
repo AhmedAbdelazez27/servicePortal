@@ -390,7 +390,9 @@ export class ApiEndpoints {
   };
   static readonly CharityEventPermit = {
     Base: '/CharityEventPermit',
-    Create: '/Create'
+    Create: '/Create',
+    Update: '/Update',
+    Delete: (mainApplyServiceId: string) => `/Delete/${mainApplyServiceId}`
   };
 
   static readonly Notifications = {

@@ -6,6 +6,13 @@ export const servicesRequestsRoutes: Routes = [
     path: '',
     children: [
       {
+        path: 'charity-event-permit-request/:id',
+         canActivate: [authGuard],
+        loadComponent: () =>
+          import('./charity-event-permit-request/charity-event-permit-request.component')
+            .then(m => m.CharityEventPermitRequestComponent),
+      },
+      {
         path: 'charity-event-permit-request',
          canActivate: [authGuard],
         loadComponent: () =>

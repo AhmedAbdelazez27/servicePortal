@@ -1017,8 +1017,8 @@
 
                                                 <!-- الملف -->
                                                 <td class="align-middle">
-                                                    <!-- منطقة الرفع -->
-                                                    <div *ngIf="!hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+                                                    <!-- منطقة الرفع (فقط إذا لم يكن هناك ملف موجود أو ملف جديد محدد) -->
+                                                    <div *ngIf="!existingAttachments[config.id!] && !hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
                                                         class="upload-area" (dragover)="onDragOver($event)"
                                                         (dragleave)="onDragLeave($event)"
                                                         (drop)="onDrop($event, AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
@@ -1037,7 +1037,55 @@
                                                         </label>
                                                     </div>
 
-                                                    <!-- المعاينة -->
+                                                    <!-- عرض الملف الموجود (existing attachment) -->
+                                                    <div *ngIf="existingAttachments[config.id!] && !state(AttachmentsConfigType.DeclarationOfCharityEffectiveness).selected[config.id!]" 
+                                                         class="file-preview existing-attachment-container">
+                                                      <!-- Hidden file input for updating -->
+                                                      <input type="file" 
+                                                             class="d-none" 
+                                                             [id]="'file-' + AttachmentsConfigType.DeclarationOfCharityEffectiveness + '-' + config.id"
+                                                             (change)="onFileSelected($event, AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+                                                             accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                      
+                                                      <div class="d-flex flex-column gap-2">
+                                                        <!-- File name at the top -->
+                                                        <span class="file-name">
+                                                          {{ getFileNameFromPath(existingAttachments[config.id!]?.imgPath) }}
+                                                        </span>
+                                                        
+                                                        <!-- Preview Image/Icon -->
+                                                        <div style="position: relative; display: inline-block;">
+                                                          <img style="width:150px;height:100px"
+                                                               *ngIf="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) && isImageFile(existingAttachments[config.id!]?.imgPath)"
+                                                               [src]="getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+                                                               class="preview-image">
+                                                          <div *ngIf="!getPreview(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) || !isImageFile(existingAttachments[config.id!]?.imgPath)"
+                                                               class="file-icon">
+                                                            <i class="fas fa-file"></i>
+                                                          </div>
+                                                          
+                                                          <!-- Hover overlay with edit/view buttons -->
+                                                          <div class="attachment-hover-overlay">
+                                                            <button type="button"
+                                                                    class="btn btn-sm btn-primary"
+                                                                    (click)="triggerFileInput(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+                                                                    title="{{ 'EDIT_PROFILE.UPDATE_ATTACHMENT' | translate }}">
+                                                              <i class="fas fa-edit"></i>
+                                                              {{ 'COMMON.UPDATE' | translate }}
+                                                            </button>
+                                                            <button type="button"
+                                                                    class="btn btn-sm btn-info"
+                                                                    (click)="viewAttachment(config.id!)"
+                                                                    title="{{ 'COMMON.VIEW' | translate }}">
+                                                              <i class="fas fa-eye"></i>
+                                                              {{ 'COMMON.VIEW' | translate }}
+                                                            </button>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+
+                                                    <!-- المعاينة للملف الجديد -->
                                                     <div *ngIf="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
                                                         class="file-preview">
                                                         <span class="file-name">
@@ -1055,6 +1103,7 @@
                                                     <!-- رسالة: المرفق مطلوب -->
                                                     <div *ngIf="isMandatory(config) 
                 && !hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) 
+                && !existingAttachments[config.id!]
                 && (currentStep === 4 || submitted)" class="mt-2 d-flex align-items-center gap-2 text-danger">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                                             viewBox="0 0 24 24" fill="none">
@@ -1071,7 +1120,7 @@
                                                 <!-- الإجراءات -->
                                                 <td class="align-middle">
                                                     <button
-                                                        *ngIf="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)"
+                                                        *ngIf="hasSelected(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!) || existingAttachments[config.id!]"
                                                         type="button" class="btn btn-sm btn-danger"
                                                         (click)="removeFile(AttachmentsConfigType.DeclarationOfCharityEffectiveness, config.id!)">
                                                         {{ 'COMMON.REMOVE' | translate }}
@@ -1101,8 +1150,14 @@
                                     </button>
 
 
+                                    <button *ngIf="currentStep === totalSteps" type="button" class="btn btn-outline-secondary me-2"
+                                        [disabled]="isSaving || !isFormInitialized"
+                                        (click)="onSubmit(true)">
+                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                        {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                                    </button>
                                     <button *ngIf="currentStep === totalSteps" type="submit" class="btn btn-success"
-                                        [disabled]="!canSubmit() || isSaving">
+                                        [disabled]="!canSubmit() || isSaving || !isFormInitialized">
                                         <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
                                         {{ 'COMMON.SUBMIT' | translate }}
                                     </button>

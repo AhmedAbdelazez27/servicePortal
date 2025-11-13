@@ -439,11 +439,26 @@
                 {{ 'COMMON.UPDATE' | translate }}
               </button>
             </li>
+            <!-- Show Update action only for draft Charity Event Permit (serviceId = 2) -->
+            <li *ngIf="row?.serviceId === 2 && (row?.lastStatus === 'مسودة' || row?.lastStatusEN === 'Draft')">
+              <button class="dropdown-item"
+                      (click)="onTableAction({ action: 'onUpdate', row })">
+                {{ 'COMMON.UPDATE' | translate }}
+              </button>
+            </li>
             <!-- Show Update action only for draft Request Event Permits (serviceId = 6) -->
             <li *ngIf="( row?.serviceId === 6) && (row?.lastStatus === 'مسودة' || row?.lastStatusEN === 'Draft')">
               <button class="dropdown-item"
                       (click)="onTableAction({ action: 'onUpdate', row })">
                 {{ 'COMMON.UPDATE' | translate }}
+              </button>
+            </li>
+            <!-- Show Delete action only for Charity Event Permit (serviceId = 2) -->
+            <li *ngIf="row?.serviceId === 2">
+              <button class="dropdown-item text-danger"
+                      (click)="onTableAction({ action: 'onDelete', row })">
+                <i class="fas fa-trash me-2"></i>
+                {{ 'COMMON.DELETE' | translate }}
               </button>
             </li>
             <!-- Show Delete action only for Request Event Permits (serviceId = 6) -->

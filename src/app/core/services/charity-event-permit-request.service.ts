@@ -71,6 +71,20 @@ export class CharityEventPermitRequestService {
         );
     }
 
+    update(dto: any): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.CharityEventPermit.Base}${ApiEndpoints.CharityEventPermit.Update}`,
+            dto
+        );
+    }
+
+    delete(mainApplyServiceId: string): Observable<any> {
+        return this.http.post<any>(
+            `${this.BASE_URL}${ApiEndpoints.CharityEventPermit.Base}${ApiEndpoints.CharityEventPermit.Delete(mainApplyServiceId)}`,
+            null
+        );
+    }
+
     getPermitTypeSelect2(body: any): Observable<any> {
         const url = `${this.BASE_URL}${Select2APIEndpoint.Select2.GetPermitTypeSelect2}`;
         const requestBody = {
