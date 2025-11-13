@@ -17,8 +17,14 @@ export class FiltermainApplyServiceDto {
   userIdstr: string | null = null;
   serviceIdstr: string | null = null;
   serviceTypestr: string | null = null;
-  serviceStatusstr: string | null = null;
+  serviceStatusstr: any = null;
   applyDatestr: string | null = null;
+
+  // Additional filter properties
+  serviceStatusIds: any[] = [];
+  serviceTypes: string | null = null;
+  fromDate: string | null = null;
+  toDate: string | null = null;
 }
 export class FiltermainApplyServiceByIdDto {
   id: string | null = null;

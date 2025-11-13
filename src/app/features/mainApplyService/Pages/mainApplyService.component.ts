@@ -1,10 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, NgForm, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
+import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { ColDef, GridOptions } from 'ag-grid-community';
 import { GenericDataTableComponent } from '../../../../shared/generic-data-table/generic-data-table.component';
@@ -19,6 +19,9 @@ import { AppEnum } from '../../../core/dtos/appEnum.dto';
 import { MainApplyServiceReportService } from '../../../core/services/mainApplyService/mainApplyService.reports';
 import { AuthService } from '../../../core/services/auth.service';
 import { CharityEventPermitRequestService } from '../../../core/services/charity-event-permit-request.service';
+import { EntityService } from '../../../core/services/entit.service';
+// import { GenericNgSelectComponent } from '../../../../shared/generic-ng-select/generic-ng-select.component';
+// import { Select2APIEndpoint } from '../../../core/constants/select2api-endpoints';
  
 
 declare var bootstrap: any;
@@ -26,7 +29,7 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-mainApplyService',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, GenericDataTableComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, GenericDataTableComponent, ReactiveFormsModule],
   templateUrl: './mainApplyService.component.html',
   styleUrls: ['./mainApplyService.component.scss']
 })
@@ -57,6 +60,13 @@ export class MainApplyServiceComponent {
   summaryRequests: any[] = [];
   loadformData: mainApplyServiceDto = {} as mainApplyServiceDto;
   currecntDept: string | null = null;
+  loadexcelData: mainApplyServiceDto[] = [];
+  lang: any;
+
+  getServiceSelect2?: string;
+  getStatusSelect2?: string;
+  getUserNameeSelect2?: string;
+  getServiceTypeSelect2?: string;
 
   constructor(
     private mainApplyService: MainApplyService,
@@ -70,6 +80,7 @@ export class MainApplyServiceComponent {
     private mainApplyServiceReportService: MainApplyServiceReportService,
     private authService: AuthService,
     private charityEventPermitRequestService: CharityEventPermitRequestService,
+    private entityService: EntityService,
   )
   {  
     
@@ -99,12 +110,23 @@ export class MainApplyServiceComponent {
       .map(x => x.trim())
       .filter(x => x !== '');
     this.currecntDept = storeddepartmentId.replace(/"/g, '').trim();
+
+    this.getSelect2Endpoint();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  getSelect2Endpoint(): void {
+    // TODO: Add Select2APIEndpoint when available
+    // this.getServiceSelect2 = Select2APIEndpoint.Select2.GetServiceSelect2;
+    // this.getStatusSelect2 = Select2APIEndpoint.Select2.GetMainServiceStatusSelect2;
+    // this.getUserNameeSelect2 = Select2APIEndpoint.Select2.GetUsersSelect2;
+    // this.getServiceTypeSelect2 = Select2APIEndpoint.Select2.GetServiceTypeSelect2;
+  }
+
   GetHomeTotalRequestSummaryPortal(){
     this.mainApplyService.GetHomeTotalRequestSummaryPortal().subscribe({
       next :(res)=>{
@@ -138,6 +160,21 @@ export class MainApplyServiceComponent {
   }
 
   clear(): void {
+    this.searchParams.serviceId = null;
+    this.searchParams.serviceIdstr = null;
+
+    this.searchParams.serviceStatusIds = [];
+    this.searchParams.serviceStatusstr = [];
+
+    this.searchParams.userId = null;
+    this.searchParams.userIdstr = null;
+
+    this.searchParams.serviceTypes = null;
+    this.searchParams.serviceTypestr = null;
+
+    this.searchParams.applyNo = null;
+    this.searchParams.fromDate = null;
+    this.searchParams.toDate = null;
     this.searchParams = new FiltermainApplyServiceDto();
     this.getLoadDataGrid({ pageNumber: 1, pageSize: this.pagination.take });  
   }
@@ -150,7 +187,14 @@ export class MainApplyServiceComponent {
     this.searchParams.skip = skip;
     this.searchParams.userId = localStorage.getItem('userId');
     this.searchParams.excludeAdverisment = true;
-
+   
+    if (this.searchParams.serviceTypes == null) {
+      this.searchParams.serviceTypes = null;
+      this.searchParams.serviceType = null;
+    } else {
+      this.searchParams.serviceType = String(this.searchParams.serviceTypes);
+    }
+    
     const cleanedFilters = this.cleanFilterObject(this.searchParams);
     this.spinnerService.show();
 
@@ -524,10 +568,18 @@ export class MainApplyServiceComponent {
     }
   }
 
+  entityName(id: any): Observable<string> {
+    return this.entityService.getEntityById(id ?? "0").pipe(
+      takeUntil(this.destroy$),
+      map((entityResp: any) => {
+        return this.lang == 'ar' ? entityResp.entitY_NAME : entityResp.entitY_NAME_EN;
+      })
+    );
+  }
 
   printExcel(): void {
-    this.spinnerService.show();;
-    const cleanedFilters = this.cleanFilterObject({ ...this.searchParams, excludeAdverisment: true });
+    this.spinnerService.show();
+    const cleanedFilters = this.cleanFilterObject(this.searchParams);
    
     this.mainApplyService.getAll({ ...cleanedFilters, skip: 0, take: 1 })
       .pipe(takeUntil(this.destroy$))
@@ -540,43 +592,65 @@ export class MainApplyServiceComponent {
             .subscribe({
               next: (response: any) => {
                 const data = response?.data || [];
+                console.log("data", data);
 
-                const reportConfig: reportPrintConfig = {
-                  title: this.translate.instant('mainApplyServiceResourceName.mainApplyService_Title'),
-                  reportTitle: this.translate.instant('mainApplyServiceResourceName.mainApplyService_Title'),
-                  fileName: `${this.translate.instant('mainApplyServiceResourceName.mainApplyService_Title')}_${new Date().toISOString().slice(0, 10)}.xlsx`,
-                  fields: [
-                    { label: this.translate.instant('mainApplyServiceResourceName.serviceId'), value: this.searchParams.serviceIdstr },
-                    { label: this.translate.instant('mainApplyServiceResourceName.userId'), value: this.searchParams.userIdstr },
-                    { label: this.translate.instant('mainApplyServiceResourceName.serviceType'), value: this.searchParams.serviceTypestr },
-                    { label: this.translate.instant('mainApplyServiceResourceName.serviceStatus'), value: this.searchParams.serviceStatusstr },
-                    { label: this.translate.instant('mainApplyServiceResourceName.applyDate'), value: this.searchParams.applyDatestr },
-                    { label: this.translate.instant('mainApplyServiceResourceName.applyNo'), value: this.searchParams.applyNo },
-                  ],
+                const entityRequests = data.map((c: any) => {
+                  // Format date manually instead of using formatDate
+                  if (c.applyDate) {
+                    const date = new Date(c.applyDate);
+                    c.applyDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                  }
+                  c.serviceName = this.lang == 'ar' ? c.service?.serviceName : c.service?.serviceNameEn ?? '';
+                  c.userName = this.lang == 'ar' ? c.service?.name : c.service?.nameEn ?? '';
 
-                  columns: [
-                    { label: '#', key: 'rowNo', title: '#' },
-                    { label: this.translate.instant('mainApplyServiceResourceName.Servicename'), key: 'serviceNameAr' },
-                    { label: this.translate.instant('mainApplyServiceResourceName.RefNo'), key: 'applyNo' },
-                    { label: this.translate.instant('mainApplyServiceResourceName.EventNameAdv'), key: 'eventName' },
-                    { label: this.translate.instant('mainApplyServiceResourceName.applydate'), key: 'applyDatestr' },
-                    { label: this.translate.instant('mainApplyServiceResourceName.permitNumber'), key: 'permitNumber' },
-                    { label: this.translate.instant('mainApplyServiceResourceName.statues'), key: 'serviceStatusName' },
-                  ],
-                  data: data.map((item: any, index: number) => ({
-                    ...item,
-                    rowNo: index + 1
-                  })),
-                  totalLabel: this.translate.instant('Common.Total'),
-                  totalKeys: ['amounTstr']
-                };
+                  if (c.user?.entityId != null) {
+                    return this.entityName(c.user.entityId).pipe(
+                      map((name) => {
+                        c.entityName = name;
+                        return c;
+                      })
+                    );
+                  } else {
+                    c.entityName = "";
+                    return of(c);
+                  }
+                });
 
-                this.openStandardReportService.openStandardReportExcel(reportConfig);
-                this.spinnerService.hide();;
+                forkJoin(entityRequests)
+                  .pipe(takeUntil(this.destroy$))
+                  .subscribe({
+                    next: (resolvedRows) => {
+                      this.loadexcelData = resolvedRows as any[];
+
+                      const reportConfig: reportPrintConfig = {
+                        title: this.translate.instant('mainApplyServiceResourceName.title'),
+                        reportTitle: this.translate.instant('mainApplyServiceResourceName.title'),
+                        fileName: `${this.translate.instant('mainApplyServiceResourceName.title')}_${new Date().toISOString().slice(0, 10)}.xlsx`,
+                        columns: [
+                          { label: '#', key: 'rowNo', title: '#' },
+                          { label: this.translate.instant('mainApplyServiceResourceName.RequestNo'), key: 'applyNo' },
+                          { label: this.translate.instant('mainApplyServiceResourceName.applydate'), key: 'applyDate' },
+                          { label: this.translate.instant('mainApplyServiceResourceName.sevicet'), key: 'serviceName' },
+                          { label: this.translate.instant('mainApplyServiceResourceName.username'), key: 'userName' },
+                          { label: this.translate.instant('mainApplyServiceResourceName.username'), key: 'entityName' },
+                          { label: this.translate.instant('mainApplyServiceResourceName.statues'), key: this.lang == 'ar' ? 'lastStatus' : 'lastStatusEN' },
+                          { label: this.translate.instant('COMMON.DESCRIPTION'), key: 'description' },
+                        ],
+                        data: this.loadexcelData.map((item: any, index: number) => ({
+                          ...item,
+                          rowNo: index + 1,
+                        })),
+                        totalLabel: this.translate.instant('Common.Total'),
+                        totalKeys: []
+                      };
+
+                      this.openStandardReportService.openStandardReportExcel(reportConfig);
+                      this.spinnerService.hide();
+                    },
+                    error: () => this.spinnerService.hide()
+                  });
               },
-              error: () => {
-                this.spinnerService.hide();
-              }
+              error: () => this.spinnerService.hide()
             });
         },
         error: () => {

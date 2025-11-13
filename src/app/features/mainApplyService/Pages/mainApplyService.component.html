@@ -305,34 +305,105 @@
   </div> -->
 
 
-  <!-- Search -->
-<!-- <div class="row g-2 align-items-center mb-3">
-  <div class="col-auto">
-    <input
-      type="text"
-      class="form-control"
-      [placeholder]="'Common.Search' | translate"
-      [(ngModel)]="searchText"
-      (keyup.enter)="onTableSearch(searchText)" />
-  </div>
-  <div class="col-auto">
-    <button class="btn btn-primary" (click)="onTableSearch(searchText)">
-      {{ 'Common.Search' | translate }}
-    </button>
-    <button class="btn btn-outline-secondary ms-2" (click)="clear()">
-      {{ 'Common.Clear' | translate }}
-    </button>
-  </div>
-  <div class="col-auto ms-auto">
-    <select class="form-select" [(ngModel)]="pagination.take"
-            (change)="onPageChange({ pageNumber: 1, pageSize: pagination.take })">
-      <option [ngValue]="10">10</option>
-      <option [ngValue]="25">25</option>
-      <option [ngValue]="50">50</option>
-      <option [ngValue]="100">100</option>
-    </select>
-  </div>
-</div> -->
+  <!-- Search & Filter Section -->
+  <div id="mainScreen">
+    <div class="filter mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="filter-title mb-0">{{ 'COMMON.SearchTitle' | translate }}</h4>
+        <button class="btn btn-filter" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilterTab"
+                aria-expanded="false" aria-controls="collapseFilterTab">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M17.7499 6.31657H13.0999C12.7749 6.31657 12.5166 6.05824 12.5166 5.73324C12.5166 5.40824 12.7749 5.1499 13.0999 5.1499H17.7499C18.0749 5.1499 18.3333 5.40824 18.3333 5.73324C18.3333 6.05824 18.0749 6.31657 17.7499 6.31657Z"
+                  fill="" />
+            <path d="M5.35033 6.31657H2.25033C1.92533 6.31657 1.66699 6.05824 1.66699 5.73324C1.66699 5.40824 1.92533 5.1499 2.25033 5.1499H5.35033C5.67533 5.1499 5.93366 5.40824 5.93366 5.73324C5.93366 6.05824 5.66699 6.31657 5.35033 6.31657Z"
+                  fill="" />
+            <path d="M8.44987 9.02523C10.2678 9.02523 11.7415 7.5515 11.7415 5.73356C11.7415 3.91562 10.2678 2.44189 8.44987 2.44189C6.63193 2.44189 5.1582 3.91562 5.1582 5.73356C5.1582 7.5515 6.63193 9.02523 8.44987 9.02523Z"
+                  fill="" />
+            <path d="M17.7497 14.8415H14.6497C14.3247 14.8415 14.0664 14.5831 14.0664 14.2581C14.0664 13.9331 14.3247 13.6748 14.6497 13.6748H17.7497C18.0747 13.6748 18.3331 13.9331 18.3331 14.2581C18.3331 14.5831 18.0747 14.8415 17.7497 14.8415Z"
+                  fill="" />
+            <path d="M6.90033 14.8415H2.25033C1.92533 14.8415 1.66699 14.5831 1.66699 14.2581C1.66699 13.9331 1.92533 13.6748 2.25033 13.6748H6.90033C7.22533 13.6748 7.48366 13.9331 7.48366 14.2581C7.48366 14.5831 7.21699 14.8415 6.90033 14.8415Z"
+                  fill="" />
+            <path d="M11.5505 17.5584C13.3684 17.5584 14.8421 16.0847 14.8421 14.2668C14.8421 12.4488 13.3684 10.9751 11.5505 10.9751C9.73252 10.9751 8.25879 12.4488 8.25879 14.2668C8.25879 16.0847 9.73252 17.5584 11.5505 17.5584Z"
+                  fill="" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="collapse" id="collapseFilterTab">
+        <div class="card card-body">
+          <form #filterForm="ngForm">
+            <div class="row mb-3">
+                <div class="col-xl-4 mb-3">
+                  <label class="form-label">{{ 'mainApplyServiceResourceName.sevicet' | translate }}</label>
+                  <input type="text" class="form-control" [(ngModel)]="searchParams.serviceId" name="serviceId">
+              </div>
+
+                <div class="col-xl-4 mb-3">
+                  <label class="form-label">{{ 'mainApplyServiceResourceName.Applystat' | translate }}</label>
+                  <input type="text" class="form-control" [(ngModel)]="searchParams.serviceStatus" name="serviceStatus">
+              </div>
+
+                <div class="col-xl-4 mb-3">
+                  <label class="form-label">{{ 'mainApplyServiceResourceName.ordername' | translate }}</label>
+                  <input type="text" class="form-control" [(ngModel)]="searchParams.userId" name="userId">
+              </div>
+              
+                <div class="col-xl-4 mb-3">
+                  <label class="form-label">{{ 'mainApplyServiceResourceName.ServiceType' | translate }}</label>
+                  <input type="text" class="form-control" [(ngModel)]="searchParams.serviceType" name="serviceType">
+              </div>
+
+              <div class="col-xl-4 mb-3">
+                <label for="applyNo" class="form-label">{{ 'mainApplyServiceResourceName.RefNo' | translate}}</label>
+                <input type="text" name="applyNo" class="form-control" [(ngModel)]="searchParams.applyNo">
+              </div>
+
+              <div class="col-xl-4 mb-3">
+                <label for="fromDate" class="form-label">{{ 'COMMON.fromDate' | translate }}</label>
+                <input type="date" name="fromDate" class="form-control" [(ngModel)]="searchParams.fromDate">
+              </div>
+
+              <div class="col-xl-4 mb-3">
+                <label for="toDate" class="form-label">{{ 'COMMON.toDate' | translate }}</label>
+                <input type="date" name="toDate" class="form-control" [(ngModel)]="searchParams.toDate">
+              </div>
+            </div>
+          </form>
+
+          <div class="d-flex gap-2 justify-content-center">
+            <button class="btn btn-outline" (click)="clear()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM16 12.75H8C7.59 12.75 7.25 12.41 7.25 12C7.25 11.59 7.59 11.25 8 11.25H16C16.41 11.25 16.75 11.59 16.75 12C16.75 12.41 16.41 12.75 16 12.75Z"
+                      fill="#5B5B5B" />
+              </svg>
+              {{ 'COMMON.Clear' | translate }}
+            </button>
+            <button class="btn btn-gold" (click)="onSearch()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM16.78 9.7L11.11 15.37C10.97 15.51 10.78 15.59 10.58 15.59C10.38 15.59 10.19 15.51 10.05 15.37L7.22 12.54C6.93 12.25 6.93 11.77 7.22 11.48C7.51 11.19 7.99 11.19 8.28 11.48L10.58 13.78L15.72 8.64C16.01 8.35 16.49 8.35 16.78 8.64C17.07 8.93 17.07 9.4 16.78 9.7Z"
+                      fill="white" />
+              </svg>
+              {{ 'COMMON.Search' | translate }}
+            </button>
+            <button class="btn btn-success" (click)="printExcel()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M7.75 2V7.8H2C2 4.19 4.15 2.02 7.75 2Z" fill="white" />
+                <path d="M22 7.8H16.25V2C19.85 2.02 22 4.19 22 7.8Z" fill="white" />
+                <path d="M22 16.2998C21.96 19.8498 19.82 21.9798 16.25 21.9998V16.2998H22Z" fill="white" />
+                <path d="M7.75 16.2998V21.9998C4.18 21.9798 2.04 19.8498 2 16.2998H7.75Z" fill="white" />
+                <path d="M7.75 9.2998H2V14.7998H7.75V9.2998Z" fill="white" />
+                <path d="M22 9.2998H16.25V14.7998H22V9.2998Z" fill="white" />
+                <path d="M14.75 9.2998H9.25V14.7998H14.75V9.2998Z" fill="white" />
+                <path d="M14.75 2H9.25V7.8H14.75V2Z" fill="white" />
+                <path d="M14.75 16.2998H9.25V21.9998H14.75V16.2998Z" fill="white" />
+              </svg>
+              {{ 'COMMON.PrintExcel' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
 <table class="table new-table mb-3 table-striped">
   <thead>
@@ -516,6 +587,6 @@
     </li>
   </ul>
 </nav>
-
+  </div>
 
 </div>
