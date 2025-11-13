@@ -1,0 +1,20 @@
+<div class="form-group">
+  <label *ngIf="label">{{ label }}</label>
+  <ng-select
+    [items]="items"
+    bindLabel="text"
+    bindValue="id"
+    [loading]="loading"
+    [typeahead]="searchInput"
+    [disabled]="disabled"
+    placeholder="-- Select --"
+    [clearable]="true"
+    [searchable]="true"
+    [virtualScroll]="true"
+    [ngModelOptions]="{ standalone: true }"
+    [(ngModel)]="value"
+    (change)="onValueChange($event)"
+    (scrollToEnd)="onScrollToEnd()"
+    (search)="onSearch($event)">
+  </ng-select>
+</div>

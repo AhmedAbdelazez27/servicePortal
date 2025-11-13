@@ -18,18 +18,18 @@ import { Router } from '@angular/router';
 import { AppEnum } from '../../../core/dtos/appEnum.dto';
 import { MainApplyServiceReportService } from '../../../core/services/mainApplyService/mainApplyService.reports';
 import { AuthService } from '../../../core/services/auth.service';
-import { CharityEventPermitRequestService } from '../../../core/services/charity-event-permit-request.service';
 import { EntityService } from '../../../core/services/entit.service';
-// import { GenericNgSelectComponent } from '../../../../shared/generic-ng-select/generic-ng-select.component';
-// import { Select2APIEndpoint } from '../../../core/constants/select2api-endpoints';
- 
+import { GenericNgSelectComponent } from '../../../../shared/generic-ng-select/generic-ng-select.component';
+ import { Select2APIEndpoint } from '../../../core/constants/select2api-endpoints';
+import { CharityEventPermitRequestService } from '../../../core/services/charity-event-permit-request.service';
+
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-mainApplyService',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, GenericDataTableComponent, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule, GenericDataTableComponent,GenericNgSelectComponent, ReactiveFormsModule],
   templateUrl: './mainApplyService.component.html',
   styleUrls: ['./mainApplyService.component.scss']
 })
@@ -63,10 +63,11 @@ export class MainApplyServiceComponent {
   loadexcelData: mainApplyServiceDto[] = [];
   lang: any;
 
-  getServiceSelect2?: string;
-  getStatusSelect2?: string;
-  getUserNameeSelect2?: string;
-  getServiceTypeSelect2?: string;
+
+  getServiceSelect2?: string
+  getStatusSelect2?: string
+  getUserNameeSelect2?: string
+  getServiceTypeSelect2?: string
 
   constructor(
     private mainApplyService: MainApplyService,
@@ -119,13 +120,15 @@ export class MainApplyServiceComponent {
     this.destroy$.complete();
   }
 
-  getSelect2Endpoint(): void {
-    // TODO: Add Select2APIEndpoint when available
-    // this.getServiceSelect2 = Select2APIEndpoint.Select2.GetServiceSelect2;
-    // this.getStatusSelect2 = Select2APIEndpoint.Select2.GetMainServiceStatusSelect2;
-    // this.getUserNameeSelect2 = Select2APIEndpoint.Select2.GetUsersSelect2;
-    // this.getServiceTypeSelect2 = Select2APIEndpoint.Select2.GetServiceTypeSelect2;
+  getSelect2Endpoint()
+  {
+    this.getServiceSelect2 = Select2APIEndpoint.Select2.GetServiceSelect2;
+    this.getStatusSelect2 = Select2APIEndpoint.Select2.GetMainServiceStatusSelect2;
+    this.getUserNameeSelect2 = Select2APIEndpoint.Select2.GetUsersSelect2;
+    this.getServiceTypeSelect2 = Select2APIEndpoint.Select2.GetServiceTypeSelect2;
   }
+
+  
 
   GetHomeTotalRequestSummaryPortal(){
     this.mainApplyService.GetHomeTotalRequestSummaryPortal().subscribe({
@@ -161,20 +164,20 @@ export class MainApplyServiceComponent {
 
   clear(): void {
     this.searchParams.serviceId = null;
-    this.searchParams.serviceIdstr = null;
+  this.searchParams.serviceIdstr = null;
 
-    this.searchParams.serviceStatusIds = [];
-    this.searchParams.serviceStatusstr = [];
+  this.searchParams.serviceStatusIds = [];
+  this.searchParams.serviceStatusstr = [];
 
-    this.searchParams.userId = null;
-    this.searchParams.userIdstr = null;
+  this.searchParams.userId = null;
+  this.searchParams.userIdstr = null;
 
-    this.searchParams.serviceTypes = null;
-    this.searchParams.serviceTypestr = null;
+  this.searchParams.serviceTypes = null;
+  this.searchParams.serviceTypestr = null;
 
-    this.searchParams.applyNo = null;
-    this.searchParams.fromDate = null;
-    this.searchParams.toDate = null;
+  this.searchParams.applyNo = null;
+  this.searchParams.fromDate = null;
+  this.searchParams.toDate = null;
     this.searchParams = new FiltermainApplyServiceDto();
     this.getLoadDataGrid({ pageNumber: 1, pageSize: this.pagination.take });  
   }
@@ -188,11 +191,13 @@ export class MainApplyServiceComponent {
     this.searchParams.userId = localStorage.getItem('userId');
     this.searchParams.excludeAdverisment = true;
    
-    if (this.searchParams.serviceTypes == null) {
-      this.searchParams.serviceTypes = null;
-      this.searchParams.serviceType = null;
-    } else {
-      this.searchParams.serviceType = String(this.searchParams.serviceTypes);
+    
+    if(this.searchParams.serviceTypes == null)
+    {
+      this.searchParams.serviceTypes = null
+    }
+    else{
+    this.searchParams.serviceType  = Number(this.searchParams.serviceTypes);
     }
     
     const cleanedFilters = this.cleanFilterObject(this.searchParams);
@@ -298,7 +303,7 @@ export class MainApplyServiceComponent {
       } else if (event.row.serviceId === 1) {
         // Route to fasting-tent-request with id as param for draft update
         this.router.navigate(['/fasting-tent-request', event.row.id]);
-      } else if (event.row.serviceId == this.appEnum.serviceId2 || event.row.serviceId === 2) {
+        } else if (event.row.serviceId == this.appEnum.serviceId2 || event.row.serviceId === 2) {
         // Route to charity-event-permit-request with id as param for draft update
         this.router.navigate(['/services-requests/charity-event-permit-request', event.row.id]);
         } else if (event.row.serviceId === 1001) {
@@ -371,18 +376,7 @@ export class MainApplyServiceComponent {
     }
     if (event.action === 'onRequestComplaint') {
       if (event.row.serviceId == this.appEnum.serviceId1002) {
-        // Convert id to string if it exists
-        const requestId = event.row.id;
-        if (!requestId) {
-          this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
-          return;
-        }
-        const serviceId = event.row.serviceId;
-        if (!serviceId) {
-          this.toastr.error(this.translate.instant('ERRORS.INVALID_SERVICE_ID') || 'Invalid service ID');
-          return;
-        }
-        this.getFormDatabyId(String(requestId), String(serviceId));
+        this.getFormDatabyId(event.row.id, event.row.serviceId);
       }
       else {
         this.translate
@@ -475,7 +469,7 @@ export class MainApplyServiceComponent {
         }
       }
     }
-
+    
     if (event.action === 'onDelete') {
       // Handle delete action - only for RequestEventPermits (serviceId = 6) for now
       if (event.row.serviceId == this.appEnum.serviceId6 || event.row.serviceId === 6) {
@@ -568,6 +562,7 @@ export class MainApplyServiceComponent {
     }
   }
 
+
   entityName(id: any): Observable<string> {
     return this.entityService.getEntityById(id ?? "0").pipe(
       takeUntil(this.destroy$),
@@ -577,10 +572,11 @@ export class MainApplyServiceComponent {
     );
   }
 
+
   printExcel(): void {
     this.spinnerService.show();
     const cleanedFilters = this.cleanFilterObject(this.searchParams);
-   
+
     this.mainApplyService.getAll({ ...cleanedFilters, skip: 0, take: 1 })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -595,11 +591,7 @@ export class MainApplyServiceComponent {
                 console.log("data", data);
 
                 const entityRequests = data.map((c: any) => {
-                  // Format date manually instead of using formatDate
-                  if (c.applyDate) {
-                    const date = new Date(c.applyDate);
-                    c.applyDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-                  }
+                  c.applyDate = this.openStandardReportService.formatDate(c.applyDate);
                   c.serviceName = this.lang == 'ar' ? c.service?.serviceName : c.service?.serviceNameEn ?? '';
                   c.userName = this.lang == 'ar' ? c.service?.name : c.service?.nameEn ?? '';
 
@@ -653,11 +645,10 @@ export class MainApplyServiceComponent {
               error: () => this.spinnerService.hide()
             });
         },
-        error: () => {
-          this.spinnerService.hide();
-        }
+        error: () => this.spinnerService.hide()
       });
   }
+
 
   trackById(index: number, item: any): string {
   return item?.id ?? index;

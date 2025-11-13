@@ -79,3 +79,9 @@ export class reportPrintConfig {
 }
 
 
+export class EndpoinSelect2RequestDto {
+  searchValue?: string | null = null;
+  skip: number = 0;
+  take: number = 10;
+  orderByValue?: string | null = null;
+}

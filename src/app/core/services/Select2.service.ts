@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { FndLookUpValuesSelect2RequestDto, FndLookUpValuesSelect2RequestbyIdDto, SelectdropdownResult } from '../dtos/FndLookUpValuesdtos/FndLookUpValues.dto';
+import { EndpoinSelect2RequestDto, FndLookUpValuesSelect2RequestDto, FndLookUpValuesSelect2RequestbyIdDto, SelectdropdownResult } from '../dtos/FndLookUpValuesdtos/FndLookUpValues.dto';
 import { Select2APIEndpoint } from '../constants/select2api-endpoints';
 import { loadVendorNameDto } from '../dtos/FinancialDtos/OperationDtos/vendor.models';
 import { loadBeneficentNameDto } from '../dtos/sponsorship/operations/beneficent.dto';
@@ -265,5 +265,19 @@ export class Select2Service {
   getRegionSelect2List(params: FndLookUpValuesSelect2RequestDto): Observable<SelectdropdownResult> {
     const apiUrl = `${this.BASE_URL}${Select2APIEndpoint.Select2.GetRegionSelect2List}`
     return this.http.post<SelectdropdownResult>(apiUrl, params);
+  }
+
+  getDataFromUrl(endpoint: string, searchValue = '', skip = 0, take = 20, lang = 'en'): Observable<any> {
+
+    const param: FndLookUpValuesSelect2RequestDto = {
+            orderByValue: null,
+            searchValue: searchValue,
+            skip: skip,
+            take: take,
+          };
+
+    const body = { searchValue, skip, take, lang };
+    const apiUrl = `${this.BASE_URL}${endpoint}`;
+    return this.http.post<any>(apiUrl,param);
   }
 }

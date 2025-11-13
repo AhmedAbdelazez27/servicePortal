@@ -4,11 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { ColDef } from 'ag-grid-community';
 import { GenericDataTableComponent } from '../../../../../shared/generic-data-table/generic-data-table.component';
-import { Pagination } from '../../../../core/dtos/FndLookUpValuesdtos/FndLookUpValues.dto';
+import { Pagination, reportPrintConfig } from '../../../../core/dtos/FndLookUpValuesdtos/FndLookUpValues.dto';
 import { AidRequestService } from '../../../../core/services/aid-request.service';
 import { SpinnerService } from '../../../../core/services/spinner.service';
 import { MainApplyServiceReportService } from '../../../../core/services/mainApplyService/mainApplyService.reports';
@@ -22,6 +22,7 @@ import {
   quotationHeaderDto
 } from '../../../../core/dtos/aidRequests/aidRequests.dto';
 import { PagedResult } from '../../../../core/dtos/FndLookUpValuesdtos/FndLookUpValues.dto';
+import { openStandardReportService } from '../../../../core/services/openStandardReportService.service';
 
 declare var bootstrap: any;
 
@@ -49,6 +50,10 @@ export class PreviousAidRequestsComponent implements OnInit, OnDestroy {
   loadQuotationDetailFormData: quotationHeaderDto = {} as quotationHeaderDto;
   loadZakatdetailformData: aidRequestsZakatDto = {} as aidRequestsZakatDto;
 
+  loadexcelData: any[] = [];
+  lang: any;
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -56,7 +61,8 @@ export class PreviousAidRequestsComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private translate: TranslateService,
     private spinnerService: SpinnerService,
-    private mainApplyServiceReportService: MainApplyServiceReportService
+    private mainApplyServiceReportService: MainApplyServiceReportService,
+    private openStandardReportService: openStandardReportService,
   ) {}
 
   ngOnInit(): void {
@@ -329,4 +335,82 @@ export class PreviousAidRequestsComponent implements OnInit, OnDestroy {
     this.loadgridData = [];
     this.pagination.totalCount = 0;
   }
+
+  private cleanFilterObject(obj: any): any {
+    const cleaned = { ...obj };
+    Object.keys(cleaned).forEach((key) => {
+      if (cleaned[key] === '') {
+        cleaned[key] = null;
+      }
+    });
+    return cleaned;
+  }
+
+
+  printExcel(): void {
+    this.spinnerService.show();
+    if (!this.idNumber) {
+      this.toastr.error(this.translate.instant('ERRORS.INVALID_ID_NUMBER'));
+      this.spinnerService.hide();
+      return;
+    }
+
+    const searchParams = new filteraidRequestsDto();
+    searchParams.caseIdNo = this.idNumber;
+    searchParams.searchValue = this.searchText || null;
+    searchParams.orderByValue = 'details1.CASE_CODE asc';
+
+    const cleanedFilters = this.cleanFilterObject(searchParams);
+    this.aidRequestService.getAll({ ...cleanedFilters })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (initialResponse: any) => {
+          const totalCount = initialResponse?.totalCount || initialResponse?.data?.length || 0;
+
+          this.aidRequestService.getAll({ ...cleanedFilters, skip: 0, take: totalCount })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (response: any) => {
+                const data = response?.data || response || [];
+
+                const reportConfig: reportPrintConfig = {
+                  title: this.translate.instant('mainApplyServiceResourceName.title'),
+                  reportTitle: this.translate.instant('mainApplyServiceResourceName.title'),
+                  fileName: `${this.translate.instant('mainApplyServiceResourceName.title')}_${new Date().toISOString().slice(0, 10)}.xlsx`,
+                  columns: [
+                    { label: '#', key: 'rowNo', title: '#' },
+                    { label: this.translate.instant('AidRequestsResourceName.entitY_NAME'), key: 'entityName' },
+                    { label: this.translate.instant('AidRequestsResourceName.namE_AR'), key: 'nameAr' },
+                    { label: this.translate.instant('AidRequestsResourceName.source'), key: 'sourceDesc' },
+                    { label: this.translate.instant('AidRequestsResourceName.aiD_TYPE'), key: 'aidType' },
+                    { label: this.translate.instant('AidRequestsResourceName.comitY_DATE'), key: 'comityDatestr' },
+                    { label: this.translate.instant('AidRequestsResourceName.requesT_TYPE_DESC'), key: 'reqTypeDesc' },
+                    { label: this.translate.instant('AidRequestsResourceName.status'), key: 'statDesc' },
+                    { label: this.translate.instant('AidRequestsResourceName.caseNo'), key: 'caseNo' },
+                    { label: this.translate.instant('AidRequestsResourceName.amount'), key: 'amountstr' },
+                  ],
+                  data: data.map((item: any, index: number) => ({
+                    ...item,
+                    rowNo: index + 1
+                  })),
+                  totalLabel: this.translate.instant('Common.Total'),
+                  totalKeys: ['amountstr']
+                };
+                this.openStandardReportService.openStandardReportExcel(reportConfig);
+                this.spinnerService.hide();
+              },
+              error: () => {
+                this.spinnerService.hide();
+              }
+            });
+        },
+        error: () => {
+          this.spinnerService.hide();
+        },
+
+      });
+  }
+
+
+  
 }

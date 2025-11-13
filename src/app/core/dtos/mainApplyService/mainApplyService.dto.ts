@@ -8,23 +8,21 @@ export class FiltermainApplyServiceDto {
 
   userId: string | null = null;
   serviceId: string | null = null;
-  serviceType: string | null = null;
+  serviceTypes: string | null = null;
+  serviceType: number | null = null;
   serviceStatus: string | null = null;
+  serviceStatusIds?: ServiceStatus[] =[];
   applyDate: string | null = null;
   applyNo: string | null = null;
   excludeAdverisment: boolean = false;
+  fromDate?: string | null = null;
+  toDate?: string | null = null;
 
   userIdstr: string | null = null;
   serviceIdstr: string | null = null;
   serviceTypestr: string | null = null;
-  serviceStatusstr: any = null;
+  serviceStatusstr: string [] =[];
   applyDatestr: string | null = null;
-
-  // Additional filter properties
-  serviceStatusIds: any[] = [];
-  serviceTypes: string | null = null;
-  fromDate: string | null = null;
-  toDate: string | null = null;
 }
 export class FiltermainApplyServiceByIdDto {
   id: string | null = null;

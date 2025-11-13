@@ -829,7 +829,10 @@
     "UNKNOWN_LOCATION": "موقع غير معروف",
     "UAEPassCancelRequest": "قام المستخدم بإلغاء تسجيل الدخول",
     "notVerifiedUser": "الاكونت غير صحيح",
-    "notVerifiedUserMessage": "أنت غير مؤهل للوصول إلى هذه الخدمة. إما أن حسابك لم تتم ترقيته أو لديك حساب زائر. "
+    "notVerifiedUserMessage": "أنت غير مؤهل للوصول إلى هذه الخدمة. إما أن حسابك لم تتم ترقيته أو لديك حساب زائر. ",
+    "PrintExcel": " تصدير إلى اكسل",
+    "fromDate": "من تاريخ",
+    "toDate": "إلى تاريخ"
   },
   "SHARED": {
     "FORMS": {
