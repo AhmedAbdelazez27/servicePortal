@@ -65,6 +65,7 @@
                                 (actionClick)="onTableAction($event)"
                                 (pageChange)="onPageChange($event)"
                                 [showActionColumn]="true"
+                                [showsearchText]="false"
                                 (search)="onTableSearch($event)"
                                 (languageChanged)="buildColumnDefs()">
         </app-generic-data-table>
@@ -102,6 +103,21 @@
                   <div class="col-xxl-4 col-xl-6">
                     <label for="inputstatuscodE_DESC" class="black bold">{{ 'AidRequestsResourceName.statuscodE_DESC' | translate }}</label>
                     <p id="statuscodE_DESC">{{ loadformData.statusCodeDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="referenceNumber" class="black bold">{{ 'AidRequestsResourceName.requesT_TYPE_DESC' | translate }}</label>
+                    <p id="referenceNumber">{{ loadformData.requestTypeDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputaiD_REQUEST_DATEstr" class="black bold">{{ 'AidRequestsResourceName.source' | translate }}</label>
+                    <p id="aiD_REQUEST_DATEstr">{{ loadformData.sourceDesc }}</p>
+                  </div>
+
+                  <div class="col-xxl-4 col-xl-6">
+                    <label for="inputstatuscodE_DESC" class="black bold">{{ 'AidRequestsResourceName.aiD_TYPE' | translate }}</label>
+                    <p id="statuscodE_DESC">{{ loadformData.appTypeDesc }}</p>
                   </div>
 
                   <div class="col-xxl-4 col-xl-6">

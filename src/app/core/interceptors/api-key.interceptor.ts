@@ -9,7 +9,7 @@ export const apiKeyInterceptor: HttpInterceptorFn = (req, next) => {
     setHeaders: {
       ApiKey: 'Apikeytest',
       'Accept-Language': language,
-    
+      'X-Portal-Type': 'Service',
     },
   });
 

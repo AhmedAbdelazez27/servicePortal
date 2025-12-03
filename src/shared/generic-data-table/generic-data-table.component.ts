@@ -31,6 +31,7 @@ export class GenericDataTableComponent implements OnChanges, OnInit, OnDestroy {
   @Input() showActionColumn: boolean = false;
   @Input() columnHeaderMap: { [key: string]: string } = {};
   @Input() rowActions: Array<{ label?: string; labelKey?: string; icon?: string; action: string }> = [];
+  @Input() showsearchText: boolean = true;
 
   @Input() set actions(value: Array<{ label?: string; labelKey?: string; icon?: string; action: string }>) {
     this.rowActions = value || [];

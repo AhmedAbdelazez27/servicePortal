@@ -27,7 +27,6 @@ export class MainApplyServiceReportService {
   currecntDept: string | null = null;
   private destroy$ = new Subject<void>();
   reportData: mainApplyServiceDto = {} as mainApplyServiceDto;
-  reportWindow = window.open('', '_blank');
   constructor(
     private mainApplyService: MainApplyService,
     private translate: TranslateService,

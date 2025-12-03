@@ -456,30 +456,38 @@
                                 </button>
                                 
                                 <div class="d-flex gap-2">
-                                    <button *ngIf="currentStep < totalSteps" 
-                                            type="button" 
-                                            class="btn btn-primary" 
-                                            (click)="nextStep()"
-                                            [disabled]="!canProceedToNext()">
-                                        {{ 'COMMON.NEXT' | translate }}
-                                    </button>
-                                    
-                                    <button *ngIf="currentStep === totalSteps" 
-                                            type="button" 
-                                            class="btn btn-outline-secondary" 
-                                            (click)="onSaveDraft()"
-                                            [disabled]="!canSubmit() || isSaving">
-                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
-                                        {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
-                                    </button>
-                                    
-                                    <button *ngIf="currentStep === totalSteps" 
-                                            type="submit" 
-                                            class="btn btn-success" 
-                                            [disabled]="!canSubmit() || isSaving">
-                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
-                                        {{ 'COMMON.SUBMIT' | translate }}
-                                    </button>
+                                  <button *ngIf="currentStep < totalSteps"
+                                          type="button"
+                                          class="btn btn-primary"
+                                          (click)="nextStep()"
+                                          [disabled]="!canProceedToNext()">
+                                    {{ 'COMMON.NEXT' | translate }}
+                                  </button>
+
+                                  <!--<button *ngIf="currentStep === totalSteps"
+                                          type="button"
+                                          class="btn btn-outline-secondary"
+                                          (click)="onSaveDraft()"
+                                          [disabled]="!canSubmit() || isSaving">
+                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                    {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                                  </button>-->
+
+                                  <button *ngIf="currentStep === totalSteps"
+                                          type="button"
+                                          class="btn btn-outline-secondary"
+                                          (click)="onSaveDraft()">
+                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                    {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                                  </button>
+
+                                  <button *ngIf="currentStep === totalSteps"
+                                          type="submit"
+                                          class="btn btn-success"
+                                          [disabled]="!canSubmit() || isSaving">
+                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                    {{ 'COMMON.SUBMIT' | translate }}
+                                  </button>
                                 </div>
                             </div>
                         </form>

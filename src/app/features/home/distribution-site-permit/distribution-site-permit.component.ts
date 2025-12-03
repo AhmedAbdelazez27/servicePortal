@@ -398,6 +398,21 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   /**
    * Load request details from API for update mode
    */
+
+  private replaceNullStrings(obj: any): any {
+    if (obj === 'NULL') return '';
+    if (Array.isArray(obj)) return obj.map(item => this.replaceNullStrings(item));
+    if (obj && typeof obj === 'object') {
+      const newObj: any = {};
+      Object.keys(obj).forEach(key => {
+        newObj[key] = this.replaceNullStrings(obj[key]);
+      });
+      return newObj;
+    }
+    return obj;
+  }
+
+
   private loadRequestDetails(id: string): void {
     this.isLoading = true;
     this.spinnerService.show();
@@ -405,6 +420,8 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     const params: FiltermainApplyServiceByIdDto = { id };
     const sub = this.mainApplyService.getDetailById(params).subscribe({
       next: (response: any) => {
+        response = this.replaceNullStrings(response);
+
         this.loadformData = response;
 
         // Extract distribution site request data
@@ -1861,9 +1878,227 @@ addPartner(): void {
   }
 
   // Save as Draft
-  onSaveDraft(): void {
-    // Call onSubmit with isDraft = true
-    this.onSubmit(true);
+  //onSaveDraft(): void {
+  //  this.onSubmit(true);
+  //}
+
+
+  private normalizeEmptyStrings(obj: any, excludeKeys: string[] = []): any {
+    if (obj === null || obj === undefined) return obj;
+    if (typeof obj !== 'object') return obj;
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.normalizeEmptyStrings(item, excludeKeys));
+    }
+
+    const copy: any = {};
+    for (const key of Object.keys(obj)) {
+      const value = obj[key];
+      if (excludeKeys.includes(key)) {
+        copy[key] = value;
+        continue;
+      }
+      if (typeof value === 'string') {
+        copy[key] = value.trim() === '' ? 'NULL' : value;
+      } else if (Array.isArray(value)) {
+        copy[key] = value.map(v => this.normalizeEmptyStrings(v, excludeKeys));
+      } else if (typeof value === 'object' && value !== null) {
+        copy[key] = this.normalizeEmptyStrings(value, excludeKeys);
+      } else {
+        copy[key] = value;
+      }
+    }
+    return copy;
+  }
+
+
+  async onSaveDraft(isDraft: boolean = false): Promise<void> {
+    if (this.isSaving) {
+      return;
+    }
+
+    this.submitted = true;
+
+    //if (!this.canSubmit(true)) {
+    //  return;
+    //}
+
+    this.isSaving = true;
+
+    try {
+      const formData = this.mainInfoForm.getRawValue();
+      const currentUser = this.authService.getCurrentUser();
+
+      if (!currentUser?.id) {
+        this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
+        this.isSaving = false;
+        return;
+      }
+      const normalizedFormData = this.normalizeEmptyStrings(formData);
+
+      // Check if we're in update mode
+      const isUpdateMode = !!this.distributionSiteRequestId && !!this.mainApplyServiceId;
+
+      if (isUpdateMode) {
+        // Update mode - handle attachments and partners separately
+        try {
+          await this.handleAttachmentOperations();
+        } catch (attachmentError) {
+          console.error('Error handling attachments:', attachmentError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_ATTACHMENTS') || 'Warning saving attachments'
+          );
+        }
+
+        try {
+          await this.handlePartnerOperations();
+        } catch (partnerError) {
+          console.error('Error handling partners:', partnerError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_PARTNERS') || 'Warning saving partners'
+          );
+        }
+
+        // Format dates properly
+        let startDateValue: string = normalizedFormData.startDate || '';
+        let endDateValue: string = normalizedFormData.endDate || '';
+
+        if (startDateValue && !startDateValue.includes('T')) {
+          startDateValue = new Date(startDateValue).toISOString();
+        }
+        if (endDateValue && !endDateValue.includes('T')) {
+          endDateValue = new Date(endDateValue).toISOString();
+        }
+
+        const updateDto: UpdateDistributionSiteRequestDto = {
+          id: this.distributionSiteRequestId!,
+          mainApplyServiceId: this.mainApplyServiceId!,
+          userId: currentUser.id,
+          locationType: this.getSelectedLocationTypeName(),
+          locationTypeId: normalizedFormData.locationTypeId,
+          regionName: normalizedFormData.regionName,
+          streetName: normalizedFormData.streetName,
+          address: normalizedFormData.address,
+          startDate: startDateValue,
+          endDate: endDateValue,
+          notes: normalizedFormData.notes,
+          locationId: normalizedFormData.locationId ? Number(normalizedFormData.locationId) : undefined,
+          supervisorName: normalizedFormData.supervisorName,
+          jopTitle: normalizedFormData.jopTitle,
+          supervisorMobile: normalizedFormData.supervisorMobile ? `971${normalizedFormData.supervisorMobile}` : undefined,
+          serviceType: ServiceType.DistributionSitePermitApplication,
+          distributionSiteCoordinators: normalizedFormData.distributionSiteCoordinators,
+          isDraft: isDraft,
+        };
+
+        const sub = this.distributionSiteRequestService.update(updateDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_SAVED_AS_DRAFT'));
+            } else {
+              this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_CREATED'));
+            }
+            this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'updating'} distribution site request:`, error);
+
+            // Check if it's a business error with a specific reason
+            if (error.error && error.error.reason) {
+              // Show the specific reason from the API response
+              this.toastr.error(error.error.reason);
+            } else {
+              // Fallback to generic error message
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_UPDATE_DISTRIBUTION_SITE_REQUEST') || 'Failed to update distribution site request');
+              }
+            }
+
+            this.isSaving = false;
+          }
+        });
+        this.subscriptions.push(sub);
+      } else {
+        // Create mode
+        const validAttachments = this.attachments.filter(a => a.fileBase64 && a.fileName);
+
+        const createDto: CreateDistributionSiteRequestDto = {
+          mainApplyServiceId: 0,
+          userId: currentUser.id,
+          locationType: this.getSelectedLocationTypeName(),
+          locationTypeId: normalizedFormData.locationTypeId,
+          regionName: normalizedFormData.regionName,
+          streetName: normalizedFormData.streetName,
+          address: normalizedFormData.address,
+          startDate: normalizedFormData.startDate,
+          endDate: normalizedFormData.endDate,
+          notes: normalizedFormData.notes,
+          locationId: normalizedFormData.locationId,
+
+          supervisorName: normalizedFormData.supervisorName,
+          jopTitle: normalizedFormData.jopTitle,
+          supervisorMobile: `971${normalizedFormData.supervisorMobile}`, // Add 971 prefix
+
+          serviceType: ServiceType.DistributionSitePermitApplication,
+          distributionSiteCoordinators: normalizedFormData.distributionSiteCoordinators,
+          attachments: validAttachments,
+          partners: this.partners,
+          isDraft: isDraft, // Set draft flag based on parameter
+        };
+
+        const sub = this.distributionSiteRequestService.create(createDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_SAVED_AS_DRAFT'));
+            } else {
+              this.toastr.success(this.translate.instant('SUCCESS.DISTRIBUTION_SITE_REQUEST_CREATED'));
+            }
+            this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'creating'} distribution site request:`, error);
+
+            // Check if it's a business error with a specific reason
+            if (error.error && error.error.reason) {
+              // Show the specific reason from the API response
+              this.toastr.error(error.error.reason);
+            } else {
+              // Fallback to generic error message
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+              }
+            }
+
+            this.isSaving = false;
+          }
+        });
+        this.subscriptions.push(sub);
+      }
+
+    } catch (error: any) {
+      console.error(`Error in onSubmit (isDraft: ${isDraft}):`, error);
+
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        if (isDraft) {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+        } else {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_DISTRIBUTION_SITE_REQUEST'));
+        }
+      }
+
+      this.isSaving = false;
+    }
   }
 
   isFieldMandatory(fieldName: string): boolean {

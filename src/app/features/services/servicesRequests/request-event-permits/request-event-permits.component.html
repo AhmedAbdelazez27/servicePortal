@@ -1718,14 +1718,20 @@
                         {{ 'VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS_TO_SUBMIT' | translate }}
                       </small>
                     </div>
+                    <!--<button type="button" class="btn btn-outline-secondary"
+                            (click)="onSaveDraft()" [disabled]="isSaving || !isFormInitialized">
+                      <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                      {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                    </button>-->
+
                     <button type="button" class="btn btn-outline-secondary"
-                      (click)="onSaveDraft()" [disabled]="isSaving || !isFormInitialized">
+                            (click)="onSaveDraft()">
                       <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
                       {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
                     </button>
                     <button type="button" class="btn" [class.btn-success]="canSubmit()"
-                      [class.btn-outline-secondary]="!canSubmit()" (click)="onSubmit()"
-                      [disabled]="!canSubmit() || isSaving">
+                            [class.btn-outline-secondary]="!canSubmit()" (click)="onSubmit()"
+                            [disabled]="!canSubmit() || isSaving">
                       <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
                       <i *ngIf="!isSaving" class="fas fa-paper-plane me-2"></i>
                       {{ "COMMON.SUBMIT" | translate }}

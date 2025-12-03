@@ -151,6 +151,21 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   /**
    * Load request details from API for update mode
    */
+
+
+  private replaceNullStrings(obj: any): any {
+    if (obj === 'NULL') return '';
+    if (Array.isArray(obj)) return obj.map(item => this.replaceNullStrings(item));
+    if (obj && typeof obj === 'object') {
+      const newObj: any = {};
+      Object.keys(obj).forEach(key => {
+        newObj[key] = this.replaceNullStrings(obj[key]);
+      });
+      return newObj;
+    }
+    return obj;
+  }
+
   private loadRequestDetails(id: string): void {
     this.isLoading = true;
     this.spinnerService.show();
@@ -158,6 +173,7 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     const params: FiltermainApplyServiceByIdDto = { id };
     const sub = this.mainApplyService.getDetailById(params).subscribe({
       next: (response: mainApplyServiceDto) => {
+        response = this.replaceNullStrings(response);
         this.loadformData = response;
         
         // Extract request plaint data
@@ -1306,9 +1322,232 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   }
 
   // Save as Draft
-  async onSaveDraft(): Promise<void> {
-    // Call onSubmit with isDraft = true
-    await this.onSubmit(true);
+  //async onSaveDraft(): Promise<void> {
+  //  await this.onSubmit(true);
+  //}
+
+
+  private normalizeEmptyStrings(obj: any, excludeKeys: string[] = []): any {
+    if (obj === null || obj === undefined) return obj;
+    if (typeof obj !== 'object') return obj;
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.normalizeEmptyStrings(item, excludeKeys));
+    }
+
+    const copy: any = {};
+    for (const key of Object.keys(obj)) {
+      const value = obj[key];
+      if (excludeKeys.includes(key)) {
+        copy[key] = value;
+        continue;
+      }
+      if (typeof value === 'string') {
+        copy[key] = value.trim() === '' ? 'NULL' : value;
+      } else if (Array.isArray(value)) {
+        copy[key] = value.map(v => this.normalizeEmptyStrings(v, excludeKeys));
+      } else if (typeof value === 'object' && value !== null) {
+        copy[key] = this.normalizeEmptyStrings(value, excludeKeys);
+      } else {
+        copy[key] = value;
+      }
+    }
+    return copy;
+  }
+
+  async onSaveDraft(isDraft: boolean = true): Promise<void> {
+    // Prevent multiple submissions
+    if (this.isSaving) {
+      return;
+    }
+
+    this.submitted = true;
+
+    // Basic validation first
+    if (!this.canSubmit()) {
+      this.toastr.error(
+        this.translate.instant('VALIDATION.PLEASE_COMPLETE_REQUIRED_FIELDS')
+      );
+      return;
+    }
+
+    this.isSaving = true;
+
+    try {
+      const formData = this.requestPlaintForm.getRawValue();
+
+      // Get current user info
+      const currentUser = this.authService.getCurrentUser();
+      if (!currentUser?.id) {
+        this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
+        this.isSaving = false;
+        return;
+      }
+      const normalizedFormData = this.normalizeEmptyStrings(formData);
+
+      // Determine if this is update or create
+      const isUpdateMode = !!this.requestPlaintId && !!this.mainApplyServiceId;
+
+      if (isUpdateMode) {
+        // Handle attachments separately (update/create/delete)
+        // Use mainApplyServiceId as masterId for attachments
+        if (this.mainApplyServiceId) {
+          try {
+            await this.handleAttachmentOperations();
+          } catch (attachmentError) {
+            console.error('Error handling attachments:', attachmentError);
+            this.toastr.warning(
+              this.translate.instant('EDIT_PROFILE.ATTACHMENT_SAVE_WARNING')
+            );
+          }
+        }
+
+        // Update mode
+        // Format requestDate properly
+        let requestDateValue: string;
+        if (normalizedFormData.requestDate) {
+          requestDateValue = new Date(normalizedFormData.requestDate).toISOString();
+        } else if (this.loadformData?.requestPlaint?.requestDate) {
+          const dateValue = this.loadformData.requestPlaint.requestDate;
+          requestDateValue = dateValue instanceof Date
+            ? dateValue.toISOString()
+            : new Date(dateValue).toISOString();
+        } else {
+          requestDateValue = new Date().toISOString();
+        }
+
+        const updateDto: UpdateRequestPlaintDto = {
+          id: this.requestPlaintId!,
+          mainApplyServiceId: this.mainApplyServiceId!,
+          requestMainApplyServiceId: normalizedFormData.requestMainApplyServiceId,
+          requestNo: this.loadformData?.requestPlaint?.requestNo || 0,
+          requestDate: requestDateValue,
+          details: normalizedFormData.details,
+          notes: normalizedFormData.notes || null,
+          isDraft: isDraft,
+          requestPlaintEvidences: this.evidences.length > 0 ? this.evidences : null,
+          requestPlaintJustifications: this.justifications.length > 0 ? this.justifications : null,
+          requestPlaintReasons: this.reasons.length > 0 ? this.reasons : null,
+        };
+
+        const sub = this.requestPlaintService.update(updateDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(
+                this.translate.instant('SUCCESS.REQUEST_PLAINT_SAVED_AS_DRAFT')
+              );
+            } else {
+              this.toastr.success(
+                this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED')
+              );
+            }
+            this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'updating'} request plaint:`, error);
+
+            if (error.error && error.error.reason) {
+              this.toastr.error(error.error.reason);
+            } else {
+              if (isDraft) {
+                this.toastr.error(
+                  this.translate.instant('ERRORS.FAILED_SAVE_DRAFT')
+                );
+              } else {
+                this.toastr.error(
+                  this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+                );
+              }
+            }
+
+            this.isSaving = false;
+          },
+        });
+        this.subscriptions.push(sub);
+      } else {
+        // Create mode
+        // Filter out empty attachments
+        const validAttachments = this.attachments.filter(
+          (a) => a.fileBase64 && a.fileName
+        );
+
+        const createDto: CreateRequestPlaintDto = {
+          userId: currentUser.id,
+          requestMainApplyServiceId: normalizedFormData.requestMainApplyServiceId,
+          requestNo: 0, // Auto-generated in backend
+          requestDate: new Date().toISOString(),
+          details: normalizedFormData.details,
+          notes: normalizedFormData.notes || null,
+          attachments: validAttachments,
+          requestPlaintEvidences: this.evidences,
+          requestPlaintJustifications: this.justifications,
+          requestPlaintReasons: this.reasons,
+          isDraft: isDraft, // Set draft flag based on parameter
+          // Note: requestingEntityId is not included as it's only for display purposes
+        };
+
+        const sub = this.requestPlaintService.create(createDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(
+                this.translate.instant('SUCCESS.REQUEST_PLAINT_SAVED_AS_DRAFT')
+              );
+            } else {
+              this.toastr.success(
+                this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED')
+              );
+            }
+            this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'creating'} request plaint:`, error);
+
+            // Check if it's a business error with a specific reason
+            if (error.error && error.error.reason) {
+              // Show the specific reason from the API response
+              this.toastr.error(error.error.reason);
+            } else {
+              // Fallback to generic error message
+              if (isDraft) {
+                this.toastr.error(
+                  this.translate.instant('ERRORS.FAILED_SAVE_DRAFT')
+                );
+              } else {
+                this.toastr.error(
+                  this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+                );
+              }
+            }
+
+            this.isSaving = false;
+          },
+        });
+        this.subscriptions.push(sub);
+      }
+    } catch (error: any) {
+      console.error(`Error in onSubmit (isDraft: ${isDraft}):`, error);
+
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        if (isDraft) {
+          this.toastr.error(
+            this.translate.instant('ERRORS.FAILED_SAVE_DRAFT')
+          );
+        } else {
+          this.toastr.error(
+            this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+          );
+        }
+      }
+
+      this.isSaving = false;
+    }
   }
 
   // Utility methods

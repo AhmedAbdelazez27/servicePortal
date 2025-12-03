@@ -108,6 +108,8 @@ export class aidRequestsShowDetailsDto {
   wifeIdEndDate?: Date | null = null;
   wifeIdEndDateStr?: string | null = null;
   entityId?: string | null = null;
+  appTypeDesc?: string | null = null;
+  sourceDesc?: string | null = null;
 }
 
 export class aidRequestsStudyDetailsDto {

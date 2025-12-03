@@ -3,8 +3,8 @@ export const environment = {
   // apiBaseUrl: 'https://compassint.ddns.net:2041/api',
   apiBaseUrl: 'https://localhost:7156/api',
   // apiBaseUrl: 'https://192.168.51.4/api',
- // apiBaseUrl: 'https://Api.Ajmanccc.ae/api',  // Case sensitive - might be issue
-//apiBaseUrl: 'https://api.ajmanccc.ae/api',  // Try lowercase 'api'
+  // apiBaseUrl: 'https://Api.Ajmanccc.ae/api',  // Case sensitive - might be issue
+  // apiBaseUrl: 'https://api.ajmanccc.ae/api',  // Try lowercase 'api'
   firebase: {
     apiKey: 'AIzaSyAB3FKe70tGitiH23qLJY7jU_gLAxzjWhc',
     authDomain: 'ccc-serevices.firebaseapp.com',
@@ -16,5 +16,6 @@ export const environment = {
     vapidKey:
       'BHJbNjl2Io--NZvY5t48mKArUmzHW-hLRXroW5KjbyqR9Ey8KruI03aBW9Xq2k1fJEifMF_7T30LWeSoJExom6M',
   },
+  // Set your Google Maps JavaScript API key here (required for Google Maps)
+  googleMapsApiKey: 'AIzaSyCZ_e4czGqaxNpFVKrRq3RQPB0nSz6aHxE',
 };
- 

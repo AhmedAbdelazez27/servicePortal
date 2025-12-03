@@ -354,6 +354,25 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   /**
    * Load request details from API for update mode
    */
+
+  private replaceNullString(value: any): any {
+    return value === 'NULL' ? '' : value;
+  }
+
+  private replaceNullStrings(obj: any): any {
+    if (obj === 'NULL') return '';
+    if (Array.isArray(obj)) return obj.map(item => this.replaceNullStrings(item));
+    if (obj && typeof obj === 'object') {
+      const newObj: any = {};
+      Object.keys(obj).forEach(key => {
+        newObj[key] = this.replaceNullStrings(obj[key]);
+      });
+      return newObj;
+    }
+    return obj;
+  }
+
+
   private loadRequestDetails(id: string): void {
     this.isLoading = true;
     this.spinnerService.show();
@@ -361,6 +380,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const params: FiltermainApplyServiceByIdDto = { id };
     const sub = this.mainApplyService.getDetailById(params).subscribe({
       next: (response: any) => {
+        response = this.replaceNullStrings(response);
         this.loadformData = response;
         const locationTypeId = response?.fastingTentService?.location?.locationTypeId;
 
@@ -385,13 +405,13 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
             distributionSiteCoordinators: fastingTentService.distributionSiteCoordinators || '',
             startDate: fastingTentService.startDate
               ? (fastingTentService.startDate instanceof Date
-                  ? fastingTentService.startDate.toISOString().split('T')[0]
-                  : new Date(fastingTentService.startDate).toISOString().split('T')[0])
+                ? fastingTentService.startDate.toISOString().split('T')[0]
+                : new Date(fastingTentService.startDate).toISOString().split('T')[0])
               : '',
             endDate: fastingTentService.endDate
               ? (fastingTentService.endDate instanceof Date
-                  ? fastingTentService.endDate.toISOString().split('T')[0]
-                  : new Date(fastingTentService.endDate).toISOString().split('T')[0])
+                ? fastingTentService.endDate.toISOString().split('T')[0]
+                : new Date(fastingTentService.endDate).toISOString().split('T')[0])
               : '',
           });
 
@@ -412,8 +432,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
               licenseIssuer: p.licenseIssuer || '',
               licenseExpiryDate: p.licenseExpiryDate
                 ? (p.licenseExpiryDate instanceof Date
-                    ? p.licenseExpiryDate.toISOString().split('T')[0]
-                    : new Date(p.licenseExpiryDate).toISOString().split('T')[0])
+                  ? p.licenseExpiryDate.toISOString().split('T')[0]
+                  : new Date(p.licenseExpiryDate).toISOString().split('T')[0])
                 : '',
               licenseNumber: p.licenseNumber || '',
               contactDetails: p.contactDetails || '',
@@ -1046,7 +1066,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const supervisorName = form.get('supervisorName')?.value;
     if (!supervisorName || (typeof supervisorName === 'string' && supervisorName.trim() === '')) {
       if (showToastr) {
-        this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT.SUPERVISOR_NAME'));
+       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT.SUPERVISOR_NAME'));
       }
       return false;
     }
@@ -2070,7 +2090,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         // Format dates properly
         let startDateValue: string = formData.startDate || '';
         let endDateValue: string = formData.endDate || '';
-        
+
         if (startDateValue && !startDateValue.includes('T')) {
           startDateValue = new Date(startDateValue).toISOString();
         }
@@ -2215,10 +2235,237 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Save as Draft
-  onSaveDraft(): void {
-    // Call onSubmit with isDraft = true
-    this.onSubmit(true);
+  //onSaveDraft(): void {
+  //  this.onSubmit(true);
+  //}
+
+
+
+  private normalizeEmptyStrings(obj: any, excludeKeys: string[] = []): any {
+    if (obj === null || obj === undefined) return obj;
+    if (typeof obj !== 'object') return obj;
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.normalizeEmptyStrings(item, excludeKeys));
+    }
+
+    const copy: any = {};
+    for (const key of Object.keys(obj)) {
+      const value = obj[key];
+      if (excludeKeys.includes(key)) {
+        copy[key] = value;
+        continue;
+      }
+      if (typeof value === 'string') {
+        copy[key] = value.trim() === '' ? 'NULL' : value;
+      } else if (Array.isArray(value)) {
+        copy[key] = value.map(v => this.normalizeEmptyStrings(v, excludeKeys));
+      } else if (typeof value === 'object' && value !== null) {
+        copy[key] = this.normalizeEmptyStrings(value, excludeKeys);
+      } else {
+        copy[key] = value;
+      }
+    }
+    return copy;
+  }
+
+
+  async onSaveDraft(isDraft: boolean = true): Promise<void> {
+    if (this.isSaving) {
+      return;
+    }
+
+    this.submitted = true;
+
+
+
+    this.isSaving = true;
+
+    try {
+      const formData = this.mainInfoForm.getRawValue();
+      const supervisorData = this.supervisorForm.getRawValue();
+      const currentUser = this.authService.getCurrentUser();
+
+      if (!currentUser?.id) {
+        this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
+        this.isSaving = false;
+        return;
+      }
+
+      // Normalize empty string fields to 'NULL' for submission.
+      // Exclude supervisorMobile from normalization so phone validation remains numeric.
+      const normalizedFormData = this.normalizeEmptyStrings(formData);
+      const normalizedSupervisorData = this.normalizeEmptyStrings(supervisorData, ['supervisorMobile']);
+
+      // Normalize partners array (convert empty strings to 'NULL')
+      const normalizedPartners: FastingTentPartnerDto[] = this.partners.map(p => this.normalizeEmptyStrings(p, ['contactDetails']));
+
+      // Determine if this is update or create
+      const isUpdateMode = !!this.fastingTentRequestId && !!this.mainApplyServiceId;
+
+      if (isUpdateMode) {
+        // Handle attachments separately (update/create/delete)
+        if (this.mainApplyServiceId) {
+          try {
+            await this.handleAttachmentOperations();
+          } catch (attachmentError) {
+            console.error('Error handling attachments:', attachmentError);
+            this.toastr.warning(
+              this.translate.instant('EDIT_PROFILE.ATTACHMENT_SAVE_WARNING')
+            );
+          }
+        }
+
+        // Handle partners separately (create new, delete)
+        try {
+          await this.handlePartnerOperations();
+        } catch (partnerError) {
+          console.error('Error handling partners:', partnerError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_PARTNERS') || 'Warning saving partners'
+          );
+        }
+
+        // Format dates properly
+        let startDateValue: string = normalizedFormData.startDate || '';
+        let endDateValue: string = normalizedFormData.endDate || '';
+
+        if (startDateValue && !startDateValue.includes('T')) {
+          startDateValue = new Date(startDateValue).toISOString();
+        }
+        if (endDateValue && !endDateValue.includes('T')) {
+          endDateValue = new Date(endDateValue).toISOString();
+        }
+
+        const updateDto: UpdateFastingTentRequestDto = {
+          id: this.fastingTentRequestId!,
+          mainApplyServiceId: this.mainApplyServiceId!,
+          userId: currentUser.id,
+          locationType: this.getSelectedLocationTypeName(),
+          locationTypeId: normalizedFormData.tentLocationType,
+          ownerName: normalizedFormData.ownerName || null,
+          regionName: normalizedFormData.regionName || null,
+          streetName: normalizedFormData.streetName || null,
+          groundNo: normalizedFormData.groundNo || null,
+          address: normalizedFormData.address || null,
+          startDate: startDateValue,
+          endDate: endDateValue,
+          notes: normalizedFormData.notes || null,
+          locationId: normalizedFormData.locationId || null,
+          isConsultantFromAjman: this.loadformData?.fastingTentService?.isConsultantFromAjman ?? true,
+          isConsultantApprovedFromPolice: this.loadformData?.fastingTentService?.isConsultantApprovedFromPolice ?? true,
+          supervisorName: normalizedSupervisorData.supervisorName || null,
+          jopTitle: normalizedSupervisorData.jopTitle || null,
+          supervisorMobile: `971${normalizedSupervisorData.supervisorMobile}`,
+          tentIsSetUp: this.loadformData?.fastingTentService?.tentIsSetUp ?? true,
+          serviceType: ServiceType.TentPermission,
+          distributionSiteCoordinators: normalizedFormData.distributionSiteCoordinators || null,
+          isDraft: isDraft,
+        };
+
+        const sub = this.fastingTentRequestService.update(updateDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_SAVED_AS_DRAFT'));
+            } else {
+              this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_CREATED'));
+            }
+            this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'updating'} fasting tent request:`, error);
+
+            if (error.error && error.error.reason) {
+              this.toastr.error(error.error.reason);
+            } else {
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+              }
+            }
+
+            this.isSaving = false;
+          }
+        });
+        this.subscriptions.push(sub);
+      } else {
+        // Create mode
+        const validAttachments = this.attachments.filter(a => a.fileBase64 && a.fileName);
+        const createDto: CreateFastingTentRequestDto = {
+          mainApplyServiceId: 0,
+          locationType: this.getSelectedLocationTypeName(),
+          locationTypeId: normalizedFormData.tentLocationType,
+          ownerName: normalizedFormData.ownerName,
+          regionName: normalizedFormData.regionName,
+          streetName: normalizedFormData.streetName,
+          groundNo: normalizedFormData.groundNo,
+          address: normalizedFormData.address,
+          startDate: normalizedFormData.startDate,
+          endDate: normalizedFormData.endDate,
+          notes: normalizedFormData.notes,
+          locationId: normalizedFormData.locationId,
+          supervisorName: normalizedSupervisorData.supervisorName,
+          jopTitle: normalizedSupervisorData.jopTitle,
+          supervisorMobile: `971${normalizedSupervisorData.supervisorMobile}`, // Add 971 prefix
+          serviceType: ServiceType.TentPermission, // Always send as enum value
+          distributionSiteCoordinators: normalizedFormData.distributionSiteCoordinators,
+          attachments: validAttachments,
+          partners: normalizedPartners,
+          isDraft: isDraft, // Set draft flag based on parameter
+        };
+
+        const sub = this.fastingTentRequestService.create(createDto).subscribe({
+          next: (response) => {
+            if (isDraft) {
+              this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_SAVED_AS_DRAFT'));
+            } else {
+              this.toastr.success(this.translate.instant('SUCCESS.FASTING_TENT_REQUEST_CREATED'));
+            }
+            this.router.navigate(['/request']);
+            this.isSaving = false;
+          },
+          error: (error) => {
+            console.error(`Error ${isDraft ? 'saving draft' : 'creating'} fasting tent request:`, error);
+
+            // Check if it's a business error with a specific reason
+            if (error.error && error.error.reason) {
+              // Show the specific reason from the API response
+              this.toastr.error(error.error.reason);
+            } else {
+              // Fallback to generic error message
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+              }
+            }
+
+            this.isSaving = false;
+          }
+        });
+        this.subscriptions.push(sub);
+      }
+
+    } catch (error: any) {
+      console.error(`Error in onSubmit (isDraft: ${isDraft}):`, error);
+
+      // Check if it's a business error with a specific reason
+      if (error.error && error.error.reason) {
+        // Show the specific reason from the API response
+        this.toastr.error(error.error.reason);
+      } else {
+        // Fallback to generic error message
+        if (isDraft) {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT'));
+        } else {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_FASTING_TENT_REQUEST'));
+        }
+      }
+
+      this.isSaving = false;
+    }
   }
 
   validateAttachmentsTab(showToastr = false): boolean {
@@ -2252,7 +2499,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       if (!hasValidAttachment) {
         if (showToastr) {
           const attachmentName = this.getAttachmentName(config);
-          this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + attachmentName);
+         this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + attachmentName);
         }
         return false;
       }

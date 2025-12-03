@@ -10,7 +10,7 @@
       </select>
        <label for="pageSizeSelect" class="">{{ 'NOTIFICATIONS.FILTERS.PAGE_SIZE' | translate }}</label>
     </div>
-    <div class="form-group mb-0">
+    <div class="form-group mb-0" *ngIf="showsearchText">
       <input type="text" class="form-control" style="min-width: 220px;" placeholder="{{ 'NOTIFICATIONS.FILTERS.SEARCH_PLACEHOLDER' | translate }}" [(ngModel)]="searchText" (input)="onSearchInput()">
     </div>
   </div>

@@ -856,19 +856,25 @@
                                 </button>
 
                                 <div *ngIf="currentTab === totalTabs" class="d-flex gap-2">
-                                    <button type="button" class="btn btn-outline-secondary"
-                                        (click)="onSaveDraft()" [disabled]="!canSubmit() || isSaving"
-                                        [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
-                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
-                                        {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
-                                    </button>
-                                    <button type="button" class="btn btn-success"
-                                        (click)="onSubmit()" [disabled]="!canSubmit() || isSaving"
-                                        [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
-                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
-                                        {{ 'COMMON.SUBMIT' | translate }}
-                                        <i *ngIf="!isSaving && canSubmit()" class="fas fa-check ms-2"></i>
-                                    </button>
+                                  <!--<button type="button" class="btn btn-outline-secondary"
+                                          (click)="onSaveDraft()" [disabled]="!canSubmit() || isSaving"
+                                          [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
+                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                    {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                                  </button>-->
+
+                                  <button type="button" class="btn btn-outline-secondary"
+                                          (click)="onSaveDraft()">
+                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                    {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                                  </button>
+                                  <button type="button" class="btn btn-success"
+                                          (click)="onSubmit()" [disabled]="!canSubmit() || isSaving"
+                                          [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
+                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                    {{ 'COMMON.SUBMIT' | translate }}
+                                    <i *ngIf="!isSaving && canSubmit()" class="fas fa-check ms-2"></i>
+                                  </button>
                                 </div>
                             </div>
                         </div>

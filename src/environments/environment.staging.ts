@@ -4,5 +4,5 @@ export const environment = {
   // apiBaseUrl: 'http://compassint.ddns.net:2041/api',
   // apiBaseUrl:'https://localhost:7156/api'
  apiBaseUrl: 'https://Api.Ajmanccc.ae/api',
-
+  googleMapsApiKey: 'AIzaSyCZ_e4czGqaxNpFVKrRq3RQPB0nSz6aHxE'
 };

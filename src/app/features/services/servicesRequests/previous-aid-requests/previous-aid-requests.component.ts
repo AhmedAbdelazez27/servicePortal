@@ -270,25 +270,21 @@ export class PreviousAidRequestsComponent implements OnInit, OnDestroy {
 
   public buildColumnDefs(): void {
     this.translate.get([
-      'AidRequestsResourceName.entitY_NAME',
-      'AidRequestsResourceName.namE_AR',
-      'AidRequestsResourceName.source',
+      'AidRequestsResourceName.entityName',
+      'AidRequestsResourceName.beneficiary',
       'AidRequestsResourceName.aiD_TYPE',
-      'AidRequestsResourceName.comitY_DATE',
       'AidRequestsResourceName.requesT_TYPE_DESC',
+      'AidRequestsResourceName.tX_DATE',
       'AidRequestsResourceName.status',
-      'AidRequestsResourceName.caseNo',
       'AidRequestsResourceName.amount'
     ]).subscribe(translations => {
       this.columnDefs = [
-        { headerName: translations['AidRequestsResourceName.entitY_NAME'], field: 'entityName', width: 200 },
-        { headerName: translations['AidRequestsResourceName.namE_AR'], field: 'nameAr', width: 200 },
-        { headerName: translations['AidRequestsResourceName.source'], field: 'sourceDesc', width: 200 },
+        { headerName: translations['AidRequestsResourceName.entityName'], field: 'entityName', width: 200 },
+        { headerName: translations['AidRequestsResourceName.beneficiary'], field: 'nameAr', width: 200 },
         { headerName: translations['AidRequestsResourceName.aiD_TYPE'], field: 'aidType', width: 200 },
-        { headerName: translations['AidRequestsResourceName.comitY_DATE'], field: 'comityDatestr', width: 200 },
         { headerName: translations['AidRequestsResourceName.requesT_TYPE_DESC'], field: 'reqTypeDesc', width: 200 },
+        { headerName: translations['AidRequestsResourceName.tX_DATE'], field: 'comityDatestr', width: 200 },
         { headerName: translations['AidRequestsResourceName.status'], field: 'statDesc', width: 200 },
-        { headerName: translations['AidRequestsResourceName.caseNo'], field: 'caseNo', width: 200 },
         { headerName: translations['AidRequestsResourceName.amount'], field: 'amountstr', width: 200 },
       ];
     });

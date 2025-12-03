@@ -778,6 +778,20 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   /**
    * Load request details from API for update mode
    */
+
+  private replaceNullStrings(obj: any): any {
+    if (obj === 'NULL') return '';
+    if (Array.isArray(obj)) return obj.map(item => this.replaceNullStrings(item));
+    if (obj && typeof obj === 'object') {
+      const newObj: any = {};
+      Object.keys(obj).forEach(key => {
+        newObj[key] = this.replaceNullStrings(obj[key]);
+      });
+      return newObj;
+    }
+    return obj;
+  }
+
   private loadRequestDetails(id: string): void {
     this.isLoading = true;
     this.spinnerService.show();
@@ -785,6 +799,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const params: FiltermainApplyServiceByIdDto = { id };
     const sub = this.mainApplyService.getDetailById(params).subscribe({
       next: (response: any) => {
+        response = this.replaceNullStrings(response);
         this.loadformData = response;
 
         // Extract request event permit data
@@ -2579,8 +2594,297 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   }
 
   // Save as Draft
-  onSaveDraft(): void {
-    this.onSubmit(true);
+  //onSaveDraft(): void {
+  //  this.onSubmit(true);
+  //}
+
+
+
+  private normalizeEmptyStrings(obj: any, excludeKeys: string[] = []): any {
+    if (obj === null || obj === undefined) return obj;
+    if (typeof obj !== 'object') return obj;
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.normalizeEmptyStrings(item, excludeKeys));
+    }
+
+    const copy: any = {};
+    for (const key of Object.keys(obj)) {
+      const value = obj[key];
+      if (excludeKeys.includes(key)) {
+        copy[key] = value;
+        continue;
+      }
+      if (typeof value === 'string') {
+        copy[key] = value.trim() === '' ? 'NULL' : value;
+      } else if (Array.isArray(value)) {
+        copy[key] = value.map(v => this.normalizeEmptyStrings(v, excludeKeys));
+      } else if (typeof value === 'object' && value !== null) {
+        copy[key] = this.normalizeEmptyStrings(value, excludeKeys);
+      } else {
+        copy[key] = value;
+      }
+    }
+    return copy;
+  }
+
+
+  async onSaveDraft(isDraft: boolean = true): Promise<void> {
+    if (this.isSaving) return;
+
+    this.submitted = true;
+    // For draft, we don't need strict validation - allow saving even if form is incomplete
+    // For final submit, we need all validations to pass
+    if (!isDraft && !this.canSubmit()) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD'));
+      return;
+    }
+
+    this.isSaving = true;
+
+    try {
+      const currentUser = this.authService.getCurrentUser();
+      if (!currentUser?.id) {
+        this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
+        this.isSaving = false;
+        return;
+      }
+
+      // Check if we're in update mode
+      const isUpdateMode = !!this.requestEventPermitId && !!this.mainApplyServiceId;
+
+      if (isUpdateMode) {
+        // Update mode - handle attachments, partners, and advertisements separately
+        try {
+          await this.handleMainAttachmentOperations();
+        } catch (attachmentError) {
+          console.error('Error handling attachments:', attachmentError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_ATTACHMENTS') || 'Warning saving attachments'
+          );
+        }
+
+        try {
+          await this.handlePartnerOperations();
+        } catch (partnerError) {
+          console.error('Error handling partners:', partnerError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_PARTNERS') || 'Warning saving partners'
+          );
+        }
+
+        try {
+          await this.handleAdvertisementOperations(isDraft);
+        } catch (advertisementError) {
+          console.error('Error handling advertisements:', advertisementError);
+          this.toastr.warning(
+            this.translate.instant('ERRORS.FAILED_SAVE_ADVERTISEMENTS') || 'Warning saving advertisements'
+          );
+        }
+
+        // helpers
+        const toISO = (input: string | Date) => {
+          const s =
+            typeof input === 'string' && input.length === 16
+              ? input + ':00'
+              : input;
+          const d = new Date(s as any);
+          return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+        };
+
+        const formData = this.firstStepForm.value;
+        const normalizedFormData = this.normalizeEmptyStrings(formData);
+
+        const updatePayload: any = {
+          id: this.requestEventPermitId!,
+          mainApplyServiceId: this.mainApplyServiceId!,
+          requestDate: toISO(normalizedFormData.requestDate ?? new Date()),
+          lkpRequestTypeId: +normalizedFormData.lkpRequestTypeId,
+          requestSide: normalizedFormData.requestSide || '',
+          supervisingSide: normalizedFormData.supervisingSide || null,
+          eventName: normalizedFormData.eventName || '',
+          startDate: toISO(normalizedFormData.startDate),
+          endDate: toISO(normalizedFormData.endDate),
+          lkpPermitTypeId: normalizedFormData.lkpPermitTypeId,
+          eventLocation: normalizedFormData.eventLocation || null,
+          admin: normalizedFormData.admin || '',
+          delegateName: normalizedFormData.delegateName || null,
+          alternateName: normalizedFormData.alternateName || null,
+          adminTel: normalizedFormData.adminTel ? `971${normalizedFormData.adminTel}` : null,
+          telephone: normalizedFormData.telephone ? `971${normalizedFormData.telephone}` : null,
+          email: normalizedFormData.email || null,
+          notes: normalizedFormData.notes || null,
+          targetedAmount: normalizedFormData.targetedAmount || null,
+          beneficiaryIdNumber: normalizedFormData.beneficiaryIdNumber || null,
+          isDraft: isDraft,
+          donationCollectionChannelIds: normalizedFormData.donationCollectionChannelIds || [],
+        };
+
+        const sub = this._CharityEventPermitRequestService
+          .updateRequestEvent(updatePayload)
+          .subscribe({
+            next: (res) => {
+              if (isDraft) {
+                this.toastr.success(
+                  this.translate.instant('SUCCESS.REQUEST_SAVED_AS_DRAFT') || 'Request saved as draft'
+                );
+              } else {
+                this.toastr.success(
+                  this.translate.instant('SUCCESS.REQUEST_UPDATED') || 'Request updated successfully'
+                );
+              }
+              this.router.navigate(['/request']);
+              this.isSaving = false;
+            },
+            error: (error: any) => {
+              if (error.error && error.error.reason) {
+                this.toastr.error(error.error.reason);
+              } else {
+                if (isDraft) {
+                  this.toastr.error(
+                    this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft'
+                  );
+                } else {
+                  this.toastr.error(
+                    this.translate.instant('ERRORS.FAILED_UPDATE_REQUEST') || 'Failed to update request'
+                  );
+                }
+              }
+              this.isSaving = false;
+            },
+          });
+        this.subscriptions.push(sub);
+      } else {
+        // Create mode
+        // helpers
+        const toISO = (input: string | Date) => {
+          const s =
+            typeof input === 'string' && input.length === 16
+              ? input + ':00'
+              : input;
+          const d = new Date(s as any);
+          return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+        };
+
+        const mainAttachType =
+          AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit;
+        const mainAttachments = this.getValidAttachments(mainAttachType).map(
+          (a) => ({
+            ...a,
+            masterId: a.masterId || 0,
+          })
+        );
+
+        const formData = this.firstStepForm.value;
+        const normalizedFormData = this.normalizeEmptyStrings(formData);
+
+        // Don't include advertisements in the main create payload - they will be created separately
+        const payload: any = {
+          ...normalizedFormData,
+          lkpPermitTypeId: normalizedFormData.lkpPermitTypeId,
+          lkpRequestTypeId: +normalizedFormData.lkpRequestTypeId,
+
+          requestDate: toISO(normalizedFormData.requestDate ?? new Date()),
+          startDate: toISO(normalizedFormData.startDate),
+          endDate: toISO(normalizedFormData.endDate),
+          adminTel: `971${normalizedFormData.adminTel}`, // Add 971 prefix
+          telephone: normalizedFormData.telephone ? `971${normalizedFormData.telephone}` : null, // Add 971 prefix
+
+          scIdentityCardReaderId: this.identityCardData?.id || null, // Add identity card reader ID
+          requestAdvertisements: [], // Don't include advertisements - they will be created separately
+          attachments: mainAttachments,
+          partners: (this.partners || []).map((p) => ({
+            name: p.name,
+            nameEn: p.nameEn,
+            type: Number(p.type),
+            licenseIssuer: p.licenseIssuer ?? null,
+            licenseExpiryDate: p.licenseExpiryDate
+              ? toISO(p.licenseExpiryDate)
+              : null,
+            licenseNumber: p.licenseNumber ?? null,
+            contactDetails: p.contactDetails?.toString() ?? null,
+            jobRequirementsDetails: p.jobRequirementsDetails ?? null,
+            mainApplyServiceId: null, // Will be set by backend
+            attachments: p.attachments || [],
+          })),
+          isDraft: isDraft,
+        };
+
+        const sub = this._CharityEventPermitRequestService
+          .createRequestEvent(payload)
+          .subscribe({
+            next: async (res) => {
+              // After creating the main request, get the mainApplyServiceId and requestEventPermitId
+              const createdMainApplyServiceId = res?.id || res?.mainApplyServiceId || null;
+              const createdRequestEventPermitId = res?.requestEventPermit?.id || res?.requestEventPermitId || null;
+
+              // Update the component's IDs for advertisement creation
+              if (createdMainApplyServiceId) {
+                this.mainApplyServiceId = createdMainApplyServiceId;
+              }
+              if (createdRequestEventPermitId) {
+                this.requestEventPermitId = createdRequestEventPermitId;
+              }
+
+              // Now create advertisements separately using the Create API
+              if (this.requestAdvertisements.length > 0) {
+                try {
+                  await this.handleAdvertisementOperationsCreate(isDraft);
+                } catch (advertisementError) {
+                  console.error('Error creating advertisements:', advertisementError);
+                  this.toastr.warning(
+                    this.translate.instant('ERRORS.FAILED_SAVE_ADVERTISEMENTS') || 'Warning saving advertisements'
+                  );
+                }
+              }
+
+              if (isDraft) {
+                this.toastr.success(
+                  this.translate.instant('SUCCESS.REQUEST_SAVED_AS_DRAFT') || 'Request saved as draft'
+                );
+              } else {
+                this.toastr.success(
+                  this.translate.instant('SUCCESS.REQUEST_Project_Campaign')
+                );
+              }
+              this.router.navigate(['/request']);
+              this.isSaving = false;
+            },
+            error: (error: any) => {
+              if (error.error && error.error.reason) {
+                this.toastr.error(error.error.reason);
+              } else {
+                if (isDraft) {
+                  this.toastr.error(
+                    this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft'
+                  );
+                } else {
+                  this.toastr.error(
+                    this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+                  );
+                }
+              }
+              this.isSaving = false;
+            },
+          });
+        this.subscriptions.push(sub);
+      }
+    } catch (error: any) {
+      if (error.error && error.error.reason) {
+        this.toastr.error(error.error.reason);
+      } else {
+        if (isDraft) {
+          this.toastr.error(
+            this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft'
+          );
+        } else {
+          this.toastr.error(
+            this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+          );
+        }
+      }
+      this.isSaving = false;
+    }
   }
 
   isStepActive(step: number): boolean {

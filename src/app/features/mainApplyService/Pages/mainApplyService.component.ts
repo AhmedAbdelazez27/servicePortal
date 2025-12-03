@@ -23,7 +23,14 @@ import { GenericNgSelectComponent } from '../../../../shared/generic-ng-select/g
  import { Select2APIEndpoint } from '../../../core/constants/select2api-endpoints';
 import { CharityEventPermitRequestService } from '../../../core/services/charity-event-permit-request.service';
 
-
+enum ServiceStatus {
+  Accept = 1,
+  Reject = 2,
+  New = 3,
+  Wait = 4,
+  Draft = 5,
+  ReturnForModifications = 7
+}
 declare var bootstrap: any;
 
 @Component({
@@ -113,6 +120,7 @@ export class MainApplyServiceComponent {
     this.currecntDept = storeddepartmentId.replace(/"/g, '').trim();
 
     this.getSelect2Endpoint();
+    this.lang = this.translate.currentLang;
   }
 
   ngOnDestroy(): void {
@@ -258,41 +266,66 @@ export class MainApplyServiceComponent {
     });
   }
 
-  private buildColumnDefs(): void {
+  public buildColumnDefs(): void {
     this.columnDefs = [
-      // {
-      //   headerName: '#',
-      //   valueGetter: (params) =>
-      //     (params?.node?.rowIndex ?? 0) + 1 + ((this.pagination.currentPage - 1) * this.pagination.take),
-      //   width: 60,
-      //   colId: 'serialNumber'
-      // },
-      { headerName: this.translate.instant('mainApplyServiceResourceName.Servicename'), field: 'service.serviceName', width: 200 },
-      { headerName: this.translate.instant('mainApplyServiceResourceName.RefNo'), field: 'applyNo', width: 200 },
-      { headerName: this.translate.instant('mainApplyServiceResourceName.EventNameAdv'), field: 'requestEventPermit.eventName', width: 200 },
-      { 
-  headerName: this.translate.instant('mainApplyServiceResourceName.applydate'), 
-  field: 'applyDate', 
-  width: 200,
-  valueFormatter: (params) => {
-    if (!params.value) return '';
-    const date = new Date(params.value);
-    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
-  }
-}
-,
-       { headerName: this.translate.instant('mainApplyServiceResourceName.permitNumber'), field: 'permitNumber', width: 200 },
-      { 
-        headerName: this.translate.instant('mainApplyServiceResourceName.statues'), 
-        field: 'serviceStatusName', 
+      { headerName: this.translate.instant('mainApplyServiceResourceName.RequestNo'), field: 'applyNo', width: 200 },
+      {
+        headerName: this.translate.instant('mainApplyServiceResourceName.applydate'), field: 'applyDate', width: 200,
+        valueFormatter: (p: any) => this.formatDateTimeDisplay(p?.value)
+      },
+      { headerName: this.translate.instant('mainApplyServiceResourceName.sevicet'), field: this.lang == 'ar' ? 'service.serviceName' : 'service.serviceNameEn', width: 200 },
+      { headerName: this.translate.instant('mainApplyServiceResourceName.username'), field: this.lang == 'ar' ? 'user.nameEn' : 'user.name', width: 200 },
+      { headerName: this.translate.instant('mainApplyServiceResourceName.userName'), field: 'entityName', width: 200 },
+      {
+        headerName: this.translate.instant('mainApplyServiceResourceName.statues'),
+        field: 'serviceStatusName',
         width: 200,
         cellRenderer: (params: any) => {
-          const statusClass = this.getStatusClass(params.data.serviceStatus);
-          return `<div class="${statusClass}">${params.value || ''}</div>`;
+          const statusClass = this.getStatusClassForGrid(params.data.serviceStatus);
+          return `<div class="${statusClass}">${params.data.serviceStatusName || ''}</div>`;
         }
       },
+      { headerName: this.translate.instant('mainApplyServiceResourceName.desc'), field: 'description', width: 200 },
     ];
   }
+
+  public formatDateTimeDisplay(value: any): string {
+    if (!value) return '';
+    try {
+      // Handle numeric ticks, Date, or ISO strings
+      const candidate = typeof value === 'number' ? new Date(value)
+        : (value instanceof Date ? value : new Date(value));
+      if (!isNaN(candidate.getTime())) {
+        return candidate.toLocaleString();
+      }
+      // If already a formatted string (e.g., dd/MM/yyyy), return as is
+      return String(value);
+    } catch (e) {
+      return String(value);
+    }
+  }
+
+
+  getStatusClassForGrid(serviceStatus: any): string {
+    switch (serviceStatus) {
+      case ServiceStatus.Accept:
+        return 'status-approved';
+      case ServiceStatus.Reject:
+        return 'status-rejected';
+      case ServiceStatus.New:
+        return 'status-new';
+      case ServiceStatus.Wait:
+        return 'status-waiting';
+      case ServiceStatus.Draft:
+        return 'status-draft';
+      case ServiceStatus.ReturnForModifications:
+        return 'status-return-for-modification';
+      default:
+        return 'status-inactive';
+    }
+  }
+
+
 
   onTableAction(event: { action: string, row: any }) {
     if (event.action === 'onUpdate') {

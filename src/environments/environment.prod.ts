@@ -16,5 +16,7 @@ export const environment = {
     // TODO: Add VAPID key from Firebase Console
     // vapidKey: "YOUR_VAPID_KEY_HERE"
     vapidKey: undefined as string | undefined
-  }
+  },
+  // Set your Google Maps JavaScript API key via CI/CD or manual edit
+  googleMapsApiKey: 'AIzaSyCZ_e4czGqaxNpFVKrRq3RQPB0nSz6aHxE'
 };
