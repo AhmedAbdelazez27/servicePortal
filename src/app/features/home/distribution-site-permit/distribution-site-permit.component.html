@@ -766,11 +766,11 @@
                                 {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
                               </button>-->
 
-                              <button type="button" class="btn btn-outline-secondary"
-                                      (click)="onSaveDraft()">
-                                <span class="spinner-border spinner-border-sm me-2"></span>
-                                {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
-                              </button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                    (click)="onSaveDraft()">
+                              <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                              {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                            </button>
                               <button type="button" class="btn" [class.btn-success]="canSubmit()"
                                       [class.btn-outline-secondary]="!canSubmit()" (click)="onSubmit()"
                                       [disabled]="!canSubmit() || isSaving">

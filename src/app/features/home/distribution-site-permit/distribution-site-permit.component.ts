@@ -1912,7 +1912,7 @@ addPartner(): void {
   }
 
 
-  async onSaveDraft(isDraft: boolean = false): Promise<void> {
+  async onSaveDraft(isDraft: boolean = true): Promise<void> {
     if (this.isSaving) {
       return;
     }
