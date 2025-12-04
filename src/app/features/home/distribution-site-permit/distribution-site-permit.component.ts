@@ -1150,10 +1150,13 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   }
 
   validatePartnersTab(showToastr = false): boolean {
-    // Only consider the Partners tab completed if the user has actually visited it
-    // or if there are actual partners added
-    if (!this.visitedTabs.has(4) && this.partners.length === 0) {
-      return false;
+    // Partners tab is optional and should be considered completed when visited
+    // This allows users to proceed without adding partners (since it's not mandatory)
+
+    // If user has visited the tab, consider it completed (optional tab)
+    // User can choose not to add partners, which is valid
+    if (this.partners.length === 0) {
+      return true;
     }
 
     // Validate partner attachments if there are mandatory ones for the selected partner type
