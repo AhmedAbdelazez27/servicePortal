@@ -473,24 +473,39 @@ export class NavbarComponent implements OnInit, OnDestroy {
     );
   }
 
-async markAllAsSeen(): Promise<void> {
-    if (!this.notifications) {
-      return;
-    }
+// async markAllAsSeen(): Promise<void> {
+//     if (!this.notifications) {
+//       return;
+//     }
 
-    const unseenNotifications = this.notifications.filter(n => !n.isSeen);
+//     const unseenNotifications = this.notifications.filter(n => !n.isSeen);
 
-    for (const notification of unseenNotifications) {
-      try {
-        const notificationId = notification.notificationId || notification.id;
-        if (notificationId) {
-          await this.notificationService.markAsSeen(notificationId);
-        }
-      } catch (error) {
-        // Error marking notification as seen
-      }
-    }
+//     for (const notification of unseenNotifications) {
+//       try {
+//         const notificationId = notification.notificationId || notification.id;
+//         if (notificationId) {
+//           await this.notificationService.markAsSeen(notificationId);
+//         }
+//       } catch (error) {
+//         // Error marking notification as seen
+//       }
+//     }
+//   }
+  async markAllAsSeen() { 
+    const isAr = (localStorage.getItem('lang') ?? 'en') === 'ar';
+  try {
+    await this.notificationService.markAllAsSeen();
+    this.toastr.success(
+  isAr ? 'تم تعليم جميع الإشعارات كمقروءة' : 'All notifications marked as seen'
+);
+  } catch (err) {
+    this.toastr.error(
+  isAr ? 'فشل في تعليم جميع الإشعارات' : 'Failed to mark all notifications'
+);
+
   }
+}
+
 
   /**
    * ✅ OPTIMIZED: Manual refresh triggered by user action (bypasses cache)

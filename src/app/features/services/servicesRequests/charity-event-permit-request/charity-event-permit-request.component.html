@@ -1142,7 +1142,7 @@
                                     {{ 'COMMON.PREVIOUS' | translate }}
                                 </button>
 
-                                <div>
+                                <div class="d-flex gap-2">
                                     <button *ngIf="currentStep < totalSteps" type="button" class="btn btn-primary"
                                         (click)="handleNextClick()"
                                         [disabled]="isLoading || !isFormInitialized || isSaving">
