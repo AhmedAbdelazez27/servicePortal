@@ -693,6 +693,47 @@ get totalPages(): number {
   return Math.max(1, Math.ceil(total / size));
 }
 
+// Generate visible page numbers for pagination
+getVisiblePages(): number[] {
+  const current = this.pagination.currentPage;
+  const total = this.totalPages;
+  const delta = 2; // Number of pages to show on each side of current page
+  const pages: number[] = [];
+  
+  // Always show first page
+  pages.push(1);
+  
+  // Calculate range around current page
+  const rangeStart = Math.max(2, current - delta);
+  const rangeEnd = Math.min(total - 1, current + delta);
+  
+  // Add ellipsis if needed after first page
+  if (rangeStart > 2) {
+    pages.push(-1); // -1 represents ellipsis
+  }
+  
+  // Add pages in range
+  for (let i = rangeStart; i <= rangeEnd; i++) {
+    pages.push(i);
+  }
+  
+  // Add ellipsis if needed before last page
+  if (rangeEnd < total - 1) {
+    pages.push(-1); // -1 represents ellipsis
+  }
+  
+  // Always show last page (if more than 1 page)
+  if (total > 1) {
+    pages.push(total);
+  }
+  
+  return pages;
+}
+
+isEllipsis(page: number): boolean {
+  return page === -1;
+}
+
 
 // helpers for status -> key normalization + label by UI language
 statusAliases: Record<string, string[]> = {

@@ -600,25 +600,37 @@
 
   <nav *ngIf="pagination.totalCount > 0" aria-label="Table pagination">
     <ul class="pagination justify-content-end">
+      <!-- Previous Button -->
       <li class="page-item" [class.disabled]="pagination.currentPage === 1">
         <button class="page-link"
+                [disabled]="pagination.currentPage === 1"
                 (click)="onPageChange({ pageNumber: pagination.currentPage - 1, pageSize: pagination.take })">
           {{'‹'}}
         </button>
       </li>
 
-      <li class="page-item"
-          *ngFor="let p of [].constructor(totalPages); let idx = index"
-          [class.active]="(idx + 1) === pagination.currentPage">
-        <button class="page-link"
-                (click)="onPageChange({ pageNumber: idx + 1, pageSize: pagination.take })">
-          {{ idx + 1 }}
-        </button>
-      </li>
+      <!-- Page Numbers with Ellipsis -->
+      <ng-container *ngFor="let page of getVisiblePages()">
+        <!-- Ellipsis -->
+        <li class="page-item disabled" *ngIf="isEllipsis(page)">
+          <span class="page-link">...</span>
+        </li>
+        
+        <!-- Page Number -->
+        <li class="page-item" *ngIf="!isEllipsis(page)"
+            [class.active]="page === pagination.currentPage">
+          <button class="page-link"
+                  (click)="onPageChange({ pageNumber: page, pageSize: pagination.take })">
+            {{ page }}
+          </button>
+        </li>
+      </ng-container>
 
+      <!-- Next Button -->
       <li class="page-item"
           [class.disabled]="pagination.currentPage >= totalPages">
         <button class="page-link"
+                [disabled]="pagination.currentPage >= totalPages"
                 (click)="onPageChange({ pageNumber: pagination.currentPage + 1, pageSize: pagination.take })">
           {{"›"}}
         </button>
