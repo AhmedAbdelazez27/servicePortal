@@ -46,3 +46,129 @@
   }
 }
 
+// Actions Button (Kebab Menu) - Visual Design Only
+.table-more {
+  color: #6b7280;
+  border: none;
+  background: transparent;
+  line-height: 1;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0.375rem;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    color: #1e40af;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    background: #e2e8f0;
+  }
+
+  &:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  &:hover svg path {
+    fill: #1e40af;
+  }
+}
+
+// Dropdown Menu - Visual Design Only
+.dropdown-menu {
+  min-width: 180px;
+  max-width: 250px;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 
+              0 4px 16px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  padding: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+  margin-top: 4px;
+}
+
+// Dropdown Items - Visual Design Only
+.dropdown-item {
+  border-radius: 8px;
+  color: #374151 !important;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 16px;
+  font-family: 'Cairo-SemiBold', sans-serif;
+  background: none !important;
+  border: none;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  position: relative;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #8d734d 0%, #8d734d 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+
+  // Make sure all text and icons are white on hover
+  &:hover,
+  &:hover *,
+  &:hover i {
+    color: #ffffff !important;
+  }
+
+  &:focus {
+    outline: 2px solid #8d734d;
+    outline-offset: 2px;
+  }
+
+  i {
+    color: #6b7280;
+    min-width: 20px;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  &:hover i {
+    color: #ffffff !important;
+  }
+
+  // RTL Support
+  [dir="rtl"] & {
+    text-align: right;
+    flex-direction: row-reverse;
+  }
+
+  // Danger/Delete items
+  &.text-danger {
+    &:hover {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+  }
+
+  // Disabled state
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
