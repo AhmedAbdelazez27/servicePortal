@@ -453,26 +453,80 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handle notification click
+   * Handle notification click with smart navigation and detailed toast message
    */
   private handleNotificationClick(notification: NotificationDto): void {
-    console.log(notification);
+    // console.log(notification);
     
     // Close the dropdown
     this.closeNotificationDropdown();
 
-    // You can add navigation logic based on notification type
-    // For example, navigate to specific pages based on workFlowStepsId
-    if (notification.workFlowStepsId) {
-      // Navigate based on workflow step
-      // this.router.navigate(['/service-details', notification.workFlowStepsId]);
+    const currentLang = localStorage.getItem('lang') || 'en';
+    const title = this.getNotificationTitle(notification);
+    const message = this.getNotificationMessage(notification);
+    
+    // Build detailed toast message
+    let toastMessage = message || title;
+    
+    // Add service status if available
+    if (notification.serviceStatusName) {
+      const statusLabel = currentLang === 'ar' ? 'الحالة: ' : 'Status: ';
+      toastMessage += `\n${statusLabel}${notification.serviceStatusName}`;
+    }
+    
+    // Add formatted date
+    if (notification.notificationDate) {
+      const dateLabel = currentLang === 'ar' ? 'التاريخ: ' : 'Date: ';
+      const formattedDate = this.formatDate(notification.notificationDate);
+      toastMessage += `\n${dateLabel}${formattedDate}`;
     }
 
-    // Show a toast message for now
+    // Show toast with title and detailed message
     this.toastr.info(
-      `Notification: ${this.getNotificationTitle(notification)}`,
-      'Notification Clicked'
+      toastMessage,
+      title || (currentLang === 'ar' ? 'إشعار جديد' : 'New Notification'),
+      {
+        timeOut: 5000,
+        enableHtml: false,
+        closeButton: true
+      }
     );
+
+    // Smart navigation based on available data
+    this.navigateToNotificationTarget(notification);
+  }
+
+  /**
+   * Navigate to the appropriate page based on notification data
+   */
+  private navigateToNotificationTarget(notification: NotificationDto): void {
+    // Priority 1: Use direct link if available
+    if (notification.link) {
+      if (notification.link.startsWith('http://') || notification.link.startsWith('https://')) {
+        window.open(notification.link, '_blank');
+      } else {
+        this.router.navigate([notification.link]);
+      }
+      return;
+    }
+
+    // Priority 2: Navigate to request page if registerId is available
+    if (notification.registerId) {
+      // Navigate to the main requests page where user can see their requests
+      this.router.navigate(['/request']);
+      return;
+    }
+
+    // Priority 3: Navigate based on workflow step if available
+    if (notification.workFlowStepsId) {
+      // You can add specific navigation logic here based on workflow step
+      // For now, navigate to requests page
+      this.router.navigate(['/request']);
+      return;
+    }
+
+    // If no navigation data available, user stays on current page
+    // The toast message already provides the information
   }
 
 // async markAllAsSeen(): Promise<void> {
