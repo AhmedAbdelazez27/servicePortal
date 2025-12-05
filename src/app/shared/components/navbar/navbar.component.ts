@@ -456,6 +456,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
    * Handle notification click
    */
   private handleNotificationClick(notification: NotificationDto): void {
+    console.log(notification);
+    
     // Close the dropdown
     this.closeNotificationDropdown();
 

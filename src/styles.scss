@@ -1613,6 +1613,38 @@ ul {
   font-family: 'Expo Arabic Book';
 }
 
+.status-draft {
+  display: flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  background: rgba(255, 193, 7, 0.10);
+  color: var(--Color-9, #FFC107);
+  font-size: 14px;
+  font-style: normal;
+  line-height: normal;
+  width: max-content;
+  font-family: 'Expo Arabic Book';
+}
+
+.status-new {
+  display: flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  background: rgba(114, 197, 194, 0.10);
+  color: var(--Color-3, #72C5C2);
+  font-size: 14px;
+  font-style: normal;
+  line-height: normal;
+  width: max-content;
+  font-family: 'Expo Arabic Book';
+}
+
 .status-inactive {
   display: flex;
   padding: 8px 16px;
@@ -2740,12 +2772,24 @@ select:focus {
     font-weight: normal;
     margin-top: 5px;
   }
+
+  .status-draft {
+    padding: 2px 16px;
+    font-weight: normal;
+    margin-top: 5px;
+  }
+
+  .status-new {
+    padding: 2px 16px;
+    font-weight: normal;
+    margin-top: 5px;
+  }
 }
 
-.form-control:disabled {
-  background-color: var(--Color-21, #F7F7F7) !important;
-  opacity: 0.6 !important;
-}
+  .form-control:disabled {
+    background-color: var(--Color-21, #F7F7F7) !important;
+    opacity: 0.6 !important;
+  }
 
 .form-label {
   margin-bottom: 0;
@@ -4914,6 +4958,38 @@ a,
     font-family: 'Expo Arabic Book';
   }
 
+  .status-draft {
+    display: flex;
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    background: rgba(255, 193, 7, 0.10);
+    color: var(--Color-9, #FFC107);
+    font-size: 14px;
+    font-style: normal;
+    line-height: normal;
+    width: max-content;
+    font-family: 'Expo Arabic Book';
+  }
+
+  .status-new {
+    display: flex;
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    background: rgba(114, 197, 194, 0.10);
+    color: var(--Color-3, #72C5C2);
+    font-size: 14px;
+    font-style: normal;
+    line-height: normal;
+    width: max-content;
+    font-family: 'Expo Arabic Book';
+  }
+
   .status-inactive {
     display: flex;
     padding: 8px 16px;
@@ -6037,6 +6113,18 @@ a,
     }
 
     .status-active {
+      padding: 2px 16px;
+      font-weight: normal;
+      margin-top: 5px;
+    }
+
+    .status-new {
+      padding: 2px 16px;
+      font-weight: normal;
+      margin-top: 5px;
+    }
+
+    .status-draft {
       padding: 2px 16px;
       font-weight: normal;
       margin-top: 5px;
