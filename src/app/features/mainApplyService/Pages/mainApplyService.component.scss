@@ -18,8 +18,8 @@
 
     &.active {
       .page-link {
-        background-color: var(--bs-primary, #0d6efd);
-        border-color: var(--bs-primary, #0d6efd);
+        background-color:  #8d734d;
+        border-color:  #8d734d;
         color: #fff;
         font-weight: 600;
       }
@@ -74,12 +74,12 @@
   }
 
   &:focus {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid #8d734d;
     outline-offset: 2px;
   }
 
   &:hover svg path {
-    fill: #1e40af;
+    fill: #8d734d;
   }
 }
 
