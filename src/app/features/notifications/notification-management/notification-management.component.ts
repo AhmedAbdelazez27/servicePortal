@@ -42,8 +42,8 @@ export class NotificationManagementComponent implements OnInit, OnDestroy {
   columnDefs: ColDef[] = [];
   columnHeaderMap: { [key: string]: string } = {};
   rowActions = [
-    { label: 'View Details', icon: 'fas fa-eye', action: 'view' },
-    { label: 'Mark as Seen', icon: 'fas fa-check', action: 'markSeen' }
+    { labelKey: 'Common.ViewInfo', icon: 'fas fa-eye', action: 'view' },
+    { labelKey: 'NOTIFICATIONS.ACTIONS.MARK_AS_SEEN', icon: 'fas fa-check', action: 'markSeen' }
   ];
 
   constructor(
@@ -60,6 +60,7 @@ export class NotificationManagementComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Initialize table with language-aware columns
     this.initializeTable();
+    this.initializeRowActions();
     
     // Load notifications and statistics
     this.loadNotifications();
@@ -70,7 +71,15 @@ export class NotificationManagementComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.refreshTableColumns();
+        this.initializeRowActions();
       });
+  }
+
+  initializeRowActions() {
+    this.rowActions = [
+      { labelKey: 'Common.ViewInfo', icon: 'fas fa-eye', action: 'view' },
+      { labelKey: 'NOTIFICATIONS.ACTIONS.MARK_AS_SEEN', icon: 'fas fa-check', action: 'markSeen' }
+    ];
   }
 
   ngOnDestroy() {
@@ -98,9 +107,10 @@ export class NotificationManagementComponent implements OnInit, OnDestroy {
             (params.data.titleEn || params.data.titleAr || 'No Title');
           
           const isSeen = params.data.isSeen;
+          const marginStyle = isArabic ? 'margin-left: 12px; margin-right: 0;' : 'margin-right: 12px; margin-left: 0;';
           const result = `
             <div class="d-flex align-items-center">
-              <i class="fas ${isSeen ? 'fa-envelope-open text-muted' : 'fa-envelope text-primary'} me-2"></i>
+              <i class="fas ${isSeen ? 'fa-envelope-open text-muted' : 'fa-envelope text-primary'}" style="${marginStyle}"></i>
               <span class="${isSeen ? '' : 'fw-bold'}">${title}</span>
             </div>
           `;
@@ -145,10 +155,17 @@ export class NotificationManagementComponent implements OnInit, OnDestroy {
             return '<span class="text-muted">No Date</span>';
           }
           const date = new Date(params.value);
+          const iconMargin = isArabic ? 'margin-left: 8px; margin-right: 0;' : 'margin-right: 8px; margin-left: 0;';
           return `
             <div class="text-muted small">
-              <div><i class="fas fa-calendar me-1"></i>${date.toLocaleDateString()}</div>
-              <div><i class="fas fa-clock me-1"></i>${date.toLocaleTimeString()}</div>
+              <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                <i class="fas fa-calendar" style="${iconMargin}"></i>
+                <span>${date.toLocaleDateString()}</span>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <i class="fas fa-clock" style="${iconMargin}"></i>
+                <span>${date.toLocaleTimeString()}</span>
+              </div>
             </div>
           `;
         }

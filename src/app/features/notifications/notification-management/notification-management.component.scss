@@ -87,6 +87,11 @@
   justify-content: flex-start;
   align-items: stretch;
   flex-wrap: wrap;
+
+  // RTL Support
+  [dir="rtl"] & {
+    justify-content: flex-end;
+  }
 }
 
 // Statistics Cards (Matching the image design)
@@ -104,12 +109,24 @@
   min-height: 120px;
   flex: 0 0 auto;
   
+  // RTL Support
+  &[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+  }
+  
+  &[dir="ltr"] {
+    direction: ltr;
+    text-align: left;
+  }
+  
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     
     .stat-card-icon {
       transform: scale(1.1);
+      margin-top: -20px; // تتحرك قليلاً للأعلى عند hover
     }
   }
   
@@ -120,13 +137,18 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    gap: 0.5rem;
   }
   
   .stat-card-content {
     text-align: center;
     width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   
   .stat-card-title {
@@ -138,6 +160,19 @@
     font-family: "Expo Arabic Book";
     text-align: center;
     letter-spacing: 0.5px;
+    
+    // RTL Support
+    .stat-card[dir="rtl"] & {
+      font-family: "Expo Arabic Book";
+      direction: rtl;
+      text-align: center;
+    }
+    
+    .stat-card[dir="ltr"] & {
+      font-family: "Expo Arabic Book", sans-serif;
+      direction: ltr;
+      text-align: center;
+    }
   }
   
   .stat-card-number {
@@ -145,14 +180,27 @@
     font-weight: 700;
     margin-bottom: 0;
     line-height: 1.1;
-    font-family: "Expo Arabic Book";
+    font-family: "Expo Arabic Book", "Arial", sans-serif;
     text-align: center;
+    direction: ltr; // Numbers always LTR
+    unicode-bidi: embed;
+    display: inline-block;
+    
+    // Ensure numbers display correctly in both directions
+    .stat-card[dir="rtl"] & {
+      direction: ltr;
+      unicode-bidi: embed;
+      text-align: center;
+    }
+    
+    .stat-card[dir="ltr"] & {
+      direction: ltr;
+      text-align: center;
+    }
   }
   
   .stat-card-icon {
-    position: absolute;
-    top: 12px;
-    right: 12px;
+    position: relative;
     display: flex;
     padding: 8px;
     align-items: center;
@@ -161,6 +209,15 @@
     transition: all 0.3s ease;
     width: 36px;
     height: 36px;
+    margin-top: -18px; // نصف الأيقونة خارج الكارد من الأعلى
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+    
+    // Works for both RTL and LTR - centered at top
+    .stat-card[dir="rtl"] &,
+    .stat-card[dir="ltr"] & {
+      align-self: center;
+    }
     
     i {
       font-size: 16px;
@@ -250,6 +307,21 @@
       .card-title {
         color: #495057;
         font-weight: 600;
+      }
+    }
+  }
+
+  // Desktop pagination spacing
+  ::ng-deep {
+    app-generic-data-table {
+      > div:last-child {
+        margin-left: 6px;
+        margin-right: 6px;
+        padding: 16px 0;
+        background: transparent;
+        border-radius: 0;
+        border: none;
+        margin-top: 1rem;
       }
     }
   }
@@ -967,10 +1039,12 @@
 
 .mobile-pagination {
   margin-top: 24px;
-  padding: 16px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  border: 1px solid #e9ecef;
+  margin-left: 6px;
+  margin-right: 6px;
+  padding: 16px 0;
+  background: transparent;
+  border-radius: 0;
+  border: none;
 
   .page-info {
     font-weight: 500;

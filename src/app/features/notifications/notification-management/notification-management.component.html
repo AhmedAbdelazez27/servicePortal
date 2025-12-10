@@ -11,38 +11,38 @@
 <!-- Statistics Cards -->
 <div class="statistics-cards-container mb-4">
   <div class="statistics-cards-row">
-    <div class="stat-card stat-card-total">
+    <div class="stat-card stat-card-total" [attr.dir]="isArabicLanguage() ? 'rtl' : 'ltr'">
       <div class="stat-card-body">
-        <div class="stat-card-content">
-          <div class="stat-card-number">{{ totalCount | number }}</div>
-          <div class="stat-card-title">{{ 'NOTIFICATIONS.STATS.TOTAL' | translate }}</div>
-        </div>
         <div class="stat-card-icon">
           <i class="fas fa-chart-bar"></i>
         </div>
+        <div class="stat-card-content">
+          <div class="stat-card-number" dir="ltr">{{ totalCount | number }}</div>
+          <div class="stat-card-title">{{ 'NOTIFICATIONS.STATS.TOTAL' | translate }}</div>
+        </div>
       </div>
     </div>
     
-    <div class="stat-card stat-card-unseen">
+    <div class="stat-card stat-card-unseen" [attr.dir]="isArabicLanguage() ? 'rtl' : 'ltr'">
       <div class="stat-card-body">
-        <div class="stat-card-content">
-          <div class="stat-card-number">{{ getUnseenCount() | number }}</div>
-          <div class="stat-card-title">{{ 'NOTIFICATIONS.STATS.UNSEEN' | translate }}</div>
-        </div>
         <div class="stat-card-icon">
           <i class="fas fa-bell"></i>
         </div>
+        <div class="stat-card-content">
+          <div class="stat-card-number" dir="ltr">{{ getUnseenCount() | number }}</div>
+          <div class="stat-card-title">{{ 'NOTIFICATIONS.STATS.UNSEEN' | translate }}</div>
+        </div>
       </div>
     </div>
     
-    <div class="stat-card stat-card-seen">
+    <div class="stat-card stat-card-seen" [attr.dir]="isArabicLanguage() ? 'rtl' : 'ltr'">
       <div class="stat-card-body">
-        <div class="stat-card-content">
-          <div class="stat-card-number">{{ getSeenCount() | number }}</div>
-          <div class="stat-card-title">{{ 'NOTIFICATIONS.STATS.SEEN' | translate }}</div>
-        </div>
         <div class="stat-card-icon">
           <i class="fas fa-check"></i>
+        </div>
+        <div class="stat-card-content">
+          <div class="stat-card-number" dir="ltr">{{ getSeenCount() | number }}</div>
+          <div class="stat-card-title">{{ 'NOTIFICATIONS.STATS.SEEN' | translate }}</div>
         </div>
       </div>
     </div>
