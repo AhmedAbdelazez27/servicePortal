@@ -676,12 +676,12 @@ export class EditProfileComponent implements OnInit {
       const existingAttachment = this.existingAttachments[configIdNum];
       
       if (existingAttachment) {
-        // Update existing attachment - use existing masterId, not user ID
+        // Update existing attachment - always use userMasterId from current user data
         const updateAttachmentDto = {
           id: existingAttachment.id,
           fileBase64: await this.fileToBase64(file as File),
           fileName: (file as File).name,
-          masterId: existingAttachment.masterId || this.userMasterId || 0, // Use existing attachment's masterId or user masterId
+          masterId: this.userMasterId || existingAttachment.masterId || 0, // Prioritize current userMasterId
           attConfigID: configIdNum
         };
         
@@ -1373,13 +1373,14 @@ export class EditProfileComponent implements OnInit {
       const existingAttachment = this.existingAttachments[identityPhotoConfig.id];
       
       if (existingAttachment && existingAttachment.id) {
-        // Update existing attachment
+        // Update existing attachment - always use userMasterId from current user data
         const updateAttachmentDto = {
           id: existingAttachment.id,
           fileBase64: fileBase64,
           fileName: this.selectedProfilePhoto.name,
-          masterId: existingAttachment.masterId || this.userMasterId,
-          attConfigID: identityPhotoConfig.id
+          masterId: this.userMasterId || existingAttachment.masterId || 0, // Prioritize current userMasterId
+          attConfigID: identityPhotoConfig.id,
+          masterType: AttachmentsConfigType.ProfileImage // 1009 for profile image
         };
         
         await this.attachmentService.updateAsync(updateAttachmentDto).toPromise();
@@ -1389,7 +1390,8 @@ export class EditProfileComponent implements OnInit {
           fileBase64: fileBase64,
           fileName: this.selectedProfilePhoto.name,
           masterId: this.userMasterId,
-          attConfigID: identityPhotoConfig.id
+          attConfigID: identityPhotoConfig.id,
+          masterType: AttachmentsConfigType.ProfileImage // 1009 for profile image
         };
         
         await this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise();

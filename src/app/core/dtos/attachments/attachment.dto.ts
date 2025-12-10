@@ -13,6 +13,7 @@ export interface AttachmentBase64Dto {
   fileName: string;
   masterId: number;
   attConfigID: number;
+  masterType?: number; // Optional master type (e.g., 1009 for ProfileImage)
 }
 
 export interface CreateAttachmentDto {
@@ -29,6 +30,7 @@ export interface UpdateAttachmentBase64Dto {
   fileName: string;
   masterId: number;
   attConfigID: number;
+  masterType?: number; // Optional master type (e.g., 1009 for ProfileImage)
 }
 
 export interface GetAllAttachmentsParamters {
