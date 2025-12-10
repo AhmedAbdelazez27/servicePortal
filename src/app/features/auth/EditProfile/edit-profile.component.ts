@@ -918,14 +918,18 @@ export class EditProfileComponent implements OnInit {
   }
 
   getExistingAttachments(): any[] {
-    return this.attachmentConfigs.filter(config => this.hasExistingFile(config.id) && !this.hasNewFile(config.id));
+    // Return configs that have existing files OR new files selected
+    // This ensures newly uploaded files are visible
+    return this.attachmentConfigs.filter(config => 
+      this.hasExistingFile(config.id) || this.hasNewFile(config.id)
+    );
   }
 
   getAttachmentConfigsNeedingUpload(): any[] {
     // Only show upload areas for configs that:
     // 1. Don't have existing files from backend
     // 2. Are in edit mode
-    // 3. Don't have new files selected
+    // 3. Don't have new files selected (they will appear in existing attachments section)
     return this.attachmentConfigs.filter(config => 
       !this.hasExistingFile(config.id) && 
       this.isAttachmentsEditMode && 
@@ -1279,7 +1283,7 @@ export class EditProfileComponent implements OnInit {
       const control = this.profileForm.get(fieldName);
       if (control) {
         // Always keep these fields disabled regardless of edit mode
-        if (['nameEn', 'name', 'userName', 'civilId', 'gender'].includes(fieldName)) {
+        if (['nameEn', 'name', 'userName', 'civilId', 'gender', 'entityId'].includes(fieldName)) {
           control.disable();
         } else {
           if (enabled) {
@@ -1394,6 +1398,9 @@ export class EditProfileComponent implements OnInit {
       // Update the existing attachments and file previews after successful save
       // Reload will be handled by calling loadUserData()
       this.selectedProfilePhoto = null;
+      
+      // Notify UserService to update profile photo in navbar
+      this.userService.notifyProfilePhotoUpdated();
       
       this.toastr.success(this.translate.instant('EDIT_PROFILE.PROFILE_PHOTO_UPDATED'), this.translate.instant('TOAST.TITLE.SUCCESS'));
       

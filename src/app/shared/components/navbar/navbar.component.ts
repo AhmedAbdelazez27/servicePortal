@@ -103,9 +103,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
    * Public method to refresh only the profile photo (lighter than full refresh)
    */
   refreshProfilePhoto(): void {
-    if (this.userData) {
-      this.loadProfilePhoto(this.userData);
-    }
+    // Clear user data cache to force reload from server
+    this.userData = null;
+    // Reload user data which will update the profile photo
+    this.loadCurrentUserName();
   }
 
   private updateUserNameBasedOnLanguage(userData: any): void {
@@ -132,17 +133,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private findProfilePhotoInAttachments(attachments: any[], userType: number): void {
-
+    console.log(attachments);
+    
     let profilePhotoAttachment;
 
-    if (userType === 1 || userType === 3) {
-      // Individual user
-      profilePhotoAttachment = attachments.find((att: any) => att.attConfigID === 7);
-    } else if (userType === 2) {
-      // Institution user
-      profilePhotoAttachment = attachments.find((att: any) => att.attConfigID === 2014);
-    }
-
+    // if (userType === 1 || userType === 3) {
+    //   // Individual user
+    //   profilePhotoAttachment = attachments.find((att: any) => att.attConfigID === 7);
+    // } else if (userType === 2) {
+    //   // Institution user
+    //   profilePhotoAttachment = attachments.find((att: any) => att.attConfigID === 2014);
+    // }
+profilePhotoAttachment = attachments.find((att: any) => att.masterType == 1009);
     // If found, construct the image URL
     if (profilePhotoAttachment && profilePhotoAttachment.imgPath) {
       this.profilePhotoUrl = this.constructImageUrl(profilePhotoAttachment.imgPath);
@@ -339,6 +341,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
         if (this.isLoggedIn()) {
           this.loadCurrentUserName();
         }
+      });
+
+    // Listen for profile photo updates
+    this.userService.profilePhotoUpdated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        // Refresh profile photo when updated from edit profile page
+        this.refreshProfilePhoto();
       });
   }
 

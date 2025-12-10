@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { ApiEndpoints } from '../constants/api-endpoints';
 
@@ -14,7 +14,18 @@ export class UserService {
   private readonly BASE_URL = `${environment.apiBaseUrl}`;
   private readonly UserBASE_URL = `${environment.apiBaseUrl}${ApiEndpoints.User.Base}`;
 
+  // Subject to notify components when profile photo is updated
+  private profilePhotoUpdatedSubject = new Subject<void>();
+  public profilePhotoUpdated$ = this.profilePhotoUpdatedSubject.asObservable();
+
   constructor(private http: HttpClient) { }
+
+  /**
+   * Notify all subscribers that profile photo has been updated
+   */
+  notifyProfilePhotoUpdated(): void {
+    this.profilePhotoUpdatedSubject.next();
+  }
 
   createUser(payload: CreateUserDto): Observable<any> {
     return this.http.post(`${this.BASE_URL}${ApiEndpoints.User.Base}`, payload);

@@ -190,6 +190,7 @@
                       <ng-select 
                         *ngIf="isBasicInfoEditMode"
                         formControlName="entityId"
+                        [disabled]="true"
                         [class.is-invalid]="isFieldInvalid('entityId')"
                         [placeholder]="'REGISTRATION.SELECT_ENTITY' | translate"
                         [items]="entities"
@@ -510,15 +511,35 @@
                           class="attachment-preview-image"
                           (error)="onImageError($event)" />
                         <div class="attachment-overlay">
-                          <i class="fas fa-check-circle text-success"></i>
-                          <span class="fw-semibold text-success">{{ 'EDIT_PROFILE.EXISTING_FILE' | translate }}</span>
+                          <!-- Show different overlay based on whether it's a new file or existing file -->
+                          <i class="fas" 
+                             [class.fa-check-circle]="hasExistingFile(config.id) && !hasNewFile(config.id)"
+                             [class.fa-plus-circle]="hasNewFile(config.id)"
+                             [class.text-success]="hasExistingFile(config.id) && !hasNewFile(config.id)"
+                             [class.text-primary]="hasNewFile(config.id)"></i>
+                          <span class="fw-semibold" 
+                                [class.text-success]="hasExistingFile(config.id) && !hasNewFile(config.id)"
+                                [class.text-primary]="hasNewFile(config.id)">
+                            {{ hasNewFile(config.id) ? ('EDIT_PROFILE.NEW_FILE' | translate) : ('EDIT_PROFILE.EXISTING_FILE' | translate) }}
+                          </span>
                         </div>
                       </div>
                       
-                      <p class="mb-4">{{ 'COMMON.UPLOADED_ON' | translate }}: {{ formatDateTime(getExistingFileDate(config.id)) }}</p>
+                      <!-- Show upload date only for existing files -->
+                      <p class="mb-4" *ngIf="hasExistingFile(config.id) && !hasNewFile(config.id)">
+                        {{ 'COMMON.UPLOADED_ON' | translate }}: {{ formatDateTime(getExistingFileDate(config.id)) }}
+                      </p>
+                      
+                      <!-- Show file info for new files -->
+                      <div class="mb-4" *ngIf="hasNewFile(config.id)">
+                        <p class="mb-1"><strong>{{ selectedFiles[config.id]?.name }}</strong></p>
+                        <p class="mb-0 text-muted">{{ selectedFiles[config.id] ? ((selectedFiles[config.id].size / 1024).toFixed(1)) : '0' }} {{ 'EDIT_PROFILE.KILOBYTES' | translate }}</p>
+                      </div>
                       
                       <div class="d-flex justify-content-between mt-auto">
+                        <!-- View button - only show for existing files -->
                         <button 
+                          *ngIf="hasExistingFile(config.id) && !hasNewFile(config.id)"
                           type="button" 
                           class="btn btn-next-style me-2"
                           (click)="viewAttachment(config.id)"
@@ -527,21 +548,26 @@
                           {{ 'COMMON.VIEW' | translate }}
                         </button>
                         
+                        <!-- Spacer for new files -->
+                        <div *ngIf="hasNewFile(config.id)"></div>
+                        
                         <!-- Edit mode buttons -->
                         <div *ngIf="isAttachmentsEditMode" class="edit-actions">
+                          <!-- Delete button - show for existing files or new files -->
                           <button 
                             type="button" 
                             class="btn btn-delete-attachment me-1"
-                            (click)="removeExistingFile(config.id)"
-                            [title]="'EDIT_PROFILE.DELETE_ATTACHMENT' | translate">
+                            (click)="hasNewFile(config.id) ? removeFile(config.id) : removeExistingFile(config.id)"
+                            [title]="hasNewFile(config.id) ? ('EDIT_PROFILE.REMOVE_FILE' | translate) : ('EDIT_PROFILE.DELETE_ATTACHMENT' | translate)">
                             <i class="fas fa-trash"></i>
                           </button>
                           
+                          <!-- Update/Change button -->
                           <button 
                             type="button" 
                             class="btn btn-update-attachment"
                             (click)="triggerFileInput(config.id)"
-                            [title]="'EDIT_PROFILE.UPDATE_ATTACHMENT' | translate">
+                            [title]="hasNewFile(config.id) ? ('EDIT_PROFILE.CHANGE_FILE' | translate) : ('EDIT_PROFILE.UPDATE_ATTACHMENT' | translate)">
                             <i class="fas fa-edit"></i>
                           </button>
                         </div>
