@@ -652,6 +652,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.translation.toggleLanguage();
   }
 
+  /**
+   * Get truncated user name (first 5 characters) for navbar display
+   */
+  get truncatedUserName(): string {
+    if (!this.currentUserName) return 'User';
+    return this.currentUserName.length > 5 
+      ? this.currentUserName.substring(0, 5) + '...' 
+      : this.currentUserName;
+  }
+
   @ViewChild('navbarCollapse') navbarCollapse!: ElementRef<HTMLDivElement>;
 
   closeNavbar() {

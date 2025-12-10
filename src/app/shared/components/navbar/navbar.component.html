@@ -100,7 +100,7 @@
                         <button class="btn-profile dropdown-toggle" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             <img [src]="profilePhotoUrl" class="profile-img" (error)="profilePhotoUrl='assets/images/profile-img.png'" />
-                            <span>{{ currentUserName }}</span>
+                            <span>{{ truncatedUserName }}</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
