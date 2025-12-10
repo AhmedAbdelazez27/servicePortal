@@ -1,15 +1,11 @@
-<div class="container-fluid">
+<div class="container mt-5">
   <!-- Header Section -->
-  <div class="notification-management-header mb-4">
-    <div class="row align-items-center">
-      <div class="col-12">
-        <h1 class="title mb-0">
-          <i class="fas fa-bell me-2 text-primary"></i>
-          {{ 'NOTIFICATIONS.MANAGEMENT.TITLE' | translate }}
-        </h1>
-        <p class="text-muted mb-0">{{ 'NOTIFICATIONS.MANAGEMENT.SUBTITLE' | translate }}</p>
-      </div>
-    </div>
+  <div class="bg-light p-4 mb-3" style="border-radius: 10px !important;">
+    <h1 class="title mb-3">
+      <i class="fas fa-bell me-2 text-primary"></i>
+      {{ 'NOTIFICATIONS.MANAGEMENT.TITLE' | translate }}
+    </h1>
+    <p class="text-muted mb-0">{{ 'NOTIFICATIONS.MANAGEMENT.SUBTITLE' | translate }}</p>
   </div>
 
 <!-- Statistics Cards -->
@@ -83,25 +79,157 @@
 
       <!-- Data Table -->
       <div *ngIf="!loading" class="table-container">
-        <!-- Simple debug info -->
-        <div class="mb-2" *ngIf="onTableDataChanged()">
-          <small class="text-muted">
-            Debug: {{notifications.length}} notifications loaded | Page {{currentPage + 1}}/{{Math.ceil(totalCount/pageSize)}} | Total: {{totalCount}}
-          </small>
+        <!-- Desktop Table (AG Grid) -->
+        <div class="desktop-table-view">
+          <app-generic-data-table
+            [columnDefs]="columnDefs"
+            [rowData]="notifications"
+            [totalCount]="totalCount"
+            [pageSize]="pageSize"
+            [currentPage]="currentPage"
+            [showActionColumn]="true"
+            [columnHeaderMap]="columnHeaderMap"
+            [rowActions]="rowActions"
+            (actionClick)="onActionClick($event)"
+            (pageChange)="onPageChange($event)">
+          </app-generic-data-table>
         </div>
-        
-        <app-generic-data-table
-          [columnDefs]="columnDefs"
-          [rowData]="notifications"
-          [totalCount]="totalCount"
-          [pageSize]="pageSize"
-          [currentPage]="currentPage"
-          [showActionColumn]="true"
-          [columnHeaderMap]="columnHeaderMap"
-          [rowActions]="rowActions"
-          (actionClick)="onActionClick($event)"
-          (pageChange)="onPageChange($event)">
-        </app-generic-data-table>
+
+        <!-- Mobile Cards View -->
+        <div class="mobile-cards-view">
+          <div *ngIf="notifications.length === 0" class="empty-state text-center py-5">
+            <div class="empty-state-icon mb-3">
+              <i class="fas fa-bell-slash text-muted" style="font-size: 4rem;"></i>
+            </div>
+            <h4 class="empty-state-title text-muted">{{ 'NOTIFICATIONS.EMPTY.TITLE' | translate }}</h4>
+            <p class="empty-state-description text-muted">{{ 'NOTIFICATIONS.EMPTY.DESCRIPTION' | translate }}</p>
+          </div>
+
+          <div *ngFor="let notification of notifications; let i = index" class="notification-card">
+            <div class="card-header-section">
+              <div class="d-flex align-items-center gap-2">
+                <i class="fas" 
+                   [class.fa-envelope-open]="notification.isSeen"
+                   [class.fa-envelope]="!notification.isSeen"
+                   [class.text-muted]="notification.isSeen"
+                   [class.text-primary]="!notification.isSeen"></i>
+                <h6 class="mb-0" [class.fw-bold]="!notification.isSeen">
+                  {{ getNotificationTitle(notification) }}
+                </h6>
+              </div>
+            </div>
+
+            <div class="card-body-section">
+              <div class="card-field">
+                <span class="td-title">{{ 'NOTIFICATIONS.FIELDS.MESSAGE' | translate }}</span>
+                <div class="field-value">
+                  {{ getNotificationMessage(notification) || '-' }}
+                </div>
+              </div>
+
+              <div class="card-field">
+                <span class="td-title">{{ 'NOTIFICATIONS.FIELDS.DATE' | translate }}</span>
+                <div class="field-value">
+                  <ng-container *ngIf="notification.notificationDate; else noDate">
+                    <div class="d-flex align-items-center gap-2">
+                      <i class="fas fa-calendar text-muted"></i>
+                      <span>{{ notification.notificationDate | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mt-1">
+                      <i class="fas fa-clock text-muted"></i>
+                      <span>{{ notification.notificationDate | date:'hh:mm' }}</span>
+                    </div>
+                  </ng-container>
+                  <ng-template #noDate>-</ng-template>
+                </div>
+              </div>
+
+              <div class="card-field">
+                <span class="td-title">{{ 'NOTIFICATIONS.FIELDS.STATUS' | translate }}</span>
+                <div class="field-value">
+                  <span class="badge" 
+                        [class.bg-success]="notification.isSeen"
+                        [class.bg-warning]="!notification.isSeen"
+                        [class.text-dark]="!notification.isSeen">
+                    <i class="fas me-1" 
+                       [class.fa-check-circle]="notification.isSeen"
+                       [class.fa-exclamation-circle]="!notification.isSeen"></i>
+                    {{ notification.isSeen ? ('NOTIFICATIONS.STATUS.SEEN' | translate) : ('NOTIFICATIONS.STATUS.UNSEEN' | translate) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="card-field card-field-actions">
+                <span class="td-title">{{ 'COMMON.ACTIONS' | translate }}</span>
+                <div class="field-value text-end">
+                  <div class="dropdown">
+                    <button class="btn table-more dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <g clip-path="url(#clip0_206_13784)">
+                          <path d="M22 14C20.8954 14 20 13.1046 20 12C20 10.8954 20.8954 10 22 10C23.1046 10 24 10.8954 24 12C24 13.1046 23.1046 14 22 14Z" fill="#374957" />
+                          <path d="M12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14Z" fill="#374957" />
+                          <path d="M1.99999 14C0.895413 14 -2.28882e-05 13.1046 -2.28882e-05 12C-2.28882e-05 10.8954 0.895413 10 1.99999 10C3.10456 10 4 10.8954 4 12C4 13.1046 3.10456 14 1.99999 14Z" fill="#374957" />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_206_13784">
+                            <rect width="24" height="24" fill="white" transform="matrix(-1 0 0 1 24 0)" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <button class="dropdown-item" (click)="onActionClick({ action: 'view', row: notification })">
+                          <i class="fas fa-eye me-2"></i>
+                          {{ 'Common.ViewInfo' | translate }}
+                        </button>
+                      </li>
+                      <li *ngIf="!notification.isSeen">
+                        <button class="dropdown-item" (click)="onActionClick({ action: 'markSeen', row: notification })">
+                          <i class="fas fa-check me-2"></i>
+                          {{ 'NOTIFICATIONS.ACTIONS.MARK_AS_SEEN' | translate }}
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Pagination -->
+          <nav *ngIf="totalCount > 0" aria-label="Table pagination" class="mobile-pagination">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-secondary"
+                        [disabled]="currentPage === 0"
+                        (click)="onPageChange({ pageNumber: currentPage, pageSize: pageSize })">
+                  ‹
+                </button>
+                <span class="page-info">
+                  {{ currentPage + 1 }} / {{ Math.ceil(totalCount / pageSize) }}
+                </span>
+                <button class="btn btn-sm btn-outline-secondary"
+                        [disabled]="currentPage + 1 >= Math.ceil(totalCount / pageSize)"
+                        (click)="onPageChange({ pageNumber: currentPage + 2, pageSize: pageSize })">
+                  ›
+                </button>
+              </div>
+              <div>
+                <select class="form-select form-select-sm" 
+                        [(ngModel)]="pageSize"
+                        (change)="onPageChange({ pageNumber: currentPage + 1, pageSize: pageSize })"
+                        style="width: auto; min-width: 80px;">
+                  <option [value]="10">10</option>
+                  <option [value]="25">25</option>
+                  <option [value]="50">50</option>
+                  <option [value]="100">100</option>
+                </select>
+              </div>
+            </div>
+          </nav>
+        </div>
       </div>
 
       <!-- Empty State -->

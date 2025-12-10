@@ -8,14 +8,13 @@
         <option [value]="100">100</option>
         <option [value]="500">500</option>
       </select>
-       <label for="pageSizeSelect" class="">{{ 'NOTIFICATIONS.FILTERS.PAGE_SIZE' | translate }}</label>
+       <label for="pageSizeSelect" class="">{{ 'Common.Data' | translate }}</label>
     </div>
-    <div class="form-group mb-0" *ngIf="showsearchText">
-      <input type="text" class="form-control" style="min-width: 220px;" placeholder="{{ 'NOTIFICATIONS.FILTERS.SEARCH_PLACEHOLDER' | translate }}" [(ngModel)]="searchText" (input)="onSearchInput()">
+    <div class="form-group mb-0" *ngIf="showSearchText">
+      <input type="text" class="form-control" style="min-width: 220px;" placeholder="{{ 'Common.SearchTitle' | translate }}" [(ngModel)]="searchText" (input)="onSearchInput()">
     </div>
   </div>
 </div>
-
 
 <div class="table-responsive rounded shadow-sm">
   <div class="ag-theme-alpine" style="position: relative;">
@@ -34,15 +33,27 @@
     >
     </ag-grid-angular>
 
-    <!-- Custom context menu for row actions -->
     <div *ngIf="openMenuRowId !== null"
-         [ngStyle]="{ position: 'absolute', left: menuX + 'px', top: menuY + 'px', zIndex: 20000, minWidth: '10px', borderRadius: '1rem', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', background: '#fff', padding: '0.5rem 0', border: 'none' }">
-      <button *ngFor="let a of rowActions"
-              class="dropdown-item d-flex align-items-center gap-2"
-              style="border-radius:0.5rem; color:#495057; font-size:1rem; padding:0.5rem 1.2rem; background:none; border:none; width:100%; text-align:left;"
-              (click)="onMenuAction(a.action)">
-        <i *ngIf="a.icon" [class]="a.icon + ' fs-5'" style="color:#A6A6A6; min-width:1.5em; text-align:center;"></i>
-        <span>{{ (a.labelKey || a.label || '') | translate }}</span>
+         class="context-menu"
+         [ngStyle]="{ 
+           position: 'absolute', 
+           left: menuX + 'px', 
+           top: menuY + 'px',
+           direction: isRtl ? 'rtl' : 'ltr'
+         }"
+         [attr.data-menu-id]="uniqueId">
+      <button *ngFor="let a of rowActions; trackBy: trackByAction; let i = index"
+              [class]="getActionClasses(a)"
+              [attr.aria-label]="(a.labelKey || a.label || '') | translate"
+              [attr.tabindex]="i === 0 ? '0' : '-1'"
+              [disabled]="isActionDisabled(a)"
+              (click)="!isActionDisabled(a) && onMenuAction(a.action)"
+              type="button">
+        <i *ngIf="a.icon && !a.separator" 
+           [class]="a.icon" 
+           class="context-menu-icon"
+           aria-hidden="true"></i>
+        <span *ngIf="!a.separator" class="context-menu-text">{{ (a.labelKey || a.label || '') | translate }}</span>
       </button>
     </div>
   </div>
@@ -53,7 +64,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content border-0 rounded-4 shadow-lg" style="background: linear-gradient(135deg, #f8fafc 80%, #e0e7ef 100%);">
       <div class="modal-header bg-primary text-white rounded-top-4 border-0" style="padding: 1.2rem 2rem;">
-        <h5 class="modal-title fs-4 fw-bold">{{ 'Common.ViewInfo' | translate }}</h5>
+        <h5 class="modal-title fs-4 fw-bold">Row Information</h5>
         <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeInfoModal()"></button>
       </div>
       <div class="modal-body p-4">
@@ -67,7 +78,7 @@
         </div>
       </div>
       <div class="modal-footer border-0 rounded-bottom-4 justify-content-center" style="padding: 1.2rem 2rem;">
-        <button type="button" class="btn btn-lg btn-primary px-5 rounded-pill shadow-sm" (click)="closeInfoModal()">{{ 'COMMON.CLOSE' | translate }}</button>
+        <button type="button" class="btn btn-lg btn-primary px-5 rounded-pill shadow-sm" (click)="closeInfoModal()">Close</button>
       </div>
     </div>
   </div>
@@ -75,14 +86,14 @@
 
 <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 w-100">
   <span class=" d-flex align-items-center gap-2 ">
-      {{ 'NOTIFICATIONS.STATS.PAGE' | translate }} <input type="number"
+      Page <input type="number"
                   min="1"
                   [max]="totalPages"
                   [(ngModel)]="inputPage"
                   (keyup.enter)="goToPage(inputPage - 1)"
                   class="page-input"
                  
-                  /> {{ 'COMMON.OF' | translate }} {{ totalPages }}
+                  /> of {{ totalPages }}
     </span>
 
 
