@@ -963,6 +963,13 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     if (tab >= 1 && tab <= this.totalTabs) {
       this.currentTab = tab;
       this.visitedTabs.add(tab);
+
+      // Re-initialize map when returning to the first tab (where the map lives)
+      if (this.currentTab === 1) {
+        setTimeout(() => {
+          this.initializeMap();
+        }, 300);
+      }
     }
   }
 
@@ -999,6 +1006,13 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   previousTab(): void {
     if (this.currentTab > 1) {
       this.currentTab--;
+
+      // Re-initialize map when navigating back to the first tab
+      if (this.currentTab === 1) {
+        setTimeout(() => {
+          this.initializeMap();
+        }, 300);
+      }
     }
   }
 
@@ -1266,6 +1280,10 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
               map: this.map,
             });
             this.markers.push(marker);
+
+            // Ensure zoom is focused on the selected coordinates
+            this.map.setCenter({ lat: coords.lat, lng: coords.lng });
+            this.map.setZoom(18);
           }
         }
 

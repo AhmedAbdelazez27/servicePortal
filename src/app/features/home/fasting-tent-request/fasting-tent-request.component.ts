@@ -905,6 +905,21 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (tab >= 1 && tab <= this.totalTabs) {
       this.currentTab = tab;
       this.visitedTabs.add(tab);
+
+      // Re-initialize map when returning to the first tab
+      if (this.currentTab === 1) {
+        setTimeout(() => {
+          this.initializeMap();
+          setTimeout(() => {
+          //   if (this.selectedLocationDetails && this.selectedLocationDetails.locationCoordinates) {
+          // this.centerMapOnLocation(
+          //   this.selectedLocationDetails.locationCoordinates,
+          //   this.selectedLocationDetails.id
+          // );
+        // }
+          },100);
+        }, 300);
+      }
     }
   }
 
@@ -940,6 +955,13 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   previousTab(): void {
     if (this.currentTab > 1) {
       this.currentTab--;
+
+      // Re-initialize map when navigating back to the first tab
+      if (this.currentTab === 1) {
+        setTimeout(() => {
+          this.initializeMap();
+        }, 300);
+      }
     }
   }
 
@@ -1467,6 +1489,15 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         });
 
         this.addMapMarkers();
+
+        // If a location was already selected before navigating away,
+        // re-center and zoom the map on that location when we come back
+        if (this.selectedLocationDetails && this.selectedLocationDetails.locationCoordinates) {
+          this.centerMapOnLocation(
+            this.selectedLocationDetails.locationCoordinates,
+            this.selectedLocationDetails.id
+          );
+        }
       }).catch(() => {
         this.toastr.error(this.translate.instant('SHARED.MAP.LOADING_ERROR'));
       });
@@ -1530,7 +1561,15 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const coords = this.parseCoordinates(coordinates);
     if (coords) {
       this.map.setCenter({ lat: coords.lat, lng: coords.lng });
-      this.map.setZoom(15);
+      // Stronger zoom so the user clearly sees the selected location
+      const targetZoom = 18;
+      const currentZoom = this.map.getZoom ? this.map.getZoom() : null;
+      if (currentZoom === null || currentZoom < targetZoom) {
+        this.map.setZoom(targetZoom);
+      } else {
+        // Force re-apply zoom even if equal, to ensure visual update
+        this.map.setZoom(targetZoom);
+      }
     }
   }
 

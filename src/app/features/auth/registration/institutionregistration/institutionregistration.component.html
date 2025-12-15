@@ -163,7 +163,7 @@
                     <label for="email" class="form-label">{{ 'REGISTRATION.EMAIL' | translate }} *</label>
                     <input type="email" class="form-control" id="email" formControlName="email"
                            [class.is-invalid]="isFieldInvalid('email')"
-                           placeholder="{{ 'REGISTRATION.ENTER_EMAIL' | translate }}" readonly>
+                           placeholder="{{ 'REGISTRATION.ENTER_EMAIL' | translate }}" >
                     <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
                       {{ getFieldError('email') }}
                     </div>
@@ -187,7 +187,7 @@
                              maxlength="9"
                              (keypress)="restrictMobileInput($event)"
                              (input)="onPhoneNumberInput()"
-                             (blur)="onPhoneNumberBlur()" readonly>
+                             (blur)="onPhoneNumberBlur()" >
                     </div>
 
                     <div *ngIf="(submitted || registrationForm.get('phoneNumber')?.touched) && registrationForm.get('phoneNumber')?.errors" class="invalid-feedback">
