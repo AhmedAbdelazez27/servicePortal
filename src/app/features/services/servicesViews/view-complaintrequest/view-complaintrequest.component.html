@@ -114,13 +114,17 @@ step.serviceStatusName || (getStatusLabel(step.serviceStatus) |
 
                     <!-- Department Name -->
                     <h6 class="department-name">{{step.departmentName}}</h6>
-                    <small class="text-muted d-block mb-2" *ngIf="step.lastModified">
+                    <small class="text-muted d-block mb-2"
+                           *ngIf="step.lastModified && step.workFlowHistories?.length">
                       <i class="bi bi-calendar3 me-1"></i>
                       {{ formatDate(step.lastModified) }}
                     </small>
-                    <button type="button" class="btn btn-link p-0"
+                    <button type="button"
+                            class="btn btn-link p-0"
+                            *ngIf="step.workFlowHistories?.length"
                             (click)="openHistoryModal(step.workFlowHistories || [])">
-                      <i class="bi bi-clock-history me-1"></i>{{'WORKFLOW.VIEW_HISTORY' | translate}}
+                      <i class="bi bi-clock-history me-1"></i>
+                      {{ 'WORKFLOW.VIEW_HISTORY' | translate }}
                     </button>
                   </div>
                 </div>
