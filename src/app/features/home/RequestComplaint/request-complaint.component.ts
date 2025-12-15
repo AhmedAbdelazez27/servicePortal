@@ -49,6 +49,10 @@ export class RequestComplaintComponent implements OnInit, OnDestroy {
   complaintTypes: ComplaintTypeDto[] = [];
   serviceId: string | null = null;
 
+  get isRtl(): boolean {
+    return this.translationService.currentLang === 'ar';
+  }
+
   private subscriptions: Subscription[] = [];
   loadformData: mainApplyServiceDto = {} as mainApplyServiceDto;
 

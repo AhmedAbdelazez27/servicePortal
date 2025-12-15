@@ -16,12 +16,15 @@ import { UserProfile } from '../../../core/dtos/user-profile';
   styleUrl: './verifyotp.component.scss'
 })
 export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly TIMER_DURATION = 120;
+  private readonly TIMER_KEY = 'otpResendExpiry';
+
   otpForm: FormGroup;
   submitted = false;
 
   objectKeys: string[] = ['otp1', 'otp2', 'otp3', 'otp4', 'otp5'];
 
-  timer: number = 120;
+  timer: number = this.TIMER_DURATION;
   private timerId: any;
 
   forgetpasswordData: any;
@@ -60,6 +63,7 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.initTimerFromStorage();
     this.startTimer();
   }
 
@@ -70,6 +74,7 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.timerId) clearInterval(this.timerId);
     localStorage.removeItem("comeFromisTwoFactorEnabled");
+    this.clearTimerStorage();
   }
 
   // ====== Auto-Tab Helpers ======
@@ -170,8 +175,36 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
   startTimer() {
     if (this.timerId) clearInterval(this.timerId);
     this.timerId = setInterval(() => {
-      if (this.timer > 0) this.timer--;
+      const expiry = Number(localStorage.getItem(this.TIMER_KEY) || '0');
+      const now = Date.now();
+      const remaining = Math.max(0, Math.ceil((expiry - now) / 1000));
+      this.timer = remaining;
+
+      if (remaining <= 0) {
+        clearInterval(this.timerId);
+        localStorage.removeItem(this.TIMER_KEY);
+      }
     }, 1000);
+  }
+
+  private initTimerFromStorage() {
+    const expiry = Number(localStorage.getItem(this.TIMER_KEY) || '0');
+    const now = Date.now();
+    if (expiry > now) {
+      this.timer = Math.max(0, Math.ceil((expiry - now) / 1000));
+    } else {
+      this.resetTimer(this.TIMER_DURATION);
+    }
+  }
+
+  private resetTimer(seconds: number) {
+    const expiry = Date.now() + seconds * 1000;
+    localStorage.setItem(this.TIMER_KEY, expiry.toString());
+    this.timer = seconds;
+  }
+
+  private clearTimerStorage() {
+    localStorage.removeItem(this.TIMER_KEY);
   }
 
   submitOtp(): void {
@@ -241,6 +274,7 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
               this.translate.instant('TOAST.TITLE.SUCCESS')
             );
             this.spinnerService.hide();
+            this.clearTimerStorage();
             this.router.navigate(['/reset-password']);
           } else {
             this.spinnerService.hide();
@@ -262,13 +296,16 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   resendOtp(): void {
+    if (this.timer > 0) return;
+
     if (this.isTwoFactorEnabled) {
       this.spinnerService.show();
       this.authService.ResendVerifyTwoFactorOtp({}).subscribe({
         next: (res) => {
 
           this.spinnerService.hide();
-          this.timer = 120;
+          this.clearTimerStorage();
+          this.resetTimer(this.TIMER_DURATION);
           this.startTimer();
         },
         error: () => {
@@ -288,7 +325,7 @@ export class VerifyotpComponent implements OnInit, AfterViewInit, OnDestroy {
         next: (res) => {
           this.tokenVerify = res;
           this.spinnerService.hide();
-          this.timer = 120;
+          this.resetTimer(this.TIMER_DURATION);
           this.startTimer();
         },
         error: () => {

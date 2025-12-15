@@ -452,6 +452,7 @@
                                         class="btn btn-secondary" 
                                         (click)="previousStep()" 
                                         [disabled]="currentStep === 1">
+                                    <i class="fas me-2" [ngClass]="isRtl ? 'fa-arrow-right' : 'fa-arrow-left'"></i>
                                     {{ 'COMMON.PREVIOUS' | translate }}
                                 </button>
                                 
@@ -462,6 +463,7 @@
                                           (click)="nextStep()"
                                           [disabled]="!canProceedToNext()">
                                     {{ 'COMMON.NEXT' | translate }}
+                                    <i class="fas ms-2" [ngClass]="isRtl ? 'fa-arrow-left' : 'fa-arrow-right'"></i>
                                   </button>
 
                                   <!--<button *ngIf="currentStep === totalSteps"

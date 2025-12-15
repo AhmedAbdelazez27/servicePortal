@@ -39,8 +39,15 @@
           </button>
 
           <p class="mt-4 text-center">
-            {{ 'OTP.DIDNT_RECEIVE' | translate }} <a (click)="resendOtp()" class="bold gold" style="cursor: pointer;">{{
-              'OTP.RESEND' | translate }}</a>
+            {{ 'OTP.DIDNT_RECEIVE' | translate }}
+            <a
+              (click)="resendOtp()"
+              class="bold gold"
+              [class.text-muted]="timer > 0"
+              [attr.aria-disabled]="timer > 0"
+              [style.cursor]="timer > 0 ? 'not-allowed' : 'pointer'"
+              [style.pointer-events]="timer > 0 ? 'none' : 'auto'"
+            >{{ 'OTP.RESEND' | translate }}</a>
           </p>
         </form>
       </div>

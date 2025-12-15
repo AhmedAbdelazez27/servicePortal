@@ -124,6 +124,10 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   partnerFilePreviews: { [partnerType: number]: { [configId: number]: string } } = {};
   showPartnerAttachments = false;
 
+  get isRtl(): boolean {
+    return this.translationService.currentLang === 'ar';
+  }
+
   private subscriptions: Subscription[] = [];
   invalidEndDate: boolean = false;
   private isUpdatingLocationType: boolean = false; // Flag to prevent infinite loop

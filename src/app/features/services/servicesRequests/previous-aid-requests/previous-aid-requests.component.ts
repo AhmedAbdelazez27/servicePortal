@@ -53,6 +53,10 @@ export class PreviousAidRequestsComponent implements OnInit, OnDestroy {
   loadexcelData: any[] = [];
   lang: any;
 
+  get isRtl(): boolean {
+    return this.translate.currentLang === 'ar';
+  }
+
 
   constructor(
     private route: ActivatedRoute,

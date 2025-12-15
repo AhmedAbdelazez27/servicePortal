@@ -28,6 +28,11 @@
   src: url('assets/fonts/ExpoArabic-Book.eot');
   src: url('assets/fonts/ExpoArabic-Book.eot?#iefix') format('embedded-opentype'), url('assets/fonts/ExpoArabic-Book.woff2') format('woff2'), url('assets/fonts/ExpoArabic-Book.woff') format('woff'), url('assets/fonts/ExpoArabic-Book.ttf') format('truetype'), url('assets/fonts/ExpoArabic-Book.svg#Expo Arabic Book') format('svg');
 }
+@font-face {
+  font-family: 'Cairo-bold';
+  src: url('assets/fonts/Cairo-Bold.eot');
+  src: url('assets/fonts/Cairo-Bold.eot?#iefix') format('embedded-opentype'), url('assets/fonts/Cairo-Bold.woff2') format('woff2'), url('assets/fonts/Cairo-Bold.woff') format('woff'), url('assets/fonts/Cairo-Bold.ttf') format('truetype'), url('assets/fonts/Cairo-Bold.svg#Cairo') format('svg');
+}
 
 
 
@@ -916,80 +921,49 @@ ul {
   display: none;
 }
 
-.status-approved {
+@mixin status-base {
   display: flex;
   padding: 8px 16px;
   justify-content: center;
   align-items: center;
   gap: 10px;
   border-radius: 10px;
-  background: rgba(114, 197, 194, 0.10);
-  color: var(--Color-3, #72C5C2);
   font-size: 14px;
   font-style: normal;
   line-height: normal;
   width: max-content;
+  font-family: "Cairo-bold";
+}
+
+.status-approved {
+  @include status-base;
+  background: rgba(114, 197, 194, 0.10);
+  color: var(--Color-3, #72C5C2);
 }
 
 .status-waiting {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(205, 173, 95, 0.10);
   color: var(--Color-14, #CDAD5F);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
 }
 
 .status-rejected {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(202, 72, 50, 0.10);
   color: var(--Color-7, #CA4832);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
 }
 
 
 .status-received {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(76, 175, 80, 0.10);
   color: var(--Color-success, #4CAF50);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
 }
 
 .status-return-for-modification {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(255, 152, 0, 0.10);
   color: var(--Color-warning, #FF9800);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
 }
 
 .status-reject-for-reason {
@@ -1251,48 +1225,21 @@ ul {
 
 
 .status-approved {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(114, 197, 194, 0.10);
   color: var(--Color-3, #72C5C2);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
 }
 
 .status-waiting {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(205, 173, 95, 0.10);
   color: var(--Color-14, #CDAD5F);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
 }
 
 .status-rejected {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(202, 72, 50, 0.10);
   color: var(--Color-7, #CA4832);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
 }
 
 
@@ -1550,131 +1497,51 @@ ul {
 }
 
 .status-approved {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(114, 197, 194, 0.10);
   color: var(--Color-3, #72C5C2);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
-  font-family: 'Expo Arabic Book';
 }
 
 .status-waiting {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(205, 173, 95, 0.10);
   color: var(--Color-14, #CDAD5F);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
-  font-family: 'Expo Arabic Book';
 }
 
 .status-rejected {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(202, 72, 50, 0.10);
   color: var(--Color-7, #CA4832);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
-  font-family: 'Expo Arabic Book';
 }
 
 .status-submitted {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(17, 77, 125, 0.10);
   color: var(--Color-13, #114D7D);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
-  font-family: 'Expo Arabic Book';
 }
 
 .status-draft {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(255, 193, 7, 0.10);
   color: var(--Color-9, #FFC107);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
-  font-family: 'Expo Arabic Book';
 }
 
 .status-new {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgba(114, 197, 194, 0.10);
   color: var(--Color-3, #72C5C2);
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
-  font-family: 'Expo Arabic Book';
 }
 
 .status-inactive {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: #a5a5a5;
   color: #ffffff;
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
-  font-family: 'Expo Arabic Book';
 }
 
 .status-active {
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
+  @include status-base;
   background: rgb(128 197 114 / 10%);
   color: #72c581;
-  font-size: 14px;
-  font-style: normal;
-  line-height: normal;
-  width: max-content;
-  font-family: 'Expo Arabic Book';
 }
 
 .btn-outline-secondary {
@@ -2743,44 +2610,14 @@ select:focus {
     margin-top: 5px;
   }
 
-  .status-waiting {
-    padding: 2px 16px;
-    font-weight: normal;
-    margin-top: 5px;
-  }
-
-  .status-rejected {
-    padding: 2px 16px;
-    font-weight: normal;
-    margin-top: 5px;
-  }
-
-  .status-submitted {
-    padding: 2px 16px;
-    font-weight: normal;
-    margin-top: 5px;
-  }
-
-  .status-inactive {
-    padding: 2px 16px;
-    font-weight: normal;
-    margin-top: 5px;
-  }
-
-  .status-active {
-    padding: 2px 16px;
-    font-weight: normal;
-    margin-top: 5px;
-  }
-
-  .status-draft {
-    padding: 2px 16px;
-    font-weight: normal;
-    margin-top: 5px;
-  }
-
+  .status-waiting,
+  .status-rejected,
+  .status-submitted,
+  .status-inactive,
+  .status-active,
+  .status-draft,
   .status-new {
-    padding: 2px 16px;
+    @include status-base;
     font-weight: normal;
     margin-top: 5px;
   }
@@ -4895,131 +4732,51 @@ a,
 
 
   .status-approved {
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
+    @include status-base;
     background-color: rgba(114, 197, 194, 0.10);
     color: var(--Color-3, #72C5C2);
-    font-size: 14px;
-    font-style: normal;
-    line-height: normal;
-    width: max-content;
-    font-family: 'Expo Arabic Book';
   }
 
   .status-waiting {
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
+    @include status-base;
     background: rgba(205, 173, 95, 0.10);
     color: var(--Color-14, #CDAD5F);
-    font-size: 14px;
-    font-style: normal;
-    line-height: normal;
-    width: max-content;
-    font-family: 'Expo Arabic Book';
   }
 
   .status-rejected {
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
+    @include status-base;
     background-color: rgba(202, 72, 50, 0.10);
     color: var(--Color-7, #CA4832);
-    font-size: 14px;
-    font-style: normal;
-    line-height: normal;
-    width: max-content;
-    font-family: 'Expo Arabic Book';
   }
 
   .status-submitted {
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
+    @include status-base;
     background: rgba(17, 77, 125, 0.10);
     color: var(--Color-13, #114D7D);
-    font-size: 14px;
-    font-style: normal;
-    line-height: normal;
-    width: max-content;
-    font-family: 'Expo Arabic Book';
   }
 
   .status-draft {
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
+    @include status-base;
     background: rgba(255, 193, 7, 0.10);
     color: var(--Color-9, #FFC107);
-    font-size: 14px;
-    font-style: normal;
-    line-height: normal;
-    width: max-content;
-    font-family: 'Expo Arabic Book';
   }
 
   .status-new {
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
+    @include status-base;
     background: rgba(114, 197, 194, 0.10);
     color: var(--Color-3, #72C5C2);
-    font-size: 14px;
-    font-style: normal;
-    line-height: normal;
-    width: max-content;
-    font-family: 'Expo Arabic Book';
   }
 
   .status-inactive {
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
+    @include status-base;
     background: #a5a5a5;
     color: #ffffff;
-    font-size: 14px;
-    font-style: normal;
-    line-height: normal;
-    width: max-content;
-    font-family: 'Expo Arabic Book';
   }
 
   .status-active {
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
+    @include status-base;
     background: rgb(128 197 114 / 10%);
     color: #72c581;
-    font-size: 14px;
-    font-style: normal;
-    line-height: normal;
-    width: max-content;
-    font-family: 'Expo Arabic Book';
   }
 
   .btn-outline-secondary {
@@ -6094,38 +5851,13 @@ a,
       margin-top: 5px;
     }
 
-    .status-rejected {
-      padding: 2px 16px;
-      font-weight: normal;
-      margin-top: 5px;
-    }
-
-    .status-submitted {
-      padding: 2px 16px;
-      font-weight: normal;
-      margin-top: 5px;
-    }
-
-    .status-inactive {
-      padding: 2px 16px;
-      font-weight: normal;
-      margin-top: 5px;
-    }
-
-    .status-active {
-      padding: 2px 16px;
-      font-weight: normal;
-      margin-top: 5px;
-    }
-
-    .status-new {
-      padding: 2px 16px;
-      font-weight: normal;
-      margin-top: 5px;
-    }
-
+    .status-rejected,
+    .status-submitted,
+    .status-inactive,
+    .status-active,
+    .status-new,
     .status-draft {
-      padding: 2px 16px;
+      @include status-base;
       font-weight: normal;
       margin-top: 5px;
     }

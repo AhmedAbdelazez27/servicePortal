@@ -1702,6 +1702,7 @@
               <!-- Navigation Buttons -->
               <div class="d-flex justify-content-between mt-4">
                 <button type="button" class="btn btn-secondary" (click)="previousStep()" [disabled]="currentStep === 1">
+                  <i class="fas me-2" [ngClass]="isRtl ? 'fa-arrow-right' : 'fa-arrow-left'"></i>
                   {{ "COMMON.PREVIOUS" | translate }}
                 </button>
 
@@ -1709,6 +1710,7 @@
                   <button *ngIf="currentStep < totalSteps" type="button" class="btn btn-primary"
                     (click)="handleNextClick()" [disabled]="isLoading || !isFormInitialized || isSaving">
                     {{ "COMMON.NEXT" | translate }}
+                    <i class="fas ms-2" [ngClass]="isRtl ? 'fa-arrow-left' : 'fa-arrow-right'"></i>
                   </button>
 
                   <div *ngIf="currentStep === totalSteps" class="d-flex align-items-center gap-2">

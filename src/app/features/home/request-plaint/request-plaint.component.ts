@@ -112,6 +112,10 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
   existingAttachments: { [key: number]: AttachmentDto } = {};
   attachmentsToDelete: { [key: number]: number } = {};
 
+  get isRtl(): boolean {
+    return this.translationService.currentLang === 'ar';
+  }
+
   private subscriptions: Subscription[] = [];
 
   constructor(

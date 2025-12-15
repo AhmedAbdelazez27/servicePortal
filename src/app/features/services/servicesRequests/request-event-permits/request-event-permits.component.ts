@@ -85,6 +85,10 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   len = (a: readonly unknown[] | null | undefined) => a?.length ?? 0;
   private attachmentStates = new Map<AttachmentsConfigType, AttachmentState>();
 
+  get isRtl(): boolean {
+    return this.translationService.currentLang === 'ar';
+  }
+
   // ============== helpers ==============
   private ensureState(type: AttachmentsConfigType): AttachmentState {
     if (!this.attachmentStates.has(type)) {

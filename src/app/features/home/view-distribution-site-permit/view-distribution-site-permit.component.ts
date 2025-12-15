@@ -123,6 +123,10 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
   isCommentDragOver = false;
   commentValidationSubmitted = false;
 
+  get isRtl(): boolean {
+    return this.translate.currentLang === 'ar';
+  }
+
   // Subscriptions
   private subscriptions: Subscription[] = [];
   lastMatchingWorkFlowStep: any = null;

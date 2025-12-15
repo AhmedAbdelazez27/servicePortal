@@ -844,6 +844,7 @@
                         <div class="d-flex justify-content-between mt-4">
                             <button type="button" class="btn btn-secondary" (click)="previousTab()"
                                 [disabled]="currentTab === 1">
+                                <i class="fas me-2" [ngClass]="isRtl ? 'fa-arrow-right' : 'fa-arrow-left'"></i>
                                 {{ 'COMMON.PREVIOUS' | translate }}
                             </button>
 
@@ -852,7 +853,12 @@
                                     (click)="nextTab()" [disabled]="!canProceedToNext()"
                                     [title]="!canProceedToNext() ? ('VALIDATION.COMPLETE_REQUIRED_FIELDS' | translate) : ''">
                                     {{ 'COMMON.NEXT' | translate }}
-                                    <i *ngIf="canProceedToNext()" class="fas fa-arrow-right ms-2"></i>
+                                    <i
+                                        *ngIf="canProceedToNext()"
+                                        class="fas ms-2"
+                                        [ngClass]="isRtl ? 'fa-arrow-left' : 'fa-arrow-right'">
+                                    </i>
+
                                 </button>
 
                                 <div *ngIf="currentTab === totalTabs" class="d-flex gap-2">

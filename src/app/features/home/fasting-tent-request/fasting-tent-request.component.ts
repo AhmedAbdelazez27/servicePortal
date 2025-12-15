@@ -137,6 +137,10 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
+  get isRtl(): boolean {
+    return this.translationService.currentLang === 'ar';
+  }
+
   constructor(
     private fb: FormBuilder,
     private fastingTentRequestService: FastingTentRequestService,

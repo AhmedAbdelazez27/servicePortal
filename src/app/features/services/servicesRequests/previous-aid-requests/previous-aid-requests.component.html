@@ -3,10 +3,10 @@
     <div class="container services">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="title">{{ 'AidRequestsResourceName.Title' | translate }}</h4>
-        <!--<button type="button" class="btn btn-outline-secondary" (click)="goBack()">
-          <i class="fas fa-arrow-left me-2"></i>
+        <button type="button" class="btn btn-outline-secondary" (click)="goBack()">
+          <i class="fas me-2" [ngClass]="isRtl ? 'fa-arrow-right' : 'fa-arrow-left'"></i>
           {{ "COMMON.BACK" | translate }}
-        </button>-->
+        </button>
       </div>
 
       <!-- Search by ID Number -->
