@@ -660,7 +660,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           }
 
           // Load existing advertisements
-          console.log('Loading advertisements from charityEventPermit:', charityEventPermit.requestAdvertisements);
           if (charityEventPermit.requestAdvertisements && charityEventPermit.requestAdvertisements.length > 0) {
             this.existingAdvertisements = charityEventPermit.requestAdvertisements.map((ad: any, index: number) => {
               // Store existing attachments for this advertisement
@@ -710,7 +709,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
             });
             // Also add to requestAdvertisements array for display
             this.requestAdvertisements = [...this.existingAdvertisements];
-            console.log('requestAdvertisements after loading:', this.requestAdvertisements);
             
             // Load advertisement locations
             if (this.requestAdvertisements.length > 0) {
@@ -1384,7 +1382,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
     try {
       await Promise.all(deletePromises);
-      console.log('Attachments deleted successfully');
     } catch (error) {
       console.error('Error deleting attachments:', error);
       throw error;
@@ -1450,7 +1447,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
       try {
         await Promise.all(deletePromises);
-        console.log('Partners deleted successfully');
       } catch (error) {
         console.error('Error deleting partners:', error);
         throw error;
@@ -1481,7 +1477,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           attachments: partner.attachments || [],
         };
         await this.partnerService.create(partnerDto).toPromise();
-        console.log('Partner created successfully:', partnerDto);
       } catch (error) {
         console.error('Error creating partner:', error);
         throw error;
@@ -1542,7 +1537,6 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
       try {
         await Promise.all(deletePromises);
-        console.log('Advertisements deleted successfully');
       } catch (error) {
         console.error('Error deleting advertisements:', error);
         throw error;

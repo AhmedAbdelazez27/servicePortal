@@ -350,7 +350,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
 
     return this.requestPlaintService.getMainApplyServiceSelect2(request).pipe(
       map((response) => {
-        console.log("response ",response);
         
         this.mainApplyServiceOptions = response.results || [];
         return response;
@@ -560,7 +559,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     
     const sub = this.attachmentService.getListByMasterId(masterId, masterType).subscribe({
       next: (attachments: AttachmentDto[]) => {
-        console.log('Loaded attachments from API:', attachments);
         
         // Convert API attachments to the format expected by loadExistingAttachments
         const attachmentsData = attachments.map(att => ({
@@ -587,7 +585,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
    * Load existing attachments from request data
    */
   private loadExistingAttachments(attachmentsData: any[]): void {
-    console.log('Loading existing attachments:', attachmentsData);
     
     attachmentsData.forEach((attachment: any) => {
       if (attachment.attConfigID && attachment.id) {
@@ -612,7 +609,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
       }
     });
     
-    console.log('Existing attachments after loading:', this.existingAttachments);
   }
 
   /**
@@ -685,7 +681,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
         );
         return false;
       }else{
-        console.log(form.get(field)?.value);
         
       }
     }
@@ -925,7 +920,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     if (deletePromises.length > 0) {
       try {
         await Promise.all(deletePromises);
-        console.log('Attachments deleted successfully');
       } catch (error) {
         console.error('Error deleting attachments:', error);
         throw error;
@@ -967,7 +961,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
           attConfigID: configIdNum
         };
         
-        console.log('Updating existing attachment:', updateAttachmentDto);
         attachmentPromises.push(
           this.attachmentService.updateAsync(updateAttachmentDto).toPromise()
         );
@@ -980,7 +973,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
           attConfigID: configIdNum
         };
         
-        console.log('Creating new attachment:', newAttachmentDto);
         attachmentPromises.push(
           this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise()
         );
@@ -991,7 +983,6 @@ export class RequestPlaintComponent implements OnInit, OnDestroy {
     if (attachmentPromises.length > 0) {
       try {
         await Promise.all(attachmentPromises);
-        console.log('Attachments handled successfully');
       } catch (attachmentError) {
         console.error('Error handling attachments:', attachmentError);
         throw attachmentError;

@@ -983,7 +983,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     
     const sub = this.attachmentService.getListByMasterId(validMasterId, masterType).subscribe({
       next: (attachments: AttachmentDto[]) => {
-        console.log('Loaded attachments from API:', attachments);
         
         const attachmentsData = attachments.map(att => ({
           id: att.id,
@@ -1008,7 +1007,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
    * Load existing attachments from request data
    */
   private loadExistingAttachments(attachmentsData: any[]): void {
-    console.log('Loading existing attachments:', attachmentsData);
     
     attachmentsData.forEach((attachment: any) => {
       if (attachment.attConfigID && attachment.id) {
@@ -1037,7 +1035,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       }
     });
     
-    console.log('Existing attachments after loading:', this.existingAttachments);
     this.cdr.detectChanges();
   }
 
@@ -1887,7 +1884,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     try {
       await Promise.all(deletePromises);
-      console.log('Attachments deleted successfully');
     } catch (error) {
       console.error('Error deleting attachments:', error);
       throw error;
@@ -1950,7 +1946,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     if (attachmentPromises.length > 0) {
       try {
         await Promise.all(attachmentPromises);
-        console.log('Main attachments handled successfully');
       } catch (attachmentError) {
         console.error('Error handling attachments:', attachmentError);
         throw attachmentError;
@@ -1973,7 +1968,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
       try {
         await Promise.all(deletePromises);
-        console.log('Partners deleted successfully');
       } catch (error) {
         console.error('Error deleting partners:', error);
         throw error;
@@ -2009,7 +2003,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         };
         
         await this.partnerService.create(partnerDto).toPromise();
-        console.log('Partner created successfully:', partnerDto);
       } catch (error) {
         console.error('Error creating partner:', error);
         throw error;
@@ -2077,7 +2070,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
       try {
         await Promise.all(deletePromises);
-        console.log('Advertisements deleted successfully');
       } catch (error) {
         console.error('Error deleting advertisements:', error);
         throw error;
@@ -2149,7 +2141,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           };
           
           await this._CharityEventPermitRequestService.updateAdvertisement(updateDto).toPromise();
-          console.log('Advertisement updated successfully:', updateDto);
 
           // Note: Existing attachments deletion is handled separately via attachment service
           // New attachments are included in the updateDto above
@@ -2230,7 +2221,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           };
           
           await this._CharityEventPermitRequestService.createAdvertisement(createDto).toPromise();
-          console.log('Advertisement created successfully:', createDto);
         } catch (error) {
           console.error('Error creating advertisement:', error);
           throw error;
@@ -2329,7 +2319,6 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         };
         
         await this._CharityEventPermitRequestService.createAdvertisement(createDto).toPromise();
-        console.log('Advertisement created successfully:', createDto);
       } catch (error) {
         console.error('Error creating advertisement:', error);
         throw error;

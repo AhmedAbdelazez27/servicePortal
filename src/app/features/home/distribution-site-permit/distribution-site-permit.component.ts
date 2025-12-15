@@ -586,7 +586,6 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     
     const sub = this.attachmentService.getListByMasterId(masterId, masterType).subscribe({
       next: (attachments: AttachmentDto[]) => {
-        console.log('Loaded attachments from API:', attachments);
         
         // Convert API attachments to the format expected by loadExistingAttachments
         const attachmentsData = attachments.map(att => ({
@@ -613,7 +612,6 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
    * Load existing attachments from request data
    */
   private loadExistingAttachments(attachmentsData: any[]): void {
-    console.log('Loading existing attachments:', attachmentsData);
     
     attachmentsData.forEach((attachment: any) => {
       if (attachment.attConfigID && attachment.id) {
@@ -638,7 +636,6 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       }
     });
     
-    console.log('Existing attachments after loading:', this.existingAttachments);
   }
 
   /**
@@ -680,7 +677,6 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
 
     try {
       await Promise.all(deletePromises);
-      console.log('Attachments deleted successfully');
     } catch (error) {
       console.error('Error deleting attachments:', error);
       throw error;
@@ -719,7 +715,6 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           attConfigID: configIdNum
         };
         
-        console.log('Updating existing attachment:', updateAttachmentDto);
         attachmentPromises.push(
           this.attachmentService.updateAsync(updateAttachmentDto).toPromise()
         );
@@ -732,7 +727,6 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           attConfigID: configIdNum
         };
         
-        console.log('Creating new attachment:', newAttachmentDto);
         attachmentPromises.push(
           this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise()
         );
@@ -743,7 +737,6 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
     if (attachmentPromises.length > 0) {
       try {
         await Promise.all(attachmentPromises);
-        console.log('Attachments handled successfully');
       } catch (attachmentError) {
         console.error('Error handling attachments:', attachmentError);
         throw attachmentError;
@@ -766,7 +759,6 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
 
       try {
         await Promise.all(deletePromises);
-        console.log('Partners deleted successfully');
       } catch (error) {
         console.error('Error deleting partners:', error);
         throw error;
@@ -791,7 +783,6 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
         };
         
         await this.partnerService.create(partnerDto).toPromise();
-        console.log('Partner created successfully:', partnerDto);
       } catch (error) {
         console.error('Error creating partner:', error);
         throw error;
@@ -1428,7 +1419,6 @@ addPartner(): void {
     this.partnersForm.reset();
     this.showPartnerAttachments = false;
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
-    // console.log("partners ",this.partners);
     
   }
 

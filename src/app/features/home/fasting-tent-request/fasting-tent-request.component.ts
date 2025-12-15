@@ -252,7 +252,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
       // Debug log for the first tab (information)
       if (this.currentTab === 1) {
-        // console.log('mainInfoForm value:', this.mainInfoForm.getRawValue());
       }
     });
     this.subscriptions.push(mainFormSub);
@@ -300,7 +299,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
           // Log the structure of each tent type for debugging
           this.tentLocationTypes.forEach((type, index) => {
-            // console.log(`Tent Type ${index}:`, type);
           });
 
           // In update mode, patch locationTypeId after tentTypes are loaded
@@ -488,7 +486,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   testAPI(): void {
     this.fastingTentRequestService.getTentLocationTypes().subscribe({
       next: (response) => {
-        // console.log('Manual API test success:', response);
         this.toastr.success('API test successful!');
       },
       error: (error) => {
@@ -502,10 +499,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   testInteractiveMapAPI(): void {
     this.fastingTentRequestService.getInteractiveMap().subscribe({
       next: (response) => {
-        // console.log('Interactive Map API test success:', response);
-        // console.log('Number of locations returned:', response?.length || 0);
         // if (response && response.length > 0) {
-        //   console.log('Sample location:', response[0]);
         //   this.toastr.success(`Interactive Map API returned ${response.length} locations!`);
         // } else {
         //   this.toastr.warning('Interactive Map API returned empty data');
@@ -529,7 +523,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       } catch {}
       this.toastr.info('Map refreshed');
     } else if (this.selectedScenario === 'distribution') {
-      // console.log('Map not initialized, reinitializing...');
       this.initializeMap();
     } else {
       this.toastr.warning('Please select Distribution Items Tent to load the map');
@@ -537,7 +530,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   loadLocationDataOnInit(): void {
-    // console.log('Loading location data on component initialization...');
 
     // Load both dropdown options and map data immediately
     this.loadLocationOptions();
@@ -583,14 +575,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   loadPartnerAttachmentConfigs(): void {
-    // console.log('[loadPartnerAttachmentConfigs] Requesting partner attachment configs with type:', AttachmentsConfigType.Partner);
     const sub = this.attachmentService.getAttachmentsConfigByType(
       AttachmentsConfigType.Partner,
       true,
       null
     ).subscribe({
       next: (configs) => {
-        // console.log('[loadPartnerAttachmentConfigs] Received configs:', configs);
         this.partnerAttachmentConfigs = configs || [];
         this.initializePartnerAttachments();
       },
@@ -611,7 +601,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     
     const sub = this.attachmentService.getListByMasterId(masterId, masterType).subscribe({
       next: (attachments: AttachmentDto[]) => {
-        console.log('Loaded attachments from API:', attachments);
         
         // Convert API attachments to the format expected by loadExistingAttachments
         const attachmentsData = attachments.map(att => ({
@@ -638,7 +627,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
    * Load existing attachments from request data
    */
   private loadExistingAttachments(attachmentsData: any[]): void {
-    console.log('Loading existing attachments:', attachmentsData);
     
     attachmentsData.forEach((attachment: any) => {
       if (attachment.attConfigID && attachment.id) {
@@ -663,7 +651,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       }
     });
     
-    console.log('Existing attachments after loading:', this.existingAttachments);
   }
 
   /**
@@ -705,7 +692,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
     try {
       await Promise.all(deletePromises);
-      console.log('Attachments deleted successfully');
     } catch (error) {
       console.error('Error deleting attachments:', error);
       throw error;
@@ -744,7 +730,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           attConfigID: configIdNum
         };
         
-        console.log('Updating existing attachment:', updateAttachmentDto);
         attachmentPromises.push(
           this.attachmentService.updateAsync(updateAttachmentDto).toPromise()
         );
@@ -757,7 +742,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           attConfigID: configIdNum
         };
         
-        console.log('Creating new attachment:', newAttachmentDto);
         attachmentPromises.push(
           this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise()
         );
@@ -768,7 +752,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (attachmentPromises.length > 0) {
       try {
         await Promise.all(attachmentPromises);
-        console.log('Attachments handled successfully');
       } catch (attachmentError) {
         console.error('Error handling attachments:', attachmentError);
         throw attachmentError;
@@ -791,7 +774,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
       try {
         await Promise.all(deletePromises);
-        console.log('Partners deleted successfully');
       } catch (error) {
         console.error('Error deleting partners:', error);
         throw error;
@@ -816,7 +798,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         };
         
         await this.partnerService.create(partnerDto).toPromise();
-        console.log('Partner created successfully:', partnerDto);
       } catch (error) {
         console.error('Error creating partner:', error);
         throw error;
@@ -1150,8 +1131,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Tent location type change handler
   onTentLocationTypeChange(event: any): void {
-    // console.log('onTentLocationTypeChange called with event:', event);
-    // console.log('Available tentLocationTypes:', this.tentLocationTypes);
 
     // Extract the ID from the event - ng-select passes the full object when bindValue="id" is used
     let eventId: number;
@@ -1159,29 +1138,22 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (typeof event === 'object' && event !== null && event.id) {
       // Event is the full object
       eventId = event.id;
-      // console.log('Event is object, extracted ID:', eventId);
     } else if (typeof event === 'string') {
       // Event is string ID
       eventId = parseInt(event, 10);
-      // console.log('Event is string, parsed ID:', eventId);
     } else if (typeof event === 'number') {
       // Event is numeric ID
       eventId = event;
-      // console.log('Event is number, ID:', eventId);
     } else {
-      // console.log('Invalid event type, clearing scenario:', typeof event, event);
       this.clearLocationSelection();
       return;
     }
 
-    // console.log('Final event ID:', eventId);
 
     const selectedType = this.tentLocationTypes.find(type => type.id === eventId);
-    // console.log('Selected type:', selectedType);
 
     // Check if we have a valid selection
     if (!selectedType || !eventId) {
-      // console.log('No valid type selected, clearing scenario');
       this.clearLocationSelection();
       return;
     }
@@ -1191,7 +1163,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   loadLocationOptions(): void {
-    // console.log('Loading location options for iftar tent scenario...');
     const request = {
       skip: 0,
       take: 100,
@@ -1202,9 +1173,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
     const sub = this.fastingTentRequestService.getLocationSelect2(request).subscribe({
       next: (response) => {
-        // console.log('Location options response:', response);
         this.locationOptions = response.results || [];
-        // console.log('Assigned locationOptions:', this.locationOptions);
         
         // In update mode, ensure locationId is patched after options are loaded
         if (this.fastingTentRequestId && this.loadformData?.fastingTentService?.locationId) {
@@ -1253,7 +1222,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
         // Log each location for debugging
         this.interactiveMapLocations.forEach((location, index) => {
-          // console.log(`Location ${index + 1}:`, {
           //   id: location.id,
           //   name: location.locationName,
           //   coordinates: location.locationCoordinates,
@@ -1461,10 +1429,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       attempts++;
 
       if (mapElement) {
-        // console.log('Map element found, initializing map...');
         this.setupMap();
       } else if (attempts < maxAttempts) {
-        // console.log(`Map element not found, attempt ${attempts}/${maxAttempts}, retrying...`);
         setTimeout(checkAndInitialize, 200);
       } else {
         // console.error('Map element not found after maximum attempts');
@@ -1570,21 +1536,17 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       return null;
     }
 
-    // console.log('Parsing coordinates:', coordinates);
 
     try {
       // Try parsing as JSON first (e.g., '{"lat": 25.2048, "lng": 55.2708}')
       const coords = JSON.parse(coordinates);
       if (coords && typeof coords.lat === 'number' && typeof coords.lng === 'number') {
-        // console.log('Parsed as JSON:', coords);
         return { lat: coords.lat, lng: coords.lng };
       }
       if (coords && typeof coords.latitude === 'number' && typeof coords.longitude === 'number') {
-        // console.log('Parsed as JSON with latitude/longitude:', coords);
         return { lat: coords.latitude, lng: coords.longitude };
       }
     } catch (e) {
-      // console.log('Not valid JSON, trying other formats');
     }
 
     try {
@@ -1592,7 +1554,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       if (coordinates.includes(',')) {
         const [lat, lng] = coordinates.split(',').map(s => parseFloat(s.trim()));
         if (!isNaN(lat) && !isNaN(lng)) {
-          // console.log('Parsed as comma-separated:', { lat, lng });
           return { lat, lng };
         }
       }
@@ -1601,7 +1562,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       if (coordinates.includes('/')) {
         const [lat, lng] = coordinates.split('/').map(s => parseFloat(s.trim()));
         if (!isNaN(lat) && !isNaN(lng)) {
-          // console.log('Parsed as slash-separated:', { lat, lng });
           return { lat, lng };
         }
       }
@@ -1613,7 +1573,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           const lat = parseFloat(parts[0]);
           const lng = parseFloat(parts[1]);
           if (!isNaN(lat) && !isNaN(lng)) {
-            // console.log('Parsed as space-separated:', { lat, lng });
             return { lat, lng };
           }
         }
@@ -1627,7 +1586,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   onMapLocationClick(location: LocationMapDto): void {
-    // console.log('Map location clicked:', location);
 
     // Set the selection source and clear dropdown selection
     this.lastSelectionSource = 'map';
@@ -1752,12 +1710,10 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     };
 
     this.partners.push(newPartner);
-    console.log(this.partners);
     
     this.partnersForm.reset();
     this.showPartnerAttachments = false;
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
-    console.log("partners ", this.partners);
 
   }
 
@@ -1793,7 +1749,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const selectedPartnerType = this.partnersForm.get('type')?.value;
     if (selectedPartnerType && (selectedPartnerType === PartnerType.Person || selectedPartnerType === PartnerType.Supplier || selectedPartnerType === PartnerType.Company)) {
       this.showPartnerAttachments = true;
-      // console.log('[onPartnerTypeChange] Showing attachments for partner type:', selectedPartnerType);
     } else {
       this.showPartnerAttachments = false;
     }
@@ -1864,7 +1819,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   handlePartnerFileUpload(file: File, configId: number, partnerType: PartnerType): void {
-    // console.log('[handlePartnerFileUpload] file:', file, 'configId:', configId, 'partnerType:', partnerType);
     if (!this.validateFile(file)) {
       return;
     }
@@ -1889,7 +1843,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           fileBase64: (e.target?.result as string).split(',')[1],
           fileName: file.name
         };
-        // console.log('[handlePartnerFileUpload] Updated partner attachment:', this.partnerAttachments[partnerType][attachmentIndex]);
       } else {
         // console.warn('[handlePartnerFileUpload] No partner attachment found for configId:', configId, 'partnerType:', partnerType);
       }
@@ -1940,7 +1893,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   handleFileUpload(file: File, configId: number): void {
-    // console.log('[handleFileUpload] file:', file, 'configId:', configId); // DEBUG
     if (!this.validateFile(file)) {
       return;
     }
@@ -2621,18 +2573,6 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   // Development helper method - can be called from browser console for debugging
   logValidationStatus(): void {
-    // console.log('=== TAB VALIDATION STATUS ===');
-    // for (let i = 1; i <= this.totalTabs; i++) {
-    //   const status = this.getTabValidationStatus(i);
-    //   console.log(`Tab ${i}: ${status.isValid ? '✅ Valid' : '❌ Invalid'}`);
-    //   if (!status.isValid && status.errors.length > 0) {
-    //     status.errors.forEach(error => console.log(`  - ${error}`));
-    //   }
-    // }
-    // console.log(`Current Tab: ${this.currentTab}`);
-    // console.log(`Can Proceed to Next: ${this.canProceedToNext()}`);
-    // console.log(`Can Submit: ${this.canSubmit()}`);
-    // console.log('===========================');
   }
 
   // Custom Validators (match distribution-site-permit)

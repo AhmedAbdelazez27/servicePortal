@@ -1180,10 +1180,8 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     };
 
 
-    console.log('requestAdvertisements', ad);
     this._AdvertisementsService.createDepartment(ad).subscribe({
       next: (res) => {
-        console.log(res);
         this.resetAttachments(adAttachType);
 
         this.advertForm.reset({
@@ -1208,8 +1206,6 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
 
       },
       error: (err) => {
-        console.log(err);
-
       }
     })
     this.resetAttachments(adAttachType);
@@ -1307,7 +1303,6 @@ export class ViewRequesteventpermitComponent implements OnInit, OnDestroy {
     const sub = this.mainApplyServiceService.getDetailById({ id }).subscribe({
       next: (resp: any) => {
         this.addWorkFlowSteps = resp.workFlowSteps || [];
-        console.log(resp);
          this.showWfModal = true;
       },
       error: () => {

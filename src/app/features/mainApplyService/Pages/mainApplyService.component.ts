@@ -618,24 +618,13 @@ export class MainApplyServiceComponent {
             .subscribe({
               next: (response: any) => {
                 const data = response?.data || [];
-                console.log("data", data);
 
                 const entityRequests = data.map((c: any) => {
                   c.applyDate = this.openStandardReportService.formatDate(c.applyDate);
                   c.serviceName = this.lang == 'ar' ? c.service?.serviceName : c.service?.serviceNameEn ?? '';
                   c.userName = this.lang == 'ar' ? c.service?.name : c.service?.nameEn ?? '';
-
-                  if (c.user?.entityId != null) {
-                    return this.entityName(c.user.entityId).pipe(
-                      map((name) => {
-                        c.entityName = name;
-                        return c;
-                      })
-                    );
-                  } else {
-                    c.entityName = "";
-                    return of(c);
-                  }
+                  c.entityName = this.lang == 'ar' ? c.user?.entity?.entitY_NAME : c.user?.entity?.entitY_NAME_EN;
+                  return of(c);
                 });
 
                 forkJoin(entityRequests)

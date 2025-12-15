@@ -133,7 +133,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private findProfilePhotoInAttachments(attachments: any[], userType: number): void {
-    console.log(attachments);
     
     let profilePhotoAttachment;
 
@@ -466,7 +465,6 @@ profilePhotoAttachment = attachments.find((att: any) => att.masterType == 1009);
    * Handle notification click with smart navigation and detailed toast message
    */
   private handleNotificationClick(notification: NotificationDto): void {
-    // console.log(notification);
     
     // Close the dropdown
     this.closeNotificationDropdown();
