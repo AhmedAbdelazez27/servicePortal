@@ -60,7 +60,7 @@ export class DistributionSiteRequestService {
     );
   }
 
-  delete(id: number): Observable<void> {
+  delete(id: any): Observable<void> {
     return this.http.post<void>(
       `${this.BASE_URL}/Delete/${id}`,
       {}

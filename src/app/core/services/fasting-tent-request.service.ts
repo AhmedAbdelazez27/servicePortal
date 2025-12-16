@@ -59,7 +59,7 @@ export class FastingTentRequestService {
     );
   }
 
-  delete(id: number): Observable<void> {
+  delete(id: any): Observable<void> {
     return this.http.post<void>(
       `${this.BASE_URL}${ApiEndpoints.FastingTentRequest.Delete(id)}`,
       {}

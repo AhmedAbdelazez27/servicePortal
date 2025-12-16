@@ -1702,7 +1702,9 @@
 
     "notVerifiedUserMessage": "You are not eligible to access this service. Your account is either not upgraded or you have a visitor account.",
     "fromDate": "From Date",
-    "toDate": "To Date"
+    "toDate": "To Date",
+    "CONFIRM_DELETE": "Are you sure you want to delete this request?",
+     "REQUEST_DELETED": "Request deleted successfully."
 
   },
 

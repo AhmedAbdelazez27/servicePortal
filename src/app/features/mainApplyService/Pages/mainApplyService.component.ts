@@ -22,6 +22,8 @@ import { EntityService } from '../../../core/services/entit.service';
 import { GenericNgSelectComponent } from '../../../../shared/generic-ng-select/generic-ng-select.component';
 import { Select2APIEndpoint } from '../../../core/constants/select2api-endpoints';
 import { CharityEventPermitRequestService } from '../../../core/services/charity-event-permit-request.service';
+import { FastingTentRequestService } from '../../../core/services/fasting-tent-request.service';
+import { DistributionSiteRequestService } from '../../../core/services/distribution-site-request.service';
 
 enum ServiceStatus {
   Accept = 1,
@@ -88,6 +90,8 @@ export class MainApplyServiceComponent {
     private mainApplyServiceReportService: MainApplyServiceReportService,
     private authService: AuthService,
     private charityEventPermitRequestService: CharityEventPermitRequestService,
+    private fastingTentRequestService: FastingTentRequestService,
+    private distributionSiteRequestService: DistributionSiteRequestService,
     private entityService: EntityService,
   ) {
 
@@ -326,6 +330,16 @@ export class MainApplyServiceComponent {
 
   onTableAction(event: { action: string, row: any }) {
     if (event.action === 'onUpdate') {
+      if (!this.canEdit(event.row)) {
+        this.translate
+          .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+          .subscribe(translations => {
+            this.toastr.error(
+              `${translations['mainApplyServiceResourceName.NoPermission']}`,
+            );
+          });
+        return;
+      }
       // Handle update action - route to edit page for draft requests
       if (event.row.serviceId == this.appEnum.serviceId7) {
         // Route to request-plaint with id as param for draft update
@@ -428,6 +442,16 @@ export class MainApplyServiceComponent {
       const lastStatus = event.row.lastStatus ?? '';
       const serviceId = event.row.serviceId ?? '';
       const id = event.row.id ?? '';
+      if (!this.canPrint(event.row)) {
+        this.translate
+          .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+          .subscribe(translations => {
+            this.toastr.error(
+              `${translations['mainApplyServiceResourceName.NoPermission']}`,
+            );
+          });
+        return;
+      }
       if (this.translate?.currentLang === 'ar') {
         if (serviceId === 1) {
           if (serviceStatusName.includes("معتمد")) {
@@ -501,6 +525,16 @@ export class MainApplyServiceComponent {
     }
 
     if (event.action === 'onDelete') {
+      if (!this.canDelete(event.row)) {
+        this.translate
+          .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+          .subscribe(translations => {
+            this.toastr.error(
+              `${translations['mainApplyServiceResourceName.NoPermission']}`,
+            );
+          });
+        return;
+      }
       // Handle delete action - only for RequestEventPermits (serviceId = 6) for now
       if (event.row.serviceId == this.appEnum.serviceId6 || event.row.serviceId === 6) {
         // Check if id exists and is a number
@@ -560,7 +594,35 @@ export class MainApplyServiceComponent {
             }
           });
         }
-      } else {
+      } else if (event.row.serviceId == this.appEnum.serviceId1001 || event.row.serviceId == 1001) {
+        const mainApplyServiceId = event.row.id;
+        if (!mainApplyServiceId || typeof mainApplyServiceId !== 'number') {
+          this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
+          return;
+        }
+
+        // Show confirmation dialog
+        if (confirm(this.translate.instant('COMMON.CONFIRM_DELETE') )) {
+          this.spinnerService.show();
+          // Convert id to string as API expects string
+          this.distributionSiteRequestService.delete(mainApplyServiceId.toString()).subscribe({
+            next: () => {
+              this.toastr.success(this.translate.instant('COMMON.REQUEST_DELETED') );
+              this.spinnerService.hide();
+              // Refresh the grid data
+              this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
+            },
+            error: (error: any) => {
+              this.spinnerService.hide();
+              if (error.error && error.error.reason) {
+                this.toastr.error(error.error.reason);
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
+              }
+            }
+          });
+        }
+      }else {
         this.translate
           .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
           .subscribe(translations => {
@@ -571,6 +633,24 @@ export class MainApplyServiceComponent {
       }
       return;
     }
+  }
+
+  // Permission helpers based on status
+  canEdit(row: any): boolean {
+    const status = row?.serviceStatus as ServiceStatus;
+    return status === ServiceStatus.Draft || status === ServiceStatus.ReturnForModifications;
+  }
+
+  canDelete(row: any): boolean {
+    const status = row?.serviceStatus as ServiceStatus;
+    return status === ServiceStatus.Draft;
+  }
+
+  canPrint(row: any): boolean {
+    const status = row?.serviceStatus as ServiceStatus;
+    const isApproved = status === ServiceStatus.Accept;
+    const isTentPreliminary = row?.serviceId === 1 && status === ServiceStatus.Wait;
+    return isApproved || isTentPreliminary;
   }
 
   getStatusClass(serviceStatus: any): string {

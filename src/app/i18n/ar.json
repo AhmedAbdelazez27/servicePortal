@@ -719,6 +719,8 @@
     }
   },
   "COMMON": {
+     "REQUEST_DELETED": "تم حذف الطلب بنجاح.",
+    "CONFIRM_DELETE": "هل أنت متأكد أنك تريد حذف هذا الطلب؟",
     "REQUEST_SERVICE": "طلب الخدمة",
     "CLEAR": "مسح",
     "SEARCH": "بحث",
@@ -1071,7 +1073,8 @@
     "AddComment": "اضافة تعليق",
     "requestComplaint": "تقديم شكوى",
     "MORE_FILES": "إضافة ملفات أخرى",
-    "DESCRIPTION": "الوصف"
+    "DESCRIPTION": "الوصف",
+    "CONFIRM_DELETE": "هل أنت متأكد أنك تريد حذف هذا الطلب؟"
   },
 
 
