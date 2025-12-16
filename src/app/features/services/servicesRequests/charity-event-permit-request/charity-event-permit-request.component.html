@@ -418,12 +418,35 @@
                                             <span class="text-danger">*</span>
                                         </label>
 
-                                        <input type="number" class="form-control" formControlName="contactDetails"
-                                            [class.is-invalid]="partnerForm.get('contactDetails')?.touched && partnerForm.get('contactDetails')?.invalid" />
+                                        <!-- Mobile Number Input with UAE Flag and 971 prefix -->
+                                        <div class="mobile-input-container" style="border: none !important" [class.is-invalid]="
+                                            partnerForm.get('contactDetails')?.touched &&
+                                            partnerForm.get('contactDetails')?.invalid
+                                          ">
+                                          <div class="mobile-prefix-container">
+                                            <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png" alt="UAE Flag"
+                                              class="uae-flag-image" />
+                                            <span class="mobile-prefix">971</span>
+                                          </div>
+                                          <input type="tel" class="form-control mobile-number-input" formControlName="contactDetails"
+                                            placeholder="5**********" maxlength="9" (keypress)="restrictMobileInput($event)"
+                                            (input)="onContactDetailsInput()" (blur)="onContactDetailsBlur()" />
+                                        </div>
 
-                                        <div class="invalid-feedback"
-                                            *ngIf="partnerForm.get('contactDetails')?.touched && partnerForm.get('contactDetails')?.hasError('required')">
+                                        <div *ngIf="
+                                            partnerForm.get('contactDetails')?.touched &&
+                                            partnerForm.get('contactDetails')?.errors
+                                          " class="invalid-feedback">
+                                          <div *ngIf="
+                                              partnerForm.get('contactDetails')?.hasError('required')
+                                            ">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                          </div>
+                                          <div *ngIf="
+                                              partnerForm.get('contactDetails')?.hasError('pattern')
+                                            ">
+                                            {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
+                                          </div>
                                         </div>
                                     </div>
 
@@ -1151,6 +1174,13 @@
                                         <i class="fas ms-2" [ngClass]="isRtl ? 'fa-arrow-left' : 'fa-arrow-right'"></i>
                                     </button>
 
+                                    <!-- Save as Draft button - available in all tabs -->
+                                    <button *ngIf="currentStep < totalSteps" type="button" class="btn btn-outline-secondary"
+                                        [disabled]="isSaving || !isFormInitialized"
+                                        (click)="onSubmit(true)">
+                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                        {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                                    </button>
 
                                     <button *ngIf="currentStep === totalSteps" type="button" class="btn btn-outline-secondary me-2"
                                         [disabled]="isSaving || !isFormInitialized"

@@ -13,10 +13,11 @@ export class AppEnum {
 export enum ServiceStatus {
   Accept = 1,
   Reject = 2,
-  RejectForReason = 3,
+  New = 3,
   Wait = 4,
   Received = 5,
-  ReturnForModifications = 7
+  ReturnForModifications = 7,
+  RejectForReason = 1222
 }
 export enum ServicesType {
   TentPermission = 1,

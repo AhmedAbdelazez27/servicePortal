@@ -1362,10 +1362,19 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
 
   populateLocationFields(location: LocationDetailsDto): void {
+    // Get region name based on current language
+    let regionName = location.region; // Fallback to old region field
+    if (location.regionEntity) {
+      const currentLang = this.translationService.currentLang;
+      regionName = currentLang === 'ar' 
+        ? location.regionEntity.regionArabicName 
+        : location.regionEntity.regionEnglishName;
+    }
+
     this.mainInfoForm.patchValue({
       locationId: location.id,
       ownerName: location.locationOwner,
-      regionName: location.region,
+      regionName: regionName,
       streetName: location.street,
       address: location.address,
       groundNo: location.locationNo,
@@ -1486,6 +1495,28 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           fullscreenControl: false,
           streetViewControl: false,
           mapTypeControl: false,
+          styles: [
+            {
+              featureType: 'poi',
+              elementType: 'labels',
+              stylers: [{ visibility: 'off' }]
+            },
+            {
+              featureType: 'poi',
+              elementType: 'geometry',
+              stylers: [{ visibility: 'off' }]
+            },
+            {
+              featureType: 'transit',
+              elementType: 'labels',
+              stylers: [{ visibility: 'off' }]
+            },
+            {
+              featureType: 'transit',
+              elementType: 'geometry',
+              stylers: [{ visibility: 'off' }]
+            }
+          ]
         });
 
         this.addMapMarkers();
@@ -1549,9 +1580,9 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         url: 'http://maps.google.com/mapfiles/ms/icons/red.png',
       };
     } else {
-      // Yellow marker for available locations
+      // Green marker for available locations
       return {
-        url: 'http://maps.google.com/mapfiles/ms/icons/yellow.png',
+        url: 'http://maps.google.com/mapfiles/ms/icons/green.png',
       };
     }
   }

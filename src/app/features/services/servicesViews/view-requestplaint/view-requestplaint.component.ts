@@ -232,11 +232,15 @@ export class ViewRequestplaintComponent implements OnInit {
         minWidth: 100,
         cellRenderer: (p: any) => {
           const id = p.value;
-          return id
-            ? `<button class="btn btn-next-style attachment-btn" data-comment-id="${id}" data-row-index="${p.node.rowIndex}">
-                 <i class="fas fa-eye me-1"></i><span>${this.translate.instant('COMMON.VIEW')}</span>
-               </button>`
-            : '-';
+          const attachments = p.data.attachments;
+          const hasAttachments = attachments && Array.isArray(attachments) && attachments.length > 0;
+          
+          if (id && hasAttachments) {
+            return `<button class="btn btn-next-style attachment-btn" data-comment-id="${id}" data-row-index="${p.node.rowIndex}">
+                     <i class="fas fa-eye me-1"></i><span>${this.translate.instant('COMMON.VIEW')}</span>
+                   </button>`;
+          }
+          return '-';
         },
         cellClass: 'text-center'
       }
@@ -344,10 +348,11 @@ export class ViewRequestplaintComponent implements OnInit {
       switch (statusId) {
         case ServiceStatus.Accept: return '#28a745';
         case ServiceStatus.Reject: return '#dc3545';
-        case ServiceStatus.RejectForReason: return '#fd7e14';
+        case ServiceStatus.New: return '#E6E6E6'; // Light Gray
         case ServiceStatus.Wait: return '#ffc107';
         case ServiceStatus.Received: return '#17a2b8';
         case ServiceStatus.ReturnForModifications: return '#6f42c1';
+        case ServiceStatus.RejectForReason: return '#fd7e14';
         default: return '#6c757d';
       }
     }
@@ -356,10 +361,11 @@ export class ViewRequestplaintComponent implements OnInit {
       switch (statusId) {
         case ServiceStatus.Accept: return 'fas fa-check-circle';
         case ServiceStatus.Reject: return 'fas fa-times-circle';
-        case ServiceStatus.RejectForReason: return 'fas fa-exclamation-triangle';
+        case ServiceStatus.New: return 'fas fa-clock'; // Same icon as Wait
         case ServiceStatus.Wait: return 'fas fa-clock';
         case ServiceStatus.Received: return 'fas fa-inbox';
         case ServiceStatus.ReturnForModifications: return 'fas fa-edit';
+        case ServiceStatus.RejectForReason: return 'fas fa-exclamation-triangle';
         default: return 'fas fa-question-circle';
       }
     }
@@ -368,10 +374,11 @@ export class ViewRequestplaintComponent implements OnInit {
       switch (statusId) {
         case ServiceStatus.Accept: return 'WORKFLOW.STATUS_ACCEPT';
         case ServiceStatus.Reject: return 'WORKFLOW.STATUS_REJECT';
-        case ServiceStatus.RejectForReason: return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
+        case ServiceStatus.New: return 'WORKFLOW.STATUS_NEW';
         case ServiceStatus.Wait: return 'WORKFLOW.STATUS_WAITING';
         case ServiceStatus.Received: return 'WORKFLOW.STATUS_RECEIVED';
         case ServiceStatus.ReturnForModifications: return 'WORKFLOW.STATUS_RETURN_FOR_MODIFICATIONS';
+        case ServiceStatus.RejectForReason: return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
         default: return 'WORKFLOW.STATUS_UNKNOWN';
       }
     }

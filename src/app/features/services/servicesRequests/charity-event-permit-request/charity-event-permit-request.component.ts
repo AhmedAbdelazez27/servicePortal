@@ -654,7 +654,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
                     : new Date(p.licenseExpiryDate).toISOString().split('T')[0])
                 : '',
               licenseNumber: p.licenseNumber || '',
-              contactDetails: p.contactDetails || '',
+              contactDetails: p.contactDetails?.replace('971', '') || '',
               jobRequirementsDetails: p.jobRequirementsDetails || '',
               mainApplyServiceId: p.mainApplyServiceId || this.mainApplyServiceId || 0,
               attachments: p.attachments || [],
@@ -851,7 +851,10 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
       // optional
-      contactDetails: this.fb.control(null, { validators: [Validators.required] }),
+      contactDetails: this.fb.control<string>('', {
+        validators: [Validators.required, this.uaeMobileValidator.bind(this)],
+        nonNullable: true,
+      }),
       mainApplyServiceId: this.fb.control<number | null>(null),
 
       nameEn: ['', [Validators.required, Validators.maxLength(200)]],
@@ -946,6 +949,13 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
     if (!contactDetails) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.CONTACT_DETAILS'));
+      return;
+    }
+    
+    // Validate UAE mobile format
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    if (!uaeMobilePattern.test(contactDetails)) {
+      this.toastr.error(this.translate.instant('VALIDATION.INVALID_PHONE_FORMAT'));
       return;
     }
 
@@ -1047,7 +1057,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       licenseIssuer: v.licenseIssuer!,
       licenseExpiryDate: v.licenseExpiryDate!,
       licenseNumber: v.licenseNumber!,
-      contactDetails: v.contactDetails.toString() ?? null,
+      contactDetails: v.contactDetails ? `971${v.contactDetails}` : null,
       jobRequirementsDetails: v.jobRequirementsDetails ?? null,
       mainApplyServiceId: v.mainApplyServiceId ?? null,
       attachments: partnerAttachments,
@@ -1475,7 +1485,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           licenseIssuer: partner.licenseIssuer === null ? undefined : partner.licenseIssuer,
           licenseExpiryDate: partner.licenseExpiryDate === null ? undefined : (partner.licenseExpiryDate ? toISO(partner.licenseExpiryDate) : undefined),
           licenseNumber: partner.licenseNumber === null ? undefined : partner.licenseNumber,
-          contactDetails: partner.contactDetails === null ? undefined : partner.contactDetails,
+          contactDetails: partner.contactDetails ? `971${partner.contactDetails}` : undefined,
           jobRequirementsDetails: partner.jobRequirementsDetails === null ? undefined : partner.jobRequirementsDetails,
           mainApplyServiceId: this.mainApplyServiceId || undefined,
           attachments: partner.attachments || [],
@@ -1828,7 +1838,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
             licenseIssuer: p.licenseIssuer ?? null,
             licenseExpiryDate: p.licenseExpiryDate ? toISO(p.licenseExpiryDate) : null,
             licenseNumber: p.licenseNumber ?? null,
-            contactDetails: p.contactDetails.toString() ?? null,
+            contactDetails: p.contactDetails ? `971${p.contactDetails}` : null,
             mainApplyServiceId: p.mainApplyServiceId ?? null,
             attachments: p.attachments
           })),
@@ -2090,6 +2100,25 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     const mobileControl = this.firstStepForm.get('telephone2');
     if (mobileControl) {
       mobileControl.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
+  }
+
+  onContactDetailsInput(): void {
+    const contactControl = this.partnerForm.get('contactDetails');
+    if (contactControl) {
+      let value = contactControl.value;
+      if (value && value.length > 9) {
+        value = value.substring(0, 9);
+        contactControl.setValue(value);
+      }
+    }
+  }
+
+  onContactDetailsBlur(): void {
+    const contactControl = this.partnerForm.get('contactDetails');
+    if (contactControl) {
+      contactControl.updateValueAndValidity();
       this.cdr.detectChanges();
     }
   }

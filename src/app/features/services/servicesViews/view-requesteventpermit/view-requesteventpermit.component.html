@@ -129,10 +129,6 @@
                         <!--{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}-->
                         {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
                       </div>
-                      <div class="step-status" [style.color]="getStatusColor(step.serviceStatus)">
-                        <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
-                        {{ step.serviceStatusName || (getStatusLabel(step.serviceStatus) | translate) }}
-                      </div>
                     </div>
                     <h6 class="department-name">{{ step.departmentName }}</h6>
                     <small class="text-muted d-block mb-2"
@@ -518,14 +514,6 @@
                               <div class="d-flex flex-column">
                                 <div>
                                   {{ 'REQUEST_EVENT_PERMIT.AD' | translate }} #{{ i + 1 }} — {{ ad.adTitle || '-' }}
-                                </div>
-                                <div class="step-status pt-1" [style.color]="getStatusColor(ad.advertisementStatus)"
-                                  style="font-weight: normal; font-size: 16px;">
-                                  <i [class]="getStatusIcon(ad.advertisementStatus)" class="me-1"></i>
-                                  {{
-                                  ad.advertisementStatusName || (getStatusLabel(ad.advertisementStatus) |
-                                  translate)
-                                  }}
                                 </div>
                               </div>
 
@@ -962,13 +950,9 @@
                           </div>
 
                           <!-- Attachments -->
-                          <div>
-                            <!-- <button class="btn btn-next-style attachment-btn" data-comment-id="${id}" data-row-index="${p.node.rowIndex}">
-                    <i class="fas fa-eye me-1"></i><span>   view</span>
-                  </button> -->
-
-                            <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"
-                              data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
+                          <div *ngIf="comment.attachments && comment.attachments.length > 0">
+                            <button class="btn btn-view-attachment mt-2" [attr.data-comment-id]="comment.id"
+                              (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
                                 fill="none">
                                 <g clip-path="url(#clip0_560_1674)">
@@ -1434,10 +1418,6 @@
                   <!--{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}-->
                   {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
                 </div>
-                <div class="step-status" [style.color]="getStatusColor(step.serviceStatus)">
-                  <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
-                  {{ step.serviceStatusName || (getStatusLabel(step.serviceStatus) | translate) }}
-                </div>
               </div>
               <h6 class="department-name">{{ step.departmentName }}</h6>
               <button type="button" class="btn btn-link p-0" (click)="openHistoryModal(step.workFlowHistories || [])">
@@ -1478,10 +1458,6 @@
               <div class="dot"></div>
               <div class="content">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                  <div class="step-status" [style.color]="getStatusColor(h.serviceStatus)">
-                    <i [class]="getStatusIcon(h.serviceStatus)" class="me-1"></i>
-                    {{h.serviceStatusName || (getStatusLabel(h.serviceStatus) | translate)}}
-                  </div>
                   <small class="text-muted">
                     {{ h.historyDate | date:'medium' }}
                   </small>

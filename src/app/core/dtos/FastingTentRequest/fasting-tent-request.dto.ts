@@ -145,6 +145,15 @@ export interface LocationMapDto {
   locationTypeId: number;
 }
 
+export interface RegionEntityDto {
+  id: number;
+  regionArabicName: string;
+  regionEnglishName: string;
+  maxCountOfLocations: number;
+  currenLocationCount: number | null;
+  isActive: boolean;
+}
+
 export interface LocationDetailsDto {
   id: number;
   locationName: string;
@@ -157,6 +166,7 @@ export interface LocationDetailsDto {
   locationTypeId: number;
   locationCoordinates: string;
   locationPhotoPath?: string;
+  regionEntity?: RegionEntityDto;
 }
 
 export interface CheckLocationAvailabilityDto {

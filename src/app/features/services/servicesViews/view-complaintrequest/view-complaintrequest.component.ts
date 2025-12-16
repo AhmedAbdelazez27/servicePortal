@@ -123,14 +123,16 @@ export class ViewComplaintrequestComponent implements OnInit {
         return '#28a745'; // Green
       case ServiceStatus.Reject:
         return '#dc3545'; // Red
-      case ServiceStatus.RejectForReason:
-        return '#fd7e14'; // Orange
+      case ServiceStatus.New:
+        return '#E6E6E6'; // Light Gray
       case ServiceStatus.Wait:
         return '#ffc107'; // Yellow/Amber
       case ServiceStatus.Received:
         return '#17a2b8'; // Cyan/Teal
       case ServiceStatus.ReturnForModifications:
         return '#6f42c1'; // Purple
+      case ServiceStatus.RejectForReason:
+        return '#fd7e14'; // Orange
       default:
         return '#6c757d'; // Gray
     }
@@ -144,14 +146,16 @@ export class ViewComplaintrequestComponent implements OnInit {
         return 'fas fa-check-circle';
       case ServiceStatus.Reject:
         return 'fas fa-times-circle';
-      case ServiceStatus.RejectForReason:
-        return 'fas fa-exclamation-triangle';
+      case ServiceStatus.New:
+        return 'fas fa-clock'; // Same icon as Wait
       case ServiceStatus.Wait:
         return 'fas fa-clock';
       case ServiceStatus.Received:
         return 'fas fa-inbox';
       case ServiceStatus.ReturnForModifications:
         return 'fas fa-edit';
+      case ServiceStatus.RejectForReason:
+        return 'fas fa-exclamation-triangle';
       default:
         return 'fas fa-question-circle';
     }
@@ -165,14 +169,16 @@ export class ViewComplaintrequestComponent implements OnInit {
         return 'WORKFLOW.STATUS_ACCEPT';
       case ServiceStatus.Reject:
         return 'WORKFLOW.STATUS_REJECT';
-      case ServiceStatus.RejectForReason:
-        return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
+      case ServiceStatus.New:
+        return 'WORKFLOW.STATUS_NEW';
       case ServiceStatus.Wait:
         return 'WORKFLOW.STATUS_WAITING';
       case ServiceStatus.Received:
         return 'WORKFLOW.STATUS_RECEIVED';
       case ServiceStatus.ReturnForModifications:
         return 'WORKFLOW.STATUS_RETURN_FOR_MODIFICATIONS';
+      case ServiceStatus.RejectForReason:
+        return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
       default:
         return 'WORKFLOW.STATUS_UNKNOWN';
     }

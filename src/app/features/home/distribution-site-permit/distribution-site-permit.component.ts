@@ -1269,6 +1269,28 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           fullscreenControl: false,
           streetViewControl: false,
           mapTypeControl: false,
+          styles: [
+            {
+              featureType: 'poi',
+              elementType: 'labels',
+              stylers: [{ visibility: 'off' }]
+            },
+            {
+              featureType: 'poi',
+              elementType: 'geometry',
+              stylers: [{ visibility: 'off' }]
+            },
+            {
+              featureType: 'transit',
+              elementType: 'labels',
+              stylers: [{ visibility: 'off' }]
+            },
+            {
+              featureType: 'transit',
+              elementType: 'geometry',
+              stylers: [{ visibility: 'off' }]
+            }
+          ]
         });
 
         // In update mode, add marker for saved location

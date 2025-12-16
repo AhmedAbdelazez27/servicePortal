@@ -273,6 +273,28 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
         fullscreenControl: false,
         streetViewControl: false,
         mapTypeControl: false,
+        styles: [
+          {
+            featureType: 'poi',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }]
+          },
+          {
+            featureType: 'poi',
+            elementType: 'geometry',
+            stylers: [{ visibility: 'off' }]
+          },
+          {
+            featureType: 'transit',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }]
+          },
+          {
+            featureType: 'transit',
+            elementType: 'geometry',
+            stylers: [{ visibility: 'off' }]
+          }
+        ]
       });
       
       this.mapInitialized = true;

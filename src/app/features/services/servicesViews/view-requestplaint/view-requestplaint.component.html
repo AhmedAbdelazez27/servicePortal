@@ -97,13 +97,6 @@
                       <!--{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}-->
                       {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
                     </div>
-                    <div class="step-status" [style.color]="getStatusColor(step.serviceStatus)">
-                      <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
-                      {{
- step.serviceStatusName || (getStatusLabel(step.serviceStatus) |
-                                            translate)
-                      }}
-                    </div>
                   </div>
                   <h6 class="department-name">{{ step.departmentName }}</h6>
                   <small class="text-muted d-block mb-2"
@@ -291,10 +284,6 @@
               <div class="dot"></div>
               <div class="content">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                  <div class="step-status" [style.color]="getStatusColor(h.serviceStatus)">
-                    <i [class]="getStatusIcon(h.serviceStatus)" class="me-1"></i>
-                    {{h.serviceStatusName || (getStatusLabel(h.serviceStatus) | translate)}}
-                  </div>
                   <small class="text-muted">
                     {{ h.historyDate | date:'medium' }}
                   </small>

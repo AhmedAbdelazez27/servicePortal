@@ -58,7 +58,7 @@
                 </p>
               </div>
 
-              <div class="col-xl-6">
+              <div class="col-xl-6" *ngIf="hasApprovedStep">
                 <button type="button"
                         class="btn btn-outline-secondary"
                         (click)="printReport()">
@@ -103,10 +103,6 @@
                       <div class="step-number">
                         <!--{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}-->
                         {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
-                      </div>
-                      <div class="step-status" [style.color]="getStatusColor(step.serviceStatus)">
-                        <i [class]="getStatusIcon(step.serviceStatus)" class="me-1"></i>
-                        {{step.serviceStatusName || (getStatusLabel(step.serviceStatus) | translate)}}
                       </div>
                     </div>
                     <h6 class="department-name">{{step.departmentName}}</h6>
@@ -535,9 +531,9 @@ attachment.attachmentTitle || ('COMMON.ATTACHMENT' |
                           <div class="comment-area">
                             {{ comment.comment }}
                           </div>
-                          <div>
-                            <button class="btn btn-view-attachment mt-2" data-comment-id="${comment.id}"
-                                    data-row-index="${p.node.rowIndex}" (click)="onTableCellClick($event,comment?.id)">
+                          <div *ngIf="comment.attachments && comment.attachments.length > 0">
+                            <button class="btn btn-view-attachment mt-2" [attr.data-comment-id]="comment.id"
+                                    (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
                                    fill="none">
                                 <g clip-path="url(#clip0_560_1674)">
@@ -859,10 +855,6 @@ attachment.attachmentTitle || ('COMMON.ATTACHMENT' |
               <div class="dot"></div>
               <div class="content">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                  <div class="step-status" [style.color]="getStatusColor(h.serviceStatus)">
-                    <i [class]="getStatusIcon(h.serviceStatus)" class="me-1"></i>
-                    {{h.serviceStatusName || (getStatusLabel(h.serviceStatus) | translate)}}
-                  </div>
                   <small class="text-muted">
                     {{ h.historyDate | date:'medium' }}
                   </small>

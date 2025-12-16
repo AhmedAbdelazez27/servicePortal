@@ -43,10 +43,11 @@ import { MainApplyServiceReportService } from '../../../core/services/mainApplyS
 export enum ServiceStatus {
   Accept = 1,
   Reject = 2,
-  RejectForReason = 3,
+  New = 3,
   Wait = 4,
   Received = 5,
-  ReturnForModifications = 7
+  ReturnForModifications = 7,
+  RejectForReason = 1222
 }
 
 @Component({
@@ -267,8 +268,10 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         minWidth: 100,
         cellRenderer: (params: any) => {
           const commentId = params.value;
+          const attachments = params.data.attachments;
+          const hasAttachments = attachments && Array.isArray(attachments) && attachments.length > 0;
           
-          if (commentId) {
+          if (commentId && hasAttachments) {
             return `<button class="btn btn-next-style attachment-btn" data-comment-id="${commentId}" data-row-index="${params.node.rowIndex}">
                       <i class="fas fa-eye me-1"></i>
                       <span>${this.translate.instant('COMMON.VIEW')}</span>
@@ -661,6 +664,28 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
             fullscreenControl: false,
             streetViewControl: false,
             mapTypeControl: false,
+            styles: [
+              {
+                featureType: 'poi',
+                elementType: 'labels',
+                stylers: [{ visibility: 'off' }]
+              },
+              {
+                featureType: 'poi',
+                elementType: 'geometry',
+                stylers: [{ visibility: 'off' }]
+              },
+              {
+                featureType: 'transit',
+                elementType: 'labels',
+                stylers: [{ visibility: 'off' }]
+              },
+              {
+                featureType: 'transit',
+                elementType: 'geometry',
+                stylers: [{ visibility: 'off' }]
+              }
+            ]
           });
           const marker = new google.maps.Marker({ position: { lat, lng }, map: this.map });
           this.markers = [marker];
@@ -1202,14 +1227,16 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         return '#28a745'; // Green
       case ServiceStatus.Reject:
         return '#dc3545'; // Red
-      case ServiceStatus.RejectForReason:
-        return '#fd7e14'; // Orange
+      case ServiceStatus.New:
+        return '#E6E6E6'; // Light Gray
       case ServiceStatus.Wait:
         return '#ffc107'; // Yellow/Amber
       case ServiceStatus.Received:
         return '#17a2b8'; // Cyan/Teal
       case ServiceStatus.ReturnForModifications:
         return '#6f42c1'; // Purple
+      case ServiceStatus.RejectForReason:
+        return '#fd7e14'; // Orange
       default:
         return '#6c757d'; // Gray
     }
@@ -1223,14 +1250,16 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         return 'fas fa-check-circle';
       case ServiceStatus.Reject:
         return 'fas fa-times-circle';
-      case ServiceStatus.RejectForReason:
-        return 'fas fa-exclamation-triangle';
+      case ServiceStatus.New:
+        return 'fas fa-clock'; // Same icon as Wait
       case ServiceStatus.Wait:
         return 'fas fa-clock';
       case ServiceStatus.Received:
         return 'fas fa-inbox';
       case ServiceStatus.ReturnForModifications:
         return 'fas fa-edit';
+      case ServiceStatus.RejectForReason:
+        return 'fas fa-exclamation-triangle';
       default:
         return 'fas fa-question-circle';
     }
@@ -1244,14 +1273,16 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
         return 'WORKFLOW.STATUS_ACCEPT';
       case ServiceStatus.Reject:
         return 'WORKFLOW.STATUS_REJECT';
-      case ServiceStatus.RejectForReason:
-        return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
+      case ServiceStatus.New:
+        return 'WORKFLOW.STATUS_NEW';
       case ServiceStatus.Wait:
         return 'WORKFLOW.STATUS_WAITING';
       case ServiceStatus.Received:
         return 'WORKFLOW.STATUS_RECEIVED';
       case ServiceStatus.ReturnForModifications:
         return 'WORKFLOW.STATUS_RETURN_FOR_MODIFICATIONS';
+      case ServiceStatus.RejectForReason:
+        return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
       default:
         return 'WORKFLOW.STATUS_UNKNOWN';
     }
@@ -1320,6 +1351,14 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     else {
       return this.mainApplyService?.serviceStatusName?.includes('Approved') ?? false;
     }
+  }
+
+  // Check if there is at least one approved step in workflow
+  get hasApprovedStep(): boolean {
+    if (!this.workFlowSteps || this.workFlowSteps.length === 0) {
+      return false;
+    }
+    return this.workFlowSteps.some(step => step.serviceStatus === ServiceStatus.Accept);
   }
 
 

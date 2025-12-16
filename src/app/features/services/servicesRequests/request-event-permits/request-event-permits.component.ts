@@ -879,7 +879,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
                     : new Date(p.licenseExpiryDate).toISOString().split('T')[0])
                 : '',
               licenseNumber: p.licenseNumber || '',
-              contactDetails: p.contactDetails || '',
+              contactDetails: p.contactDetails?.replace('971', '') || '',
               jobRequirementsDetails: p.jobRequirementsDetails || '',
               mainApplyServiceId: p.mainApplyServiceId || this.mainApplyServiceId || 0,
               attachments: p.attachments || [],
@@ -1065,7 +1065,10 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       licenseNumber: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
 
       // optional
-      contactDetails: this.fb.control(null, { validators: [Validators.required] }),
+      contactDetails: this.fb.control<string>('', {
+        validators: [Validators.required, this.uaeMobileValidator.bind(this)],
+        nonNullable: true,
+      }),
       mainApplyServiceId: this.fb.control<number | null>(null),
 
 
@@ -1122,7 +1125,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const licenseIssuer = (this.partnerForm.get('licenseIssuer')?.value ?? '').toString().trim();
     const licenseExpiry = (this.partnerForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnerForm.get('licenseNumber')?.value ?? '').toString().trim();
-    const contactDetails = +(this.partnerForm.get('contactDetails')?.value ?? null);
+    const contactDetails = (this.partnerForm.get('contactDetails')?.value ?? '').toString().trim();
 
     // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
     // Name: required + max 200
@@ -1141,6 +1144,13 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     if (!contactDetails) {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.CONTACT_DETAILS'));
+      return;
+    }
+    
+    // Validate UAE mobile format
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    if (!uaeMobilePattern.test(contactDetails)) {
+      this.toastr.error(this.translate.instant('VALIDATION.INVALID_PHONE_FORMAT'));
       return;
     }
 
@@ -2000,7 +2010,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
             ? toISO(partner.licenseExpiryDate)
             : undefined,
           licenseNumber: partner.licenseNumber || undefined,
-          contactDetails: partner.contactDetails?.toString() || undefined,
+          contactDetails: partner.contactDetails ? `971${partner.contactDetails}` : undefined,
           jobRequirementsDetails: partner.jobRequirementsDetails || undefined,
           mainApplyServiceId: this.mainApplyServiceId || 0,
           attachments: partner.attachments || [],
@@ -2501,7 +2511,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
               ? toISO(p.licenseExpiryDate)
               : null,
             licenseNumber: p.licenseNumber ?? null,
-            contactDetails: p.contactDetails?.toString() ?? null,
+            contactDetails: p.contactDetails ? `971${p.contactDetails}` : null,
             jobRequirementsDetails: p.jobRequirementsDetails ?? null,
             mainApplyServiceId: null, // Will be set by backend
             attachments: p.attachments || [],
@@ -2795,7 +2805,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
               ? toISO(p.licenseExpiryDate)
               : null,
             licenseNumber: p.licenseNumber ?? null,
-            contactDetails: p.contactDetails?.toString() ?? null,
+            contactDetails: p.contactDetails ? `971${p.contactDetails}` : null,
             jobRequirementsDetails: p.jobRequirementsDetails ?? null,
             mainApplyServiceId: null, // Will be set by backend
             attachments: p.attachments || [],
@@ -3320,6 +3330,25 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     }
   }
 
+  onContactDetailsInput(): void {
+    const contactControl = this.partnerForm.get('contactDetails');
+    if (contactControl) {
+      let value = contactControl.value;
+      if (value && value.length > 9) {
+        value = value.substring(0, 9);
+        contactControl.setValue(value);
+      }
+    }
+  }
+
+  onContactDetailsBlur(): void {
+    const contactControl = this.partnerForm.get('contactDetails');
+    if (contactControl) {
+      contactControl.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
+  }
+
   // Read Identity Card Data
   readIdentityCardData(): void {
     const idNumber = this.firstStepForm.get('beneficiaryIdNumber')?.value;
@@ -3391,14 +3420,16 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         return '#28a745'; // Green
       case ServiceStatus.Reject:
         return '#dc3545'; // Red
-      case ServiceStatus.RejectForReason:
-        return '#fd7e14'; // Orange
+      case ServiceStatus.New:
+        return '#E6E6E6'; // Light Gray
       case ServiceStatus.Wait:
         return '#ffc107'; // Yellow/Amber
       case ServiceStatus.Received:
         return '#17a2b8'; // Cyan/Teal
       case ServiceStatus.ReturnForModifications:
         return '#6f42c1'; // Purple
+      case ServiceStatus.RejectForReason:
+        return '#fd7e14'; // Orange
       default:
         return '#6c757d'; // Gray
     }
@@ -3412,14 +3443,16 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         return 'fas fa-check-circle';
       case ServiceStatus.Reject:
         return 'fas fa-times-circle';
-      case ServiceStatus.RejectForReason:
-        return 'fas fa-exclamation-triangle';
+      case ServiceStatus.New:
+        return 'fas fa-clock'; // Same icon as Wait
       case ServiceStatus.Wait:
         return 'fas fa-clock';
       case ServiceStatus.Received:
         return 'fas fa-inbox';
       case ServiceStatus.ReturnForModifications:
         return 'fas fa-edit';
+      case ServiceStatus.RejectForReason:
+        return 'fas fa-exclamation-triangle';
       default:
         return 'fas fa-question-circle';
     }
@@ -3433,14 +3466,16 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         return 'WORKFLOW.STATUS_ACCEPT';
       case ServiceStatus.Reject:
         return 'WORKFLOW.STATUS_REJECT';
-      case ServiceStatus.RejectForReason:
-        return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
+      case ServiceStatus.New:
+        return 'WORKFLOW.STATUS_NEW';
       case ServiceStatus.Wait:
         return 'WORKFLOW.STATUS_WAITING';
       case ServiceStatus.Received:
         return 'WORKFLOW.STATUS_RECEIVED';
       case ServiceStatus.ReturnForModifications:
         return 'WORKFLOW.STATUS_RETURN_FOR_MODIFICATIONS';
+      case ServiceStatus.RejectForReason:
+        return 'WORKFLOW.STATUS_REJECT_FOR_REASON';
       default:
         return 'WORKFLOW.STATUS_UNKNOWN';
     }

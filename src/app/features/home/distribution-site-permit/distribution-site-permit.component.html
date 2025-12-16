@@ -739,18 +739,19 @@
                             </button>
 
                             <!-- Next Button -->
-                            <div *ngIf="currentTab < totalTabs" class="d-flex align-items-center">
-                                <!-- <div *ngIf="!isCurrentTabValid()" class="me-3">
-                                    <small class="text-warning">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        {{ 'VALIDATION.COMPLETE_REQUIRED_FIELDS_TO_CONTINUE' | translate }}
-                                    </small>
-                                </div> -->
+                            <div *ngIf="currentTab < totalTabs" class="d-flex align-items-center gap-2">
                                 <button type="button" class="btn" [class.btn-primary]="isCurrentTabValid()"
                                     [class.btn-outline-secondary]="!isCurrentTabValid()" (click)="nextTab()"
                                     [disabled]="!canProceedToNext()">
                                     {{ 'COMMON.NEXT' | translate }}
                                     <i class="fas" [ngClass]="isRtl ? 'fa-arrow-left' : 'fa-arrow-right'"></i>
+                                </button>
+
+                                <!-- Save as Draft button - available in all tabs -->
+                                <button type="button" class="btn btn-outline-secondary"
+                                    (click)="onSaveDraft()" [disabled]="isSaving">
+                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                    {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
                                 </button>
                             </div>
 
