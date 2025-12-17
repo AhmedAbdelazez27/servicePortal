@@ -899,6 +899,8 @@
 
     "ATTACHMENT_REQUIRED": "Attachment is required",
 
+    "PARTNER_DATA_INCOMPLETE": "Partner data is incomplete. Please fill all required fields before proceeding.",
+
     "MIN_ONE_PARTNER": "Please add at least one partner.",
 
     "DATE_RANGE": "End date must be after or equal to the start date.",
@@ -1315,6 +1317,8 @@
     "LOCATION_SELECTED": "Location selected successfully",
 
     "PARTNER_ADDED": "Partner added successfully",
+
+    "PARTNER_ADDED_AUTOMATICALLY": "Partner added automatically",
 
     "PARTNER_REMOVED": "Partner removed successfully",
 

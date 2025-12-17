@@ -908,6 +908,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   // Tab navigation
   goToTab(tab: number): void {
     if (tab >= 1 && tab <= this.totalTabs) {
+      // Auto-add partner if form is filled and valid before leaving tab 3
+      if (this.currentTab === 3 && tab !== 3) {
+        this.autoAddPartnerIfValid();
+      }
+
       this.currentTab = tab;
       this.visitedTabs.add(tab);
 
@@ -930,6 +935,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   nextTab(): void {
     if (this.currentTab < this.totalTabs) {
+      // Auto-add partner if form is filled and valid before leaving tab 3
+      if (this.currentTab === 3) {
+        this.autoAddPartnerIfValid();
+      }
+
       if (this.validateCurrentTab()) {
         this.currentTab++;
         this.visitedTabs.add(this.currentTab);
@@ -959,6 +969,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   previousTab(): void {
     if (this.currentTab > 1) {
+      // Auto-add partner if form is filled and valid before leaving tab 3
+      if (this.currentTab === 3) {
+        this.autoAddPartnerIfValid();
+      }
+
       this.currentTab--;
 
       // Re-initialize map when navigating back to the first tab
@@ -1672,6 +1687,130 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
     // Always check availability even if the location appears available on the map
     this.checkLocationAvailabilityAndLoad(location.id, 'map');
+  }
+
+  /**
+   * Check if partner form is filled and valid
+   * Returns true if all required fields are filled correctly
+   */
+  isPartnerFormFilledAndValid(): boolean {
+    const partnerType: PartnerType | null = this.partnersForm.get('type')?.value ?? null;
+
+    // Check if form has any values
+    const name = (this.partnersForm.get('name')?.value ?? '').toString().trim();
+    const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
+    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
+
+    // If no data is entered at all, return false (don't auto-add)
+    if (!name && !nameEn && !contactDetails && !partnerType) {
+      return false;
+    }
+
+    // Validate required fields
+    if (!name || name.length > 200) return false;
+    if (!nameEn) return false;
+    if (!contactDetails) return false;
+    
+    // Validate UAE mobile number format
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    if (!uaeMobilePattern.test(contactDetails)) return false;
+
+    // Validate partner type
+    const validTypes = [PartnerType.Person, PartnerType.Supplier, PartnerType.Company, PartnerType.Government];
+    if (partnerType === null || !validTypes.includes(partnerType)) return false;
+
+    // Validate license fields for Supplier/Company
+    if (partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
+      const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
+      const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
+      const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
+
+      if (!licenseIssuer || !licenseExpiry || !licenseNumber) return false;
+      if (licenseIssuer.length > 200 || licenseNumber.length > 100) return false;
+
+      // Check license attachment (2057)
+      const hasLicenseAttachment =
+        !!this.partnerSelectedFiles[partnerType]?.[2057] ||
+        (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2057 && a.fileBase64 && a.fileName) ?? false);
+      
+      if (!hasLicenseAttachment) return false;
+    }
+
+    // Validate ID attachment for Person
+    if (partnerType === PartnerType.Person) {
+      const hasIdAttachment =
+        !!this.partnerSelectedFiles[partnerType]?.[2056] ||
+        (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2056 && a.fileBase64 && a.fileName) ?? false);
+      
+      if (!hasIdAttachment) return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Auto-add partner if form is filled and valid
+   * This is called automatically when navigating away from partners tab
+   */
+  autoAddPartnerIfValid(): void {
+    // Check if form has any data entered
+    const hasAnyData = this.hasPartnerFormData();
+    
+    // Only auto-add if form is valid and has data
+    if (this.isPartnerFormFilledAndValid()) {
+      const partnerType: PartnerType | null = this.partnersForm.get('type')?.value ?? null;
+      
+      // Get form values
+      const name = (this.partnersForm.get('name')?.value ?? '').toString().trim();
+      const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
+      const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
+      const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
+      const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
+      const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
+
+      // Get partner attachments
+      const partnerAttachments = this.getPartnerAttachmentsForType(partnerType!);
+
+      // Create partner DTO
+      const newPartner: FastingTentPartnerDto = {
+        ...this.partnersForm.value,
+        name,
+        nameEn,
+        licenseIssuer,
+        licenseExpiryDate: licenseExpiry || null,
+        licenseNumber,
+        contactDetails: contactDetails.toString(),
+        mainApplyServiceId: this.mainApplyServiceId || 0,
+        attachments: partnerAttachments
+      };
+
+      // Add partner to list
+      this.partners.push(newPartner);
+      
+      // Reset form
+      this.partnersForm.reset();
+      this.showPartnerAttachments = false;
+      
+      // Show success message
+      this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED_AUTOMATICALLY'));
+    } else if (hasAnyData) {
+      // Form has data but is not valid - show warning
+      this.toastr.warning(this.translate.instant('VALIDATION.PARTNER_DATA_INCOMPLETE'));
+    }
+  }
+
+  /**
+   * Check if partner form has any data entered
+   */
+  hasPartnerFormData(): boolean {
+    const name = (this.partnersForm.get('name')?.value ?? '').toString().trim();
+    const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
+    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
+    const partnerType = this.partnersForm.get('type')?.value;
+    const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
+    const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
+
+    return !!(name || nameEn || contactDetails || partnerType || licenseIssuer || licenseNumber);
   }
 
   // Partners management
