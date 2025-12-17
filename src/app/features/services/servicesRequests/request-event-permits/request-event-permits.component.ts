@@ -1293,6 +1293,154 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     return this.partnerTypes.find(t => t.id === id)?.label ?? '';
   }
 
+  /**
+   * Check if partner form has any data filled in
+   */
+  private hasPartnerFormData(): boolean {
+    if (!this.partnerForm) return false;
+    
+    const values = this.partnerForm.getRawValue();
+    
+    // Check if any field has a value (not null, undefined, or empty string)
+    return (
+      !!values.type ||
+      (values.name?.toString().trim() || '').length > 0 ||
+      (values.nameEn?.toString().trim() || '').length > 0 ||
+      (values.licenseIssuer?.toString().trim() || '').length > 0 ||
+      (values.licenseExpiryDate?.toString().trim() || '').length > 0 ||
+      (values.licenseNumber?.toString().trim() || '').length > 0 ||
+      (values.contactDetails?.toString().trim() || '').length > 0 ||
+      (values.jobRequirementsDetails?.toString().trim() || '').length > 0
+    );
+  }
+
+  /**
+   * Validate partner form data
+   */
+  private validatePartnerForm(): boolean {
+    const partnerType: PartnerType | null = this.partnerForm.get('type')?.value ?? null;
+
+    // Prepare field values
+    const name = (this.partnerForm.get('name')?.value ?? '').toString().trim();
+    const nameEn = (this.partnerForm.get('nameEn')?.value ?? '').toString().trim();
+    const licenseIssuer = (this.partnerForm.get('licenseIssuer')?.value ?? '').toString().trim();
+    const licenseExpiry = (this.partnerForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
+    const licenseNumber = (this.partnerForm.get('licenseNumber')?.value ?? '').toString().trim();
+    const contactDetails = (this.partnerForm.get('contactDetails')?.value ?? '').toString().trim();
+
+    // Backend rules: Name required + max 200
+    if (!name) {
+      return false;
+    }
+    if (!nameEn) {
+      return false;
+    }
+    if (name.length > 200) {
+      return false;
+    }
+
+    if (!contactDetails) {
+      return false;
+    }
+    
+    // Validate UAE mobile format
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    if (!uaeMobilePattern.test(contactDetails)) {
+      return false;
+    }
+
+    // Type: must be valid from enum
+    const validTypes = [PartnerType.Person, PartnerType.Supplier, PartnerType.Company, PartnerType.Government];
+    if (partnerType === null || !validTypes.includes(partnerType)) {
+      return false;
+    }
+
+    // LicenseIssuer: max 200
+    if (licenseIssuer && licenseIssuer.length > 200) {
+      return false;
+    }
+
+    // LicenseNumber: max 100
+    if (licenseNumber && licenseNumber.length > 100) {
+      return false;
+    }
+
+    // Business rules: Supplier/Company requires license data + license attachment
+    if (partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
+      if (!licenseIssuer || !licenseExpiry || !licenseNumber) {
+        return false;
+      }
+    }
+
+    // Check required attachments
+    const partnerAttachType = AttachmentsConfigType.Partner;
+    if (this.hasMissingRequiredAttachments(partnerAttachType)) {
+      return false;
+    }
+
+    const v = this.partnerForm.getRawValue();
+    const partnerAttachments = this.getValidAttachments(partnerAttachType).map(a => ({
+      ...a,
+      masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
+    }));
+
+    if (partnerType === PartnerType.Person || partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
+      if (!partnerAttachments.length) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Auto-add partner if form has data before navigating away from partners step
+   */
+  private tryAutoAddPartner(): void {
+    // Only try to add if we have data in the form
+    if (!this.hasPartnerFormData()) {
+      return;
+    }
+
+    // Validate the partner form
+    if (!this.validatePartnerForm()) {
+      const message = this.translate.instant('VALIDATION.PARTNER_DATA_INCOMPLETE') || 
+                      'Please complete or correct the partner information, or clear the form to continue.';
+      this.toastr.warning(message, this.translate.instant('COMMON.WARNING') || 'Warning');
+      return;
+    }
+
+    // If valid, add the partner automatically
+    const partnerAttachType = AttachmentsConfigType.Partner;
+    const v = this.partnerForm.getRawValue();
+
+    const partnerAttachments = this.getValidAttachments(partnerAttachType).map(a => ({
+      ...a,
+      masterId: a.masterId || Number(v.mainApplyServiceId ?? 0)
+    }));
+
+    this.partners.push({
+      name: v.name!,
+      nameEn: v.nameEn!,
+      type: v.type!,
+      licenseIssuer: v.licenseIssuer!,
+      licenseExpiryDate: v.licenseExpiryDate!,
+      licenseNumber: v.licenseNumber!,
+      contactDetails: v.contactDetails ?? null,
+      jobRequirementsDetails: v.jobRequirementsDetails ?? null,
+      mainApplyServiceId: v.mainApplyServiceId ?? null,
+      attachments: partnerAttachments,
+    });
+    
+    this.resetAttachments(partnerAttachType);
+    this.partnerForm.reset();
+    this.showPartnerAttachments = false;
+    
+    const successMessage = this.translate.instant('SUCCESS.PARTNER_ADDED_AUTOMATICALLY') || 
+                           'Partner added automatically.';
+    this.toastr.success(successMessage);
+  }
+
 
   ////////////////////////////////////////////// start attachment functions
 
@@ -1593,6 +1741,10 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
   // Navigation methods
   nextStep(): void {
+    // Auto-add partner if leaving partners step (step 2)
+    if (this.currentStep === 2) {
+      this.tryAutoAddPartner();
+    }
 
     if (this.currentStep < this.totalSteps) {
       // Only validate if we're not in loading state and form is ready
@@ -1607,12 +1759,22 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   }
 
   previousStep(): void {
+    // Auto-add partner if leaving partners step (step 2)
+    if (this.currentStep === 2) {
+      this.tryAutoAddPartner();
+    }
+
     if (this.currentStep > 1) {
       this.currentStep--;
     }
   }
 
   goToStep(step: number): void {
+    // Auto-add partner if leaving partners step (step 2) and going to different step
+    if (this.currentStep === 2 && step !== 2) {
+      this.tryAutoAddPartner();
+    }
+
     if (step >= 1 && step <= this.totalSteps) {
       this.currentStep = step;
     }
@@ -2903,6 +3065,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   }
 
   public handleNextClick(): void {
+    // Auto-add partner if leaving partners step (step 2)
+    if (this.currentStep === 2) {
+      this.tryAutoAddPartner();
+    }
+
     this.submitted = true;
     this.firstStepForm.markAllAsTouched();
 

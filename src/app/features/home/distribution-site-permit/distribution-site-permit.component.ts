@@ -965,6 +965,11 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
 
   // Tab navigation
   goToTab(tab: number): void {
+    // Auto-add partner if leaving partners tab (tab 3) and going to different tab
+    if (this.currentTab === 3 && tab !== 3) {
+      this.tryAutoAddPartner();
+    }
+
     if (tab >= 1 && tab <= this.totalTabs) {
       this.currentTab = tab;
       this.visitedTabs.add(tab);
@@ -979,6 +984,11 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   }
 
   nextTab(): void {
+    // Auto-add partner if leaving partners tab (tab 3)
+    if (this.currentTab === 3) {
+      this.tryAutoAddPartner();
+    }
+
     if (this.currentTab < this.totalTabs) {
       // Validate current tab and show error messages if validation fails
       if (this.validateCurrentTab()) {
@@ -1009,6 +1019,11 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   }
 
   previousTab(): void {
+    // Auto-add partner if leaving partners tab (tab 3)
+    if (this.currentTab === 3) {
+      this.tryAutoAddPartner();
+    }
+
     if (this.currentTab > 1) {
       this.currentTab--;
 
@@ -1353,6 +1368,157 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
   }
 
   // Partners management
+  /**
+   * Check if partner form has any data filled in
+   */
+  private hasPartnerFormData(): boolean {
+    if (!this.partnersForm) return false;
+    
+    const values = this.partnersForm.getRawValue();
+    
+    // Check if any field has a value (not null, undefined, or empty string)
+    return (
+      !!values.type ||
+      (values.name?.toString().trim() || '').length > 0 ||
+      (values.nameEn?.toString().trim() || '').length > 0 ||
+      (values.licenseIssuer?.toString().trim() || '').length > 0 ||
+      (values.licenseExpiryDate?.toString().trim() || '').length > 0 ||
+      (values.licenseNumber?.toString().trim() || '').length > 0 ||
+      (values.contactDetails?.toString().trim() || '').length > 0 ||
+      (values.jobRequirementsDetails?.toString().trim() || '').length > 0
+    );
+  }
+
+  /**
+   * Validate partner form data
+   */
+  private validatePartnerForm(): boolean {
+    const partnerType: PartnerType | null = this.partnersForm.get('type')?.value ?? null;
+
+    // Prepare field values
+    const name = (this.partnersForm.get('name')?.value ?? '').toString().trim();
+    const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
+    const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
+    const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
+    const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
+    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
+
+    // Backend rules: Name required + max 200
+    if (!name) {
+      return false;
+    }
+    if (!nameEn) {
+      return false;
+    }
+    if (name.length > 200) {
+      return false;
+    }
+
+    if (!contactDetails) {
+      return false;
+    }
+    
+    // Validate UAE mobile format
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    if (!uaeMobilePattern.test(contactDetails)) {
+      return false;
+    }
+
+    // Type: must be valid from enum
+    const validTypes = [PartnerType.Person, PartnerType.Supplier, PartnerType.Company, PartnerType.Government];
+    if (partnerType === null || !validTypes.includes(partnerType)) {
+      return false;
+    }
+
+    // LicenseIssuer: max 200
+    if (licenseIssuer && licenseIssuer.length > 200) {
+      return false;
+    }
+
+    // LicenseNumber: max 100
+    if (licenseNumber && licenseNumber.length > 100) {
+      return false;
+    }
+
+    // Business rules: Supplier/Company requires license data + license attachment
+    if (partnerType === PartnerType.Supplier || partnerType === PartnerType.Company) {
+      if (!licenseIssuer || !licenseExpiry || !licenseNumber) {
+        return false;
+      }
+
+      // Check license attachment
+      const hasLicenseAttachment =
+        !!this.partnerSelectedFiles[partnerType]?.[2057] ||
+        (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2057 && a.fileBase64 && a.fileName) ?? false);
+
+      if (!hasLicenseAttachment) {
+        return false;
+      }
+    }
+
+    // Person requires ID attachment
+    if (partnerType === PartnerType.Person) {
+      const hasIdAttachment =
+        !!this.partnerSelectedFiles[partnerType]?.[2056] ||
+        (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2056 && a.fileBase64 && a.fileName) ?? false);
+
+      if (!hasIdAttachment) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Auto-add partner if form has data before navigating away from partners tab
+   */
+  private tryAutoAddPartner(): void {
+    // Only try to add if we have data in the form
+    if (!this.hasPartnerFormData()) {
+      return;
+    }
+
+    // Validate the partner form
+    if (!this.validatePartnerForm()) {
+      const message = this.translate.instant('VALIDATION.PARTNER_DATA_INCOMPLETE') || 
+                      'Please complete or correct the partner information, or clear the form to continue.';
+      this.toastr.warning(message, this.translate.instant('COMMON.WARNING') || 'Warning');
+      return;
+    }
+
+    // If valid, add the partner automatically
+    const partnerType: PartnerType = this.partnersForm.get('type')?.value;
+    const name = (this.partnersForm.get('name')?.value ?? '').toString().trim();
+    const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
+    const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
+    const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
+    const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
+    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
+
+    const partnerAttachments = this.getPartnerAttachmentsForType(partnerType);
+
+    const newPartner: DistributionSitePartnerDto = {
+      ...this.partnersForm.value,
+      name,
+      nameEn,
+      licenseIssuer,
+      licenseExpiryDate: licenseExpiry || undefined,
+      licenseNumber,
+      contactDetails: contactDetails.toString(),
+      mainApplyServiceId: 0,
+      attachments: partnerAttachments
+    };
+
+    this.partners.push(newPartner);
+    this.partnersForm.reset();
+    this.showPartnerAttachments = false;
+    
+    const successMessage = this.translate.instant('SUCCESS.PARTNER_ADDED_AUTOMATICALLY') || 
+                           'Partner added automatically.';
+    this.toastr.success(successMessage);
+  }
+
 addPartner(): void {
     this.partnersForm.markAllAsTouched();   // <-- علشان تظهر رسائل الأخطاء
     this.cdr.detectChanges();
