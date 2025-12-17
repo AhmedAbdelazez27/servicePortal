@@ -54,6 +54,7 @@ import {
   mainApplyServiceDto,
 } from '../../../core/dtos/mainApplyService/mainApplyService.dto';
 import { environment } from '../../../../environments/environment';
+import { notBeforeTodayFor } from '../../../shared/customValidators/date.validators';
 
 @Component({
   selector: 'app-fasting-tent-request',
@@ -206,8 +207,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       councilApprovalDate: ['', Validators.required],
       serviceType: [ServiceType.TentPermission],
       // Date fields moved from dateDetailsForm
-      startDate: ['', [Validators.required, this.startDateNotPastValidator()]],
+      startDate: ['', [Validators.required]],
       endDate: ['', [Validators.required, this.endDateAfterStartDateValidator()]],
+    }, {
+      validators: [
+        notBeforeTodayFor('startDate')
+      ]
     });
 
     this.supervisorForm = this.fb.group({
@@ -222,7 +227,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       licenseIssuer: ['', [Validators.maxLength(200)]],
       licenseExpiryDate: [null],
       licenseNumber: ['', [Validators.maxLength(100)]],
-      contactDetails: this.fb.control(null, { validators: [Validators.required] }),
+      contactDetails: ['', [Validators.required, this.uaeMobileValidator.bind(this)]],
       nameEn: ['', [Validators.required, Validators.maxLength(200)]],
       jobRequirementsDetails: [''],
     });
@@ -438,7 +443,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
                   : new Date(p.licenseExpiryDate).toISOString().split('T')[0])
                 : '',
               licenseNumber: p.licenseNumber || '',
-              contactDetails: p.contactDetails || '',
+              contactDetails: p.contactDetails?.replace('971', '') || '',
               jobRequirementsDetails: p.jobRequirementsDetails || '',
               mainApplyServiceId: p.mainApplyServiceId || this.mainApplyServiceId || 0,
               attachments: p.attachments || [],
@@ -1682,7 +1687,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
     const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
-    const contactDetails = +(this.partnersForm.get('contactDetails')?.value ?? null);
+    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
     const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
 
     // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
@@ -1695,8 +1700,15 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.NAME_EN'));
       return;
     }
-      if (!contactDetails) {
-      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.CONTACT_DETAILS'));
+    if (!contactDetails) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS'));
+      return;
+    }
+    
+    // Validate UAE mobile number format (9 digits starting with 5)
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    if (!uaeMobilePattern.test(contactDetails)) {
+      this.toastr.error(this.translate.instant('VALIDATION.INVALID_PHONE_FORMAT'));
       return;
     }
     if (name.length > 200) {
@@ -2324,7 +2336,14 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       const normalizedSupervisorData = this.normalizeEmptyStrings(supervisorData, ['supervisorMobile']);
 
       // Normalize partners array (convert empty strings to 'NULL')
-      const normalizedPartners: FastingTentPartnerDto[] = this.partners.map(p => this.normalizeEmptyStrings(p, ['contactDetails']));
+      // Add 971 prefix to contactDetails before sending (like supervisorMobile)
+      const normalizedPartners: FastingTentPartnerDto[] = this.partners.map(p => {
+        const normalized = this.normalizeEmptyStrings(p, ['contactDetails']);
+        if (normalized.contactDetails) {
+          normalized.contactDetails = `971${normalized.contactDetails}`;
+        }
+        return normalized;
+      });
 
       // Determine if this is update or create
       const isUpdateMode = !!this.fastingTentRequestId && !!this.mainApplyServiceId;
@@ -2729,6 +2748,25 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (mobileControl && mobileControl.value) {
       // Trigger validation on blur
       mobileControl.markAsTouched();
+      this.cdr.detectChanges();
+    }
+  }
+
+  // Handle contact details input event for real-time validation
+  onContactDetailsInput(): void {
+    const contactControl = this.partnersForm.get('contactDetails');
+    if (contactControl && contactControl.value) {
+      // Trigger validation as user types
+      contactControl.markAsTouched();
+    }
+  }
+
+  // Handle contact details blur event to trigger validation
+  onContactDetailsBlur(): void {
+    const contactControl = this.partnersForm.get('contactDetails');
+    if (contactControl && contactControl.value) {
+      // Trigger validation on blur
+      contactControl.markAsTouched();
       this.cdr.detectChanges();
     }
   }

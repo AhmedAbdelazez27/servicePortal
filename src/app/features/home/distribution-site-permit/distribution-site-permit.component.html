@@ -199,13 +199,14 @@
                                         <label class="form-label">{{ 'DIST_SITE.START_DATE' | translate }} <span
                                                 class="text-danger">*</span></label>
                                         <input type="date" class="form-control" formControlName="startDate"
-                                            [class.is-invalid]="isFieldInvalid('startDate')"
-                                            [class.is-valid]="isFieldValid('startDate')">
-                                        <div *ngIf="isFieldInvalid('startDate')" class="invalid-feedback">
+                                            [class.is-invalid]="(mainInfoForm.get('startDate')?.invalid && (mainInfoForm.get('startDate')?.touched || submitted)) || mainInfoForm.hasError('startBeforeToday')"
+                                            [class.is-valid]="mainInfoForm.get('startDate')?.valid && (mainInfoForm.get('startDate')?.touched || submitted)">
+                                        <div *ngIf="mainInfoForm.get('startDate')?.invalid && (mainInfoForm.get('startDate')?.touched || submitted) && mainInfoForm.get('startDate')?.hasError('required')"
+                                            class="invalid-feedback">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
-                                        <div *ngIf="isStartDatePast()" class="text-danger small mt-1">
-                                            {{ 'VALIDATION.START_DATE_PAST' | translate }}
+                                        <div style="color:red" *ngIf="mainInfoForm.hasError('startBeforeToday')">
+                                            {{ 'VALIDATION.START_NOT_BEFORE_TODAY' | translate }}
                                         </div>
                                     </div>
                                     <div class="col-xl-6 mb-4">
@@ -323,7 +324,7 @@
                                             <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('required')">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                             </div>
-                                            <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('pattern')">
+                                            <div *ngIf="mainInfoForm.get('supervisorMobile')?.hasError('invalidUaeMobile')">
                                                 {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
                                             </div>
                                         </div>
@@ -461,16 +462,27 @@
                                                         {{ 'FASTING_TENT_REQ.CONTACT_DETAILS' | translate }}
                                                         <span class="text-danger">*</span>
                                                     </label>
-                                                    <input type="number" class="form-control"
-                                                        formControlName="contactDetails">
-                                                    <!-- <div class="form-text text-danger"
-                                                        *ngIf="partnersForm.get('contactDetails')?.touched && partnersForm.get('contactDetails')?.errors?.['maxlength']">
-                                                        {{ 'VALIDATION.MAX_LENGTH_EXCEEDED' | translate }}{{' (=
-                                                        1000)'}}
-                                                    </div> -->
-                                                    <div class="invalid-feedback"
-                                                        *ngIf="partnersForm.get('contactDetails')?.touched && partnersForm.get('contactDetails')?.hasError('required')">
-                                                        {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                                    <!-- Mobile Number Input with UAE Flag and 971 prefix -->
+                                                    <div class="mobile-input-container" style="border : none !important;"
+                                                        [class.is-invalid]="(submitted || partnersForm.get('contactDetails')?.touched) && partnersForm.get('contactDetails')?.errors">
+                                                        <div class="mobile-prefix-container">
+                                                            <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png"
+                                                                alt="UAE Flag" class="uae-flag-image">
+                                                            <span class="mobile-prefix">971</span>
+                                                        </div>
+                                                        <input type="tel" class="form-control mobile-number-input"
+                                                            formControlName="contactDetails" placeholder="5**********" maxlength="9"
+                                                            (keypress)="restrictMobileInput($event)"
+                                                            (input)="onContactDetailsInput()" (blur)="onContactDetailsBlur()">
+                                                    </div>
+                                                    <div *ngIf="(submitted || partnersForm.get('contactDetails')?.touched) && partnersForm.get('contactDetails')?.errors"
+                                                        class="invalid-feedback">
+                                                        <div *ngIf="partnersForm.get('contactDetails')?.hasError('required')">
+                                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
+                                                        </div>
+                                                        <div *ngIf="partnersForm.get('contactDetails')?.hasError('invalidUaeMobile')">
+                                                            {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
+                                                        </div>
                                                     </div>
                                                 </div>
 

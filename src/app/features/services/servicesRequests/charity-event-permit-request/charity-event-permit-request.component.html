@@ -135,12 +135,12 @@
                                                 class="text-danger">*</span>
                                         </label>
                                         <input type="datetime-local" class="form-control" formControlName="startDate"
-                                            [class.is-invalid]="(firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.invalid) || firstStepForm.hasError('dateRange')">
+                                            [class.is-invalid]="(firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.invalid) || firstStepForm.hasError('dateRange') || firstStepForm.hasError('startBeforeToday')">
                                         <div class="invalid-feedback"
-                                            *ngIf="firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.errors">
+                                            *ngIf="firstStepForm.get('startDate')?.touched && firstStepForm.get('startDate')?.errors && firstStepForm.get('startDate')?.hasError('required')">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
-                                        <div style="color:red" *ngIf=" firstStepForm.hasError('startBeforeToday')">
+                                        <div style="color:red" *ngIf="firstStepForm.hasError('startBeforeToday')">
                                             {{ 'VALIDATION.START_NOT_BEFORE_TODAY' | translate }}
                                         </div>
                                     </div>
@@ -685,12 +685,12 @@
                                                 class="text-danger">*</span>
                                         </label>
                                         <input type="datetime-local" class="form-control" formControlName="startDate"
-                                            [class.is-invalid]="(advertForm.get('startDate')?.touched && advertForm.get('startDate')?.invalid) || advertForm.hasError('dateRange')">
+                                            [class.is-invalid]="(advertForm.get('startDate')?.touched && advertForm.get('startDate')?.invalid) || advertForm.hasError('dateRange') || advertForm.hasError('startBeforeToday')">
                                         <div class="invalid-feedback"
-                                            *ngIf="advertForm.get('startDate')?.touched && advertForm.get('startDate')?.errors">
+                                            *ngIf="advertForm.get('startDate')?.touched && advertForm.get('startDate')?.errors && advertForm.get('startDate')?.hasError('required')">
                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
-                                        <div style="color:red" *ngIf=" advertForm.hasError('startBeforeToday')">
+                                        <div style="color:red" *ngIf="advertForm.hasError('startBeforeToday')">
                                             {{ 'VALIDATION.START_NOT_BEFORE_TODAY' | translate }}
                                         </div>
                                     </div>

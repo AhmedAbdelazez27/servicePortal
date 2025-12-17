@@ -53,6 +53,7 @@ import {
   mainApplyServiceDto,
 } from '../../../core/dtos/mainApplyService/mainApplyService.dto';
 import { environment } from '../../../../environments/environment';
+import { notBeforeTodayFor } from '../../../shared/customValidators/date.validators';
 
 @Component({
   selector: 'app-distribution-site-permit',
@@ -191,7 +192,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       streetName: ['', ],
       // groundNo: [''],
       address: [''],
-      startDate: ['', [Validators.required, this.startDateNotPastValidator()]],
+      startDate: ['', [Validators.required]],
       endDate: ['', [Validators.required, this.endDateAfterStartDateValidator()]],
       notes: [''],
       locationId: [null],
@@ -202,6 +203,10 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
 
       serviceType: [ServiceType.DistributionSitePermitApplication],
       distributionSiteCoordinators: ['', Validators.required], // renamed and only this field
+    }, {
+      validators: [
+        notBeforeTodayFor('startDate')
+      ]
     });
 
   this.partnersForm = this.fb.group({
@@ -210,7 +215,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
       licenseIssuer: ['', [Validators.maxLength(200)]],
       licenseExpiryDate: [null],
       licenseNumber: ['', [Validators.maxLength(100)]],
-      contactDetails: this.fb.control(null, { validators: [Validators.required] }),
+      contactDetails: ['', [Validators.required, this.uaeMobileValidator.bind(this)]],
       nameEn: ['', [Validators.required, Validators.maxLength(200)]],
       jobRequirementsDetails: [''],
     });
@@ -472,7 +477,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
                     : new Date(p.licenseExpiryDate).toISOString().split('T')[0])
                 : '',
               licenseNumber: p.licenseNumber || '',
-              contactDetails: p.contactDetails || '',
+              contactDetails: p.contactDetails?.replace('971', '') || '',
               jobRequirementsDetails: p.jobRequirementsDetails || '',
               mainApplyServiceId: p.mainApplyServiceId || this.mainApplyServiceId || 0,
               attachments: p.attachments || [],
@@ -780,7 +785,7 @@ export class DistributionSitePermitComponent implements OnInit, OnDestroy {
           licenseIssuer: partner.licenseIssuer,
           licenseExpiryDate: partner.licenseExpiryDate,
           licenseNumber: partner.licenseNumber,
-          contactDetails: partner.contactDetails,
+          contactDetails: partner.contactDetails ? `971${partner.contactDetails}` : undefined,
           jobRequirementsDetails: partner.jobRequirementsDetails,
           mainApplyServiceId: this.mainApplyServiceId || 0,
           attachments: partner.attachments,
@@ -1359,7 +1364,7 @@ addPartner(): void {
     const licenseIssuer = (this.partnersForm.get('licenseIssuer')?.value ?? '').toString().trim();
     const licenseExpiry = (this.partnersForm.get('licenseExpiryDate')?.value ?? '').toString().trim();
     const licenseNumber = (this.partnersForm.get('licenseNumber')?.value ?? '').toString().trim();
-   const contactDetails = +(this.partnersForm.get('contactDetails')?.value ?? null);
+    const contactDetails = (this.partnersForm.get('contactDetails')?.value ?? '').toString().trim();
     const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
     // ====== قواعد الـ backend (lengths + required لاسم ونوع) ======
     // Name: required + max 200
@@ -1371,8 +1376,15 @@ addPartner(): void {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.NAME_EN'));
       return;
     }
-      if (!contactDetails) {
-      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('PARTNERS.CONTACT_DETAILS'));
+    if (!contactDetails) {
+      this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS'));
+      return;
+    }
+    
+    // Validate UAE mobile number format (9 digits starting with 5)
+    const uaeMobilePattern = /^5[0-9]{8}$/;
+    if (!uaeMobilePattern.test(contactDetails)) {
+      this.toastr.error(this.translate.instant('VALIDATION.INVALID_PHONE_FORMAT'));
       return;
     }
     if (name.length > 200) {
@@ -1858,7 +1870,10 @@ addPartner(): void {
           serviceType: ServiceType.DistributionSitePermitApplication,
           distributionSiteCoordinators: formData.distributionSiteCoordinators,
           attachments: validAttachments,
-          partners: this.partners,
+          partners: this.partners.map(p => ({
+            ...p,
+            contactDetails: p.contactDetails ? `971${p.contactDetails}` : undefined
+          })),
           isDraft: isDraft, // Set draft flag based on parameter
         };
 
@@ -2082,7 +2097,10 @@ addPartner(): void {
           serviceType: ServiceType.DistributionSitePermitApplication,
           distributionSiteCoordinators: normalizedFormData.distributionSiteCoordinators,
           attachments: validAttachments,
-          partners: this.partners,
+          partners: this.partners.map(p => ({
+            ...p,
+            contactDetails: p.contactDetails ? `971${p.contactDetails}` : undefined
+          })),
           isDraft: isDraft, // Set draft flag based on parameter
         };
 
@@ -2409,6 +2427,25 @@ addPartner(): void {
     if (mobileControl && mobileControl.value) {
       // Trigger validation on blur
       mobileControl.markAsTouched();
+      this.cdr.detectChanges();
+    }
+  }
+
+  // Handle contact details input event for real-time validation
+  onContactDetailsInput(): void {
+    const contactControl = this.partnersForm.get('contactDetails');
+    if (contactControl && contactControl.value) {
+      // Trigger validation as user types
+      contactControl.markAsTouched();
+    }
+  }
+
+  // Handle contact details blur event to trigger validation
+  onContactDetailsBlur(): void {
+    const contactControl = this.partnersForm.get('contactDetails');
+    if (contactControl && contactControl.value) {
+      // Trigger validation on blur
+      contactControl.markAsTouched();
       this.cdr.detectChanges();
     }
   }
