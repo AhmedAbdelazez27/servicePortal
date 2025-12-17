@@ -681,7 +681,7 @@
                             <!-- Validation Status Indicator -->
                             <div class="alert" [class.alert-success]="isTabCompleted(4)"
                                 [class.alert-warning]="!isTabCompleted(4)" class="mb-3">
-                                <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong>
+                                <!-- <strong>{{ 'VALIDATION.TAB_STATUS' | translate }}:</strong> -->
                                 <span *ngIf="isTabCompleted(4)" class="">{{
                                     'VALIDATION.ALL_REQUIRED_ATTACHMENTS_UPLOADED' | translate }}</span>
                                 <span *ngIf="!isTabCompleted(4)" class="gold"> {{
