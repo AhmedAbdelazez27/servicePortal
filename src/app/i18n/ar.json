@@ -429,6 +429,7 @@
     "STEP3_TITLE": "الأدلة",
     "STEP4_TITLE": "المبررات",
     "STEP5_TITLE": "المرفقات",
+    "ATTACHMENTS_DESC": "رفع المستندات المطلوبة",
     "MAIN_INFO": "المعلومات الأساسية",
     "REQUEST_NO": "رقم الطلب",
     "REQUEST_DATE": "تاريخ الطلب",
@@ -1323,6 +1324,9 @@
   },
   "CHARITY_EVENT": {
     "STEP1_TITLE": "البيانات الأساسية",
+    "STEP1_DESC": "معلومات الفعالية الأساسية",
+    "PARTNERS_DESC": "إضافة الشركاء (اختياري)",
+    "ADVERTISEMENT_DESC": "إضافة الإعلانات (اختياري)",
     "REQUEST_NO": "رقم الطلب",
     "REQUEST_DATE": "تاريخ الطلب",
     "EVENT_NAME": "اسم الحملة",
@@ -1650,6 +1654,7 @@
   "REQUEST_EVENT_PERMIT": {
     "TITLE": "تصريح مشروع / حملة تبرع",
     "VIEW_TITLE": "عرض طلب تصريح فعالية / حملة تبرع",
+    "STEP1_DESC": "معلومات الطلب الأساسية",
     "BASIC": "المعلومات الأساسية",
     "REQUEST_DETAILS": "تفاصيل الطلب",
     "DATES_TIMES": "التواريخ والأوقات",

@@ -1165,6 +1165,7 @@
     "STEP4_TITLE": "Justifications",
 
     "STEP5_TITLE": "Attachments",
+    "ATTACHMENTS_DESC": "Upload required documents",
 
     "MAIN_INFO": "Main Information",
 
@@ -3030,6 +3031,12 @@
 
     "STEP1_TITLE": "Main Information",
 
+    "STEP1_DESC": "Basic event information",
+
+    "PARTNERS_DESC": "Add partners (optional)",
+
+    "ADVERTISEMENT_DESC": "Add advertisements (optional)",
+
     "REQUEST_NO": "Request No",
 
     "REQUEST_DATE": "Request Date",
@@ -3673,6 +3680,8 @@
     "TITLE": "Project/Campaign Donation Statement",
 
     "VIEW_TITLE": "View Event/Donation Campaign Permit Request",
+
+    "STEP1_DESC": "Basic request information",
 
     "BASIC": "Basic Information",
 

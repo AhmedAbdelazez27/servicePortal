@@ -138,6 +138,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
   currentStep: number = 1;
   totalSteps: number = 4;
+  visitedSteps: Set<number> = new Set([1]);
 
   // Forms
   firstStepForm!: FormGroup;
@@ -1751,9 +1752,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       if (!this.isLoading && this.firstStepForm && this.isFormInitialized) {
         if (this.validateCurrentStep()) {
           this.currentStep++;
+          this.visitedSteps.add(this.currentStep);
         }
       } else {
         this.currentStep++;
+        this.visitedSteps.add(this.currentStep);
       }
     }
   }
@@ -1766,6 +1769,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     if (this.currentStep > 1) {
       this.currentStep--;
+      this.visitedSteps.add(this.currentStep);
     }
   }
 
@@ -1777,6 +1781,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
 
     if (step >= 1 && step <= this.totalSteps) {
       this.currentStep = step;
+      this.visitedSteps.add(step);
     }
   }
 
@@ -3056,6 +3061,58 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     return this.currentStep === step;
   }
 
+  isStepCompleted(step: number): boolean {
+    switch (step) {
+      case 1:
+        return this.validateStep1();
+      case 2:
+        // Partners step is optional, consider it completed if visited
+        return this.visitedSteps.has(2);
+      case 3:
+        // Advertisement step is optional, consider it completed if visited
+        return this.visitedSteps.has(3);
+      case 4:
+        // Attachments step - check if all mandatory attachments are uploaded
+        // Only consider completed if configs are loaded and all mandatory attachments are present
+        const mainAttachType = AttachmentsConfigType.RequestAnEventOrDonationCampaignPermit;
+        const state = this.ensureState(mainAttachType);
+        
+        // If configs are not loaded yet, don't consider it completed
+        if (!state.configs || state.configs.length === 0) {
+          return false;
+        }
+        
+        // Check each mandatory config
+        const mandatoryConfigs = state.configs.filter(c => c.mendatory === true);
+        
+        // If no mandatory configs, consider it completed if visited
+        if (mandatoryConfigs.length === 0) {
+          return this.visitedSteps.has(4);
+        }
+        
+        // Check if all mandatory attachments are present (either new file, existing attachment, or in items)
+        return mandatoryConfigs.every(config => {
+          const configId = config.id!;
+          // Check if there's a selected file
+          if (state.selected[configId]) {
+            return true;
+          }
+          // Check if there's an existing attachment
+          if (this.existingAttachments[configId]) {
+            return true;
+          }
+          // Check if there's a file in items with base64
+          const item = state.items.find(x => x.attConfigID === configId);
+          if (item && item.fileBase64 && item.fileName) {
+            return true;
+          }
+          return false;
+        });
+      default:
+        return false;
+    }
+  }
+
   canProceedToNext(): boolean {
     // Only validate if user is actively trying to proceed, not during initial load
     if (this.isLoading || !this.firstStepForm || !this.isFormInitialized) {
@@ -3079,11 +3136,13 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     if (this.currentStep === 1) {
       if (isValidStep1) {
         this.currentStep++;
+        this.visitedSteps.add(this.currentStep);
       } else {
         this.toastr.error(this.translate.instant('VALIDATION.FORM_INVALID'));
       }
     } else {
       this.currentStep++;
+      this.visitedSteps.add(this.currentStep);
     }
   }
 

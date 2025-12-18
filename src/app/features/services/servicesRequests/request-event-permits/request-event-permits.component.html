@@ -21,67 +21,90 @@
         <div class="col-lg-3 mb-4">
           <div class="main-container h-100">
             <!-- Step 1 -->
-            <div class="d-flex gap-3">
-              <div class="step-container" [class.active]="isStepActive(1)">
+            <div class="step-navigation-item">
+              <div class="step-container" [class.active]="isStepActive(1)"
+                [class.completed]="isStepCompleted(1)"
+                [class.invalid]="currentStep > 1 && !isStepCompleted(1)">
                 <div class="step-bg"></div>
-                <div class="step">1</div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
-                  <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5"
-                    stroke-linecap="round" />
-                </svg>
+                <div class="step">
+                  <span *ngIf="!isStepCompleted(1)">1</span>
+                  <i *ngIf="isStepCompleted(1)" class="fas fa-check"></i>
+                </div>
               </div>
-              <span class="step-title" (click)="goToStep(1)">
-                {{
-                "REQUEST_PLAINT.STEP1_TITLE" | translate
-                }}
-              </span>
+              <div class="connecting-line"></div>
+              <div class="step-content-wrapper">
+                <span class="step-title" (click)="goToStep(1)" [class.text-success]="isStepCompleted(1)"
+                  [class.text-danger]="currentStep > 1 && !isStepCompleted(1)"
+                  [class.text-primary]="isStepActive(1)">
+                  {{ 'REQUEST_PLAINT.STEP1_TITLE' | translate }}
+                </span>
+                <small class="d-block text-muted step-description">{{ 'REQUEST_EVENT_PERMIT.STEP1_DESC' | translate }}</small>
+              </div>
             </div>
 
             <!-- Step 2 -->
-            <div class="d-flex gap-3">
-              <div class="step-container" [class.active]="isStepActive(2)">
+            <div class="step-navigation-item">
+              <div class="step-container" [class.active]="isStepActive(2)"
+                [class.completed]="isStepCompleted(2)"
+                [class.invalid]="currentStep > 2 && !isStepCompleted(2)">
                 <div class="step-bg"></div>
-                <div class="step">2</div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
-                  <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5"
-                    stroke-linecap="round" />
-                </svg>
+                <div class="step">
+                  <span *ngIf="!isStepCompleted(2)">2</span>
+                  <i *ngIf="isStepCompleted(2)" class="fas fa-check"></i>
+                </div>
               </div>
-              <span class="step-title" (click)="goToStep(2)">
-                {{
-                "CHARITY_EVENT.PARTNERS_TITLE" | translate
-                }}
-              </span>
+              <div class="connecting-line"></div>
+              <div class="step-content-wrapper">
+                <span class="step-title" (click)="goToStep(2)" [class.text-success]="isStepCompleted(2)"
+                  [class.text-danger]="currentStep > 2 && !isStepCompleted(2)"
+                  [class.text-primary]="isStepActive(2)">
+                  {{ 'CHARITY_EVENT.PARTNERS_TITLE' | translate }}
+                </span>
+                <small class="d-block text-muted step-description">{{ 'CHARITY_EVENT.PARTNERS_DESC' | translate }}</small>
+              </div>
             </div>
 
             <!-- Step 3 -->
-            <div class="d-flex gap-3">
-              <div class="step-container" [class.active]="isStepActive(3)">
+            <div class="step-navigation-item">
+              <div class="step-container" [class.active]="isStepActive(3)"
+                [class.completed]="isStepCompleted(3)"
+                [class.invalid]="currentStep > 3 && !isStepCompleted(3)">
                 <div class="step-bg"></div>
-                <div class="step">3</div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="2" height="48" viewBox="0 0 2 48" fill="none">
-                  <line x1="0.75" y1="0.75" x2="0.75" y2="47.25" stroke="#8D734D" stroke-width="1.5"
-                    stroke-linecap="round" />
-                </svg>
+                <div class="step">
+                  <span *ngIf="!isStepCompleted(3)">3</span>
+                  <i *ngIf="isStepCompleted(3)" class="fas fa-check"></i>
+                </div>
               </div>
-              <span class="step-title" (click)="goToStep(3)">
-                {{
-                "CHARITY_EVENT.ADVERTISEMENT_TYPE" | translate
-                }}
-              </span>
+              <div class="connecting-line"></div>
+              <div class="step-content-wrapper">
+                <span class="step-title" (click)="goToStep(3)" [class.text-success]="isStepCompleted(3)"
+                  [class.text-danger]="currentStep > 3 && !isStepCompleted(3)"
+                  [class.text-primary]="isStepActive(3)">
+                  {{ 'CHARITY_EVENT.ADVERTISEMENT_TYPE' | translate }}
+                </span>
+                <small class="d-block text-muted step-description">{{ 'CHARITY_EVENT.ADVERTISEMENT_DESC' | translate }}</small>
+              </div>
             </div>
 
             <!-- Step 4 -->
-            <div class="d-flex gap-3">
-              <div class="step-container" [class.active]="isStepActive(4)">
+            <div class="step-navigation-item">
+              <div class="step-container" [class.active]="isStepActive(4)"
+                [class.completed]="isStepCompleted(4)"
+                [class.invalid]="currentStep === 4 && !isStepCompleted(4)">
                 <div class="step-bg"></div>
-                <div class="step">4</div>
+                <div class="step">
+                  <span *ngIf="!isStepCompleted(4)">4</span>
+                  <i *ngIf="isStepCompleted(4)" class="fas fa-check"></i>
+                </div>
               </div>
-              <span class="step-title" (click)="goToStep(4)">
-                {{
-                "REQUEST_PLAINT.STEP5_TITLE" | translate
-                }}
-              </span>
+              <div class="step-content-wrapper">
+                <span class="step-title" (click)="goToStep(4)" [class.text-success]="isStepCompleted(4)"
+                  [class.text-danger]="currentStep === 4 && !isStepCompleted(4)"
+                  [class.text-primary]="isStepActive(4)">
+                  {{ 'REQUEST_PLAINT.STEP5_TITLE' | translate }}
+                </span>
+                <small class="d-block text-muted step-description">{{ 'REQUEST_PLAINT.ATTACHMENTS_DESC' | translate }}</small>
+              </div>
             </div>
           </div>
         </div>
