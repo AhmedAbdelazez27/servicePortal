@@ -318,7 +318,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
             if (locationTypeId) {
               setTimeout(() => {
                 this.mainInfoForm.patchValue({
-                  tentLocationType: locationTypeId,
+                  // tentLocationType: locationTypeId,
+                  tentLocationType: this.loadformData?.fastingTentService?.locationTypeId ||null
                 });
                 this.cdr.detectChanges();
               }, 0);
