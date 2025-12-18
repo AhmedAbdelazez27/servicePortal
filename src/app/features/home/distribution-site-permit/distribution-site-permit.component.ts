@@ -2475,7 +2475,8 @@ addPartner(): void {
       case 2:
         return this.validateSupervisorInfoTab();
       case 3:
-        return this.validatePartnersTab();
+        // Partners tab is optional - only show checkmark if at least one partner is added
+        return this.partners && this.partners.length > 0;
       case 4:
         return this.validateAttachmentsTab();
       default:

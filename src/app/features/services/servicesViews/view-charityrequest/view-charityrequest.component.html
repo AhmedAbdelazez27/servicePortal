@@ -615,7 +615,8 @@
                   </button>
                 </h2>
                 <div id="wfComments" class="accordion-collapse collapse" data-bs-parent="#charitySectionsAccordion"
-                  aria-labelledby="wfHeader">
+                  aria-labelledby="wfHeader"
+                  (shown.bs.collapse)="loadCommentAttachments()">
                   <div class="accordion-body">
                     <div class="step-content">
 
@@ -721,7 +722,7 @@
                           <div class="comment-area">
                             {{ comment.comment }}
                           </div>
-                          <div *ngIf="comment.attachments && comment.attachments.length > 0">
+                          <div *ngIf="hasCommentAttachments(comment.id)">
                             <button class="btn btn-view-attachment mt-2" [attr.data-comment-id]="comment.id"
                               (click)="onTableCellClick($event,comment?.id)">
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"

@@ -2732,7 +2732,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       case 2:
         return this.validateSupervisorTab();
       case 3:
-        return this.validatePartnersTab();
+        // Partners tab is optional - only show checkmark if at least one partner is added
+        return this.partners && this.partners.length > 0;
       case 4:
         return this.validateAttachmentsTab();
       default:

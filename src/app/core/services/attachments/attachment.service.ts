@@ -188,4 +188,14 @@ export class AttachmentService {
       .pipe(map(res => res.data ?? []));
   }   
 
+  getAttachmentsMultiTypes(parameters:any): Observable<any[]> {
+    
+    return this.http
+      .post<AttachmentsConfigPagedResponse>(
+        `${this.CONFIG_BASE_URL}${ApiEndpoints.AttachmentsConfig.GetAllWithMultipleTypes}`,
+        parameters
+      )
+      .pipe(map(res => res.data ?? []));
+  }   
+
 }

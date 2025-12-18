@@ -246,6 +246,11 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
   commentsColumnDefs: ColDef[] = [];
   commentsColumnHeaderMap: { [k: string]: string } = {};
   isLoadingComments = false;
+  
+  // Comment attachments loaded from API
+  allCommentAttachments: AttachmentDto[] = [];
+  isCommentAttachmentsLoaded = false;
+  isLoadingCommentAttachments = false;
 
   // Modals: attachments (comments / partners)
   showAttachmentModal = false;
@@ -316,9 +321,36 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
     this.loadMainApplyServiceData();
     this.loadCommentAttachmentConfigs();
     this.loadInitialData();
+    this.setupAccordionEventListener();
+  }
+
+  private accordionEventListener: (() => void) | null = null;
+
+  /**
+   * Setup event listener for comments accordion
+   */
+  private setupAccordionEventListener(): void {
+    // Wait for DOM to be ready
+    setTimeout(() => {
+      const accordionElement = document.getElementById('wfComments');
+      if (accordionElement) {
+        this.accordionEventListener = () => {
+          this.loadCommentAttachments();
+        };
+        accordionElement.addEventListener('shown.bs.collapse', this.accordionEventListener);
+      }
+    }, 500);
   }
   ngOnDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
+    
+    // Remove accordion event listener
+    if (this.accordionEventListener) {
+      const accordionElement = document.getElementById('wfComments');
+      if (accordionElement) {
+        accordionElement.removeEventListener('shown.bs.collapse', this.accordionEventListener);
+      }
+    }
   }
 
   // ===== Load =====
@@ -562,11 +594,94 @@ export class ViewCharityEventPermitComponent implements OnInit, OnDestroy {
   }
   onCommentsTableAction(_: { action: string; row: any }) { /* hook جاهز */ }
 
+  /**
+   * Load all comment attachments when comments accordion is opened
+   */
+  loadCommentAttachments(): void {
+    // If already loaded, skip
+    if (this.isCommentAttachmentsLoaded || this.isLoadingCommentAttachments) {
+      return;
+    }
+
+    // Get all comment IDs
+    const commentIds = this.allWorkFlowComments.map(comment => comment.id).filter(id => id != null);
+    
+    if (commentIds.length === 0) {
+      this.isCommentAttachmentsLoaded = true;
+      return;
+    }
+
+    this.isLoadingCommentAttachments = true;
+
+    // Use getList to get attachments for all comments at once
+    const parameters = {
+      skip: 0,
+      take: 1000, // Get enough to cover all comments
+      masterIds: commentIds,
+      masterType: 1003 // Comment master type
+    };
+
+    const sub = this.attachmentService.getList(parameters).subscribe({
+      next: (res: any) => {
+        const attachments = res.data || res.items || [];
+        this.allCommentAttachments = attachments.map((x: any) => ({
+          id: x.id,
+          masterId: x.masterId,
+          imgPath: x.imgPath,
+          masterType: x.masterType,
+          attachmentTitle: x.attachmentTitle,
+          lastModified: x.lastModified,
+          attConfigID: x.attConfigID
+        }));
+        this.isCommentAttachmentsLoaded = true;
+        this.isLoadingCommentAttachments = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading comment attachments:', error);
+        this.isLoadingCommentAttachments = false;
+        // Don't show error to user, just log it
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Check if a comment has attachments
+   */
+  hasCommentAttachments(commentId: number): boolean {
+    if (!this.isCommentAttachmentsLoaded) {
+      return false;
+    }
+    return this.allCommentAttachments.some(att => att.masterId === commentId);
+  }
+
+  /**
+   * Get attachments for a specific comment
+   */
+  getCommentAttachments(commentId: number): AttachmentDto[] {
+    if (!this.isCommentAttachmentsLoaded) {
+      return [];
+    }
+    return this.allCommentAttachments.filter(att => att.masterId === commentId);
+  }
+
   fetchAndViewCommentAttachments(commentId: number) {
     this.isLoadingAttachments = true;
     this.selectedCommentAttachments = [];
     this.showAttachmentModal = true;
 
+    // Use cached attachments if available
+    if (this.isCommentAttachmentsLoaded) {
+      this.selectedCommentAttachments = this.getCommentAttachments(commentId);
+      this.isLoadingAttachments = false;
+      if (this.selectedCommentAttachments.length === 0) {
+        this.toastr.info(this.translate.instant('COMMON.NO_ATTACHMENTS_FOUND'));
+      }
+      return;
+    }
+
+    // Otherwise fetch from API
     const parameters = { skip: 0, take: 100, masterIds: [commentId], masterType: 1003 };
     const sub = this.attachmentService.getList(parameters).subscribe({
       next: (res: any) => {

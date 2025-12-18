@@ -66,8 +66,7 @@
                         <!-- Tab 3: Partners -->
                         <div class="step-navigation-item">
                             <div class="step-container partners-tab" [class.active]="isTabActive(3)"
-                                [class.completed]="isTabCompleted(3)"
-                                [class.invalid]="currentTab > 3 && !isTabCompleted(3)">
+                                [class.completed]="isTabCompleted(3)">
                                 <div class="step-bg"></div>
                                 <div class="step">
                                     <span *ngIf="!isTabCompleted(3)">3</span>
@@ -77,7 +76,6 @@
                             <div class="connecting-line"></div>
                             <div class="step-content-wrapper">
                                 <span class="step-title" (click)="goToTab(3)" [class.text-success]="isTabCompleted(3)"
-                                    [class.text-danger]="currentTab > 3 && !isTabCompleted(3)"
                                     [class.text-primary]="isTabActive(3)">
                                     {{ 'DIST_SITE.TAB2_TITLE' | translate }}
                                 </span>
