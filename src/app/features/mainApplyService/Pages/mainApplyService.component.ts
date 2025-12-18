@@ -24,6 +24,7 @@ import { Select2APIEndpoint } from '../../../core/constants/select2api-endpoints
 import { CharityEventPermitRequestService } from '../../../core/services/charity-event-permit-request.service';
 import { FastingTentRequestService } from '../../../core/services/fasting-tent-request.service';
 import { DistributionSiteRequestService } from '../../../core/services/distribution-site-request.service';
+import { RequestPlaintService } from '../../../core/services/request-plaint.service';
 
 enum ServiceStatus {
   Accept = 1,
@@ -72,6 +73,10 @@ export class MainApplyServiceComponent {
   loadexcelData: mainApplyServiceDto[] = [];
   lang: any;
 
+  // Delete confirmation modal
+  selectedRowToDelete: any = null;
+  deleteModalInstance: any = null;
+
 
   getServiceSelect2?: string
   getStatusSelect2?: string
@@ -92,6 +97,7 @@ export class MainApplyServiceComponent {
     private charityEventPermitRequestService: CharityEventPermitRequestService,
     private fastingTentRequestService: FastingTentRequestService,
     private distributionSiteRequestService: DistributionSiteRequestService,
+    private requestPlaintService: RequestPlaintService,
     private entityService: EntityService,
   ) {
 
@@ -124,6 +130,19 @@ export class MainApplyServiceComponent {
 
     this.getSelect2Endpoint();
     this.lang = this.translate.currentLang;
+
+    // Initialize delete modal
+    this.initDeleteModal();
+  }
+
+  initDeleteModal(): void {
+    const modalElement = document.getElementById('deleteConfirmationModal');
+    if (modalElement) {
+      this.deleteModalInstance = new bootstrap.Modal(modalElement, {
+        backdrop: 'static',
+        keyboard: false
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -329,6 +348,7 @@ export class MainApplyServiceComponent {
 
 
   onTableAction(event: { action: string, row: any }) {
+    console.log('Table action event:', event);
     if (event.action === 'onUpdate') {
       if (!this.canEdit(event.row)) {
         this.translate
@@ -344,13 +364,13 @@ export class MainApplyServiceComponent {
       if (event.row.serviceId == this.appEnum.serviceId7) {
         // Route to request-plaint with id as param for draft update
         this.router.navigate(['/request-plaint', event.row.id]);
-      } else if (event.row.serviceId === 1) {
+      } else if (event.row.serviceId == 1) {
         // Route to fasting-tent-request with id as param for draft update
         this.router.navigate(['/fasting-tent-request', event.row.id]);
       } else if (event.row.serviceId == this.appEnum.serviceId2 || event.row.serviceId === 2) {
         // Route to charity-event-permit-request with id as param for draft update
         this.router.navigate(['/services-requests/charity-event-permit-request', event.row.id]);
-      } else if (event.row.serviceId === 1001) {
+      } else if (event.row.serviceId == 1001) {
         // Route to distribution-site-permit with id as param for draft update
         this.router.navigate(['/distribution-site-permit', event.row.id]);
       } else if (event.row.serviceId == this.appEnum.serviceId6) {
@@ -535,101 +555,10 @@ export class MainApplyServiceComponent {
           });
         return;
       }
-      // Handle delete action - only for RequestEventPermits (serviceId = 6) for now
-      if (event.row.serviceId == this.appEnum.serviceId6 || event.row.serviceId === 6) {
-        // Check if id exists and is a number
-        const requestId = event.row.id;
-        if (!requestId || typeof requestId !== 'number') {
-          this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
-          return;
-        }
-
-        // Show confirmation dialog
-        if (confirm(this.translate.instant('COMMON.CONFIRM_DELETE') || 'Are you sure you want to delete this request?')) {
-          this.spinnerService.show();
-          this.charityEventPermitRequestService.deleteRequestEvent(requestId).subscribe({
-            next: () => {
-              this.toastr.success(this.translate.instant('SUCCESS.REQUEST_DELETED') || 'Request deleted successfully');
-              this.spinnerService.hide();
-              // Refresh the grid data
-              this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
-            },
-            error: (error: any) => {
-              this.spinnerService.hide();
-              if (error.error && error.error.reason) {
-                this.toastr.error(error.error.reason);
-              } else {
-                this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
-              }
-            }
-          });
-        }
-      } else if (event.row.serviceId == this.appEnum.serviceId2 || event.row.serviceId === 2) {
-        // Handle delete action for CharityEventPermit (serviceId = 2)
-        // Check if id exists and is a number
-        const mainApplyServiceId = event.row.id;
-        if (!mainApplyServiceId || typeof mainApplyServiceId !== 'number') {
-          this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
-          return;
-        }
-
-        // Show confirmation dialog
-        if (confirm(this.translate.instant('COMMON.CONFIRM_DELETE') || 'Are you sure you want to delete this request?')) {
-          this.spinnerService.show();
-          // Convert id to string as API expects string
-          this.charityEventPermitRequestService.delete(mainApplyServiceId.toString()).subscribe({
-            next: () => {
-              this.toastr.success(this.translate.instant('SUCCESS.REQUEST_DELETED') || 'Request deleted successfully');
-              this.spinnerService.hide();
-              // Refresh the grid data
-              this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
-            },
-            error: (error: any) => {
-              this.spinnerService.hide();
-              if (error.error && error.error.reason) {
-                this.toastr.error(error.error.reason);
-              } else {
-                this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
-              }
-            }
-          });
-        }
-      } else if (event.row.serviceId == this.appEnum.serviceId1001 || event.row.serviceId == 1001) {
-        const mainApplyServiceId = event.row.id;
-        if (!mainApplyServiceId || typeof mainApplyServiceId !== 'number') {
-          this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
-          return;
-        }
-
-        // Show confirmation dialog
-        if (confirm(this.translate.instant('COMMON.CONFIRM_DELETE') )) {
-          this.spinnerService.show();
-          // Convert id to string as API expects string
-          this.distributionSiteRequestService.delete(mainApplyServiceId.toString()).subscribe({
-            next: () => {
-              this.toastr.success(this.translate.instant('COMMON.REQUEST_DELETED') );
-              this.spinnerService.hide();
-              // Refresh the grid data
-              this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
-            },
-            error: (error: any) => {
-              this.spinnerService.hide();
-              if (error.error && error.error.reason) {
-                this.toastr.error(error.error.reason);
-              } else {
-                this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
-              }
-            }
-          });
-        }
-      }else {
-        this.translate
-          .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
-          .subscribe(translations => {
-            this.toastr.error(
-              `${translations['mainApplyServiceResourceName.NoPermission']}`,
-            );
-          });
+      // Store the row to delete and show modal
+      this.selectedRowToDelete = event.row;
+      if (this.deleteModalInstance) {
+        this.deleteModalInstance.show();
       }
       return;
     }
@@ -837,6 +766,178 @@ export class MainApplyServiceComponent {
     const key = this.normalizeStatus(rawStatus);
     const lbl = this.statusLabelByKey(key);
     return this.translate?.currentLang === 'ar' ? lbl.ar : lbl.en;
+  }
+
+  cancelDelete(): void {
+    this.selectedRowToDelete = null;
+    if (this.deleteModalInstance) {
+      this.deleteModalInstance.hide();
+    }
+  }
+
+  confirmDelete(): void {
+    if (!this.selectedRowToDelete) {
+      return;
+    }
+
+    const row = this.selectedRowToDelete;
+    
+    // Close modal first
+    if (this.deleteModalInstance) {
+      this.deleteModalInstance.hide();
+    }
+
+    // Handle delete action based on serviceId
+    if (row.serviceId == this.appEnum.serviceId6 || row.serviceId === 6) {
+      // RequestEventPermits (serviceId = 6)
+      const requestId = row.id;
+      if (!requestId || typeof requestId !== 'number') {
+        this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
+        this.selectedRowToDelete = null;
+        return;
+      }
+
+      this.spinnerService.show();
+      this.charityEventPermitRequestService.deleteRequestEvent(requestId).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('SUCCESS.REQUEST_DELETED') || 'Request deleted successfully');
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          // Refresh the grid data
+          this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
+        },
+        error: (error: any) => {
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          if (error.error && error.error.reason) {
+            this.toastr.error(error.error.reason);
+          } else {
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
+          }
+        }
+      });
+    } else if (row.serviceId == this.appEnum.serviceId2 || row.serviceId === 2) {
+      // CharityEventPermit (serviceId = 2)
+      const mainApplyServiceId = row.id;
+      if (!mainApplyServiceId || typeof mainApplyServiceId !== 'number') {
+        this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
+        this.selectedRowToDelete = null;
+        return;
+      }
+
+      this.spinnerService.show();
+      this.charityEventPermitRequestService.delete(mainApplyServiceId.toString()).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('SUCCESS.REQUEST_DELETED') || 'Request deleted successfully');
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          // Refresh the grid data
+          this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
+        },
+        error: (error: any) => {
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          if (error.error && error.error.reason) {
+            this.toastr.error(error.error.reason);
+          } else {
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
+          }
+        }
+      });
+    } else if (row.serviceId == this.appEnum.serviceId1001 || row.serviceId == 1001) {
+      // Distribution Site Permit (serviceId = 1001)
+      const mainApplyServiceId = row.id;
+      if (!mainApplyServiceId || typeof mainApplyServiceId !== 'number') {
+        this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
+        this.selectedRowToDelete = null;
+        return;
+      }
+
+      this.spinnerService.show();
+      this.distributionSiteRequestService.delete(mainApplyServiceId.toString()).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('COMMON.REQUEST_DELETED'));
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          // Refresh the grid data
+          this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
+        },
+        error: (error: any) => {
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          if (error.error && error.error.reason) {
+            this.toastr.error(error.error.reason);
+          } else {
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
+          }
+        }
+      });
+    } else if (row.serviceId == this.appEnum.serviceId1 || row.serviceId == 1) {
+      // Fasting Tent Request (serviceId = 1)
+      const mainApplyServiceId = row.id;
+      if (!mainApplyServiceId || typeof mainApplyServiceId !== 'number') {
+        this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
+        this.selectedRowToDelete = null;
+        return;
+      }
+
+      this.spinnerService.show();
+      this.fastingTentRequestService.delete(mainApplyServiceId.toString()).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('COMMON.REQUEST_DELETED'));
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          // Refresh the grid data
+          this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
+        },
+        error: (error: any) => {
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          if (error.error && error.error.reason) {
+            this.toastr.error(error.error.reason);
+          } else {
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
+          }
+        }
+      });
+    }else if (row.serviceId == this.appEnum.serviceId7 || row.serviceId == 7) {
+      
+      const mainApplyServiceId = row.id;
+      if (!mainApplyServiceId || typeof mainApplyServiceId !== 'number') {
+        this.toastr.error(this.translate.instant('ERRORS.INVALID_REQUEST_ID') || 'Invalid request ID');
+        this.selectedRowToDelete = null;
+        return;
+      }
+
+      this.spinnerService.show();
+      this.requestPlaintService.delete(mainApplyServiceId.toString()).subscribe({
+        next: () => {
+          this.toastr.success(this.translate.instant('COMMON.REQUEST_DELETED'));
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          // Refresh the grid data
+          this.getLoadDataGrid({ pageNumber: this.pagination.currentPage, pageSize: this.pagination.take });
+        },
+        error: (error: any) => {
+          this.spinnerService.hide();
+          this.selectedRowToDelete = null;
+          if (error.error && error.error.reason) {
+            this.toastr.error(error.error.reason);
+          } else {
+            this.toastr.error(this.translate.instant('ERRORS.FAILED_DELETE_REQUEST') || 'Failed to delete request');
+          }
+        }
+      });
+    } else {
+      this.translate
+        .get(['mainApplyServiceResourceName.NoPermission', 'Common.Required'])
+        .subscribe(translations => {
+          this.toastr.error(
+            `${translations['mainApplyServiceResourceName.NoPermission']}`,
+          );
+        });
+      this.selectedRowToDelete = null;
+    }
   }
 
 

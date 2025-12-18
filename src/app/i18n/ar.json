@@ -724,6 +724,8 @@
   "COMMON": {
      "REQUEST_DELETED": "تم حذف الطلب بنجاح.",
     "CONFIRM_DELETE": "هل أنت متأكد أنك تريد حذف هذا الطلب؟",
+    "DELETE_CONFIRMATION": "تأكيد الحذف",
+    "DELETE_WARNING_MESSAGE": "لا يمكن التراجع عن هذا الإجراء.",
     "REQUEST_SERVICE": "طلب الخدمة",
     "CLEAR": "مسح",
     "SEARCH": "بحث",

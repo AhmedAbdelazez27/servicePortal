@@ -335,6 +335,7 @@ export class ApiEndpoints {
     Update: '/Update',
     GetByMainApplyServiceId: (mainApplyServiceId: number) =>
       `/GetByMainApplyServiceId/${mainApplyServiceId}`,
+    Delete: (id: any) => `/Delete/${id}`,
   };
 
   static readonly MainApplyRequestService = {

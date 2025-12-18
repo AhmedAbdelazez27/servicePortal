@@ -35,6 +35,13 @@ export class RequestPlaintService {
       dto
     );
   }
+  // Delete RequestPlaint
+    delete(id: any): Observable<void> {
+    return this.http.post<void>(
+      `${this.BASE_URL}${ApiEndpoints.RequestPlaint.Delete(id)}`,
+      {}
+    );
+  }
 
   // Update RequestPlaint
   update(dto: UpdateRequestPlaintDto): Observable<RequestPlaintDto> {

@@ -593,6 +593,13 @@
                   {{ 'COMMON.DELETE' | translate }}
                 </button>
               </li>
+              <li *ngIf="row?.serviceId == 7 && canDelete(row)">
+                <button class="dropdown-item"
+                        (click)="onTableAction({ action: 'onDelete', row })">
+                  <!-- <i class="fas fa-trash me-2"></i> -->
+                  {{ 'COMMON.DELETE' | translate }}
+                </button>
+              </li>
               <li *ngIf="canPrint(row)">
                 <button class="dropdown-item"
                         (click)="onTableAction({ action: 'onPrintPDF', row })">
@@ -653,5 +660,37 @@
   </nav>
 </div>
 
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmationModalLabel">
+          {{ 'COMMON.DELETE_CONFIRMATION' | translate }}
+        </h5>
+        <button type="button" class="btn-close" (click)="cancelDelete()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ 'COMMON.CONFIRM_DELETE' | translate }}</p>
+        <div *ngIf="selectedRowToDelete" class="delete-confirmation-details">
+          <strong>{{ 'mainApplyServiceResourceName.RefNo' | translate }}:</strong> {{ selectedRowToDelete?.applyNo || '-' }}<br>
+          <strong>{{ 'mainApplyServiceResourceName.Servicename' | translate }}:</strong> 
+          {{ lang === 'ar' ? (selectedRowToDelete?.service?.serviceName || '-') : (selectedRowToDelete?.service?.serviceNameEn || '-') }}<br>
+          <strong>{{ 'mainApplyServiceResourceName.EventNameAdv' | translate }}:</strong> {{ selectedRowToDelete?.description || '-' }}
+        </div>
+        <p class="text-danger mt-3">{{ 'COMMON.DELETE_WARNING_MESSAGE' | translate }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="cancelDelete()">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()">
+          {{ 'COMMON.DELETE' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 </div>
