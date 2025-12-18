@@ -84,6 +84,11 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
   commentsColumnDefs: ColDef[] = [];
   commentsColumnHeaderMap: { [key: string]: string } = {};
   
+  // Comment attachments loaded from API
+  allCommentAttachments: AttachmentDto[] = [];
+  isCommentAttachmentsLoaded = false;
+  isLoadingCommentAttachments = false;
+  
   // Modal properties (using Bootstrap modals now)
   selectedCommentAttachments: AttachmentDto[] = [];
   isLoadingAttachments: boolean = false;
@@ -151,15 +156,34 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     this.currentUserName = currentUser?.name || 'User';
   }
 
+  private accordionEventListener: (() => void) | null = null;
+
   ngOnInit(): void {
     this.loadMainApplyServiceData();
     this.loadCommentAttachmentConfigs();
+    this.setupAccordionEventListener();
     
     // Add window resize listener for map responsiveness
     window.addEventListener('resize', this.onWindowResize.bind(this));
     
     // Add window focus listener to refresh map when tab becomes active
     window.addEventListener('focus', this.onWindowFocus.bind(this));
+  }
+
+  /**
+   * Setup event listener for comments accordion
+   */
+  private setupAccordionEventListener(): void {
+    // Wait for DOM to be ready
+    setTimeout(() => {
+      const accordionElement = document.getElementById('wfComments');
+      if (accordionElement) {
+        this.accordionEventListener = () => {
+          this.loadCommentAttachments();
+        };
+        accordionElement.addEventListener('shown.bs.collapse', this.accordionEventListener);
+      }
+    }, 500);
   }
 
   ngOnDestroy(): void {
@@ -962,7 +986,90 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Load all comment attachments when comments accordion is opened
+   */
+  loadCommentAttachments(): void {
+    // If already loaded, skip
+    if (this.isCommentAttachmentsLoaded || this.isLoadingCommentAttachments) {
+      return;
+    }
+
+    // Get all comment IDs
+    const commentIds = this.allWorkFlowComments.map(comment => comment.id).filter(id => id != null);
+    
+    if (commentIds.length === 0) {
+      this.isCommentAttachmentsLoaded = true;
+      return;
+    }
+
+    this.isLoadingCommentAttachments = true;
+
+    // Use getList to get attachments for all comments at once
+    const parameters: GetAllAttachmentsParamters = {
+      skip: 0,
+      take: 1000, // Get enough to cover all comments
+      masterIds: commentIds,
+      masterType: 1003 // Comment master type
+    };
+
+    const sub = this.attachmentService.getList(parameters).subscribe({
+      next: (result: any) => {
+        const attachments = result.data || result.items || [];
+        this.allCommentAttachments = attachments.map((x: any) => ({
+          id: x.id,
+          masterId: x.masterId,
+          imgPath: x.imgPath,
+          masterType: x.masterType,
+          attachmentTitle: x.attachmentTitle,
+          lastModified: x.lastModified,
+          attConfigID: x.attConfigID
+        }));
+        this.isCommentAttachmentsLoaded = true;
+        this.isLoadingCommentAttachments = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading comment attachments:', error);
+        this.isLoadingCommentAttachments = false;
+        // Don't show error to user, just log it
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Check if a comment has attachments
+   */
+  hasCommentAttachments(commentId: number): boolean {
+    if (!this.isCommentAttachmentsLoaded) {
+      return false;
+    }
+    return this.allCommentAttachments.some(att => att.masterId === commentId);
+  }
+
+  /**
+   * Get attachments for a specific comment
+   */
+  getCommentAttachments(commentId: number): AttachmentDto[] {
+    if (!this.isCommentAttachmentsLoaded) {
+      return [];
+    }
+    return this.allCommentAttachments.filter(att => att.masterId === commentId);
+  }
+
   viewCommentAttachments(comment: any): void {
+    // Use cached attachments if available
+    if (this.isCommentAttachmentsLoaded && comment.id) {
+      const attachments = this.getCommentAttachments(comment.id);
+      if (attachments.length > 0) {
+        this.selectedCommentAttachments = attachments;
+        this.openAttachmentModal();
+        return;
+      }
+    }
+    
+    // Fallback to old method if attachments property exists
     if (comment.attachments && comment.attachments.length > 0) {
       this.selectedCommentAttachments = comment.attachments;
       this.openAttachmentModal();
@@ -973,7 +1080,18 @@ export class ViewFastingTentRequestComponent implements OnInit, OnDestroy {
     this.isLoadingAttachments = true;
     this.selectedCommentAttachments = [];
     this.openAttachmentModal();
-    
+
+    // Use cached attachments if available
+    if (this.isCommentAttachmentsLoaded) {
+      this.selectedCommentAttachments = this.getCommentAttachments(commentId);
+      this.isLoadingAttachments = false;
+      if (this.selectedCommentAttachments.length === 0) {
+        this.toastr.info(this.translate.instant('COMMON.NO_ATTACHMENTS_FOUND'));
+      }
+      return;
+    }
+
+    // Otherwise fetch from API
     // Master type for comments is 1003
     const masterType = 1003;
     

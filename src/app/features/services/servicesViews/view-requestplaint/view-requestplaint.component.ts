@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../../environments/environment';
 import { AttachmentDto, AttachmentsConfigDto, CharityEventPermitDto, PartnerDto, WorkFlowStepDto } from '../../../../core/dtos/mainApplyService/mainApplyService.dto';
+import { GetAllAttachmentsParamters } from '../../../../core/dtos/attachments/attachment.dto';
 import { ServiceStatus } from '../view-requesteventpermit/view-requesteventpermit.component';
 import { ColDef } from 'ag-grid-community';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -55,6 +56,11 @@ export class ViewRequestplaintComponent implements OnInit {
   commentsColumnDefs: ColDef[] = [];
   commentsColumnHeaderMap: { [k: string]: string } = {};
   isLoadingComments = false;
+  
+  // Comment attachments loaded from API
+  allCommentAttachments: AttachmentDto[] = [];
+  isCommentAttachmentsLoaded = false;
+  isLoadingCommentAttachments = false;
 
   // Modals: attachments (comments / partners)
   showAttachmentModal = false;
@@ -93,9 +99,32 @@ export class ViewRequestplaintComponent implements OnInit {
   ) {}
 
 
+  private accordionEventListener: (() => void) | null = null;
+
   ngOnInit(): void {
     this.loadMainApplyServiceData();
     // this.loadCommentAttachmentConfigs()
+    this.setupAccordionEventListener();
+  }
+
+  /**
+   * Setup event listener for comments accordion/table
+   */
+  private setupAccordionEventListener(): void {
+    // Wait for DOM to be ready and try to find accordion or trigger on data load
+    setTimeout(() => {
+      const accordionElement = document.getElementById('wfComments');
+      if (accordionElement) {
+        this.accordionEventListener = () => {
+          this.loadCommentAttachments();
+        };
+        accordionElement.addEventListener('shown.bs.collapse', this.accordionEventListener);
+      }
+      // Also load when comments are loaded (for table view)
+      if (this.allWorkFlowComments.length > 0) {
+        this.loadCommentAttachments();
+      }
+    }, 500);
   }
   // ngOnDestroy(): void {
   //   this.subscriptions.forEach(s => s.unsubscribe());
@@ -202,9 +231,17 @@ export class ViewRequestplaintComponent implements OnInit {
     this.allWorkFlowComments = rows;
     this.initializeCommentsTable(rows);
     this.isLoadingComments = false;
+    
+    // Load comment attachments after comments are loaded
+    if (rows.length > 0) {
+      setTimeout(() => {
+        this.loadCommentAttachments();
+      }, 100);
+    }
   }
 
   private initializeCommentsTable(_: any[]): void {
+    const self = this; // Reference to component for use in cellRenderer
     this.commentsColumnDefs = [
       {
         headerName: this.translate.instant('COMMON.COMMENT'),
@@ -217,7 +254,7 @@ export class ViewRequestplaintComponent implements OnInit {
             <small class="text-muted">
               <i class="fas fa-user me-1"></i>${params.data.employeeDepartmentName || 'N/A'}
               <span class="ms-2">
-                <i class="fas fa-calendar me-1"></i>${this.formatDateTime(params.data.lastModified)}
+                <i class="fas fa-calendar me-1"></i>${self.formatDateTime(params.data.lastModified)}
               </span>
             </small>`;
           return `<div class="comment-cell"><div class="comment-text">${txt}</div><div class="comment-meta">${meta}</div></div>`;
@@ -232,12 +269,14 @@ export class ViewRequestplaintComponent implements OnInit {
         minWidth: 100,
         cellRenderer: (p: any) => {
           const id = p.value;
-          const attachments = p.data.attachments;
-          const hasAttachments = attachments && Array.isArray(attachments) && attachments.length > 0;
+          // Use hasCommentAttachments if loaded, otherwise fallback to old method
+          const hasAttachments = self.isCommentAttachmentsLoaded && self.hasCommentAttachments 
+            ? self.hasCommentAttachments(id) 
+            : (p.data.attachments && Array.isArray(p.data.attachments) && p.data.attachments.length > 0);
           
           if (id && hasAttachments) {
             return `<button class="btn btn-next-style attachment-btn" data-comment-id="${id}" data-row-index="${p.node.rowIndex}">
-                     <i class="fas fa-eye me-1"></i><span>${this.translate.instant('COMMON.VIEW')}</span>
+                     <i class="fas fa-eye me-1"></i><span>${self.translate.instant('COMMON.VIEW')}</span>
                    </button>`;
           }
           return '-';
@@ -305,6 +344,77 @@ export class ViewRequestplaintComponent implements OnInit {
     return (isAr ? (ch.nameAr || ch.nameEn) : (ch.nameEn || ch.nameAr)) || '-';
   }
 
+  /**
+   * Load all comment attachments when comments are loaded
+   */
+  loadCommentAttachments(): void {
+    // If already loaded, skip
+    if (this.isCommentAttachmentsLoaded || this.isLoadingCommentAttachments) {
+      return;
+    }
+
+    // Get all comment IDs
+    const commentIds = this.allWorkFlowComments.map(comment => comment.id).filter(id => id != null);
+    
+    if (commentIds.length === 0) {
+      this.isCommentAttachmentsLoaded = true;
+      return;
+    }
+
+    this.isLoadingCommentAttachments = true;
+
+    // Use getList to get attachments for all comments at once
+    const parameters: GetAllAttachmentsParamters = {
+      skip: 0,
+      take: 1000, // Get enough to cover all comments
+      masterIds: commentIds,
+      masterType: 1003 // Comment master type
+    };
+
+    const sub = this.attachmentService.getList(parameters).subscribe({
+      next: (res: any) => {
+        const attachments = res.data || res.items || [];
+        this.allCommentAttachments = attachments.map((x: any) => ({
+          id: x.id,
+          masterId: x.masterId,
+          imgPath: x.imgPath,
+          masterType: x.masterType,
+          attachmentTitle: x.attachmentTitle,
+          lastModified: x.lastModified,
+          attConfigID: x.attConfigID
+        }));
+        this.isCommentAttachmentsLoaded = true;
+        this.isLoadingCommentAttachments = false;
+      },
+      error: (error) => {
+        console.error('Error loading comment attachments:', error);
+        this.isLoadingCommentAttachments = false;
+        // Don't show error to user, just log it
+      }
+    });
+    // Note: subscription cleanup would need to be handled if subscriptions array exists
+  }
+
+  /**
+   * Check if a comment has attachments
+   */
+  hasCommentAttachments(commentId: number): boolean {
+    if (!this.isCommentAttachmentsLoaded) {
+      return false;
+    }
+    return this.allCommentAttachments.some(att => att.masterId === commentId);
+  }
+
+  /**
+   * Get attachments for a specific comment
+   */
+  getCommentAttachments(commentId: number): AttachmentDto[] {
+    if (!this.isCommentAttachmentsLoaded) {
+      return [];
+    }
+    return this.allCommentAttachments.filter(att => att.masterId === commentId);
+  }
+
   // Workflow comment attachments
     onTableCellClick(event: any) {
       const btn = event.event?.target?.closest?.('.attachment-btn');
@@ -319,8 +429,24 @@ export class ViewRequestplaintComponent implements OnInit {
       this.isLoadingAttachments = true;
       this.selectedCommentAttachments = [];
       this.showAttachmentModal = true;
-  
-      const parameters = { skip: 0, take: 100, masterIds: [commentId], masterType: 1003 };
+
+      // Use cached attachments if available
+      if (this.isCommentAttachmentsLoaded) {
+        this.selectedCommentAttachments = this.getCommentAttachments(commentId);
+        this.isLoadingAttachments = false;
+        if (this.selectedCommentAttachments.length === 0) {
+          this.toastr.info(this.translate.instant('COMMON.NO_ATTACHMENTS_FOUND'));
+        }
+        return;
+      }
+
+      // Otherwise fetch from API
+      const parameters: GetAllAttachmentsParamters = {
+        skip: 0,
+        take: 100,
+        masterIds: [commentId],
+        masterType: 1003
+      };
       const sub = this.attachmentService.getList(parameters).subscribe({
         next: (res: any) => {
           this.selectedCommentAttachments = res.data || res.items || [];
