@@ -2051,11 +2051,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       case 1:
         return this.validateStep1();
       case 2:
-        // Partners step is optional, consider it completed if visited
-        return this.visitedSteps.has(2);
+        // Partners step is optional - only completed if at least one partner is added
+        return this.partners && this.partners.length > 0;
       case 3:
-        // Advertisement step is optional, consider it completed if visited
-        return this.visitedSteps.has(3);
+        // Advertisement step is optional - only completed if at least one advertisement is added
+        return this.requestAdvertisements && this.requestAdvertisements.length > 0;
       case 4:
         // Attachments step - check if all mandatory attachments are uploaded
         // Only consider completed if configs are loaded and all mandatory attachments are present

@@ -45,8 +45,7 @@
             <!-- Step 2 -->
             <div class="step-navigation-item">
               <div class="step-container" [class.active]="isStepActive(2)"
-                [class.completed]="isStepCompleted(2)"
-                [class.invalid]="currentStep > 2 && !isStepCompleted(2)">
+                [class.completed]="isStepCompleted(2)">
                 <div class="step-bg"></div>
                 <div class="step">
                   <span *ngIf="!isStepCompleted(2)">2</span>
@@ -56,7 +55,6 @@
               <div class="connecting-line"></div>
               <div class="step-content-wrapper">
                 <span class="step-title" (click)="goToStep(2)" [class.text-success]="isStepCompleted(2)"
-                  [class.text-danger]="currentStep > 2 && !isStepCompleted(2)"
                   [class.text-primary]="isStepActive(2)">
                   {{ 'CHARITY_EVENT.PARTNERS_TITLE' | translate }}
                 </span>
@@ -67,8 +65,7 @@
             <!-- Step 3 -->
             <div class="step-navigation-item">
               <div class="step-container" [class.active]="isStepActive(3)"
-                [class.completed]="isStepCompleted(3)"
-                [class.invalid]="currentStep > 3 && !isStepCompleted(3)">
+                [class.completed]="isStepCompleted(3)">
                 <div class="step-bg"></div>
                 <div class="step">
                   <span *ngIf="!isStepCompleted(3)">3</span>
@@ -78,7 +75,6 @@
               <div class="connecting-line"></div>
               <div class="step-content-wrapper">
                 <span class="step-title" (click)="goToStep(3)" [class.text-success]="isStepCompleted(3)"
-                  [class.text-danger]="currentStep > 3 && !isStepCompleted(3)"
                   [class.text-primary]="isStepActive(3)">
                   {{ 'CHARITY_EVENT.ADVERTISEMENT_TYPE' | translate }}
                 </span>
