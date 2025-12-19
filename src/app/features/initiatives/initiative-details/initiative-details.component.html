@@ -157,16 +157,21 @@
           <div class="mt-4">
             <h6>{{ 'INITIATIVES.LOCATION_DETAILS' | translate }}</h6>
             <div class="row">
-              <div *ngFor="let location of initiative.initiativeDetails; let i = index" class="col-xl-6 col-lg-6 mb-3">
-                <div *ngIf="location.isActive" class="location-card p-3 border rounded">
+              <div *ngFor="let location of getDisplayedLocations(); let i = index" class="col-xl-6 col-lg-6 mb-3">
+                <div class="location-card p-3 border rounded">
                   <h6 class="location-name">{{ getLocationName(location) }}</h6>
-                  <p class="mb-2">{{ 'INITIATIVES.LOCATION' | translate }} #{{ i + 1 }}</p>
+                  <p class="mb-2">{{ 'INITIATIVES.LOCATION' | translate }} #{{ getLocationOriginalIndex(location) }}</p>
                   <button class="btn btn-sm btn-outline-brown"
                           (click)="openLocationInGoogleMaps(location.locationCoordinates)">
                     {{ 'COMMON.OPEN_IN_GOOGLE_MAPS' | translate }}
                   </button>
                 </div>
               </div>
+            </div>
+            <div class="text-center mt-3" *ngIf="hasMoreLocations() && !showAllLocations">
+              <button class="btn btn-outline-brown" (click)="toggleShowAllLocations()">
+                {{ 'COMMON.SEE_ALL' | translate }}
+              </button>
             </div>
           </div>
         </div>

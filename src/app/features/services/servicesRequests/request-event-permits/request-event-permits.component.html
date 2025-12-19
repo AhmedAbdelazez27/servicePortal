@@ -139,7 +139,7 @@
                                             (change)="onLocalDateChange(firstStepForm.get('requestDate')?.value,'requestDate')" />
                                         <div class="invalid-feedback"
                                             *ngIf="firstStepForm.get('requestDate')?.touched && firstStepForm.get('requestDate')?.errors">
-                                            {{ 'VALIDATIONCHARITY_EVENT.RFC3339_REQUIRED' | translate }}
+                                            {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                         </div>
                   </div> -->
                   <!-- <div class="col-xl-6 mb-4">
@@ -331,9 +331,7 @@
                         firstStepForm.get('startDate')?.errors &&
                         firstStepForm.get('startDate')?.hasError('required')
                       ">
-                      {{
-                      "VALIDATIONCHARITY_EVENT.RFC3339_REQUIRED" | translate
-                      }}
+                      {{ "VALIDATION.REQUIRED_FIELD" | translate }}
                     </div>
                     
                     <div style="color:red" *ngIf="firstStepForm.hasError('startBeforeToday')">
@@ -360,11 +358,10 @@
 
                     <div class="invalid-feedback" *ngIf="
                         firstStepForm.get('endDate')?.touched &&
-                        firstStepForm.get('endDate')?.errors
+                        firstStepForm.get('endDate')?.errors &&
+                        firstStepForm.get('endDate')?.hasError('required')
                       ">
-                      {{
-                      "VALIDATIONCHARITY_EVENT.RFC3339_REQUIRED" | translate
-                      }}
+                      {{ "VALIDATION.REQUIRED_FIELD" | translate }}
                     </div>
                   </div>
 
@@ -1237,14 +1234,15 @@
                         advertForm.hasError('dateRange') ||
                         advertForm.hasError('startBeforeToday')
                       " />
-                    <div class="invalid-feedback" *ngIf="
+                    <div class="invalid-feedback d-block" *ngIf="
                         advertForm.get('startDate')?.touched &&
-                        advertForm.get('startDate')?.errors &&
-                        advertForm.get('startDate')?.hasError('required')
+                        advertForm.get('startDate')?.errors
                       ">
-                      {{ "VALIDATION.REQUIRED_FIELD" | translate }}
+                      <div *ngIf="advertForm.get('startDate')?.hasError('required')">
+                        {{ "VALIDATION.REQUIRED_FIELD" | translate }}
+                      </div>
                     </div>
-                    <div style="color:red" *ngIf="advertForm.hasError('startBeforeToday')">
+                    <div class="invalid-feedback d-block" style="color:red" *ngIf="advertForm.hasError('startBeforeToday')">
                       {{ 'VALIDATION.START_NOT_BEFORE_TODAY' | translate }}
                     </div>
                   </div>
@@ -1259,16 +1257,18 @@
                           advertForm.get('endDate')?.invalid) ||
                         advertForm.hasError('dateRange')
                       " />
-                    <div class="invalid-feedback" *ngIf="
+                    <div class="invalid-feedback d-block" *ngIf="
                         advertForm.get('endDate')?.touched &&
                         advertForm.get('endDate')?.errors
                       ">
-                      {{ "VALIDATION.REQUIRED_FIELD" | translate }}
+                      <div *ngIf="advertForm.get('endDate')?.hasError('required')">
+                        {{ "VALIDATION.REQUIRED_FIELD" | translate }}
+                      </div>
                     </div>
                   </div>
 
                   <div class="col-12 mb-4" *ngIf="advertForm.hasError('dateRange')">
-                    <div class="text-danger small">
+                    <div class="invalid-feedback d-block">
                       {{ "VALIDATION.DATE_RANGE" | translate }}
                     </div>
                   </div>
@@ -1354,11 +1354,15 @@
                       }">
                     </ng-select>
                     <div class="invalid-feedback d-block" *ngIf="
-                        advertForm
-                          .get('targetTypeIds')
-                          ?.hasError('minArrayLength')
+                        advertForm.get('targetTypeIds')?.touched &&
+                        advertForm.get('targetTypeIds')?.invalid
                       ">
-                      {{ "VALIDATION.MIN_ONE_TARGET" | translate }}
+                      <div *ngIf="advertForm.get('targetTypeIds')?.hasError('required')">
+                        {{ "VALIDATION.REQUIRED_FIELD" | translate }}
+                      </div>
+                      <div *ngIf="advertForm.get('targetTypeIds')?.hasError('minArrayLength')">
+                        {{ "VALIDATION.MIN_ONE_TARGET" | translate }}
+                      </div>
                     </div>
                   </div>
 
@@ -1377,11 +1381,15 @@
                       }">
                     </ng-select>
                     <div class="invalid-feedback d-block" *ngIf="
-                        advertForm
-                          .get('adMethodIds')
-                          ?.hasError('minArrayLength')
+                        advertForm.get('adMethodIds')?.touched &&
+                        advertForm.get('adMethodIds')?.invalid
                       ">
-                      {{ "VALIDATION.MIN_ONE_METHOD" | translate }}
+                      <div *ngIf="advertForm.get('adMethodIds')?.hasError('required')">
+                        {{ "VALIDATION.REQUIRED_FIELD" | translate }}
+                      </div>
+                      <div *ngIf="advertForm.get('adMethodIds')?.hasError('minArrayLength')">
+                        {{ "VALIDATION.MIN_ONE_METHOD" | translate }}
+                      </div>
                     </div>
                   </div>
 
@@ -1410,7 +1418,7 @@
                       </span>
                     </div>
 
-                    <div class="text-danger small mt-1" *ngIf="submitted && adLocations.length === 0">
+                    <div class="invalid-feedback d-block mt-1" *ngIf="(submitted || advertForm.get('adLocations')?.touched) && adLocations.length === 0">
                       {{ "VALIDATION.MIN_ONE_LOCATION" | translate }}
                     </div>
                   </div>

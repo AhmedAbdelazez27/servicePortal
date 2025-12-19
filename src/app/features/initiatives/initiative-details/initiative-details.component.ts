@@ -44,6 +44,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
   regionSelect2: any[] = [];
   selectedRegion: any = null;
   searchSelect2Params = new FndLookUpValuesSelect2RequestDto();
+  showAllLocations = false;
 
   constructor(
     private initiativeService: InitiativeService,
@@ -174,6 +175,7 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
 
     this.loading = true;
     this.error = null;
+    this.showAllLocations = false; // Reset to show only first 10
     const params: FilterById = {
       id: Number(this.initiativeId),
       regionName: this.regionName || null,
@@ -595,5 +597,57 @@ export class InitiativeDetailsComponent implements OnInit, OnDestroy, AfterViewI
     testKeys.forEach(key => {
       const translation = this.translateService.instant(key);
     });
+  }
+
+  getDisplayedLocations(): InitiativeDetailsDto[] {
+    if (!this.initiative?.initiativeDetails) return [];
+    const activeLocations = this.initiative.initiativeDetails.filter(loc => loc.isActive);
+    if (this.showAllLocations) {
+      return activeLocations;
+    }
+    return activeLocations.slice(0, 10);
+  }
+
+  getLocationOriginalIndex(location: InitiativeDetailsDto): number {
+    if (!this.initiative?.initiativeDetails) return 0;
+    const activeLocations = this.initiative.initiativeDetails.filter(loc => loc.isActive);
+    return activeLocations.findIndex(loc => loc === location) + 1;
+  }
+
+  hasMoreLocations(): boolean {
+    if (!this.initiative?.initiativeDetails) return false;
+    const activeLocations = this.initiative.initiativeDetails.filter(loc => loc.isActive);
+    return activeLocations.length > 10;
+  }
+
+  toggleShowAllLocations(): void {
+    this.showAllLocations = true;
+  }
+
+  // TESTING METHOD: Repeat locations to test "See All" functionality
+  // Remove this method after testing
+  private repeatLocationsForTesting(locations: InitiativeDetailsDto[], targetCount: number): InitiativeDetailsDto[] {
+    if (!locations || locations.length === 0) return locations;
+    
+    const repeatedLocations: InitiativeDetailsDto[] = [];
+    const activeLocations = locations.filter(loc => loc.isActive);
+    
+    // Repeat active locations until we reach target count
+    for (let i = 0; i < targetCount; i++) {
+      const originalLocation = activeLocations[i % activeLocations.length];
+      // Create a copy with modified ID and name to distinguish them
+      const newLocation: InitiativeDetailsDto = {
+        ...originalLocation,
+        id: originalLocation.id + i * 1000, // Make unique IDs
+        locationNameAr: `${originalLocation.locationNameAr} ${i + 1}`,
+        locationNameEn: `${originalLocation.locationNameEn} ${i + 1}`,
+        isActive: true
+      };
+      repeatedLocations.push(newLocation);
+    }
+    
+    // Add inactive locations if any (they won't be displayed)
+    const inactiveLocations = locations.filter(loc => !loc.isActive);
+    return [...repeatedLocations, ...inactiveLocations];
   }
 }

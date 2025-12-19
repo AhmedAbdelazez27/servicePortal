@@ -567,7 +567,7 @@ export class MainApplyServiceComponent {
   // Permission helpers based on status
   canEdit(row: any): boolean {
     const status = row?.serviceStatus as ServiceStatus;
-    return status === ServiceStatus.Draft || status === ServiceStatus.ReturnForModifications;
+    return status === ServiceStatus.Draft ;
   }
 
   canDelete(row: any): boolean {

@@ -599,7 +599,7 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
         // });
       }
       if (!mapElement) {
-        this.toastr.error(this.translate.instant('COMMON.MAP_CONTAINER_NOT_FOUND'));
+        // this.toastr.error(this.translate.instant('COMMON.MAP_CONTAINER_NOT_FOUND'));
         this.mapLoadError = true;
         return;
       }
