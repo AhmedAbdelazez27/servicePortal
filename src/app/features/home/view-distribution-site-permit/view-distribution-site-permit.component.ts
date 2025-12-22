@@ -578,7 +578,7 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
       } else if (attempts < maxAttempts) {
         setTimeout(checkAndInitialize, 200);
       } else {
-        this.toastr.error('Failed to initialize map: map container not found');
+        // this.toastr.error('Failed to initialize map: map container not found');
       }
     };
     

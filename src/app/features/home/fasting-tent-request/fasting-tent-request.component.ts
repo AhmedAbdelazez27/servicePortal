@@ -1490,7 +1490,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         setTimeout(checkAndInitialize, 200);
       } else {
         // console.error('Map element not found after maximum attempts');
-        this.toastr.error('Failed to initialize map: map container not found');
+        // this.toastr.error('Failed to initialize map: map container not found');
       }
     };
 
@@ -1554,7 +1554,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         this.toastr.error(this.translate.instant('SHARED.MAP.LOADING_ERROR'));
       });
     } catch (error) {
-      this.toastr.error('Failed to initialize map');
+      // this.toastr.error('Failed to initialize map');
     }
   }
 

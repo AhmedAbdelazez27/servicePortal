@@ -29,7 +29,7 @@
           <div class="w-100">
             <div class="d-flex align-items-center justify-content-between gap-3 mb-2">
               <h4 class="title">{{ 'REQUEST_EVENT_PERMIT.VIEW_TITLE' | translate }}</h4>
-              <div class="dropdown"
+              <!-- <div class="dropdown"
                 *ngIf="(targetWorkFlowStep && mainApplyService?.serviceStatus === 7)||(mainApplyService?.serviceStatus === 1)">
                 <button class="btn btn-gold dropdown-toggle" type="button" data-bs-toggle="dropdown"
                   aria-expanded="false" style="padding: 12px !important;">
@@ -46,7 +46,12 @@
                   <li><a class="dropdown-item" *ngIf="mainApplyService?.serviceStatus === 1" data-bs-toggle="modal"
                       data-bs-target="#addAdvertisementModal">{{'ADD_ADVERTISEMENT' | translate}}</a></li>
                 </ul>
-              </div>
+              </div> -->
+              <button *ngIf="targetWorkFlowStep && mainApplyService?.serviceStatus === 7" type="button"
+                      class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#commentModal">
+                <i class="fas fa-plus me-2"></i>
+                {{ 'COMMON.ADD_COMMENT' | translate }}
+              </button>
 
             </div>
 
