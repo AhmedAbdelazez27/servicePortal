@@ -201,6 +201,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   identityCardData: IdentityCardReaderDto | null = null;
   isLoadingIdentityCard = false;
   showIdentityCardData = false;
+  isIdentityCardReadSuccessfully = false;
 
   // Update mode properties
   requestEventPermitId: number | null = null;
@@ -395,14 +396,14 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         }),
 
         targetedAmount: this.fb.control<number | null>(null, {
-          validators: [Validators.min(0)],
+          validators: [Validators.required, Validators.min(0)],
         }),
 
         beneficiaryIdNumber: this.fb.control<string | null>(null, {
           validators: [this.emiratesIdValidator.bind(this)],
         }),
 
-        donationCollectionChannelIds: this.fb.control<number[]>([1], {
+        donationCollectionChannelIds: this.fb.control<number[]>([], {
           validators: [arrayMinLength(1)],
           nonNullable: true,
         }),
@@ -416,6 +417,18 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         ],
       }
     );
+
+    // Subscribe to beneficiaryIdNumber changes to reset identity card read flag
+    const beneficiaryControl = this.firstStepForm.get('beneficiaryIdNumber');
+    if (beneficiaryControl) {
+      const beneficiarySub = beneficiaryControl.valueChanges.subscribe(() => {
+        // Reset the flag when beneficiary ID number changes
+        this.isIdentityCardReadSuccessfully = false;
+        this.identityCardData = null;
+        this.showIdentityCardData = false;
+      });
+      this.subscriptions.push(beneficiarySub);
+    }
   }
   initAdvertisementForm(): void {
     const currentUser = this.authService.getCurrentUser();
@@ -859,9 +872,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
                 next: (identityCard) => {
                   this.identityCardData = identityCard;
                   this.showIdentityCardData = true;
+                  this.isIdentityCardReadSuccessfully = true;
                 },
                 error: () => {
                   // Ignore errors for identity card
+                  this.isIdentityCardReadSuccessfully = false;
                 }
               });
           }
@@ -1962,13 +1977,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       ok = false;
     }
 
-    // 7) targetedAmount
+    // 7) targetedAmount - required field
     const targetedAmount = val('targetedAmount');
-    if (
-      targetedAmount !== null &&
-      targetedAmount !== undefined &&
-      `${targetedAmount}`.trim() !== ''
-    ) {
+    if (targetedAmount === null || targetedAmount === undefined || `${targetedAmount}`.trim() === '') {
+      addErr('targetedAmount', 'required');
+      ok = false;
+    } else {
       const n = Number(targetedAmount);
       if (!Number.isFinite(n) || n < 0) {
         addErr('targetedAmount', 'min');
@@ -1985,6 +1999,17 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       ) {
         addErr('donationCollectionChannelIds', 'arrayOfIntegers');
         ok = false;
+      }
+    }
+
+    // 8) Identity Card Reading Validation - Required for individual request type
+    if (this.isIndividualRequestType()) {
+      const beneficiaryIdNumber = val('beneficiaryIdNumber');
+      if (beneficiaryIdNumber && isNonEmptyString(beneficiaryIdNumber)) {
+        if (!this.isIdentityCardReadSuccessfully) {
+          addErr('beneficiaryIdNumber', 'identityCardNotRead');
+          ok = false;
+        }
       }
     }
 
@@ -2013,6 +2038,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
       'admin',
       // 'delegateName',
       // 'alternateName',
+      'targetedAmount',
     ];
     const allHaveValues = mustHave.every((k) => {
       const c = this.firstStepForm.get(k);
@@ -2032,6 +2058,16 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     const mainAttachType =
       AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
     if (this.hasMissingRequiredAttachments(mainAttachType)) return false;
+
+    // Identity Card Reading Validation - Required for individual request type
+    if (this.isIndividualRequestType()) {
+      const beneficiaryIdNumber = this.firstStepForm.get('beneficiaryIdNumber')?.value;
+      if (beneficiaryIdNumber && `${beneficiaryIdNumber}`.trim() !== '') {
+        if (!this.isIdentityCardReadSuccessfully) {
+          return false;
+        }
+      }
+    }
 
     // const withAd =
     //   Number(this.firstStepForm.get('advertisementType')?.value ?? 0) === 1;
@@ -3502,6 +3538,13 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     if (beneficiaryControl) {
       beneficiaryControl.updateValueAndValidity();
     }
+    
+    // Reset identity card read flag if switching away from individual type
+    if (!this.isIndividualRequestType()) {
+      this.isIdentityCardReadSuccessfully = false;
+      this.identityCardData = null;
+      this.showIdentityCardData = false;
+    }
   }
 
   restrictMobileInput(event: KeyboardEvent): void {
@@ -3596,17 +3639,20 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     this.isLoadingIdentityCard = true;
     this.identityCardData = null;
     this.showIdentityCardData = false;
+    this.isIdentityCardReadSuccessfully = false;
 
     this._CharityEventPermitRequestService.readIdentityCard(cleanValue).subscribe({
       next: (response) => {
         this.identityCardData = response;
         this.showIdentityCardData = true;
         this.isLoadingIdentityCard = false;
+        this.isIdentityCardReadSuccessfully = true;
         this.toastr.success(this.translate.instant('SUCCESS.IDENTITY_CARD_READ'));
         this.cdr.detectChanges();
       },
       error: (error) => {
         this.isLoadingIdentityCard = false;
+        this.isIdentityCardReadSuccessfully = false;
 
         if (error.error && error.error.reason) {
           this.toastr.error(error.error.reason);

@@ -875,6 +875,10 @@
     "INVALID_PHONE_FORMAT": "Please enter a valid phone number format",
     "INVALID_EMIRATES_ID": "Emirates ID must be exactly 15 digits",
 
+    "IDENTITY_CARD_MUST_BE_READ": "Please verify the identity card by clicking the 'Verify Card' button",
+
+    "MIN_ZERO": "Value must be greater than or equal to 0",
+
     "INVALID_EMAIL": "Please enter a valid email address",
 
     "PLEASE_COMPLETE_REQUIRED_FIELDS": "Please complete all required fields",
@@ -1523,7 +1527,7 @@
 
     "SAVE_AS_DRAFT": "Save as Draft",
 
-    "READ_CARD": "Read Card",
+    "READ_CARD": "Verify Card",
 
     "CANCEL": "Cancel",
 

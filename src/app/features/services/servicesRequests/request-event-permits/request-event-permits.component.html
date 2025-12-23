@@ -266,6 +266,9 @@
                       <div *ngIf="firstStepForm.get('beneficiaryIdNumber')?.hasError('pattern')">
                         {{ "VALIDATION.INVALID_EMIRATES_ID" | translate }}
                       </div>
+                      <div *ngIf="firstStepForm.get('beneficiaryIdNumber')?.hasError('identityCardNotRead')">
+                        {{ "VALIDATION.IDENTITY_CARD_MUST_BE_READ" | translate }}
+                      </div>
                     </div>
                   </div>
                   <!-- Event Location -->
@@ -628,7 +631,7 @@
                     <label class="form-label">
                       {{
                       "CHARITY_EVENT.TARGETED_AMOUNT" | translate
-                      }}
+                      }} <span class="text-danger">*</span>
                     </label>
                     <input type="number" step="any" min="0" class="form-control" formControlName="targetedAmount"
                       [class.is-invalid]="
@@ -639,7 +642,12 @@
                         firstStepForm.get('targetedAmount')?.touched &&
                         firstStepForm.get('targetedAmount')?.errors
                       ">
-                      {{ "VALIDATION.MIN_ZERO" | translate }}
+                      <div *ngIf="firstStepForm.get('targetedAmount')?.hasError('required')">
+                        {{ "VALIDATION.REQUIRED_FIELD" | translate }}
+                      </div>
+                      <div *ngIf="firstStepForm.get('targetedAmount')?.hasError('min')">
+                        {{ "VALIDATION.MIN_ZERO" | translate }}
+                      </div>
                     </div>
                   </div>
 
