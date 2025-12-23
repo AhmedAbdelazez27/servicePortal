@@ -155,16 +155,21 @@ export class NotificationManagementComponent implements OnInit, OnDestroy {
             return '<span class="text-muted">No Date</span>';
           }
           const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = date.getFullYear();
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
           const iconMargin = isArabic ? 'margin-left: 8px; margin-right: 0;' : 'margin-right: 8px; margin-left: 0;';
           return `
             <div class="text-muted small">
               <div style="display: flex; align-items: center; margin-bottom: 4px;">
                 <i class="fas fa-calendar" style="${iconMargin}"></i>
-                <span>${date.toLocaleDateString()}</span>
+                <span>${day}/${month}/${year}</span>
               </div>
               <div style="display: flex; align-items: center;">
                 <i class="fas fa-clock" style="${iconMargin}"></i>
-                <span>${date.toLocaleTimeString()}</span>
+                <span>${hours}:${minutes}</span>
               </div>
             </div>
           `;

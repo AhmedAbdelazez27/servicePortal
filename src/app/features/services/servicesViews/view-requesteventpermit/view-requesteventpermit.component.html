@@ -942,7 +942,7 @@
                             <div>
                               <h5 class="mb-0">{{ comment.employeeDepartmentName || currentUserName }}</h5>
                               <small class="text-muted">
-                                {{ comment.lastModified | date:'dd/MM/yyyy:hh:mm'}}
+                                {{ comment.lastModified | date:'dd/MM/yyyy HH:mm'}}
                               </small>
                             </div>
 
@@ -1260,7 +1260,7 @@
           <div class="mb-3">
             <label class="form-label">{{ 'CHARITY_EVENT.REQUEST_DATE' | translate }}</label>
             <div class="form-control" readonly>
-              {{ advertForm.value.requestDate | date:'medium' }}
+              {{ advertForm.value.requestDate | date:'dd/MM/yyyy HH:mm' }}
             </div>
           </div>
 
@@ -1465,7 +1465,7 @@
               <div class="content">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                   <small class="text-muted">
-                    {{ h.historyDate | date:'medium' }}
+                    {{ h.historyDate | date:'dd/MM/yyyy HH:mm' }}
                   </small>
                 </div>
 

@@ -1117,7 +1117,7 @@
                         <td>{{ getPartnerTypeLabel(p.type) }}</td>
                         <td>{{ p.licenseIssuer }}</td>
                         <td>{{ p.licenseNumber }}</td>
-                        <td>{{ p.licenseExpiryDate | date : "mediumDate" }}</td>
+                        <td>{{ p.licenseExpiryDate | date : "dd/MM/yyyy" }}</td>
                         <td>{{ p.contactDetails }}</td>
                         <td>
                           <button type="button" class="btn btn-sm btn-danger" (click)="removePartner(i)">
@@ -1152,7 +1152,7 @@
                       }}
                     </label>
                     <div class="form-control" readonly>
-                      {{ advertForm.value.requestDate | date : "medium" }}
+                      {{ advertForm.value.requestDate | date : "dd/MM/yyyy HH:mm" }}
                     </div>
                   </div> -->
 
@@ -1573,8 +1573,8 @@
                         <td>{{ ad.adLang | uppercase }}</td>
                         <td>
                           <div class="small">
-                            <div>{{ ad.startDate | date : "short" }}</div>
-                            <div>{{ ad.endDate | date : "short" }}</div>
+                            <div>{{ ad.startDate | date : "dd/MM/yyyy HH:mm" }}</div>
+                            <div>{{ ad.endDate | date : "dd/MM/yyyy HH:mm" }}</div>
                           </div>
                         </td>
                         <td>{{ ad.targetedAmount || "-" }}</td>
@@ -1839,7 +1839,7 @@
               <div class="content">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                   <small class="text-muted">
-                    {{ h.historyDate | date:'medium' }}
+                    {{ h.historyDate | date:'dd/MM/yyyy HH:mm' }}
                   </small>
                 </div>
 

@@ -485,7 +485,7 @@
         <td>
           <span class="td-title">{{ 'mainApplyServiceResourceName.applydate' | translate }}</span>
           <ng-container *ngIf="row?.applyDate as d; else emptyDate">
-            {{ (d | date:'dd/MM/yyyy:hh:mm') }}
+            {{ (d | date:'dd/MM/yyyy HH:mm') }}
           </ng-container>
           <ng-template #emptyDate>-</ng-template>
         </td>

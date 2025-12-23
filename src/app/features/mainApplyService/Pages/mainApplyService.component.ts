@@ -316,7 +316,12 @@ export class MainApplyServiceComponent {
       const candidate = typeof value === 'number' ? new Date(value)
         : (value instanceof Date ? value : new Date(value));
       if (!isNaN(candidate.getTime())) {
-        return candidate.toLocaleString();
+        const day = String(candidate.getDate()).padStart(2, '0');
+        const month = String(candidate.getMonth() + 1).padStart(2, '0');
+        const year = candidate.getFullYear();
+        const hours = String(candidate.getHours()).padStart(2, '0');
+        const minutes = String(candidate.getMinutes()).padStart(2, '0');
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
       }
       // If already a formatted string (e.g., dd/MM/yyyy), return as is
       return String(value);

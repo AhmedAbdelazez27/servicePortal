@@ -621,9 +621,10 @@ profilePhotoAttachment = attachments.find((att: any) => att.masterType == 1009);
         ? `منذ ${diffInDays} يوم`
         : `${diffInDays} days ago`;
     } else {
-      return notificationDate.toLocaleDateString(
-        currentLang === 'ar' ? 'ar-EG' : 'en-US'
-      );
+      const day = String(notificationDate.getDate()).padStart(2, '0');
+      const month = String(notificationDate.getMonth() + 1).padStart(2, '0');
+      const year = notificationDate.getFullYear();
+      return `${day}/${month}/${year}`;
     }
   }
 

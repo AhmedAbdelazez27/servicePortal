@@ -79,7 +79,10 @@ export class PollsComponent implements OnInit, OnDestroy {
   getPollDate(poll: PollDto): string {
     if (!poll.pollDate) return '';
     const date = new Date(poll.pollDate);
-    return date.toLocaleDateString(this.currentLanguage === 'ar' ? 'ar-SA' : 'en-US');
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 
   openPollLink(poll: PollDto): void {
