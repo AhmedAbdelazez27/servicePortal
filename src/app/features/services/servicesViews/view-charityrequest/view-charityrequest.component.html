@@ -133,7 +133,8 @@
                         {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
                       </div>
                     </div>
-                    <h6 class="department-name">{{ step.departmentName }}</h6>
+                    <!-- اسم القسم -->
+                    <!-- <h6 class="department-name">{{ step.departmentName }}</h6> -->
                     <small class="text-muted d-block mb-2"
                            *ngIf="step.lastModified && step.workFlowHistories?.length">
                       <i class="bi bi-calendar3 me-1"></i>
@@ -1210,7 +1211,8 @@
                   {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
                 </div>
               </div>
-              <h6 class="department-name">{{ step.departmentName }}</h6>
+              <!-- اسم القسم -->
+              <!-- <h6 class="department-name">{{ step.departmentName }}</h6> -->
               <button type="button" class="btn btn-link p-0" (click)="openHistoryModal(step.workFlowHistories || [])">
                 <i class="bi bi-clock-history me-1"></i>{{'WORKFLOW.VIEW_HISTORY' | translate}}
               </button>
