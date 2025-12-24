@@ -132,7 +132,7 @@
                     <div class="step-header">
                       <div class="step-number">
                         <!--{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}-->
-                        {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
+                        {{ getStepDisplayName(step) || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
                       </div>
                     </div>
                     <!-- اسم القسم -->
@@ -1423,7 +1423,7 @@
               <div class="step-header">
                 <div class="step-number">
                   <!--{{ 'WORKFLOW.STEP' | translate }} {{step.stepOrder}}-->
-                  {{ step?.stepName || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
+                  {{ getStepDisplayName(step) || (('WORKFLOW.STEP' | translate) + ' ' + step?.stepOrder) }}
                 </div>
               </div>
               <!-- اسم القسم -->

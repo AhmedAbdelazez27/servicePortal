@@ -522,6 +522,37 @@ export class ViewRequestplaintComponent implements OnInit {
     isStepRejected(s: number | null) { return s === ServiceStatus.Reject || s === ServiceStatus.RejectForReason; }
     isStepPending(s: number | null) { return s === ServiceStatus.Wait; }
     trackByStepId(i: number, step: WorkFlowStepDto) { return step.id ?? i; }
+
+    getStepDisplayName(step: WorkFlowStepDto | null | undefined): string {
+      if (!step) return '';
+      
+      const currentLang = this.translate.currentLang || this.translate.getDefaultLang() || 'en';
+      
+      // Check if step has stepNameAr property
+      const stepAny = step as any;
+      if (currentLang === 'ar' && stepAny.stepNameAr) {
+        return stepAny.stepNameAr;
+      }
+      
+      // If stepName exists, use it (could be object or string)
+      if (step.stepName) {
+        // If stepName is an object with stepName and stepNameAr properties
+        if (typeof step.stepName === 'object' && step.stepName !== null) {
+          return currentLang === 'ar'
+            ? (step.stepName.stepNameAr || step.stepName.stepName || '')
+            : (step.stepName.stepName || step.stepName.stepNameAr || '');
+        }
+        // If stepName is a string
+        return step.stepName;
+      }
+      
+      // Fallback to step order
+      if (step.stepOrder != null) {
+        return (this.translate.instant('WORKFLOW.STEP') + ' ' + step.stepOrder);
+      }
+      
+      return '';
+    }
   
     // Navigation
     goBack() { this.router.navigate(['/mainApplyService']); }
