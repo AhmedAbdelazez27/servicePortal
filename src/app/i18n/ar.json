@@ -525,7 +525,8 @@
     "PARTNER_ADDED_AUTOMATICALLY": "تم إضافة الشريك تلقائياً",
     "PARTNER_REMOVED": "تم إزالة الشريك بنجاح",
     "IDENTITY_CARD_READ": "تم استرجاع بيانات بطاقة الهوية بنجاح",
-    "AD_ADDED": "تم إضافة الإعلان بنجاح"
+    "AD_ADDED": "تم إضافة الإعلان بنجاح",
+    "ADVERTISEMENT_ADDED_AUTOMATICALLY": "تم إضافة الإعلان تلقائياً"
   },
   "ERRORS": {
     "SERVICE_ID_NOT_FOUND": "معرف الخدمة غير موجود",
@@ -596,6 +597,7 @@
     "SELECT_LOCATION_METHOD": "يرجى اختيار طريقة اختيار الموقع",
     "ATTACHMENT_REQUIRED": "المرفق مطلوب",
     "PARTNER_DATA_INCOMPLETE": "بيانات الشريك غير مكتملة. يرجى ملء جميع الحقول المطلوبة قبل المتابعة.",
+    "ADVERTISEMENT_DATA_INCOMPLETE": "بيانات الإعلان غير مكتملة. يرجى ملء جميع الحقول المطلوبة.",
     "DATE_RANGE": "تاريخ الانتهاء يجب أن يكون بعد أو يساوي تاريخ البدء.",
     "DATE_RANGE_TOO_LONG": "لا يمكن أن يتجاوز نطاق التاريخ سنة واحدة",
     "MIN_ONE_TARGET": "اختر نوع استهداف واحد على الأقل.",
@@ -753,6 +755,7 @@
     "ERROR_OCCURRED": "حدث خطأ",
     "ERROR": "خطأ",
     "SUCCESS": "نجح",
+    "WARNING": "تحذير",
     "VIEW": "عرض",
     "UPDATE": "تعديل",
     "DELETE": "حذف",

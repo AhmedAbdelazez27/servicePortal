@@ -312,24 +312,33 @@
                                         </div>
                                     </div>
 
-                                    <!-- Donation Channels (multi) -->
                                     <div class="col-xl-12 mb-4">
                                         <label class="form-label">
-                                            {{ 'CHARITY_EVENT.DONATION_CHANNELS' | translate }} <span
-                                                class="text-danger">*</span>
+                                          {{ "CHARITY_EVENT.DONATION_CHANNELS" | translate }}
                                         </label>
-                                        <ng-select formControlName="donationCollectionChannelIds"
-                                            [items]="donationChannelsLookup" bindLabel="text" bindValue="id"
-                                            [multiple]="true" [closeOnSelect]="false" [clearable]="true"
-                                            [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate"
-                                            class="ng-select-custom"
-                                            [ngClass]="{'is-invalid': firstStepForm.get('donationCollectionChannelIds')?.touched && firstStepForm.get('donationCollectionChannelIds')?.invalid}">
+                                        <ng-select formControlName="donationCollectionChannelIds" [items]="donationChannelsLookup"
+                                          bindLabel="text" bindValue="id" [multiple]="true" [closeOnSelect]="false" [clearable]="true"
+                                          [searchable]="true" [placeholder]="'COMMON.SELECT_OPTION' | translate" class="ng-select-custom"
+                                          [ngClass]="{
+                                            'is-invalid':
+                                              firstStepForm.get('donationCollectionChannelIds')
+                                                ?.touched &&
+                                              firstStepForm.get('donationCollectionChannelIds')
+                                                ?.invalid
+                                          }">
                                         </ng-select>
-                                        <div class="invalid-feedback d-block"
-                                            *ngIf="firstStepForm.get('donationCollectionChannelIds')?.touched && firstStepForm.get('donationCollectionChannelIds')?.hasError('minArrayLength')">
-                                            {{ 'VALIDATION.MIN_ONE_CHANNEL' | translate }}
+                                        <div class="invalid-feedback" *ngIf="
+                                            firstStepForm.get('donationCollectionChannelIds')
+                                              ?.touched &&
+                                            firstStepForm
+                                              .get('donationCollectionChannelIds')
+                                              ?.hasError('minArrayLength')
+                                          ">
+                                          {{
+                                          "VALIDATIONCHARITY_EVENT.MIN_ONE_CHANNEL" | translate
+                                          }}
                                         </div>
-                                    </div>
+                                      </div>
 
                                     <!-- Notes (اختياري) -->
                                     <div class="col-xl-12 mb-2">

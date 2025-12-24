@@ -721,18 +721,8 @@ export class MainApplyServiceReportService {
 
       <h4>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.TERMS_AND_CONDITIONS')}</h4>
 
-       <table>
-        <tr>
-          <td><li>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.CONDITION_1')}</li>
-          <span style="color:black;">${this.reportData?.user?.foundationName ?? ''}</span></td>
-        </tr>
-        <tr style="background:#ccc;border:1px solid #ccc;>
-          <td><li>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.CONDITION_2')} : </li>
-          <span style="color:black;">${this.reportData?.fastingTentService?.address ?? ''}</span></td>
-        </tr>
-      </table>
       <ol style="font-size:13px;line-height:1.6;padding-right:20px;color:#333;">
-        <li> style="background:#f5f5f5;"${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.CONDITION_1')}</li>
+        <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.CONDITION_1')}</li>
         <li>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.CONDITION_2')}</li>
         <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.CONDITION_3')}</li>
         <li>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.CONDITION_4')}</li>

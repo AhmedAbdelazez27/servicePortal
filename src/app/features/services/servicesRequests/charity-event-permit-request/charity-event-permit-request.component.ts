@@ -330,7 +330,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         advertisementType: this.fb.control<1 | 2>(1, { validators: [Validators.required], nonNullable: true }),
         notes: this.fb.control<string | null>(null),
         donationCollectionChannelIds: this.fb.control<number[]>([], {
-          validators: [arrayMinLength(1)],
+              // validators: [arrayMinLength(1)],
           nonNullable: true,
         }),
       },
@@ -1525,8 +1525,9 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       return !!(c && c.value !== null && c.value !== undefined && `${c.value}`.trim() !== '');
     });
 
-    const channels: number[] = form.get('donationCollectionChannelIds')?.value || [];
-    return allOk && channels.length > 0;
+//  const channels: number[] = form.get('donationCollectionChannelIds')?.value || [];
+//     return allOk && channels.length > 0;
+    return allOk;
   }
   // Navigation methods end
 
@@ -1556,8 +1557,8 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     });
     if (!allHaveValues) return false;
 
-    const channels: number[] = this.firstStepForm.get('donationCollectionChannelIds')?.value || [];
-    if (!channels.length) return false;
+    // const channels: number[] = this.firstStepForm.get('donationCollectionChannelIds')?.value || [];
+    // if (!channels.length) return false;    
 
     const mainAttachType = AttachmentsConfigType.DeclarationOfCharityEffectiveness;
     if (this.hasMissingRequiredAttachments(mainAttachType)) return false;

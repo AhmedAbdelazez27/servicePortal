@@ -904,6 +904,7 @@
     "ATTACHMENT_REQUIRED": "Attachment is required",
 
     "PARTNER_DATA_INCOMPLETE": "Partner data is incomplete. Please fill all required fields before proceeding.",
+    "ADVERTISEMENT_DATA_INCOMPLETE": "Advertisement data is incomplete. Please fill all required fields or clear the form .",
 
     "MIN_ONE_PARTNER": "Please add at least one partner.",
 
@@ -1329,7 +1330,8 @@
 
     "IDENTITY_CARD_READ": "Identity card data retrieved successfully",
 
-    "AD_ADDED": "Advertisement added successfully"
+    "AD_ADDED": "Advertisement added successfully",
+    "ADVERTISEMENT_ADDED_AUTOMATICALLY": "Advertisement added automatically"
 
   },
 
@@ -1407,6 +1409,7 @@
     "LOADING_DATA": "Loading data, please wait...",
 
     "ERROR": "Error",
+    "WARNING": "Warning",
 
     "ERROR_OCCURRED": "An error occurred while loading the data.",
 
