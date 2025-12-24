@@ -1430,6 +1430,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       this.tryAutoAddPartner();
     }
 
+    // Auto-add advertisement if leaving advertisements step (step 3)
+    if (this.currentStep === 3) {
+      this.tryAutoAddAdvertisement();
+    }
+
     if (this.currentStep < this.totalSteps) {
       // Only validate if we're not in loading state and form is ready
       if (!this.isLoading && this.firstStepForm && this.isFormInitialized) {
@@ -1450,6 +1455,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       this.tryAutoAddPartner();
     }
 
+    // Auto-add advertisement if leaving advertisements step (step 3)
+    if (this.currentStep === 3) {
+      this.tryAutoAddAdvertisement();
+    }
+
     if (this.currentStep > 1) {
       this.currentStep--;
       this.visitedSteps.add(this.currentStep);
@@ -1460,6 +1470,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     // Auto-add partner if leaving partners step (step 2) and going to different step
     if (this.currentStep === 2 && step !== 2) {
       this.tryAutoAddPartner();
+    }
+
+    // Auto-add advertisement if leaving advertisements step (step 3) and going to different step
+    if (this.currentStep === 3 && step !== 3) {
+      this.tryAutoAddAdvertisement();
     }
 
     if (step >= 1 && step <= this.totalSteps) {
@@ -2114,6 +2129,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       this.tryAutoAddPartner();
     }
 
+    // Auto-add advertisement if leaving advertisements step (step 3)
+    if (this.currentStep === 3) {
+      this.tryAutoAddAdvertisement();
+    }
+
     this.submitted = true;
     this.firstStepForm.markAllAsTouched();
 
@@ -2274,6 +2294,160 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
     }
     // Remove from requestAdvertisements array
     this.requestAdvertisements.splice(i, 1);
+  }
+
+  /**
+   * Check if advertisement form has any data filled in
+   */
+  private hasAdvertisementFormData(): boolean {
+    if (!this.advertForm) return false;
+    
+    const values = this.advertForm.getRawValue();
+    const hasLocations = this.adLocations && this.adLocations.length > 0;
+    
+    // Check if any field has a value (not null, undefined, or empty string)
+    return (
+      (values.adTitle?.toString().trim() || '').length > 0 ||
+      (values.startDate?.toString().trim() || '').length > 0 ||
+      (values.endDate?.toString().trim() || '').length > 0 ||
+      (values.targetTypeIds?.length || 0) > 0 ||
+      (values.adMethodIds?.length || 0) > 0 ||
+      hasLocations ||
+      (values.targetedAmount !== null && values.targetedAmount !== undefined) ||
+      (values.notes?.toString().trim() || '').length > 0 ||
+      this.hasAdvertisementAttachments()
+    );
+  }
+
+  /**
+   * Check if there are any attachments selected for advertisement
+   */
+  private hasAdvertisementAttachments(): boolean {
+    const adAttachType = AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
+    const state = this.ensureState(adAttachType);
+    return Object.keys(state.selected).length > 0 || 
+           state.items.some(item => item.fileBase64 && item.fileName);
+  }
+
+  /**
+   * Validate advertisement form data
+   */
+  private validateAdvertisementForm(): boolean {
+    if (!this.advertForm) return false;
+
+    const hasLocations = this.adLocations && this.adLocations.length > 0;
+    
+    // Check form validity
+    if (!this.advertForm.valid) {
+      return false;
+    }
+
+    // Check for date range errors
+    if (this.advertForm.hasError('dateRange')) {
+      return false;
+    }
+
+    // Check for oldPermRequired error
+    if (this.advertForm.hasError('oldPermRequired')) {
+      return false;
+    }
+
+    // Check locations
+    if (!hasLocations) {
+      return false;
+    }
+
+    // Check required attachments
+    const adAttachType = AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
+    if (this.hasMissingRequiredAttachments(adAttachType)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Auto-add advertisement if form has data before navigating away from advertisements step
+   */
+  private tryAutoAddAdvertisement(): void {
+    // Only try to add if we have data in the form
+    if (!this.hasAdvertisementFormData()) {
+      return;
+    }
+
+    // Validate the advertisement form
+    if (!this.validateAdvertisementForm()) {
+      const message = this.translate.instant('VALIDATION.ADVERTISEMENT_DATA_INCOMPLETE') || 
+                      'Please complete or correct the advertisement information, or clear the form to continue.';
+      this.toastr.warning(message, this.translate.instant('COMMON.WARNING') || 'Warning');
+      return;
+    }
+
+    // If valid, add the advertisement automatically
+    const adAttachType = AttachmentsConfigType.RequestAnEventAnnouncementOrDonationCampaign;
+    const v = this.advertForm.getRawValue();
+    const toRFC3339 = (x: string) => (x ? new Date(x).toISOString() : x);
+    const mainId = Number(v.mainApplyServiceId ?? 0);
+
+    const adAttachments = this.getValidAttachments(adAttachType).map(a => ({
+      ...a,
+      masterId: a.masterId || mainId
+    }));
+
+    const ad: any = {
+      parentId: this.mainApplyServiceId || mainId || null,
+      mainApplyServiceId: mainId,
+      requestNo: (v.requestNo && v.requestNo !== 0) ? Number(v.requestNo) : null,
+      serviceType: Number(v.serviceType) as any,
+      workFlowServiceType: Number(v.workFlowServiceType) as any,
+      requestDate: toRFC3339(v.requestDate)!,
+      provider: v.provider ?? null,
+      adTitle: v.adTitle,
+      adLang: 'ar',
+      startDate: toRFC3339(v.startDate)!,
+      endDate: toRFC3339(v.endDate)!,
+      mobile: v.mobile ?? null,
+      supervisorName: v.supervisorName ?? null,
+      fax: v.fax ?? null,
+      eMail: v.eMail ?? null,
+      targetedAmount: v.targetedAmount != null ? Number(v.targetedAmount) : null,
+      newAd: v.newAd === true ? true : (v.reNewAd ? false : true),
+      reNewAd: v.reNewAd === true ? true : false,
+      oldPermNumber: v.oldPermNumber ?? null,
+      charityEventPermitId: this.loadformData?.charityEventPermit?.id || null,
+      notes: v.notes ?? null,
+      attachments: adAttachments,
+      requestAdvertisementTargets: (v.targetTypeIds || []).map((id: any) => ({
+        mainApplyServiceId: mainId,
+        lkpTargetTypeId: Number(id),
+        othertxt: null
+      })),
+      requestAdvertisementAdMethods: (v.adMethodIds || []).map((id: any) => ({
+        mainApplyServiceId: mainId,
+        lkpAdMethodId: Number(id),
+        othertxt: null
+      })),
+      requestAdvertisementAdLocations: this.adLocations.map(loc => ({
+        mainApplyServiceId: mainId,
+        location: loc
+      })),
+    };
+
+    this.requestAdvertisements.push(ad);
+    
+    this.resetAttachments(adAttachType);
+    this.advertForm.reset({
+      serviceType: 1,
+      workFlowServiceType: 1,
+      requestDate: new Date().toISOString(),
+      targetTypeIds: [],
+      adMethodIds: []
+    });
+    this.adLocations = [];
+    
+    const successMessage = this.translate.instant('SUCCESS.ADVERTISEMENT_ADDED_AUTOMATICALLY') || 
+                           'Advertisement added automatically.';
+    this.toastr.success(successMessage);
   }
 
   // UAE Mobile validation methods
