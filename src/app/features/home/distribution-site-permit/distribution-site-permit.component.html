@@ -603,8 +603,7 @@
                                         <tr>
                                             <th>{{ 'DIST_SITE.PARTNER_NAME' | translate }}</th>
                                             <th>{{ 'DIST_SITE.PARTNER_TYPE' | translate }}</th>
-                                            <th>{{ 'DIST_SITE.LICENSE_ISSUER' | translate }}</th>
-                                            <th>{{ 'DIST_SITE.LICENSE_NUMBER' | translate }}</th>
+                                            <th>{{ 'FASTING_TENT_REQ.jobRequirementsDetails' | translate }}</th>
                                             <th>{{ 'DIST_SITE.CONTACT_DETAILS' | translate }}</th>
                                             <th>{{ 'COMMON.ACTIONS' | translate }}</th>
                                         </tr>
@@ -613,8 +612,7 @@
                                         <tr *ngFor="let partner of partners; let i = index">
                                             <td>{{ partner.name }}</td>
                                             <td>{{ getPartnerTypeName(partner.type) }}</td>
-                                            <td>{{ partner.licenseIssuer || '-' }}</td>
-                                            <td>{{ partner.licenseNumber || '-' }}</td>
+                                            <td>{{ truncateText(partner.jobRequirementsDetails, 30) || '-' }}</td>
                                             <td>{{ partner.contactDetails || '-' }}</td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-danger"

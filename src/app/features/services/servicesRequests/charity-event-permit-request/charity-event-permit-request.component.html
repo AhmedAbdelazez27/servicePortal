@@ -591,9 +591,7 @@
                                                 <th>#</th>
                                                 <th>{{ 'PARTNERS.NAME' | translate }}</th>
                                                 <th>{{ 'PARTNERS.TYPE' | translate }}</th>
-                                                <th>{{ 'PARTNERS.LICENSE_ISSUER' | translate }}</th>
-                                                <th>{{ 'PARTNERS.LICENSE_NUMBER' | translate }}</th>
-                                                <th>{{ 'PARTNERS.LICENSE_EXPIRY' | translate }}</th>
+                                                <th>{{ 'FASTING_TENT_REQ.jobRequirementsDetails' | translate }}</th>
                                                 <th>{{ 'PARTNERS.CONTACT_DETAILS' | translate }}</th>
                                                 <th>{{ 'COMMON.ACTIONS' | translate }}</th>
                                             </tr>
@@ -603,9 +601,7 @@
                                                 <td>{{ i + 1 }}</td>
                                                 <td>{{ p.name }}</td>
                                                 <td>{{ getPartnerTypeLabel(p.type) }}</td>
-                                                <td>{{ p.licenseIssuer }}</td>
-                                                <td>{{ p.licenseNumber }}</td>
-                                                <td>{{ p.licenseExpiryDate | date:'dd/MM/yyyy' }}</td>
+                                                <td>{{ truncateText(p.jobRequirementsDetails, 30) }}</td>
                                                 <td>{{ p.contactDetails }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm btn-danger"

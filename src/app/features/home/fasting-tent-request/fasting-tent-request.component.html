@@ -633,7 +633,7 @@
                                             <th>#</th>
                                             <th>{{ 'FASTING_TENT_REQ.PARTNER_NAME' | translate }}</th>
                                             <th>{{ 'FASTING_TENT_REQ.PARTNER_TYPE' | translate }}</th>
-                                            <th>{{ 'FASTING_TENT_REQ.LICENSE_NUMBER' | translate }}</th>
+                                            <th>{{ 'FASTING_TENT_REQ.jobRequirementsDetails' | translate }}</th>
                                             <th>{{ 'FASTING_TENT_REQ.CONTACT_DETAILS' | translate }}</th>
                                             <th>{{ 'COMMON.ACTIONS' | translate }}</th>
                                         </tr>
@@ -643,7 +643,7 @@
                                             <td>{{ i + 1 }}</td>
                                             <td>{{ partner.name }}</td>
                                             <td>{{ getPartnerTypeName(partner.type) }}</td>
-                                            <td>{{ partner.licenseNumber || '-' }}</td>
+                                            <td>{{ truncateText(partner.jobRequirementsDetails, 30) || '-' }}</td>
                                             <td>{{ partner.contactDetails || '-' }}</td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-danger"

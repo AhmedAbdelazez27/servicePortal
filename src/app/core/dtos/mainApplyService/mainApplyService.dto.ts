@@ -208,6 +208,7 @@ export class PartnerDto {
   licenseExpiryDate: Date | null = null;
   licenseNumber: string | null = null;
   contactDetails: string | null = null;
+  jobRequirementsDetails: string | null = null;
   createdBy: string | null = null;
   creationDate: Date | null = null;
 

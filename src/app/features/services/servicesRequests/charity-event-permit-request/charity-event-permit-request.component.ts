@@ -327,7 +327,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
         telephone1: this.fb.control('', { validators: [Validators.required, this.uaeMobileValidator.bind(this)], nonNullable: true }),
         telephone2: this.fb.control('', { validators: [this.uaeMobileValidator.bind(this)] }),
         email: this.fb.control<string | null>(null, { validators: [Validators.email] }),
-        advertisementType: this.fb.control<1 | 2>(1, { validators: [Validators.required], nonNullable: true }),
+        advertisementType: this.fb.control<1 | 2 | null>(null, { validators: [Validators.required] }),
         notes: this.fb.control<string | null>(null),
         donationCollectionChannelIds: this.fb.control<number[]>([], {
               // validators: [arrayMinLength(1)],
@@ -633,7 +633,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
             telephone1: charityEventPermit.telephone1?.replace('971', '') || '',
             telephone2: charityEventPermit.telephone2?.replace('971', '') || null,
             email: charityEventPermit.email || null,
-            advertisementType: charityEventPermit.advertisementType || 1,
+            advertisementType: charityEventPermit.advertisementType || null,
             notes: charityEventPermit.notes || null,
             donationCollectionChannelIds: charityEventPermit.donationCollectionChannels?.map((c: any) => c.id) || [],
           };
@@ -1098,6 +1098,12 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
   getPartnerTypeLabel(id: number): string {
     return this.partnerTypes.find(t => t.id === id)?.label ?? '';
+  }
+
+  truncateText(text: string | null | undefined, maxLength: number = 30): string {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
   }
 
   /**
@@ -1930,7 +1936,7 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
           telephone1: `971${formData.telephone1}`,
           telephone2: formData.telephone2 ? `971${formData.telephone2}` : null,
           email: formData.email || null,
-          advertisementType: formData.advertisementType || 1,
+          advertisementType: formData.advertisementType || null,
           notes: formData.notes || null,
           isDraft: isDraft,
           donationCollectionChannelIds: formData.donationCollectionChannelIds || [],

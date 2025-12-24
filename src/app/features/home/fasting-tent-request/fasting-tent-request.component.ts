@@ -1971,6 +1971,12 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     return partnerType?.text || '';
   }
 
+  truncateText(text: string | null | undefined, maxLength: number = 30): string {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  }
+
   onPartnerTypeChange(): void {
     const selectedPartnerType = this.partnersForm.get('type')?.value;
     if (selectedPartnerType && (selectedPartnerType === PartnerType.Person || selectedPartnerType === PartnerType.Supplier || selectedPartnerType === PartnerType.Company)) {

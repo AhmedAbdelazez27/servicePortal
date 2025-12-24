@@ -1309,6 +1309,12 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     return this.partnerTypes.find(t => t.id === id)?.label ?? '';
   }
 
+  truncateText(text: string | null | undefined, maxLength: number = 30): string {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  }
+
   /**
    * Check if partner form has any data filled in
    */
