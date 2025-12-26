@@ -860,18 +860,18 @@
                                             <input class="form-control" [(ngModel)]="newLocationInput"
                                                 [ngModelOptions]="{ standalone: true }" name="newLocationInput"
                                                 placeholder="{{ 'CHARITY_EVENT.ADD_LOCATION_PLACEHOLDER' | translate }}">
-                                            <button type="button" class="btn btn-outline-primary"
+                                            <button type="button" class="btn btn-primary"
                                                 (click)="addLocation()">
                                                 {{ 'COMMON.ADD' | translate }}
                                             </button>
                                         </div>
 
                                         <div class="d-flex flex-wrap gap-2">
-                                            <span class="badge bg-secondary"
+                                            <span class="badge bg-primary d-inline-flex align-items-center gap-2 px-3 py-2"
                                                 *ngFor="let loc of adLocations; let i = index">
                                                 {{ loc }}
-                                                <button type="button" class="btn-close btn-close-white btn-sm ms-1"
-                                                    aria-label="Close" (click)="removeLocation(i)"></button>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    aria-label="Close" (click)="removeLocation(i)" style="font-size: 0.7rem;"></button>
                                             </span>
                                         </div>
 
