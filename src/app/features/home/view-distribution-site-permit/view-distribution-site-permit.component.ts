@@ -1475,6 +1475,57 @@ export class ViewDistributionSitePermitComponent implements OnInit, OnDestroy {
     }
   }
 
+   get canShowPrint(): boolean {
+    const steps = this.mainApplyService?.workFlowSteps || [];
+    if (steps.length === 0) {
+      return false;
+    }
+    const firstStep = steps[1];
+    const lastStep = steps[steps.length - 1];
+    return firstStep?.serviceStatus === ServiceStatus.New || firstStep?.serviceStatus === ServiceStatus.Wait || lastStep?.serviceStatus === ServiceStatus.Accept;
+  }
+
+  get canShowPrintInitial(): boolean {
+    const steps = this.mainApplyService?.workFlowSteps || [];
+
+    if (steps.length < 2) {
+      return false;
+    }
+
+    const firstStatus = Number(steps[0]?.serviceStatus);
+    const secondStatus = Number(steps[1]?.serviceStatus);
+
+    if (firstStatus !== 1) {
+      return false;
+    }
+
+    if (secondStatus !== 3 && secondStatus !== 4 && secondStatus !== 1) {
+      return false;
+    }
+
+    for (let i = 0; i < steps.length - 1; i++) {
+      const status = Number(steps[i]?.serviceStatus);
+
+      if (![1, 3, 4].includes(status)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  get canShowPrintFinal(): boolean {
+    const steps = this.mainApplyService?.workFlowSteps || [];
+
+    if (steps.length === 0) {
+      return false;
+    }
+
+    const lastStep = steps[steps.length - 1];
+
+    return lastStep?.serviceStatus === 1;
+  }
+
 
   printReport(): void {
     const serviceId = this.mainApplyService?.serviceId ?? 0;

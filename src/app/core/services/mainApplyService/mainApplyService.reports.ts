@@ -225,7 +225,11 @@ export class MainApplyServiceReportService {
               }
             }
             else if (serviceId === ServicesType.CharityEventPermit) {
-              reportHtml = this.buildCharityEventPermitReport();
+              if (status === 'final') {
+                reportHtml = this.buildFinalCharityEventPermitReport();
+              } else {
+                reportHtml = this.buildInitialCharityEventPermitReport();
+              }
             }
             else if (serviceId === ServicesType.RequestForStaffAppointment) {
               this.translate
@@ -258,13 +262,21 @@ export class MainApplyServiceReportService {
               return;
             }
             else if (serviceId === ServicesType.DonationCampaignPermitRequest) {
-              reportHtml = this.buildDonationCampaignPermitRequestReport();
+              if (status === 'final') {
+                reportHtml = this.buildFinalDonationCampaignPermitRequestReport();
+              } else {
+                reportHtml = this.buildInitialDonationCampaignPermitRequestReport();
+              }
             }
             else if (serviceId === ServicesType.GrievanceRequest) {
               reportHtml = this.buildGrievanceRequestReport();
             }
             else if (serviceId === ServicesType.DistributionSitePermitApplication) {
-              reportHtml = this.buildDistributionSitePermitApplicationReport();
+              if (status === 'final') {
+                reportHtml = this.buildFinalDistributionSitePermitApplicationReport();
+              } else {
+                reportHtml = this.buildInitialDistributionSitePermitApplicationReport();
+              }
             }
             else if (serviceId === ServicesType.RequestComplaint) {
               reportHtml = this.buildRequestComplaintReport();
@@ -493,7 +505,11 @@ export class MainApplyServiceReportService {
               }
             }
             else if (serviceId === ServicesType.CharityEventPermit) {
-              reportHtml = this.buildCharityEventPermitReport();
+              if (status === 'final') {
+                reportHtml = this.buildFinalCharityEventPermitReport();
+              } else {
+                reportHtml = this.buildInitialCharityEventPermitReport();
+              }
             }
             else if (serviceId === ServicesType.RequestForStaffAppointment) {
               this.translate
@@ -526,13 +542,21 @@ export class MainApplyServiceReportService {
               return;
             }
             else if (serviceId === ServicesType.DonationCampaignPermitRequest) {
-              reportHtml = this.buildDonationCampaignPermitRequestReport();
+              if (status === 'final') {
+                reportHtml = this.buildFinalDonationCampaignPermitRequestReport();
+              } else {
+                reportHtml = this.buildInitialDonationCampaignPermitRequestReport();
+              }
             }
             else if (serviceId === ServicesType.GrievanceRequest) {
               reportHtml = this.buildGrievanceRequestReport();
             }
             else if (serviceId === ServicesType.DistributionSitePermitApplication) {
-              reportHtml = this.buildDistributionSitePermitApplicationReport();
+              if (status === 'final') {
+                reportHtml = this.buildFinalDistributionSitePermitApplicationReport();
+              } else {
+                reportHtml = this.buildInitialDistributionSitePermitApplicationReport();
+              }
             }
             else if (serviceId === ServicesType.RequestComplaint) {
               reportHtml = this.buildRequestComplaintReport();
@@ -654,7 +678,7 @@ export class MainApplyServiceReportService {
 
     <td style="width:20%; text-align:center; vertical-align:bottom;">
       <div style="margin-top:8px;">
-        <span style="background:#d8b45b;color:#fff;padding:3px 10px;border-radius:5px;font-weight:bold;">
+        <span style="background:#d8b45b; color:#fff; padding:3px 10px; border-radius:5px; font-weight:bold; display:inline-block;">
         ${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.STATUS_NAME')}
         </span>
       </div>
@@ -883,7 +907,7 @@ export class MainApplyServiceReportService {
   }
 
 
-  private buildCharityEventPermitReport(): string {
+  private buildInitialCharityEventPermitReport(): string {
     return `
    <div id="report">
     <div style="width: 100%; text-align: center;">
@@ -924,7 +948,119 @@ export class MainApplyServiceReportService {
 
     <td style="width:20%; text-align:center; vertical-align:bottom;">
       <div style="margin-top:8px;">
-         <span style="background:#28a745;color:#fff;padding:3px 10px;border-radius:5px;font-weight:bold;">
+        <span style="background:#d8b45b; color:#fff; padding:3px 10px; border-radius:5px; font-weight:bold; display:inline-block;">
+    ${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.STATUS_NAME')}
+  </span>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+      <div style="text-align:center;background:#ccc;border:1px solid #ccc;padding:6px;font-weight:bold;font-size:15px;margin-top:5px;">
+        ${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.TABLE_HEADER')}
+      </div>
+
+      <table>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.FOUNDATION_NAME')} : </strong>
+          <span style="color:black;">${this.reportData?.user?.foundationName ?? ''}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.EVENT_TITLE')} : </strong>
+          <span style="color:black;">${this.reportData?.charityEventPermit?.eventName ?? ''}</span></td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.EVENT_LOCATION')} : </strong>
+          <span style="color:black;">${this.reportData?.charityEventPermit?.eventLocation ?? ''}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.SUPERVISOR_NAME')} : </strong>
+          <span style="color:black;">${this.reportData?.charityEventPermit?.supervisorName ?? ''}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.CONTACT_NUMBER_1')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.charityEventPermit?.telephone1 ?? null)}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.CONTACT_NUMBER_2')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.charityEventPermit?.telephone2 ?? null)}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.PERMIT_END_DATE')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.charityEventPermit?.endDate ?? null)}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.PERMIT_START_DATE')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.charityEventPermit?.startDate ?? null)}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.ADVERTISEMENT')}: </strong>
+          <span style="color:black;">${this.reportData?.charityEventPermit?.advertisementTypeName ?? ''}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.DONATION_CHANNELS')} : </strong>
+          <span style="color:black;">${this.reportData?.charityEventPermit?.donationCollectionChannels?.[0].nameAr ?? ''}</span></td>
+        </tr>
+      </table>
+
+      <div style="border:1px solid #ccc;border-top:none;padding:6px;font-size:13px;">
+        <strong>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.PARTICIPATING_ENTITIES')} : </strong>
+        <span style="color:black;">${this.reportData?.charityEventPermit?.eventName ?? ''}</span>
+      </div>
+
+      <h4>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.TERMS_AND_CONDITIONS')}</h4>
+      <ol style="font-size:13px;line-height:1.6;padding-right:20px;color:#333;">
+        <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.CONDITION_1')}</li>
+        <li>${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.CONDITION_2')}</li>
+      </ol>
+    </div>
+
+    <div class="report-footer">
+      <img src="${this.reportFooter1}" alt="Footer" style="width:100%;height:auto;">
+    </div>
+  </div>
+  `;
+  }
+
+
+  private buildFinalCharityEventPermitReport(): string {
+    return `
+   <div id="report">
+    <div style="width: 100%; text-align: center;">
+      <img src="${this.reportHeader}" alt="Header" style="width: 50%; height: auto;">
+    </div>
+
+    <div style="padding: 50px 25px 10px 25px;">
+     <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+  <tr>
+    <td style="width:20%; padding:4px; vertical-align:center;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.REQUEST_DATE')}</strong> :
+      ${this.formatDate(this.reportData?.applyDate)}
+    </td>
+
+    <td style="width:20%; padding:4px; vertical-align:center;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.REQUEST_NUMBER')}</strong> :
+      ${this.reportData?.applyNo}
+    </td>
+
+    <td style="width:20%; padding:4px; vertical-align:center;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.PERMIT_NUMBER')}</strong> :
+      ${this.reportData?.permitNumber}
+    </td>
+
+    <td style="width:20%; padding:4px; text-align:center; vertical-align:top;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.FINAL_FASTING_TENT_SERVICE_REPORT.PERMIT_TYPE')}</strong>
+    </td>
+
+    <td rowspan="2" style="width:20%; text-align:center; vertical-align:middle;">
+      <img src="${this.qrCodeBase64}" alt="QR Code" style="width:100px; height:100px;">
+    </td>
+  </tr>
+
+  <tr>
+    <td style="width:20%; height:5%;"></td>
+    <td style="width:20%; height:5%;"></td>
+    <td style="width:20%; height:5%;"></td>
+
+    <td style="width:20%; text-align:center; vertical-align:bottom;">
+      <div style="margin-top:8px;">
+        <span style="background:#28a745; color:#fff; padding:3px 10px; border-radius:5px; font-weight:bold; display:inline-block;">
     ${this.translate.instant('mainApplyServiceReportsResourceName.CHARITY_EVENT_PERMIT_REPORT.STATUS_NAME')}
   </span>
       </div>
@@ -1010,7 +1146,7 @@ export class MainApplyServiceReportService {
   }
 
 
-  private buildDonationCampaignPermitRequestReport(): string {
+  private buildInitialDonationCampaignPermitRequestReport(): string {
     return `
    <div id="report">
     <div style="width: 100%; text-align: center;">
@@ -1053,7 +1189,125 @@ export class MainApplyServiceReportService {
 
     <td style="width:20%; text-align:center; vertical-align:bottom;">
       <div style="margin-top:8px;">
-       <span style="background:#28a745;color:#fff;padding:3px 10px;border-radius:5px;font-weight:bold;">
+        <span style="background:#d8b45b; color:#fff; padding:3px 10px; border-radius:5px; font-weight:bold; display:inline-block;">
+    ${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.STATUS_NAME')}
+  </span>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+      <div style="text-align:center;background:#ccc;border:1px solid #ccc;padding:6px;font-weight:bold;font-size:15px;margin-top:5px;">
+        ${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.TABLE_HEADER')}
+      </div>
+
+      <table>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.ENTITY_NAME')} : </strong>
+          <span style="color:black;">${this.reportData?.requestEventPermit?.admin ?? ''}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.PROJECT_NAME')} : </strong>
+          <span style="color:black;">${this.reportData?.requestEventPermit?.eventName ?? ''}</span></td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.PROJECT_TYPE')} : </strong>
+          <span style="color:black;">${this.reportData?.requestEventPermit?.lkpRequestTypeName ?? ''}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.TARGET_AMOUNT')} : </strong>
+          <span style="color:black;">${this.reportData?.requestEventPermit?.targetedAmount ?? ''}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.SUPERVISOR_NAME')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.requestEventPermit?.admin ?? null)}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.CONTACT_NUMBER')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.requestEventPermit?.adminTel ?? null)}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.PERMIT_END_DATE')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.requestEventPermit?.endDate ?? null)}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.PERMIT_START_DATE')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.requestEventPermit?.startDate ?? null)}</span></td>
+        </tr>
+      </table>
+
+      <div style="border:1px solid #ccc;border-top:none;padding:6px;font-size:13px;">
+        <strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.DONATION_CHANNELS')} : </strong>
+        <span style="color:black;">${this.reportData?.requestEventPermit?.donationCollectionChannels?.[0].nameAr ?? ''}</span>
+      </div>
+
+      <div style="border:1px solid #ccc;border-top:none;padding:6px;font-size:13px;">
+        <strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.BENEFICIARY_DATA')} : </strong>
+        <span style="color:black;">${this.reportData?.requestEventPermit?.beneficiaryIdNumber ?? ''}</span>
+      </div>
+
+      <div style="border:1px solid #ccc;border-top:none;padding:6px;font-size:13px;">
+        <strong>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.PARTICIPATING_ENTITIES')} : </strong>
+        <span style="color:black;">${this.reportData?.requestEventPermit?.delegateName ?? ''}</span>
+      </div>
+
+      <h4>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.TERMS_AND_CONDITIONS')}</h4>
+      <ol style="font-size:13px;line-height:1.6;padding-right:20px;color:#333;">
+        <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.CONDITION_1')}</li>
+        <li>${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.CONDITION_2')}</li>
+      </ol>
+    </div>
+
+    <div class="report-footer">
+      <img src="${this.reportFooter1}" alt="Footer" style="width:100%;height:auto;">
+    </div>
+  </div>
+  `;
+  }
+
+
+  private buildFinalDonationCampaignPermitRequestReport(): string {
+    return `
+   <div id="report">
+    <div style="width: 100%; text-align: center;">
+      <img src="${this.reportHeader}" alt="Header" style="width: 50%; height: auto;">
+    </div>
+
+   
+    <div style="padding: 50px 25px 10px 25px;">
+
+       <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+  <tr>
+    <td style="width:20%; padding:4px; vertical-align:center;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.REQUEST_DATE')}</strong> :
+      ${this.formatDate(this.reportData?.applyDate)}
+    </td>
+
+    <td style="width:20%; padding:4px; vertical-align:center;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.REQUEST_NUMBER')}</strong> :
+      ${this.reportData?.applyNo}
+    </td>
+
+    <td style="width:20%; padding:4px; vertical-align:center;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.PERMIT_NUMBER')}</strong> :
+      ${this.reportData?.permitNumber}
+    </td>
+
+    <td style="width:20%; padding:4px; text-align:center; vertical-align:top;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.FINAL_FASTING_TENT_SERVICE_REPORT.PERMIT_TYPE')}</strong>
+    </td>
+
+    <td rowspan="2" style="width:20%; text-align:center; vertical-align:middle;">
+      <img src="${this.qrCodeBase64}" alt="QR Code" style="width:100px; height:100px;">
+    </td>
+  </tr>
+
+  <tr>
+    <td style="width:20%; height:5%;"></td>
+    <td style="width:20%; height:5%;"></td>
+    <td style="width:20%; height:5%;"></td>
+
+    <td style="width:20%; text-align:center; vertical-align:bottom;">
+      <div style="margin-top:8px;">
+        <span style="background:#28a745; color:#fff; padding:3px 10px; border-radius:5px; font-weight:bold; display:inline-block;">
     ${this.translate.instant('mainApplyServiceReportsResourceName.DONATION_CAMPAIGN_PERMIT_REQUEST_REPORT.STATUS_NAME')}
   </span>
       </div>
@@ -1205,7 +1459,127 @@ export class MainApplyServiceReportService {
   }
 
 
-  private buildDistributionSitePermitApplicationReport(): string {
+  private buildInitialDistributionSitePermitApplicationReport(): string {
+    return `
+   <div id="report">
+    <div style="width: 100%; text-align: center;">
+      <img src="${this.reportHeader}" alt="Header" style="width: 50%; height: auto;">
+    </div>
+
+    <div style="padding: 50px 25px 10px 25px;">
+          <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+  <tr>
+    <td style="width:20%; padding:4px; vertical-align:center;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.REQUEST_DATE')}</strong> :
+      ${this.formatDate(this.reportData?.applyDate)}
+    </td>
+
+    <td style="width:20%; padding:4px; vertical-align:center;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.REQUEST_NUMBER')}</strong> :
+      ${this.reportData?.applyNo}
+    </td>
+
+    <td style="width:20%; padding:4px; vertical-align:center;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.PERMIT_NUMBER')}</strong> :
+      ${this.reportData?.permitNumber}
+    </td>
+
+    <td style="width:20%; padding:4px; text-align:center; vertical-align:top;">
+      <strong>${this.translate.instant('mainApplyServiceReportsResourceName.FINAL_FASTING_TENT_SERVICE_REPORT.PERMIT_TYPE')}</strong>
+    </td>
+
+    <td rowspan="2" style="width:20%; text-align:center; vertical-align:middle;">
+      <img src="${this.qrCodeBase64}" alt="QR Code" style="width:100px; height:100px;">
+    </td>
+  </tr>
+
+  <tr>
+    <td style="width:20%; height:5%;"></td>
+    <td style="width:20%; height:5%;"></td>
+    <td style="width:20%; height:5%;"></td>
+
+    <td style="width:20%; text-align:center; vertical-align:bottom;">
+      <div style="margin-top:8px;">
+         <span style="background:#d8b45b;color:#fff;padding:3px 10px;border-radius:5px;font-weight:bold;">
+    ${this.translate.instant('mainApplyServiceReportsResourceName.INITIAL_FASTING_TENT_SERVICE_REPORT.STATUS_NAME')}
+  </span>
+      </div>
+    </td>
+  </tr>
+</table>
+
+      <div style="text-align:center;background:#ccc;border:1px solid #ccc;padding:6px;font-weight:bold;font-size:15px;margin-top:5px;">
+        ${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.TABLE_HEADER')}
+      </div>
+
+      <table>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.ENTITY_NAME')} : </strong>
+          <span style="color:black;">${this.reportData?.entityName ?? ''}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.ADDRESS')} : </strong>
+          <span style="color:black;">${this.reportData?.fastingTentService?.address ?? ''}</span></td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.REQUEST_TYPE')} : </strong>
+          <span style="color:black;">${this.reportData?.fastingTentService?.locationType ?? ''}</span></td>
+           <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.DISTRIBUTION_SITE')} : </strong>
+          <span style="color:black;">${this.reportData?.fastingTentService?.distributionSiteCoordinators ?? ''}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONTACT_NUMBER')} : </strong>
+          <span style="color:black;">${this.reportData?.user?.telNumber ?? ''}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.PERMIT_END_DATE')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.fastingTentService?.endDate ?? null)}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.PERMIT_START_DATE')} : </strong>
+          <span style="color:black;">${this.formatDate(this.reportData?.fastingTentService?.startDate ?? null)}</span></td>
+        </tr>
+        <tr>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.AREA')}: </strong>
+          <span style="color:black;">${this.reportData?.fastingTentService?.regionName ?? ''}</span></td>
+          <td><strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.STREET_NAME')} : </strong>
+          <span style="color:black;">${this.reportData?.fastingTentService?.streetName ?? ''}</span></td>
+        </tr>
+      </table>
+
+      <div style="border:1px solid #ccc;border-top:none;padding:6px;font-size:13px;">
+        <strong>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.SITE_DETAILS')} : </strong>
+        <span style="color:black;">${this.reportData?.fastingTentService?.notes ?? ''}</span>
+      </div>
+
+      <p style="color:red;font-weight:bold;font-size:12px;margin-top:10px;">
+        *${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.NOTE')}
+      </p>
+
+      <h4>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.TERMS_CONDITIONS')}</h4>
+      <ol style="font-size:13px;line-height:1.6;padding-right:20px;color:#333;">
+        <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_1')}</li>
+        <li>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_2')}</li>
+        <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_3')}</li>
+        <li>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_4')}</li>
+        <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_5')}</li>
+        <li>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_6')}</li>
+        <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_7')}</li>
+        <li>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_8')}</li>
+        <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_9')}</li>
+        <li>${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_10')}</li>
+        <li style="background:#f5f5f5;">${this.translate.instant('mainApplyServiceReportsResourceName.DISTRIBUTION_SITE_PERMIT_APPLICATION_REPORT.CONDITION_11')}</li>
+      </ol>
+    </div>
+
+    <div class="report-footer">
+      <img src="${this.reportFooter2}" alt="Footer" style="width:100%;height:auto;">
+    </div>
+  </div>
+  `;
+  }
+
+
+  private buildFinalDistributionSitePermitApplicationReport(): string {
     return `
    <div id="report">
     <div style="width: 100%; text-align: center;">
