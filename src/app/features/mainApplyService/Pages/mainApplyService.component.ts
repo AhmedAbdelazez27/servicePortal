@@ -583,8 +583,7 @@ export class MainApplyServiceComponent {
   canPrint(row: any): boolean {
     const status = row?.serviceStatus as ServiceStatus;
     const isApproved = status === ServiceStatus.Accept;
-    const isTentPreliminary = row?.serviceId === 1 && status === ServiceStatus.Wait;
-    return isApproved || isTentPreliminary;
+    return isApproved;
   }
 
   getStatusClass(serviceStatus: any): string {
