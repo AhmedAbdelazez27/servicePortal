@@ -198,10 +198,11 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
   showPartnerAttachments = false;
 
   // Identity Card Reader
-  identityCardData: IdentityCardReaderDto | null = null;
+  identityCardData: IdentityCardReaderDto | null =null;
   isLoadingIdentityCard = false;
   showIdentityCardData = false;
   isIdentityCardReadSuccessfully = false;
+  isIdentityCardCollapsed = true; // Collapsed by default
 
   // Update mode properties
   requestEventPermitId: number | null = null;
@@ -3849,6 +3850,14 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
         this.showIdentityCardData = true;
         this.isLoadingIdentityCard = false;
         this.isIdentityCardReadSuccessfully = true;
+        
+        // Remove validation error when card is read successfully
+        const beneficiaryIdControl = this.firstStepForm.get('beneficiaryIdNumber');
+        if (beneficiaryIdControl?.hasError('identityCardNotRead')) {
+          beneficiaryIdControl.setErrors(null);
+          beneficiaryIdControl.updateValueAndValidity();
+        }
+        
         this.toastr.success(this.translate.instant('SUCCESS.IDENTITY_CARD_READ'));
         this.cdr.detectChanges();
       },

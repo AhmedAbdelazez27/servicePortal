@@ -272,6 +272,146 @@
                         {{ "VALIDATION.IDENTITY_CARD_MUST_BE_READ" | translate }}
                       </div>
                     </div>
+
+                    <!-- Identity Card Data Section - Collapsible -->
+                    <div class="col-12 mt-3" *ngIf="showIdentityCardData && identityCardData">
+                      <div class="card" style="border: 2px solid #8D734D; border-radius: 10px;">
+                        <div class="card-header text-white d-flex justify-content-between align-items-center" 
+                             style="background-color: #8D734D; cursor: pointer; border-radius: 10px 10px 0 0;"
+                             (click)="isIdentityCardCollapsed = !isIdentityCardCollapsed"
+                             [attr.aria-expanded]="!isIdentityCardCollapsed"
+                             aria-controls="identityCardCollapse">
+                          <h6 class="mb-0">
+                            <i class="fas fa-id-card me-2"></i>
+                            {{ "IDENTITY_CARD.TITLE" | translate }}
+                          </h6>
+                          <i class="fas" [ngClass]="isIdentityCardCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+                        </div>
+                        <div id="identityCardCollapse" [class.collapse]="true" [class.show]="!isIdentityCardCollapsed">
+                          <div class="card-body">
+                            <div class="row">
+                              <!-- Full Name -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.FULL_NAME" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ translationService.currentLang === 'ar' ? identityCardData.fullNameAr :
+                                  identityCardData.fullNameEn }}
+                                </div>
+                              </div>
+
+                              <!-- IDN -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.IDN" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ identityCardData.idn }}
+                                </div>
+                              </div>
+
+                              <!-- Nationality -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.NATIONALITY" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ translationService.currentLang === 'ar' ? identityCardData.nationalityAr :
+                                  identityCardData.nationalityEn }}
+                                </div>
+                              </div>
+
+                              <!-- Gender -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.GENDER" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ translationService.currentLang === 'ar' ? identityCardData.genderAr :
+                                  identityCardData.genderEn }}
+                                </div>
+                              </div>
+
+                              <!-- Birth Date -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.BIRTH_DATE" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ identityCardData.birthDate | date: 'dd/MM/yyyy' }}
+                                </div>
+                              </div>
+
+                              <!-- Marital Status -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.MARITAL_STATUS" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ translationService.currentLang === 'ar' ? identityCardData.maritalStatusAr :
+                                  identityCardData.maritalStatusEn }}
+                                </div>
+                              </div>
+
+                              <!-- Mobile Number -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.MOBILE" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ identityCardData.mobileNo || '-' }}
+                                </div>
+                              </div>
+
+                              <!-- Home Phone -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.HOME_PHONE" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ identityCardData.homePhone || '-' }}
+                                </div>
+                              </div>
+
+                              <!-- Occupation -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.OCCUPATION" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ translationService.currentLang === 'ar' ? (identityCardData.occupationAr || '-') :
+                                  (identityCardData.occupationEn || '-') }}
+                                </div>
+                              </div>
+
+                              <!-- Address -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.ADDRESS" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ translationService.currentLang === 'ar' ? (identityCardData.addressAr || '-') :
+                                  (identityCardData.addressEn || '-') }}
+                                </div>
+                              </div>
+
+                              <!-- Issue Date -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.ISSUE_DATE" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ identityCardData.issueDate | date: 'dd/MM/yyyy' }}
+                                </div>
+                              </div>
+
+                              <!-- Expiry Date -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.EXPIRY_DATE" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ identityCardData.expiryDate | date: 'dd/MM/yyyy' }}
+                                </div>
+                              </div>
+
+                              <!-- Passport Number (if available) -->
+                              <div class="col-md-6 mb-3" *ngIf="identityCardData.passportNo">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.PASSPORT_NO" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ identityCardData.passportNo }}
+                                </div>
+                              </div>
+
+                              <!-- Family Persons Number -->
+                              <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">{{ "IDENTITY_CARD.FAMILY_PERSONS" | translate }}</label>
+                                <div class="form-control-plaintext bg-light p-2 rounded">
+                                  {{ identityCardData.familyPersNo || '-' }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <!-- Event Location -->
                   <!-- <div class="col-xl-6 mb-4">
@@ -694,139 +834,6 @@
                     <textarea class="form-control" rows="3" formControlName="notes" [placeholder]="
                         'CHARITY_EVENT.NOTES_PLACEHOLDER' | translate
                       "></textarea>
-                  </div>
-
-                  <!-- Identity Card Data Section -->
-                  <div class="col-12 mt-4" *ngIf="showIdentityCardData && identityCardData">
-                    <div class="card" style="border: 2px solid #8D734D;">
-                      <div class="card-header text-white" style="background-color: #8D734D;">
-                        <h6 class="mb-0">
-                          <i class="fas fa-id-card me-2"></i>
-                          {{ "IDENTITY_CARD.TITLE" | translate }}
-                        </h6>
-                      </div>
-                      <div class="card-body">
-                        <div class="row">
-                          <!-- Full Name -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.FULL_NAME" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? identityCardData.fullNameAr :
-                              identityCardData.fullNameEn }}
-                            </div>
-                          </div>
-
-                          <!-- IDN -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.IDN" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ identityCardData.idn }}
-                            </div>
-                          </div>
-
-                          <!-- Nationality -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.NATIONALITY" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? identityCardData.nationalityAr :
-                              identityCardData.nationalityEn }}
-                            </div>
-                          </div>
-
-                          <!-- Gender -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.GENDER" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? identityCardData.genderAr :
-                              identityCardData.genderEn }}
-                            </div>
-                          </div>
-
-                          <!-- Birth Date -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.BIRTH_DATE" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ identityCardData.birthDate | date: 'dd/MM/yyyy' }}
-                            </div>
-                          </div>
-
-                          <!-- Marital Status -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.MARITAL_STATUS" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? identityCardData.maritalStatusAr :
-                              identityCardData.maritalStatusEn }}
-                            </div>
-                          </div>
-
-                          <!-- Mobile Number -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.MOBILE" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ identityCardData.mobileNo || '-' }}
-                            </div>
-                          </div>
-
-                          <!-- Home Phone -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.HOME_PHONE" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ identityCardData.homePhone || '-' }}
-                            </div>
-                          </div>
-
-                          <!-- Occupation -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.OCCUPATION" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? (identityCardData.occupationAr || '-') :
-                              (identityCardData.occupationEn || '-') }}
-                            </div>
-                          </div>
-
-                          <!-- Address -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.ADDRESS" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ translationService.currentLang === 'ar' ? (identityCardData.addressAr || '-') :
-                              (identityCardData.addressEn || '-') }}
-                            </div>
-                          </div>
-
-                          <!-- Issue Date -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.ISSUE_DATE" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ identityCardData.issueDate | date: 'dd/MM/yyyy' }}
-                            </div>
-                          </div>
-
-                          <!-- Expiry Date -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.EXPIRY_DATE" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ identityCardData.expiryDate | date: 'dd/MM/yyyy' }}
-                            </div>
-                          </div>
-
-                          <!-- Passport Number (if available) -->
-                          <div class="col-md-6 mb-3" *ngIf="identityCardData.passportNo">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.PASSPORT_NO" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ identityCardData.passportNo }}
-                            </div>
-                          </div>
-
-                          <!-- Family Persons Number -->
-                          <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">{{ "IDENTITY_CARD.FAMILY_PERSONS" | translate }}</label>
-                            <div class="form-control-plaintext bg-light p-2 rounded">
-                              {{ identityCardData.familyPersNo || '-' }}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
