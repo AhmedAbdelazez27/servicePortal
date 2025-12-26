@@ -10,6 +10,7 @@ import {
   ValidatorFn,
   ValidationErrors,
 } from '@angular/forms';
+import { AttachmentPreviewComponent, AttachmentPreviewData } from '../../../shared/components/attachment-preview/attachment-preview.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -65,6 +66,7 @@ import { notBeforeTodayFor } from '../../../shared/customValidators/date.validat
     ReactiveFormsModule,
     TranslateModule,
     NgSelectModule,
+    AttachmentPreviewComponent
   ],
   templateUrl: './fasting-tent-request.component.html',
   styleUrl: './fasting-tent-request.component.scss',
@@ -136,6 +138,9 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   // Supported attachment formats for file input (used in template)
   supportedAttachmentFormats: string = '.pdf,.doc,.docx,.jpg,.jpeg,.png';
 
+  // Attachment preview for location photo
+  previewAttachment: AttachmentPreviewData | null = null;
+
   private subscriptions: Subscription[] = [];
 
   get isRtl(): boolean {
@@ -165,7 +170,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.clearAllToasts();
-    
+
     // Check if we have an id in route params (update mode)
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -313,13 +318,13 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           // In update mode, patch locationTypeId after tentTypes are loaded
           // Use location.locationTypeId if available, otherwise use fastingTentService.locationTypeId
           if (this.fastingTentRequestId) {
-            const locationTypeId = this.loadformData?.fastingTentService?.location?.locationTypeId 
+            const locationTypeId = this.loadformData?.fastingTentService?.location?.locationTypeId
               || this.loadformData?.fastingTentService?.locationTypeId;
             if (locationTypeId) {
               setTimeout(() => {
                 this.mainInfoForm.patchValue({
                   // tentLocationType: locationTypeId,
-                  tentLocationType: this.loadformData?.fastingTentService?.locationTypeId ||null
+                  tentLocationType: this.loadformData?.fastingTentService?.locationTypeId || null
                 });
                 this.cdr.detectChanges();
               }, 0);
@@ -357,6 +362,30 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       this.toastr.error(this.translate.instant('ERRORS.USER_NOT_FOUND'));
       this.router.navigate(['/login']);
     }
+  }
+
+  /**
+   * Open location photo in a popup
+   */
+  openLocationPhotoPreview(): void {
+    if (this.selectedLocationDetails && this.selectedLocationDetails.locationPhotoPath) {
+      this.previewAttachment = {
+        id: this.selectedLocationDetails.id || 0,
+        fileName: 'Location Photo', // You can customize this or translate it
+        fileUrl: this.selectedLocationDetails.locationPhotoPath,
+        fileType: 'image/jpeg', // Assuming it's an image since it's in an img tag
+        fileSize: 0, // Size is unknown but not critical for display
+        attachmentTitle: this.translate.instant('SHARED.LOCATION.PHOTO'),
+        hideDetails: true
+      };
+    }
+  }
+
+  /**
+   * Close attachment preview
+   */
+  closePreview(): void {
+    this.previewAttachment = null;
   }
 
   /**
@@ -530,7 +559,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         if (center) {
           this.map.setCenter(center);
         }
-      } catch {}
+      } catch { }
       this.toastr.info('Map refreshed');
     } else if (this.selectedScenario === 'distribution') {
       this.initializeMap();
@@ -559,7 +588,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (configs) => {
         this.attachmentConfigs = configs || [];
-        
+
         // In update mode, ensure we have all configs even if some attachments weren't uploaded initially
         if (this.fastingTentRequestId) {
           configs.forEach((config) => {
@@ -608,10 +637,10 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     // Master type for FastingTentRequest - use AttachmentsConfigType.PermissionForFastingPerson
     // Master ID should be the mainApplyServiceId
     const masterType = AttachmentsConfigType.PermissionForFastingPerson;
-    
+
     const sub = this.attachmentService.getListByMasterId(masterId, masterType).subscribe({
       next: (attachments: AttachmentDto[]) => {
-        
+
         // Convert API attachments to the format expected by loadExistingAttachments
         const attachmentsData = attachments.map(att => ({
           id: att.id,
@@ -620,7 +649,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           attConfigID: att.attConfigID,
           lastModified: att.lastModified,
         }));
-        
+
         if (attachmentsData.length > 0) {
           this.loadExistingAttachments(attachmentsData);
         }
@@ -637,7 +666,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
    * Load existing attachments from request data
    */
   private loadExistingAttachments(attachmentsData: any[]): void {
-    
+
     attachmentsData.forEach((attachment: any) => {
       if (attachment.attConfigID && attachment.id) {
         // Store existing attachment info - only if id exists
@@ -648,19 +677,19 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           attConfigID: attachment.attConfigID,
           lastModified: attachment.lastModified ? new Date(attachment.lastModified) : undefined,
         };
-        
+
         // Set preview for existing attachments
         if (attachment.imgPath) {
           const isImage = attachment.imgPath.match(/\.(jpg|jpeg|png|gif)$/i);
-          const imageUrl = isImage 
+          const imageUrl = isImage
             ? this.constructImageUrl(attachment.imgPath)
             : 'assets/images/file.png';
-          
+
           this.filePreviews[attachment.attConfigID] = imageUrl;
         }
       }
     });
-    
+
   }
 
   /**
@@ -706,14 +735,14 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       console.error('Error deleting attachments:', error);
       throw error;
     }
-  }  
+  }
 
   /**
    * Handle attachment operations (create, update, delete) in update mode
    */
   async handleAttachmentOperations(): Promise<void> {
     const attachmentPromises: Promise<any>[] = [];
-    
+
     // First handle deletions
     if (Object.keys(this.attachmentsToDelete).length > 0) {
       try {
@@ -723,13 +752,13 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         throw error;
       }
     }
-    
+
     // Then handle new file uploads and updates
     for (const [configId, file] of Object.entries(this.selectedFiles)) {
       const configIdNum = parseInt(configId);
       // Check if there was an existing attachment (even if user selected a new file)
       const existingAttachment = this.existingAttachments[configIdNum];
-      
+
       if (existingAttachment) {
         // Update existing attachment - use existing masterId
         const updateAttachmentDto: UpdateAttachmentBase64Dto = {
@@ -739,7 +768,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           masterId: existingAttachment.masterId || this.mainApplyServiceId || 0,
           attConfigID: configIdNum
         };
-        
+
         attachmentPromises.push(
           this.attachmentService.updateAsync(updateAttachmentDto).toPromise()
         );
@@ -751,7 +780,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           masterId: this.mainApplyServiceId || 0,
           attConfigID: configIdNum
         };
-        
+
         attachmentPromises.push(
           this.attachmentService.saveAttachmentFileBase64(newAttachmentDto).toPromise()
         );
@@ -767,7 +796,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         throw attachmentError;
       }
     }
-    
+
     // Clear deletion tracking after successful operations
     this.attachmentsToDelete = {};
   }
@@ -798,15 +827,15 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
           name: partner.name,
           nameEn: partner.nameEn,
           type: partner.type,
-          licenseIssuer: partner.licenseIssuer ,
-          licenseExpiryDate: partner.licenseExpiryDate ,
-          licenseNumber: partner.licenseNumber ,
-          contactDetails: partner.contactDetails ,
-          jobRequirementsDetails: partner.jobRequirementsDetails ,
+          licenseIssuer: partner.licenseIssuer,
+          licenseExpiryDate: partner.licenseExpiryDate,
+          licenseNumber: partner.licenseNumber,
+          contactDetails: partner.contactDetails,
+          jobRequirementsDetails: partner.jobRequirementsDetails,
           mainApplyServiceId: this.mainApplyServiceId || 0,
-          attachments: partner.attachments ,
+          attachments: partner.attachments,
         };
-        
+
         await this.partnerService.create(partnerDto).toPromise();
       } catch (error) {
         console.error('Error creating partner:', error);
@@ -845,25 +874,25 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   removeExistingFile(configId: number): void {
     const existingAttachment = this.existingAttachments[configId];
     const config = this.attachmentConfigs.find(c => c.id === configId);
-    
+
     if (!existingAttachment || !config) return;
-    
+
     // Show confirmation dialog
     const confirmMessage = this.translate.instant('EDIT_PROFILE.CONFIRM_DELETE_ATTACHMENT') || 'Are you sure you want to delete this attachment?';
     if (confirm(confirmMessage)) {
       // Mark for deletion (will be processed during form submission)
       this.attachmentsToDelete[configId] = existingAttachment.id;
-      
+
       // Remove from UI - this will show the upload area
       delete this.existingAttachments[configId];
       delete this.filePreviews[configId];
-      
+
       // Reset file input
       const fileInput = document.getElementById(`file-${configId}`) as HTMLInputElement;
       if (fileInput) {
         fileInput.value = '';
       }
-      
+
       this.toastr.success(
         this.translate.instant('EDIT_PROFILE.ATTACHMENT_MARKED_FOR_DELETION') || 'Attachment marked for deletion',
         this.translate.instant('TOAST.TITLE.SUCCESS') || 'Success'
@@ -922,13 +951,13 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           this.initializeMap();
           setTimeout(() => {
-          //   if (this.selectedLocationDetails && this.selectedLocationDetails.locationCoordinates) {
-          // this.centerMapOnLocation(
-          //   this.selectedLocationDetails.locationCoordinates,
-          //   this.selectedLocationDetails.id
-          // );
-        // }
-          },100);
+            //   if (this.selectedLocationDetails && this.selectedLocationDetails.locationCoordinates) {
+            // this.centerMapOnLocation(
+            //   this.selectedLocationDetails.locationCoordinates,
+            //   this.selectedLocationDetails.id
+            // );
+            // }
+          }, 100);
         }, 300);
       }
     }
@@ -1002,7 +1031,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   }
   validateMainInfoTab(showToastr = false): boolean {
     const form = this.mainInfoForm;
-    
+
     // Check tent location type (required)
     const tentLocationType = form.get('tentLocationType')?.value;
     if (!tentLocationType) {
@@ -1094,7 +1123,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const supervisorName = form.get('supervisorName')?.value;
     if (!supervisorName || (typeof supervisorName === 'string' && supervisorName.trim() === '')) {
       if (showToastr) {
-       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT.SUPERVISOR_NAME'));
+        this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT.SUPERVISOR_NAME'));
       }
       return false;
     }
@@ -1221,23 +1250,23 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     const sub = this.fastingTentRequestService.getLocationSelect2(request).subscribe({
       next: (response) => {
         this.locationOptions = response.results || [];
-        
+
         // In update mode, ensure locationId is patched after options are loaded
         if (this.fastingTentRequestId && this.loadformData?.fastingTentService?.locationId) {
           const savedLocationId = this.loadformData.fastingTentService.locationId.toString();
           const selectedId = this.mainInfoForm.get('locationId')?.value;
-          
+
           // Check if the saved locationId exists in the options
           const locationExists = this.locationOptions.find(opt => opt.id === savedLocationId || opt.id === Number(savedLocationId));
-          
+
           if (!locationExists) {
             // If location not found in options, add it
-            const locationName = this.loadformData.fastingTentService.location?.locationName 
+            const locationName = this.loadformData.fastingTentService.location?.locationName
               || this.loadformData.fastingTentService.location?.address
               || 'Selected Location';
             this.locationOptions.push({ id: savedLocationId, text: locationName });
           }
-          
+
           // Patch the locationId after options are loaded
           setTimeout(() => {
             this.mainInfoForm.patchValue({
@@ -1360,7 +1389,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       next: (location) => {
         this.selectedLocationDetails = location;
         this.populateLocationFields(location);
-        
+
         // In update mode or when loading existing location, set status to available
         // Skip availability check if this is called from loadRequestDetails (update mode)
         if (skipAvailabilityCheck || this.fastingTentRequestId) {
@@ -1387,8 +1416,8 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     let regionName = location.region; // Fallback to old region field
     if (location.regionEntity) {
       const currentLang = this.translationService.currentLang;
-      regionName = currentLang === 'ar' 
-        ? location.regionEntity.regionArabicName 
+      regionName = currentLang === 'ar'
+        ? location.regionEntity.regionArabicName
         : location.regionEntity.regionEnglishName;
     }
 
@@ -1567,17 +1596,17 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (!this.map) return;
     const google = (window as any).google;
     if (!google || !google.maps) return;
-    
+
     const bounds = new google.maps.LatLngBounds();
     const t = (k: string) => this.translate.instant(k);
     this.interactiveMapLocations.forEach((location) => {
       if (!location.locationCoordinates) return;
       const coords = this.parseCoordinates(location.locationCoordinates);
       if (!coords) return;
-      
+
       // Get icon based on availability
       const icon = this.getMarkerIcon(location.isAvailable, google);
-      
+
       const marker = new google.maps.Marker({
         position: { lat: coords.lat, lng: coords.lng },
         map: this.map,
@@ -1711,7 +1740,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     if (!name || name.length > 200) return false;
     if (!nameEn) return false;
     if (!contactDetails) return false;
-    
+
     // Validate UAE mobile number format
     const uaeMobilePattern = /^5[0-9]{8}$/;
     if (!uaeMobilePattern.test(contactDetails)) return false;
@@ -1733,7 +1762,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       const hasLicenseAttachment =
         !!this.partnerSelectedFiles[partnerType]?.[2057] ||
         (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2057 && a.fileBase64 && a.fileName) ?? false);
-      
+
       if (!hasLicenseAttachment) return false;
     }
 
@@ -1742,7 +1771,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       const hasIdAttachment =
         !!this.partnerSelectedFiles[partnerType]?.[2056] ||
         (this.partnerAttachments[partnerType]?.some(a => a.attConfigID === 2056 && a.fileBase64 && a.fileName) ?? false);
-      
+
       if (!hasIdAttachment) return false;
     }
 
@@ -1756,11 +1785,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
   autoAddPartnerIfValid(): void {
     // Check if form has any data entered
     const hasAnyData = this.hasPartnerFormData();
-    
+
     // Only auto-add if form is valid and has data
     if (this.isPartnerFormFilledAndValid()) {
       const partnerType: PartnerType | null = this.partnersForm.get('type')?.value ?? null;
-      
+
       // Get form values
       const name = (this.partnersForm.get('name')?.value ?? '').toString().trim();
       const nameEn = (this.partnersForm.get('nameEn')?.value ?? '').toString().trim();
@@ -1787,11 +1816,11 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
       // Add partner to list
       this.partners.push(newPartner);
-      
+
       // Reset form
       this.partnersForm.reset();
       this.showPartnerAttachments = false;
-      
+
       // Show success message
       this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED_AUTOMATICALLY'));
     } else if (hasAnyData) {
@@ -1844,7 +1873,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       this.toastr.error(this.translate.instant('VALIDATION.REQUIRED_FIELD') + ': ' + this.translate.instant('FASTING_TENT_REQ.CONTACT_DETAILS'));
       return;
     }
-    
+
     // Validate UAE mobile number format (9 digits starting with 5)
     const uaeMobilePattern = /^5[0-9]{8}$/;
     if (!uaeMobilePattern.test(contactDetails)) {
@@ -1930,13 +1959,13 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       licenseIssuer,
       licenseExpiryDate: licenseExpiry || null,
       licenseNumber,
-      contactDetails:contactDetails.toString(),
+      contactDetails: contactDetails.toString(),
       mainApplyServiceId: this.mainApplyServiceId || 0, // Use mainApplyServiceId in update mode, 0 in create mode
       attachments: partnerAttachments
     };
 
     this.partners.push(newPartner);
-    
+
     this.partnersForm.reset();
     this.showPartnerAttachments = false;
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_ADDED'));
@@ -1946,15 +1975,15 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
 
   removePartner(index: number): void {
     const partner = this.partners[index];
-    
+
     // If partner has an id, it's an existing partner - mark for deletion
     if (partner.id) {
       this.partnersToDelete.push(partner.id);
     }
-    
+
     // Remove from display array
     this.partners.splice(index, 1);
-    
+
     // Also remove from existingPartners if it was there
     if (partner.id) {
       const existingIndex = this.existingPartners.findIndex(p => p.id === partner.id);
@@ -1962,7 +1991,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
         this.existingPartners.splice(existingIndex, 1);
       }
     }
-    
+
     this.toastr.success(this.translate.instant('SUCCESS.PARTNER_REMOVED'));
   }
 
@@ -2180,7 +2209,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
     // Only remove new file selection, not existing attachments
     // For existing attachments, use removeExistingFile() instead
     delete this.selectedFiles[configId];
-    
+
     // Remove preview for new file
     const existingAttachment = this.existingAttachments[configId];
     if (!existingAttachment) {
@@ -2190,7 +2219,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       // Restore existing attachment preview
       if (existingAttachment.imgPath) {
         const isImage = existingAttachment.imgPath.match(/\.(jpg|jpeg|png|gif)$/i);
-        this.filePreviews[configId] = isImage 
+        this.filePreviews[configId] = isImage
           ? this.constructImageUrl(existingAttachment.imgPath)
           : 'assets/images/file.png';
       } else {
@@ -2677,20 +2706,20 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
       const newAttachment = this.attachments.find(a => a.attConfigID === config.id);
       const existingAttachment = this.existingAttachments[config.id!];
       const selectedFile = this.selectedFiles[config.id!];
-      
+
       // Attachment is valid if:
       // 1. There's a new attachment with fileBase64 and fileName (create mode)
       // 2. There's an existing attachment (update mode)
       // 3. There's a selected file (update mode - will be saved)
-      const hasValidAttachment = 
+      const hasValidAttachment =
         (newAttachment && newAttachment.fileBase64 && newAttachment.fileName) ||
         existingAttachment ||
         selectedFile;
-      
+
       if (!hasValidAttachment) {
         if (showToastr) {
           const attachmentName = this.getAttachmentName(config);
-         this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + attachmentName);
+          this.toastr.error(this.translate.instant('VALIDATION.ATTACHMENT_REQUIRED') + ': ' + attachmentName);
         }
         return false;
       }
@@ -2796,7 +2825,7 @@ export class FastingTentRequestComponent implements OnInit, OnDestroy {
             const newAttachment = this.attachments.find(a => a.attConfigID === config.id);
             const existingAttachment = this.existingAttachments[config.id!];
             const selectedFile = this.selectedFiles[config.id!];
-            const hasValidAttachment = 
+            const hasValidAttachment =
               (newAttachment && newAttachment.fileBase64) ||
               existingAttachment ||
               selectedFile;

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafePipe } from '../../pipes/safe.pipe';
 
 export interface AttachmentPreviewData {
@@ -9,12 +10,13 @@ export interface AttachmentPreviewData {
   fileType: string;
   fileSize: number;
   attachmentTitle?: string;
+  hideDetails?: boolean;
 }
 
 @Component({
   selector: 'app-attachment-preview',
   standalone: true,
-  imports: [CommonModule, SafePipe],
+  imports: [CommonModule, SafePipe, TranslateModule],
   template: `
     <div class="attachment-preview-modal" (click)="onBackdropClick($event)">
       <div class="modal-content">
@@ -25,7 +27,7 @@ export interface AttachmentPreviewData {
           </button>
         </div>
         <div class="modal-body">
-          <div class="attachment-info">
+          <div class="attachment-info" *ngIf="!attachment?.hideDetails">
             <p><strong>File Name:</strong> {{ attachment?.fileName }}</p>
             <p><strong>File Size:</strong> {{ formatFileSize(attachment?.fileSize) }}</p>
             <p><strong>File Type:</strong> {{ attachment?.fileType }}</p>
@@ -56,8 +58,8 @@ export interface AttachmentPreviewData {
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="close()">Close</button>
-          <button type="button" class="btn btn-primary" (click)="download()">Download</button>
+          <button type="button" class="btn btn-secondary" (click)="close()">{{ 'COMMON.CLOSE' | translate }}</button>
+          <button type="button" class="btn btn-primary" (click)="download()">{{ 'COMMON.DOWNLOAD' | translate }}</button>
         </div>
       </div>
     </div>
@@ -290,11 +292,11 @@ export class AttachmentPreviewComponent {
 
   formatFileSize(bytes: number | undefined): string {
     if (!bytes) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 

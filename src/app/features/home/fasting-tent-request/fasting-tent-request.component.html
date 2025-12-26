@@ -177,8 +177,8 @@
                                         <div class="row mb-4">
                                             <!-- Start Date -->
                                             <div class="col-xl-6 mb-4">
-                                                <label class="form-label">{{ 'FASTING_TENT_REQ.START_DATE' | translate }} <span
-                                                        class="text-danger">*</span></label>
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.START_DATE' | translate
+                                                    }} <span class="text-danger">*</span></label>
                                                 <input type="date" class="form-control" formControlName="startDate"
                                                     [class.is-invalid]="(mainInfoForm.get('startDate')?.invalid && (mainInfoForm.get('startDate')?.touched || submitted)) || mainInfoForm.hasError('startBeforeToday')"
                                                     [class.is-valid]="mainInfoForm.get('startDate')?.valid && (mainInfoForm.get('startDate')?.touched || submitted)">
@@ -186,15 +186,16 @@
                                                     class="invalid-feedback">
                                                     {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                                 </div>
-                                                <div style="color:red" *ngIf="mainInfoForm.hasError('startBeforeToday')">
+                                                <div style="color:red"
+                                                    *ngIf="mainInfoForm.hasError('startBeforeToday')">
                                                     {{ 'VALIDATION.START_NOT_BEFORE_TODAY' | translate }}
                                                 </div>
                                             </div>
 
                                             <!-- End Date -->
                                             <div class="col-xl-6 mb-4">
-                                                <label class="form-label">{{ 'FASTING_TENT_REQ.END_DATE' | translate }} <span
-                                                        class="text-danger">*</span></label>
+                                                <label class="form-label">{{ 'FASTING_TENT_REQ.END_DATE' | translate }}
+                                                    <span class="text-danger">*</span></label>
                                                 <input type="date" class="form-control" formControlName="endDate"
                                                     [class.is-invalid]="mainInfoForm.get('endDate')?.invalid && (mainInfoForm.get('endDate')?.touched || submitted)"
                                                     [class.is-valid]="mainInfoForm.get('endDate')?.valid && (mainInfoForm.get('endDate')?.touched || submitted)">
@@ -221,11 +222,13 @@
                                                 <!-- Map Key/Legend -->
                                                 <div class="map-legend">
                                                     <div class="legend-item">
-                                                        <img src="http://maps.google.com/mapfiles/ms/icons/green.png" alt="Green marker" class="legend-icon">
+                                                        <img src="http://maps.google.com/mapfiles/ms/icons/green.png"
+                                                            alt="Green marker" class="legend-icon">
                                                         <span class="legend-text">المواقع المتاحة</span>
                                                     </div>
                                                     <div class="legend-item">
-                                                        <img src="http://maps.google.com/mapfiles/ms/icons/red.png" alt="Red marker" class="legend-icon">
+                                                        <img src="http://maps.google.com/mapfiles/ms/icons/red.png"
+                                                            alt="Red marker" class="legend-icon">
                                                         <span class="legend-text">المواقع غير المتاحة</span>
                                                     </div>
                                                 </div>
@@ -260,7 +263,7 @@
                                         <h6 class="mb-3">{{ 'SHARED.LOCATION.DETAILS' | translate }}</h6>
 
                                         <div class="row">
-                                           
+
 
                                             <div class="col-xl-6 mb-3">
                                                 <label class="form-label">{{ 'FASTING_TENT_REQ.REGION_NAME' | translate
@@ -276,7 +279,7 @@
                                                     readonly>
                                             </div>
 
-                                      
+
 
                                             <div class="col-xl-12 mb-3">
                                                 <label class="form-label">{{ 'FASTING_TENT_REQ.ADDRESS' | translate
@@ -293,7 +296,8 @@
                                                 <div>
                                                     <img [src]="selectedLocationDetails.locationPhotoPath"
                                                         alt="Location Photo" class="img-fluid location-photo-hover"
-                                                        style="max-height: 200px;">
+                                                        style="max-height: 200px; cursor: pointer;"
+                                                        (click)="openLocationPhotoPreview()">
                                                 </div>
                                             </div>
                                         </div>
@@ -348,8 +352,8 @@
                                                 <span class="mobile-prefix">971</span>
                                             </div>
                                             <input type="tel" class="form-control mobile-number-input"
-                                                formControlName="supervisorMobile" placeholder="5**********" maxlength="9"
-                                                (keypress)="restrictMobileInput($event)"
+                                                formControlName="supervisorMobile" placeholder="5**********"
+                                                maxlength="9" (keypress)="restrictMobileInput($event)"
                                                 (input)="onSupervisorMobileInput()" (blur)="onSupervisorMobileBlur()">
                                         </div>
 
@@ -358,7 +362,8 @@
                                             <div *ngIf="supervisorForm.get('supervisorMobile')?.hasError('required')">
                                                 {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                             </div>
-                                            <div *ngIf="supervisorForm.get('supervisorMobile')?.hasError('invalidUaeMobile')">
+                                            <div
+                                                *ngIf="supervisorForm.get('supervisorMobile')?.hasError('invalidUaeMobile')">
                                                 {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
                                             </div>
                                         </div>
@@ -490,7 +495,8 @@
                                                         <span class="text-danger">*</span>
                                                     </label>
                                                     <!-- Mobile Number Input with UAE Flag and 971 prefix -->
-                                                    <div class="mobile-input-container" style="border : none !important;"
+                                                    <div class="mobile-input-container"
+                                                        style="border : none !important;"
                                                         [class.is-invalid]="(submitted || partnersForm.get('contactDetails')?.touched) && partnersForm.get('contactDetails')?.errors">
                                                         <div class="mobile-prefix-container">
                                                             <img src="assets/images/Flag_of_the_United_Arab_Emirates.svg.png"
@@ -498,16 +504,19 @@
                                                             <span class="mobile-prefix">971</span>
                                                         </div>
                                                         <input type="tel" class="form-control mobile-number-input"
-                                                            formControlName="contactDetails" placeholder="5**********" maxlength="9"
-                                                            (keypress)="restrictMobileInput($event)"
-                                                            (input)="onContactDetailsInput()" (blur)="onContactDetailsBlur()">
+                                                            formControlName="contactDetails" placeholder="5**********"
+                                                            maxlength="9" (keypress)="restrictMobileInput($event)"
+                                                            (input)="onContactDetailsInput()"
+                                                            (blur)="onContactDetailsBlur()">
                                                     </div>
                                                     <div *ngIf="(submitted || partnersForm.get('contactDetails')?.touched) && partnersForm.get('contactDetails')?.errors"
                                                         class="invalid-feedback">
-                                                        <div *ngIf="partnersForm.get('contactDetails')?.hasError('required')">
+                                                        <div
+                                                            *ngIf="partnersForm.get('contactDetails')?.hasError('required')">
                                                             {{ 'VALIDATION.REQUIRED_FIELD' | translate }}
                                                         </div>
-                                                        <div *ngIf="partnersForm.get('contactDetails')?.hasError('invalidUaeMobile')">
+                                                        <div
+                                                            *ngIf="partnersForm.get('contactDetails')?.hasError('invalidUaeMobile')">
                                                             {{ 'VALIDATION.INVALID_PHONE_FORMAT' | translate }}
                                                         </div>
                                                     </div>
@@ -708,19 +717,15 @@
                                             </div>
                                             <div>
                                                 <!-- Upload area (shown when no file is selected and no existing attachment) -->
-                                                <div *ngIf="!selectedFiles[config.id!] && !existingAttachments[config.id!]" 
-                                                     class="upload-area"
-                                                     (dragover)="onDragOver($event)" 
-                                                     (dragleave)="onDragLeave($event)"
-                                                     (drop)="onDrop($event, config.id!)" 
-                                                     [class.drag-over]="isDragOver"
-                                                     [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && !existingAttachments[config.id!] && (currentTab === 4 || submitted)"
-                                                     [class.border-success]="selectedFiles[config.id!] || existingAttachments[config.id!]">
-                                                    <input type="file" 
-                                                           class="d-none" 
-                                                           [id]="'file-' + config.id"
-                                                           (change)="onFileSelected($event, config.id!)"
-                                                           [accept]="supportedAttachmentFormats">
+                                                <div *ngIf="!selectedFiles[config.id!] && !existingAttachments[config.id!]"
+                                                    class="upload-area" (dragover)="onDragOver($event)"
+                                                    (dragleave)="onDragLeave($event)"
+                                                    (drop)="onDrop($event, config.id!)" [class.drag-over]="isDragOver"
+                                                    [class.border-danger]="isAttachmentMandatory(config.id!) && !selectedFiles[config.id!] && !existingAttachments[config.id!] && (currentTab === 4 || submitted)"
+                                                    [class.border-success]="selectedFiles[config.id!] || existingAttachments[config.id!]">
+                                                    <input type="file" class="d-none" [id]="'file-' + config.id"
+                                                        (change)="onFileSelected($event, config.id!)"
+                                                        [accept]="supportedAttachmentFormats">
                                                     <label [for]="'file-' + config.id" class="upload-label">
                                                         <i class="fas fa-cloud-upload-alt"></i>
                                                         <span>{{ 'ATTACHMENTS.DRAG_DROP_OR_CLICK' | translate }}</span>
@@ -728,81 +733,75 @@
                                                 </div>
 
                                                 <!-- عرض الملف الموجود (existing attachment) -->
-                                                <div *ngIf="existingAttachments[config.id!] && !selectedFiles[config.id!]" 
-                                                     class="file-preview existing-attachment-container"
-                                                     style="position: relative;">
+                                                <div *ngIf="existingAttachments[config.id!] && !selectedFiles[config.id!]"
+                                                    class="file-preview existing-attachment-container"
+                                                    style="position: relative;">
                                                     <div class="d-flex align-items-center gap-3">
                                                         <!-- Preview Image/Icon -->
                                                         <div style="position: relative; display: inline-block;">
                                                             <img style="width:150px;height:100px"
-                                                                 *ngIf="filePreviews[config.id!] && isImageFile(existingAttachments[config.id!]?.imgPath)"
-                                                                 [src]="filePreviews[config.id!]"
-                                                                 class="preview-image">
+                                                                *ngIf="filePreviews[config.id!] && isImageFile(existingAttachments[config.id!]?.imgPath)"
+                                                                [src]="filePreviews[config.id!]" class="preview-image">
                                                             <div *ngIf="!filePreviews[config.id!] || !isImageFile(existingAttachments[config.id!]?.imgPath)"
-                                                                 class="file-icon">
+                                                                class="file-icon">
                                                                 <i class="fas fa-file"></i>
                                                             </div>
-                                                            
+
                                                             <!-- Hover overlay with edit button -->
                                                             <div class="attachment-hover-overlay">
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-primary"
-                                                                        (click)="triggerFileInput(config.id!); $event.stopPropagation()"
-                                                                        title="{{ 'EDIT_PROFILE.UPDATE_ATTACHMENT' | translate }}">
+                                                                <button type="button" class="btn btn-sm btn-primary"
+                                                                    (click)="triggerFileInput(config.id!); $event.stopPropagation()"
+                                                                    title="{{ 'EDIT_PROFILE.UPDATE_ATTACHMENT' | translate }}">
                                                                     <i class="fas fa-edit"></i>
                                                                     {{ 'COMMON.UPDATE' | translate }}
                                                                 </button>
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-info"
-                                                                        (click)="viewAttachment(config.id!); $event.stopPropagation()"
-                                                                        title="{{ 'COMMON.VIEW' | translate }}">
+                                                                <button type="button" class="btn btn-sm btn-info"
+                                                                    (click)="viewAttachment(config.id!); $event.stopPropagation()"
+                                                                    title="{{ 'COMMON.VIEW' | translate }}">
                                                                     <i class="fas fa-eye"></i>
                                                                     {{ 'COMMON.VIEW' | translate }}
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <!-- File Info and Actions -->
                                                         <div class="d-flex flex-column gap-2">
                                                             <span class="file-name">
-                                                                {{ getFileNameFromPath(existingAttachments[config.id!]?.imgPath) }}
+                                                                {{
+                                                                getFileNameFromPath(existingAttachments[config.id!]?.imgPath)
+                                                                }}
                                                             </span>
-                                                            
+
                                                             <!-- Action Buttons -->
                                                             <div class="d-flex gap-2">
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-info"
-                                                                        (click)="viewAttachment(config.id!)"
-                                                                        [title]="'COMMON.VIEW' | translate">
+                                                                <button type="button" class="btn btn-sm btn-info"
+                                                                    (click)="viewAttachment(config.id!)"
+                                                                    [title]="'COMMON.VIEW' | translate">
                                                                     <i class="fas fa-eye me-1"></i>
                                                                     {{ 'COMMON.VIEW' | translate }}
                                                                 </button>
-                                                                
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-primary"
-                                                                        (click)="triggerFileInput(config.id!)"
-                                                                        [title]="'COMMON.UPDATE' | translate">
+
+                                                                <button type="button" class="btn btn-sm btn-primary"
+                                                                    (click)="triggerFileInput(config.id!)"
+                                                                    [title]="'COMMON.UPDATE' | translate">
                                                                     <i class="fas fa-edit me-1"></i>
                                                                     {{ 'COMMON.UPDATE' | translate }}
                                                                 </button>
-                                                                
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-danger"
-                                                                        (click)="removeExistingFile(config.id!)"
-                                                                        [title]="'COMMON.REMOVE' | translate">
+
+                                                                <button type="button" class="btn btn-sm btn-danger"
+                                                                    (click)="removeExistingFile(config.id!)"
+                                                                    [title]="'COMMON.REMOVE' | translate">
                                                                     <i class="fas fa-trash me-1"></i>
                                                                     {{ 'COMMON.REMOVE' | translate }}
                                                                 </button>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <!-- Hidden file input for existing attachments -->
-                                                    <input type="file"
-                                                           class="d-none"
-                                                           [id]="'file-' + config.id"
-                                                           (change)="onFileSelected($event, config.id!)"
-                                                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                    <input type="file" class="d-none" [id]="'file-' + config.id"
+                                                        (change)="onFileSelected($event, config.id!)"
+                                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                                                 </div>
 
                                                 <!-- المعاينة للملف الجديد (new file preview) -->
@@ -811,20 +810,19 @@
                                                         <!-- Preview Image/Icon -->
                                                         <div>
                                                             <img style="width:150px;height:100px"
-                                                                 *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type?.startsWith('image/')"
-                                                                 [src]="filePreviews[config.id!]"
-                                                                 class="preview-image">
+                                                                *ngIf="filePreviews[config.id!] && selectedFiles[config.id!].type?.startsWith('image/')"
+                                                                [src]="filePreviews[config.id!]" class="preview-image">
                                                         </div>
-                                                        
+
                                                         <!-- File Info and Actions -->
                                                         <div class="d-flex flex-column gap-2">
-                                                            <span class="file-name">{{ selectedFiles[config.id!].name }}</span>
-                                                            
+                                                            <span class="file-name">{{ selectedFiles[config.id!].name
+                                                                }}</span>
+
                                                             <!-- Action Button -->
-                                                            <button type="button"
-                                                                    class="btn btn-sm btn-danger"
-                                                                    (click)="removeFile(config.id!)"
-                                                                    [title]="'COMMON.REMOVE' | translate">
+                                                            <button type="button" class="btn btn-sm btn-danger"
+                                                                (click)="removeFile(config.id!)"
+                                                                [title]="'COMMON.REMOVE' | translate">
                                                                 <i class="fas fa-trash me-1"></i>
                                                                 {{ 'COMMON.REMOVE' | translate }}
                                                             </button>
@@ -872,9 +870,7 @@
                                     (click)="nextTab()" [disabled]="!canProceedToNext()"
                                     [title]="!canProceedToNext() ? ('VALIDATION.COMPLETE_REQUIRED_FIELDS' | translate) : ''">
                                     {{ 'COMMON.NEXT' | translate }}
-                                    <i
-                                        *ngIf="canProceedToNext()"
-                                        class="fas ms-2"
+                                    <i *ngIf="canProceedToNext()" class="fas ms-2"
                                         [ngClass]="isRtl ? 'fa-arrow-left' : 'fa-arrow-right'">
                                     </i>
                                 </button>
@@ -887,25 +883,24 @@
                                 </button>
 
                                 <div *ngIf="currentTab === totalTabs" class="d-flex gap-2">
-                                  <!--<button type="button" class="btn btn-outline-secondary"
+                                    <!--<button type="button" class="btn btn-outline-secondary"
                                           (click)="onSaveDraft()" [disabled]="!canSubmit() || isSaving"
                                           [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
                                     <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
                                     {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
                                   </button>-->
 
-                                  <button type="button" class="btn btn-outline-secondary"
-                                          (click)="onSaveDraft()">
-                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
-                                    {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
-                                  </button>
-                                  <button type="button" class="btn btn-success"
-                                          (click)="onSubmit()" [disabled]="!canSubmit() || isSaving"
-                                          [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
-                                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
-                                    {{ 'COMMON.SUBMIT' | translate }}
-                                    <i *ngIf="!isSaving && canSubmit()" class="fas fa-check ms-2"></i>
-                                  </button>
+                                    <button type="button" class="btn btn-outline-secondary" (click)="onSaveDraft()">
+                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                        {{ 'COMMON.SAVE_AS_DRAFT' | translate }}
+                                    </button>
+                                    <button type="button" class="btn btn-success" (click)="onSubmit()"
+                                        [disabled]="!canSubmit() || isSaving"
+                                        [title]="!canSubmit() ? ('VALIDATION.COMPLETE_ALL_REQUIRED_FIELDS' | translate) : ''">
+                                        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+                                        {{ 'COMMON.SUBMIT' | translate }}
+                                        <i *ngIf="!isSaving && canSubmit()" class="fas fa-check ms-2"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -920,4 +915,8 @@
             </div>
         </div>
     </section>
+
+    <!-- Attachment Preview Modal -->
+    <app-attachment-preview *ngIf="previewAttachment" [attachment]="previewAttachment" (closeModal)="closePreview()">
+    </app-attachment-preview>
 </div>
