@@ -701,6 +701,15 @@ profilePhotoAttachment = attachments.find((att: any) => att.masterType == 1009);
       if (toggler) toggler.setAttribute('aria-expanded', 'false');
     }
   }
-
+  // Check if user has permission
+  hasPermission(action: string): boolean {
+    const profile = this.authService.snapshot;
+    // console.log(profile);
+    
+    if (!profile?.permissions || profile.permissions.length === 0) {
+      return false;
+    }
+    return profile.permissions.includes(action);
+  }
 
 }

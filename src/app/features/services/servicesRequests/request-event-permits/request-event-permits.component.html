@@ -254,6 +254,7 @@
                       </button>
                       <button type="button" class="btn btn-gray" (click)="navigateToPreviousAidRequests()"
                         [disabled]="!firstStepForm.get('beneficiaryIdNumber')?.value"
+                        *ngIf="hasPermission('AidRequest.View')"
                         style="border-radius: 0; white-space: nowrap; margin-left: 2px;">
                         <i class="fas fa-history me-1"></i>
                         {{ "AID_REQUESTS.PREVIOUS_AID_REQUESTS" | translate }}

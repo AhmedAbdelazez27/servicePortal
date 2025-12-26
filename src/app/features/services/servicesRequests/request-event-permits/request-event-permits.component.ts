@@ -3876,6 +3876,17 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Check if user has permission
+  hasPermission(action: string): boolean {
+    const profile = this.authService.snapshot;
+    // console.log(profile);
+    
+    if (!profile?.permissions || profile.permissions.length === 0) {
+      return false;
+    }
+    return profile.permissions.includes(action);
+  }
+
   // Navigate to Previous Aid Requests
   navigateToPreviousAidRequests(): void {
     const idNumber = this.firstStepForm.get('beneficiaryIdNumber')?.value;
