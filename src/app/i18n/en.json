@@ -1309,6 +1309,8 @@
     "REQUEST_PLAINT_CREATED": "Your grievance request has been submitted successfully!",
     "REQUEST_PLAINT_SAVED_AS_DRAFT": "Your grievance request has been saved as draft successfully!",
     "REQUEST_Project_Campaign": "Your Project/Campaign Donation Statement request has been submitted successfully!",
+    "REQUEST_SAVED_AS_DRAFT": "Your Project/Campaign Donation Statement request has been saved as draft successfully!",
+    "REQUEST_UPDATED": "Your Project/Campaign Donation Statement request has been updated successfully!",
 
     "REQUEST_COMPLAINT_CREATED": "Complaint request created successfully",
 
@@ -1317,6 +1319,9 @@
 
     "DISTRIBUTION_SITE_REQUEST_CREATED": "Distribution site permit request submitted successfully!",
     "DISTRIBUTION_SITE_REQUEST_SAVED_AS_DRAFT": "Distribution site permit request has been saved as draft successfully!",
+    "CHARITY_EVENT_PERMIT_CREATED": "Charity event permit request has been submitted successfully!",
+    "CHARITY_EVENT_PERMIT_SAVED_AS_DRAFT": "Charity event permit request has been saved as draft successfully!",
+    "CHARITY_EVENT_PERMIT_UPDATED": "Charity event permit request has been updated successfully!",
 
     "LOCATION_AVAILABLE": "Location is available",
 
@@ -1350,6 +1355,10 @@
     "FAILED_LOAD_DATA": "Failed to load data. Please try again.",
 
     "FAILED_CREATE_REQUEST_PLAINT": "Failed to create grievance request. Please try again.",
+    "FAILED_CREATE_REQUEST_EVENT_PERMIT": "Failed to create Project/Campaign Donation Statement request. Please try again.",
+    "FAILED_UPDATE_REQUEST_EVENT_PERMIT": "Failed to update Project/Campaign Donation Statement request. Please try again.",
+    "FAILED_CREATE_CHARITY_EVENT_PERMIT": "Failed to create charity event permit request. Please try again.",
+    "FAILED_UPDATE_CHARITY_EVENT_PERMIT": "Failed to update charity event permit request. Please try again.",
 
     "FAILED_SAVE_DRAFT": "Failed to save draft. Please try again.",
 
@@ -1360,8 +1369,8 @@
     "AUTHENTICATION_REQUIRED": "Authentication required. Please login again.",
 
     "FAILED_CREATE_FASTING_TENT_REQUEST": "Failed to create fasting tent request. Please try again.",
-
     "FAILED_CREATE_DISTRIBUTION_SITE_REQUEST": "Failed to create distribution site permit request. Please try again.",
+    "FAILED_UPDATE_DISTRIBUTION_SITE_REQUEST": "Failed to update distribution site permit request. Please try again.",
 
     "FAILED_LOAD_LOCATIONS": "Failed to load locations. Please try again.",
 

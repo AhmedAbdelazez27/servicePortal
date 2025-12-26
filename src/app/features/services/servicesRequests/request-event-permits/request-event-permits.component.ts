@@ -2663,9 +2663,17 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
                   this.translate.instant('SUCCESS.REQUEST_SAVED_AS_DRAFT') || 'Request saved as draft'
                 );
               } else {
-                this.toastr.success(
-                  this.translate.instant('SUCCESS.REQUEST_UPDATED') || 'Request updated successfully'
-                );
+                // If the original request was a draft (serviceStatus === 5) and now being submitted, show "created" message instead of "updated"
+                const wasDraft = this.loadformData?.serviceStatus === 5;
+                if (wasDraft) {
+                  this.toastr.success(
+                    this.translate.instant('SUCCESS.REQUEST_Project_Campaign') || 'Request created successfully'
+                  );
+                } else {
+                  this.toastr.success(
+                    this.translate.instant('SUCCESS.REQUEST_UPDATED') || 'Request updated successfully'
+                  );
+                }
               }
               this.router.navigate(['/request']);
               this.isSaving = false;
@@ -2679,9 +2687,17 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
                     this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft'
                   );
                 } else {
-                  this.toastr.error(
-                    this.translate.instant('ERRORS.FAILED_UPDATE_REQUEST') || 'Failed to update request'
-                  );
+                  // If the original request was a draft (serviceStatus === 5) and now being submitted, show "create" error message instead of "update"
+                  const wasDraft = this.loadformData?.serviceStatus === 5;
+                  if (wasDraft) {
+                    this.toastr.error(
+                      this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_EVENT_PERMIT') || 'Failed to create request'
+                    );
+                  } else {
+                    this.toastr.error(
+                      this.translate.instant('ERRORS.FAILED_UPDATE_REQUEST_EVENT_PERMIT') || 'Failed to update request'
+                    );
+                  }
                 }
               }
               this.isSaving = false;
@@ -2793,7 +2809,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
                   );
                 } else {
                   this.toastr.error(
-                    this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+                    this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_EVENT_PERMIT') || 'Failed to create request'
                   );
                 }
               }
@@ -2812,7 +2828,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           );
         } else {
           this.toastr.error(
-            this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+            this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_EVENT_PERMIT') || 'Failed to create request'
           );
         }
       }
@@ -2956,9 +2972,17 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
                   this.translate.instant('SUCCESS.REQUEST_SAVED_AS_DRAFT') || 'Request saved as draft'
                 );
               } else {
-                this.toastr.success(
-                  this.translate.instant('SUCCESS.REQUEST_UPDATED') || 'Request updated successfully'
-                );
+                // If the original request was a draft (serviceStatus === 5) and now being submitted, show "created" message instead of "updated"
+                const wasDraft = this.loadformData?.serviceStatus === 5;
+                if (wasDraft) {
+                  this.toastr.success(
+                    this.translate.instant('SUCCESS.REQUEST_Project_Campaign') || 'Request created successfully'
+                  );
+                } else {
+                  this.toastr.success(
+                    this.translate.instant('SUCCESS.REQUEST_UPDATED') || 'Request updated successfully'
+                  );
+                }
               }
               this.router.navigate(['/request']);
               this.isSaving = false;
@@ -2972,9 +2996,17 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
                     this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft'
                   );
                 } else {
-                  this.toastr.error(
-                    this.translate.instant('ERRORS.FAILED_UPDATE_REQUEST') || 'Failed to update request'
-                  );
+                  // If the original request was a draft (serviceStatus === 5) and now being submitted, show "create" error message instead of "update"
+                  const wasDraft = this.loadformData?.serviceStatus === 5;
+                  if (wasDraft) {
+                    this.toastr.error(
+                      this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_EVENT_PERMIT') || 'Failed to create request'
+                    );
+                  } else {
+                    this.toastr.error(
+                      this.translate.instant('ERRORS.FAILED_UPDATE_REQUEST_EVENT_PERMIT') || 'Failed to update request'
+                    );
+                  }
                 }
               }
               this.isSaving = false;
@@ -3087,7 +3119,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
                   );
                 } else {
                   this.toastr.error(
-                    this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+                    this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_EVENT_PERMIT') || 'Failed to create request'
                   );
                 }
               }
@@ -3106,7 +3138,7 @@ export class RequestEventPermitsComponent implements OnInit, OnDestroy {
           );
         } else {
           this.toastr.error(
-            this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT')
+            this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_EVENT_PERMIT') || 'Failed to create request'
           );
         }
       }

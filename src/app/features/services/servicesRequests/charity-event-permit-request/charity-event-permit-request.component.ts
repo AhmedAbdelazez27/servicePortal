@@ -1950,12 +1950,32 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
               await this.handlePartnerOperations();
               await this.handleAdvertisementOperations(isDraft);
 
-              this.toastr.success(this.translate.instant('SUCCESS.REQUEST_UPDATED') || 'Request updated successfully');
+              if (isDraft) {
+                this.toastr.success(this.translate.instant('SUCCESS.CHARITY_EVENT_PERMIT_SAVED_AS_DRAFT') || 'Request saved as draft');
+              } else {
+                // If the original request was a draft (serviceStatus === 5) and now being submitted, show "created" message instead of "updated"
+                const wasDraft = this.loadformData?.serviceStatus === 5;
+                if (wasDraft) {
+                  this.toastr.success(this.translate.instant('SUCCESS.CHARITY_EVENT_PERMIT_CREATED') || 'Request created successfully');
+                } else {
+                  this.toastr.success(this.translate.instant('SUCCESS.CHARITY_EVENT_PERMIT_UPDATED') || 'Request updated successfully');
+                }
+              }
               this.router.navigate(['/request']);
               this.isSaving = false;
             } catch (error: any) {
               console.error('Error handling attachments/partners/advertisements:', error);
-              this.toastr.error(this.translate.instant('ERRORS.FAILED_UPDATE_REQUEST') || 'Failed to update request');
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft');
+              } else {
+                // If the original request was a draft (serviceStatus === 5) and now being submitted, show "create" error message instead of "update"
+                const wasDraft = this.loadformData?.serviceStatus === 5;
+                if (wasDraft) {
+                  this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_CHARITY_EVENT_PERMIT') || 'Failed to create request');
+                } else {
+                  this.toastr.error(this.translate.instant('ERRORS.FAILED_UPDATE_CHARITY_EVENT_PERMIT') || 'Failed to update request');
+                }
+              }
               this.isSaving = false;
             }
           },
@@ -1963,7 +1983,17 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
             if (error.error && error.error.reason) {
               this.toastr.error(error.error.reason);
             } else {
-              this.toastr.error(this.translate.instant('ERRORS.FAILED_UPDATE_REQUEST') || 'Failed to update request');
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft');
+              } else {
+                // If the original request was a draft (serviceStatus === 5) and now being submitted, show "create" error message instead of "update"
+                const wasDraft = this.loadformData?.serviceStatus === 5;
+                if (wasDraft) {
+                  this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_CHARITY_EVENT_PERMIT') || 'Failed to create request');
+                } else {
+                  this.toastr.error(this.translate.instant('ERRORS.FAILED_UPDATE_CHARITY_EVENT_PERMIT') || 'Failed to update request');
+                }
+              }
             }
             this.isSaving = false;
           }
@@ -2036,7 +2066,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
 
         const sub = this._CharityEventPermitRequestService.create(payload).subscribe({
           next: async (res) => {
-            this.toastr.success(this.translate.instant('SUCCESS.REQUEST_PLAINT_CREATED'));
+            if (isDraft) {
+              this.toastr.success(this.translate.instant('SUCCESS.CHARITY_EVENT_PERMIT_SAVED_AS_DRAFT') || 'Request saved as draft');
+            } else {
+              this.toastr.success(this.translate.instant('SUCCESS.CHARITY_EVENT_PERMIT_CREATED') || 'Request created successfully');
+            }
             this.router.navigate(['/request']);
             this.isSaving = false;
           },
@@ -2044,7 +2078,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
             if (error.error && error.error.reason) {
               this.toastr.error(error.error.reason);
             } else {
-              this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+              if (isDraft) {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft');
+              } else {
+                this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_CHARITY_EVENT_PERMIT') || 'Failed to create request');
+              }
             }
             this.isSaving = false;
           }
@@ -2056,7 +2094,11 @@ export class CharityEventPermitRequestComponent implements OnInit, OnDestroy {
       if (error.error && error.error.reason) {
         this.toastr.error(error.error.reason);
       } else {
-        this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_REQUEST_PLAINT'));
+        if (isDraft) {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_SAVE_DRAFT') || 'Failed to save draft');
+        } else {
+          this.toastr.error(this.translate.instant('ERRORS.FAILED_CREATE_CHARITY_EVENT_PERMIT') || 'Failed to create request');
+        }
       }
       this.isSaving = false;
     }
