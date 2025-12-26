@@ -245,14 +245,16 @@
                         placeholder="784-____-_______-_" maxlength="15" (keypress)="restrictToNumbers($event)"
                         [class.is-invalid]="firstStepForm.get('beneficiaryIdNumber')?.touched && firstStepForm.get('beneficiaryIdNumber')?.invalid" />
 
-                      <button type="button" class="btn btn-outline-primary" (click)="readIdentityCardData()"
-                        [disabled]="isLoadingIdentityCard || !firstStepForm.get('beneficiaryIdNumber')?.value">
+                      <button type="button" class="btn btn-gold" (click)="readIdentityCardData()"
+                        [disabled]="isLoadingIdentityCard || !firstStepForm.get('beneficiaryIdNumber')?.value"
+                        style="border-radius: 0 10px 10px 0; white-space: nowrap;">
                         <span *ngIf="isLoadingIdentityCard" class="spinner-border spinner-border-sm me-1"></span>
                         <i *ngIf="!isLoadingIdentityCard" class="fas fa-id-card me-1"></i>
                         {{ "COMMON.READ_CARD" | translate }}
                       </button>
-                      <button type="button" class="btn btn-outline-info" (click)="navigateToPreviousAidRequests()"
-                        [disabled]="!firstStepForm.get('beneficiaryIdNumber')?.value">
+                      <button type="button" class="btn btn-gray" (click)="navigateToPreviousAidRequests()"
+                        [disabled]="!firstStepForm.get('beneficiaryIdNumber')?.value"
+                        style="border-radius: 0; white-space: nowrap; margin-left: 2px;">
                         <i class="fas fa-history me-1"></i>
                         {{ "AID_REQUESTS.PREVIOUS_AID_REQUESTS" | translate }}
                       </button>
